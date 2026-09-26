@@ -153,7 +153,7 @@ h1{font-size:34px}
 .side-menu{width:min(335px,91vw)}
 .delete-history{opacity:.65}
 }
-.aura-soft-response{line-height:1.78}.aura-response-line{display:block;transition:opacity .45s ease,transform .45s ease}.aura-response-line.settled{opacity:.96}
+ .aura-soft-response{line-height:1.78}.aura-response-line{display:block;transition:opacity .45s ease,transform .45s ease}.aura-response-line.settled{opacity:.96}
 </style>
 </head>
 <body>
@@ -289,331 +289,81 @@ function setPlan(plan){
     userPlan="free";
     localStorage.setItem("auraPlan","free");
     renderPlans();
-    showToast(
-      userLanguage==="en-US"
-        ?"This plan is not active yet."
-        :userLanguage==="es-ES"
-          ?"Este plan aún no está activo."
-          :"Esse plano ainda não está ativo."
-    );
+    showToast(userLanguage==="en-US"?"This plan is not active yet.":userLanguage==="es-ES"?"Este plan aún no está activo.":"Esse plano ainda não está ativo.");
     return;
   }
   userPlan="free";
   localStorage.setItem("auraPlan","free");
   renderPlans();
-  showToast(
-    userLanguage==="en-US"
-      ?"AURA FREE selected."
-      :userLanguage==="es-ES"
-        ?"AURA FREE seleccionado."
-        :"AURA FREE selecionado."
-  );
+  showToast(userLanguage==="en-US"?"AURA FREE selected.":userLanguage==="es-ES"?"AURA FREE seleccionado.":"AURA FREE selecionado.");
 }
 function renderPlans(){
   const plan=getPlan();
   const balance=document.getElementById("modalCredits");
-  if(balance){
-    balance.textContent=userCredits+" créditos";
-  }
+  if(balance)balance.textContent=userCredits+" créditos";
   document.querySelectorAll(".plan-card[data-plan]").forEach(card=>{
     const active=card.dataset.plan===userPlan;
     card.classList.toggle("active",active);
     const status=card.querySelector(".plan-status");
-    if(status){
-      status.textContent=active?"Plano atual":"Em breve";
-    }
+    if(status)status.textContent=active?"Plano atual":"Em breve";
   });
   const detail=document.getElementById("planDetails");
-  if(detail){
-    detail.innerHTML=`
-      <div class="plan-detail-title">${plan.name}</div>
-      <div class="plan-detail-grid">
-        <div><span>IA</span><strong>${plan.model}</strong></div>
-        <div><span>Memória</span><strong>${plan.memory}</strong></div>
-        <div><span>Pesquisa</span><strong>${plan.research}</strong></div>
-        <div><span>Velocidade</span><strong>${plan.speed}</strong></div>
-        <div><span>Contexto</span><strong>${plan.context}</strong></div>
-        <div><span>Complexidade</span><strong>${plan.complexity}</strong></div>
-      </div>
-      <div class="plan-feature-list">
-        ${plan.features.map(f=>`<div>✦ ${escapeHtml(f)}</div>`).join("")}
-      </div>`;
-  }
+  if(detail)detail.innerHTML=`<div class="plan-detail-title">${plan.name}</div><div class="plan-detail-grid"><div><span>IA</span><strong>${plan.model}</strong></div><div><span>Memória</span><strong>${plan.memory}</strong></div><div><span>Pesquisa</span><strong>${plan.research}</strong></div><div><span>Velocidade</span><strong>${plan.speed}</strong></div><div><span>Contexto</span><strong>${plan.context}</strong></div><div><span>Complexidade</span><strong>${plan.complexity}</strong></div></div><div class="plan-feature-list">${plan.features.map(f=>`<div>✦ ${escapeHtml(f)}</div>`).join("")}</div>`;
 }
 const chat=document.getElementById("chat");
 const input=document.getElementById("messageInput");
 const sendButton=document.getElementById("sendButton");
 const translations={
-  "pt-BR":{
-    accountSettings:"Configurações da conta",
-    accountSettingsSub:"Gerencie seus dados, acesso e preferências da Aura.",
-    account:"Conta",
-    emailNote:"Seu e-mail atual de acesso.",
-    newEmail:"Novo e-mail",
-    saveEmail:"Salvar novo e-mail",
-    security:"Segurança",
-    securityNote:"Encerra todas as sessões ativas da sua conta.",
-    signOutEverywhere:"Sair de todos os dispositivos",
-    changePassword:"Alterar senha",
-    newPassword:"Nova senha",
-    savePassword:"Salvar nova senha",
-    language:"Idioma",
-    dangerZone:"Zona de risco",
-    deleteNote:"Excluir a conta remove o acesso à Aura. As histórias vinculadas também poderão ser removidas conforme as políticas do banco de dados.",
-    deleteAccount:"Excluir minha conta",
-    plansCredits:"Planos e créditos",
-    plansSub:"A estrutura comercial está preparada. Pagamentos reais serão ativados quando o provedor de pagamentos estiver conectado.",
-    currentBalance:"Saldo atual",
-    free:"Gratuito",
-    freeDesc:"Créditos iniciais para experimentar a Aura.",
-    current:"Atual",
-    plusDesc:"Mais créditos e maior uso para histórias longas.",
-    proDesc:"Para uso intenso, projetos extensos e experiências avançadas.",
-    comingSoon:"Em breve",
-    close:"Fechar",
-    languageSub:"Escolha o idioma da interface. A história continua sendo escrita livremente."
-  },
-  "en-US":{
-    accountSettings:"Account settings",
-    accountSettingsSub:"Manage your account, access and Aura preferences.",
-    account:"Account",
-    emailNote:"Your current access email.",
-    newEmail:"New email",
-    saveEmail:"Save new email",
-    security:"Security",
-    securityNote:"Ends all active sessions for your account.",
-    signOutEverywhere:"Sign out on all devices",
-    changePassword:"Change password",
-    newPassword:"New password",
-    savePassword:"Save new password",
-    language:"Language",
-    dangerZone:"Danger zone",
-    deleteNote:"Deleting your account removes access to Aura. Linked stories may also be removed according to database policies.",
-    deleteAccount:"Delete my account",
-    plansCredits:"Plans & credits",
-    plansSub:"The commercial structure is ready. Real payments will be activated when a payment provider is connected.",
-    currentBalance:"Current balance",
-    free:"Free",
-    freeDesc:"Starter credits to experience Aura.",
-    current:"Current",
-    plusDesc:"More credits and higher usage for longer stories.",
-    proDesc:"For intensive use, extended projects and advanced experiences.",
-    comingSoon:"Coming soon",
-    close:"Close",
-    languageSub:"Choose the interface language. Your story can still be written freely."
-  },
-  "es-ES":{
-    accountSettings:"Configuración de la cuenta",
-    accountSettingsSub:"Gestiona tus datos, acceso y preferencias de Aura.",
-    account:"Cuenta",
-    emailNote:"Tu correo actual de acceso.",
-    newEmail:"Nuevo correo",
-    saveEmail:"Guardar nuevo correo",
-    security:"Seguridad",
-    securityNote:"Cierra todas las sesiones activas de tu cuenta.",
-    signOutEverywhere:"Cerrar sesión en todos los dispositivos",
-    changePassword:"Cambiar contraseña",
-    newPassword:"Nueva contraseña",
-    savePassword:"Guardar nueva contraseña",
-    language:"Idioma",
-    dangerZone:"Zona de riesgo",
-    deleteNote:"Eliminar la cuenta quita el acceso a Aura. Las historias vinculadas también pueden eliminarse según las políticas de la base de datos.",
-    deleteAccount:"Eliminar mi cuenta",
-    plansCredits:"Planes y créditos",
-    plansSub:"La estructura comercial está preparada. Los pagos reales se activarán cuando se conecte un proveedor de pagos.",
-    currentBalance:"Saldo actual",
-    free:"Gratis",
-    freeDesc:"Créditos iniciales para probar Aura.",
-    current:"Actual",
-    plusDesc:"Más créditos y mayor uso para historias largas.",
-    proDesc:"Para uso intensivo, proyectos extensos y experiencias avanzadas.",
-    comingSoon:"Próximamente",
-    close:"Cerrar",
-    languageSub:"Elige el idioma de la interfaz. La historia puede seguir escribiéndose libremente."
-  }
+  "pt-BR":{accountSettings:"Configurações da conta",accountSettingsSub:"Gerencie seus dados, acesso e preferências da Aura.",account:"Conta",emailNote:"Seu e-mail atual de acesso.",newEmail:"Novo e-mail",saveEmail:"Salvar novo e-mail",security:"Segurança",securityNote:"Encerra todas as sessões ativas da sua conta.",signOutEverywhere:"Sair de todos os dispositivos",changePassword:"Alterar senha",newPassword:"Nova senha",savePassword:"Salvar nova senha",language:"Idioma",dangerZone:"Zona de risco",deleteNote:"Excluir a conta remove o acesso à Aura. As histórias vinculadas também poderão ser removidas conforme as políticas do banco de dados.",deleteAccount:"Excluir minha conta",plansCredits:"Planos e créditos",plansSub:"A estrutura comercial está preparada. Pagamentos reais serão ativados quando o provedor de pagamentos estiver conectado.",currentBalance:"Saldo atual",free:"Gratuito",freeDesc:"Créditos iniciais para experimentar a Aura.",current:"Atual",plusDesc:"Mais créditos e maior uso para histórias longas.",proDesc:"Para uso intenso, projetos extensos e experiências avançadas.",comingSoon:"Em breve",close:"Fechar",languageSub:"Escolha o idioma da interface. A história continua sendo escrita livremente."},
+  "en-US":{accountSettings:"Account settings",accountSettingsSub:"Manage your account, access and Aura preferences.",account:"Account",emailNote:"Your current access email.",newEmail:"New email",saveEmail:"Save new email",security:"Security",securityNote:"Ends all active sessions for your account.",signOutEverywhere:"Sign out on all devices",changePassword:"Change password",newPassword:"New password",savePassword:"Save new password",language:"Language",dangerZone:"Danger zone",deleteNote:"Deleting your account removes access to Aura. Linked stories may also be removed according to database policies.",deleteAccount:"Delete my account",plansCredits:"Plans & credits",plansSub:"The commercial structure is ready. Real payments will be activated when a payment provider is connected.",currentBalance:"Current balance",free:"Free",freeDesc:"Starter credits to experience Aura.",current:"Current",plusDesc:"More credits and higher usage for longer stories.",proDesc:"For intensive use, extended projects and advanced experiences.",comingSoon:"Coming soon",close:"Close",languageSub:"Choose the interface language. Your story can still be written freely."},
+  "es-ES":{accountSettings:"Configuración de la cuenta",accountSettingsSub:"Gestiona tus datos, acceso y preferencias de Aura.",account:"Cuenta",emailNote:"Tu correo actual de acceso.",newEmail:"Nuevo correo",saveEmail:"Guardar nuevo correo",security:"Seguridad",securityNote:"Cierra todas las sesiones activas de tu cuenta.",signOutEverywhere:"Cerrar sesión en todos los dispositivos",changePassword:"Cambiar contraseña",newPassword:"Nueva contraseña",savePassword:"Guardar nueva contraseña",language:"Idioma",dangerZone:"Zona de riesgo",deleteNote:"Eliminar la cuenta quita el acceso a Aura. Las historias vinculadas también pueden eliminarse según las políticas de la base de datos.",deleteAccount:"Eliminar mi cuenta",plansCredits:"Planes y créditos",plansSub:"La estructura comercial está preparada. Los pagos reales se activarán cuando se conecte un proveedor de pagos.",currentBalance:"Saldo actual",free:"Gratis",freeDesc:"Créditos iniciales para probar Aura.",current:"Actual",plusDesc:"Más créditos y mayor uso para historias largas.",proDesc:"Para uso intensivo, proyectos extensos y experiencias avanzadas.",comingSoon:"Próximamente",close:"Cerrar",languageSub:"Elige el idioma de la interfaz. La historia puede seguir escribiéndose libremente."}
 };
 function applyLanguage(){
   const t=translations[userLanguage]||translations["pt-BR"];
   document.documentElement.lang=userLanguage;
-  document.querySelectorAll("[data-i18n]").forEach(el=>{
-    const k=el.dataset.i18n;
-    if(t[k])el.textContent=t[k];
-  });
-  document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{
-    const k=el.dataset.i18nPlaceholder;
-    if(t[k])el.placeholder=t[k];
-  });
-  const top=document.getElementById("languageTop");
-  if(top){
-    top.textContent=
-      userLanguage==="en-US"
-        ?"EN"
-        :userLanguage==="es-ES"
-          ?"ES"
-          :"PT";
-  }
-  document.querySelectorAll(".lang-option").forEach(el=>{
-    el.classList.toggle("active",el.dataset.lang===userLanguage);
-  });
+  document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.dataset.i18n;if(t[k])el.textContent=t[k]});
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{const k=el.dataset.i18nPlaceholder;if(t[k])el.placeholder=t[k]});
+  const top=document.getElementById("languageTop");if(top)top.textContent=userLanguage==="en-US"?"EN":userLanguage==="es-ES"?"ES":"PT";
+  document.querySelectorAll(".lang-option").forEach(el=>el.classList.toggle("active",el.dataset.lang===userLanguage));
 }
-function setLanguage(lang){
-  userLanguage=lang;
-  localStorage.setItem("auraLanguage",lang);
-  applyLanguage();
-  renderPlans();
-  showToast(
-    lang==="en-US"
-      ?"Language updated."
-      :lang==="es-ES"
-        ?"Idioma actualizado."
-        :"Idioma atualizado."
-  );
-}
-function openModal(id){
-  document.getElementById(id).classList.add("open");
-}
-function closeModal(id){
-  document.getElementById(id).classList.remove("open");
-}
-function closeModalOutside(event,id){
-  if(event.target.id===id)closeModal(id);
-}
-function openAccountModal(){
-  closeMenu();
-  if(currentUser){
-    document.getElementById("settingsEmail").textContent=currentUser.email||"—";
-    document.getElementById("newEmail").value="";
-  }
-  openModal("accountModal");
-}
+function setLanguage(lang){userLanguage=lang;localStorage.setItem("auraLanguage",lang);applyLanguage();renderPlans();showToast(lang==="en-US"?"Language updated.":lang==="es-ES"?"Idioma actualizado.":"Idioma atualizado.")}
+function openModal(id){document.getElementById(id).classList.add("open")}
+function closeModal(id){document.getElementById(id).classList.remove("open")}
+function closeModalOutside(event,id){if(event.target.id===id)closeModal(id)}
+function openAccountModal(){closeMenu();if(currentUser){document.getElementById("settingsEmail").textContent=currentUser.email||"—";document.getElementById("newEmail").value="";}openModal("accountModal")}
 async function updatePassword(){
   const password=document.getElementById("newPassword").value;
-  if(password.length<6){
-    showToast(
-      userLanguage==="en-US"
-        ?"Use at least 6 characters."
-        :userLanguage==="es-ES"
-          ?"Usa al menos 6 caracteres."
-          :"Use pelo menos 6 caracteres."
-    );
-    return;
-  }
+  if(password.length<6){showToast(userLanguage==="en-US"?"Use at least 6 characters.":userLanguage==="es-ES"?"Usa al menos 6 caracteres.":"Use pelo menos 6 caracteres.");return}
   const {error}=await supabaseClient.auth.updateUser({password});
-  if(error){
-    console.error(error);
-    showToast(
-      userLanguage==="en-US"
-        ?"Could not update password."
-        :userLanguage==="es-ES"
-          ?"No se pudo actualizar la contraseña."
-          :"Não foi possível atualizar a senha."
-    );
-    return;
-  }
-  document.getElementById("newPassword").value="";
-  showToast(
-    userLanguage==="en-US"
-      ?"Password updated."
-      :userLanguage==="es-ES"
-        ?"Contraseña actualizada."
-        :"Senha atualizada."
-  );
+  if(error){console.error(error);showToast(userLanguage==="en-US"?"Could not update password.":userLanguage==="es-ES"?"No se pudo actualizar la contraseña.":"Não foi possível atualizar a senha.");return}
+  document.getElementById("newPassword").value="";showToast(userLanguage==="en-US"?"Password updated.":userLanguage==="es-ES"?"Contraseña actualizada.":"Senha atualizada.")
 }
 async function updateEmail(){
   const email=document.getElementById("newEmail").value.trim();
-  if(!email||!email.includes("@")){
-    showToast(
-      userLanguage==="en-US"
-        ?"Enter a valid email."
-        :userLanguage==="es-ES"
-          ?"Introduce un correo válido."
-          :"Digite um e-mail válido."
-    );
-    return;
-  }
+  if(!email||!email.includes("@")){showToast(userLanguage==="en-US"?"Enter a valid email.":userLanguage==="es-ES"?"Introduce un correo válido.":"Digite um e-mail válido.");return}
   const {error}=await supabaseClient.auth.updateUser({email});
-  if(error){
-    console.error(error);
-    showToast(
-      userLanguage==="en-US"
-        ?"Could not update email."
-        :userLanguage==="es-ES"
-          ?"No se pudo actualizar el correo."
-          :"Não foi possível atualizar o e-mail."
-    );
-    return;
-  }
+  if(error){console.error(error);showToast(userLanguage==="en-US"?"Could not update email.":userLanguage==="es-ES"?"No se pudo actualizar el correo.":"Não foi possível atualizar o e-mail.");return}
   document.getElementById("newEmail").value="";
-  showToast(
-    userLanguage==="en-US"
-      ?"Check your new email to confirm."
-      :userLanguage==="es-ES"
-        ?"Revisa tu nuevo correo para confirmar."
-        :"Verifique seu novo e-mail para confirmar."
-  );
+  showToast(userLanguage==="en-US"?"Check your new email to confirm.":userLanguage==="es-ES"?"Revisa tu nuevo correo para confirmar.":"Verifique seu novo e-mail para confirmar.");
 }
 async function signOutEverywhere(){
   const {error}=await supabaseClient.auth.signOut({scope:"global"});
-  if(error){
-    console.error(error);
-    showToast(
-      userLanguage==="en-US"
-        ?"Could not sign out everywhere."
-        :userLanguage==="es-ES"
-          ?"No se pudo cerrar todas las sesiones."
-          :"Não foi possível encerrar todas as sessões."
-    );
-    return;
-  }
-  showToast(
-    userLanguage==="en-US"
-      ?"All sessions ended."
-      :userLanguage==="es-ES"
-        ?"Todas las sesiones terminaron."
-        :"Todas as sessões foram encerradas."
-  );
+  if(error){console.error(error);showToast(userLanguage==="en-US"?"Could not sign out everywhere.":userLanguage==="es-ES"?"No se pudo cerrar todas las sesiones.":"Não foi possível encerrar todas as sessões.");return}
+  showToast(userLanguage==="en-US"?"All sessions ended.":userLanguage==="es-ES"?"Todas las sesiones terminaron.":"Todas as sessões foram encerradas.");
 }
 async function deleteAccount(){
-  const confirmText=window.prompt(
-    userLanguage==="en-US"
-      ?"Type DELETE to confirm account deletion."
-      :userLanguage==="es-ES"
-        ?"Escribe ELIMINAR para confirmar."
-        :"Digite EXCLUIR para confirmar a exclusão da conta."
-  );
-  const expected=
-    userLanguage==="en-US"
-      ?"DELETE"
-      :userLanguage==="es-ES"
-        ?"ELIMINAR"
-        :"EXCLUIR";
+  const confirmText=window.prompt(userLanguage==="en-US"?"Type DELETE to confirm account deletion.":userLanguage==="es-ES"?"Escribe ELIMINAR para confirmar.":"Digite EXCLUIR para confirmar a exclusão da conta.");
+  const expected=userLanguage==="en-US"?"DELETE":userLanguage==="es-ES"?"ELIMINAR":"EXCLUIR";
   if(confirmText!==expected)return;
-  showToast(
-    userLanguage==="en-US"
-      ?"Account deletion requires server-side confirmation."
-      :userLanguage==="es-ES"
-        ?"La eliminación requiere confirmación del servidor."
-        :"A exclusão precisa de confirmação no servidor."
-  );
+  showToast(userLanguage==="en-US"?"Account deletion requires server-side confirmation.":userLanguage==="es-ES"?"La eliminación requiere confirmación del servidor.":"A exclusão precisa de confirmação no servidor.");
 }
 async function loadCredits(){
   if(!currentUser)return;
   try{
-    let {data,error}=await supabaseClient
-      .from("credits")
-      .select("balance")
-      .eq("user_id",currentUser.id)
-      .maybeSingle();
+    let {data,error}=await supabaseClient.from("credits").select("balance").eq("user_id",currentUser.id).maybeSingle();
     if(error)throw error;
     if(!data){
-      const created=await supabaseClient
-        .from("credits")
-        .insert({
-          user_id:currentUser.id,
-          balance:AURA_PLANS.free.credits
-        })
-        .select("balance")
-        .single();
+      const created=await supabaseClient.from("credits").insert({user_id:currentUser.id,balance:AURA_PLANS.free.credits}).select("balance").single();
       if(created.error)throw created.error;
       data=created.data;
     }
@@ -649,14 +399,8 @@ async function changeCredits(delta){
     return false;
   }
 }
-function openPlansModal(){
-  closeMenu();
-  openModal("plansModal");
-  renderPlans();
-}
-function openLanguageModal(){
-  openModal("languageModal");
-}
+function openPlansModal(){closeMenu();openModal("plansModal");renderPlans()}
+function openLanguageModal(){openModal("languageModal")}
 function toggleAuthMode(){
   const button=document.getElementById("authButton");
   const switchButton=document.getElementById("authSwitch");
@@ -683,22 +427,13 @@ async function handleAuth(){
   const message=document.getElementById("authMessage");
   message.textContent="";
   message.className="auth-error";
-  if(!email||!password){
-    message.textContent="Preencha seu e-mail e sua senha.";
-    return;
-  }
-  if(password.length<6){
-    message.textContent="A senha precisa ter pelo menos 6 caracteres.";
-    return;
-  }
+  if(!email||!password){message.textContent="Preencha seu e-mail e sua senha.";return}
+  if(password.length<6){message.textContent="A senha precisa ter pelo menos 6 caracteres.";return}
   button.disabled=true;
   button.textContent=authMode==="login"?"Entrando...":"Criando...";
   try{
     if(authMode==="signup"){
-      const {data,error}=await supabaseClient.auth.signUp({
-        email,
-        password
-      });
+      const {data,error}=await supabaseClient.auth.signUp({email,password});
       if(error)throw error;
       if(data.session){
         currentUser=data.user;
@@ -708,10 +443,7 @@ async function handleAuth(){
         message.textContent="Conta criada. Verifique seu e-mail para confirmar o cadastro.";
       }
     }else{
-      const {data,error}=await supabaseClient.auth.signInWithPassword({
-        email,
-        password
-      });
+      const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
       if(error)throw error;
       currentUser=data.user;
       await showApp();
@@ -727,12 +459,9 @@ async function handleAuth(){
 function translateAuthError(error){
   if(!error)return"Não foi possível continuar.";
   const text=error.toLowerCase();
-  if(text.includes("invalid login credentials"))
-    return"E-mail ou senha incorretos.";
-  if(text.includes("user already registered"))
-    return"Esse e-mail já possui uma conta.";
-  if(text.includes("password"))
-    return"Verifique sua senha.";
+  if(text.includes("invalid login credentials"))return"E-mail ou senha incorretos.";
+  if(text.includes("user already registered"))return"Esse e-mail já possui uma conta.";
+  if(text.includes("password"))return"Verifique sua senha.";
   return error;
 }
 async function showApp(){
@@ -770,8 +499,7 @@ function updateAccountUI(){
   if(!currentUser)return;
   const email=currentUser.email||"Conta Aura";
   document.getElementById("accountEmail").textContent=email;
-  document.getElementById("accountAvatar").textContent=
-    email.charAt(0).toUpperCase();
+  document.getElementById("accountAvatar").textContent=email.charAt(0).toUpperCase();
 }
 async function logout(){
   await supabaseClient.auth.signOut();
@@ -792,11 +520,7 @@ async function logout(){
 async function loadStories(){
   if(!currentUser)return;
   try{
-    const {data,error}=await supabaseClient
-      .from("stories")
-      .select("id,title,messages,created_at,updated_at")
-      .eq("user_id",currentUser.id)
-      .order("updated_at",{ascending:false});
+    const {data,error}=await supabaseClient.from("stories").select("id,title,messages,created_at,updated_at").eq("user_id",currentUser.id).order("updated_at",{ascending:false});
     if(error)throw error;
     stories=(data||[]).map(story=>({
       id:story.id,
@@ -816,23 +540,9 @@ async function loadStories(){
 async function createStory(){
   if(!currentUser)return null;
   try{
-    const {data,error}=await supabaseClient
-      .from("stories")
-      .insert({
-        user_id:currentUser.id,
-        title:"Nova história",
-        messages:[]
-      })
-      .select("id,title,messages,created_at,updated_at")
-      .single();
+    const {data,error}=await supabaseClient.from("stories").insert({user_id:currentUser.id,title:"Nova história",messages:[]}).select("id,title,messages,created_at,updated_at").single();
     if(error)throw error;
-    const story={
-      id:data.id,
-      title:data.title,
-      messages:data.messages||[],
-      createdAt:data.created_at,
-      updatedAt:data.updated_at
-    };
+    const story={id:data.id,title:data.title,messages:data.messages||[],createdAt:data.created_at,updatedAt:data.updated_at};
     stories.unshift(story);
     currentStoryId=story.id;
     conversation=[];
@@ -854,26 +564,16 @@ async function saveCurrentConversation(){
   if(!currentStoryId||!currentUser)return;
   const story=getCurrentStory();
   if(!story)return;
-  const messages=conversation.map(item=>({
-    role:item.role,
-    content:item.content
-  }));
+  const messages=conversation.map(item=>({role:item.role,content:item.content}));
   const firstUser=conversation.find(item=>item.role==="user");
   let title=story.title||"Nova história";
-  if(firstUser&&firstUser.content)
-    title=createStoryTitle(firstUser.content);
+  if(firstUser&&firstUser.content)title=createStoryTitle(firstUser.content);
   try{
-    const {data,error}=await supabaseClient
-      .from("stories")
-      .update({
-        title,
-        messages,
-        updated_at:new Date().toISOString()
-      })
-      .eq("id",currentStoryId)
-      .eq("user_id",currentUser.id)
-      .select("id,title,messages,created_at,updated_at")
-      .single();
+    const {data,error}=await supabaseClient.from("stories").update({
+      title,
+      messages,
+      updated_at:new Date().toISOString()
+    }).eq("id",currentStoryId).eq("user_id",currentUser.id).select("id,title,messages,created_at,updated_at").single();
     if(error)throw error;
     story.title=data.title;
     story.messages=data.messages||[];
@@ -888,21 +588,17 @@ async function saveCurrentConversation(){
 function createStoryTitle(text){
   let title=text.replace(/\s+/g," ").trim();
   if(!title)return"Nova história";
-  if(title.length>34)
-    title=title.substring(0,34).trim()+"...";
+  if(title.length>34)title=title.substring(0,34).trim()+"...";
   return title;
 }
 function renderHistory(){
   const list=document.getElementById("historyList");
   if(!list)return;
   if(!stories.length){
-    list.innerHTML=
-      '<div class="history-empty">Suas histórias aparecerão aqui.<br><br>Comece uma nova aventura.</div>';
+    list.innerHTML='<div class="history-empty">Suas histórias aparecerão aqui.<br><br>Comece uma nova aventura.</div>';
     return;
   }
-  const ordered=[...stories].sort(
-    (a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt)
-  );
+  const ordered=[...stories].sort((a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt));
   list.innerHTML=ordered.map(story=>{
     const active=story.id===currentStoryId?"active":"";
     return `
@@ -915,11 +611,7 @@ function renderHistory(){
           <div class="history-name">${escapeHtml(story.title)}</div>
           <div class="history-date">${formatDate(story.updatedAt)}</div>
         </div>
-        <button
-          class="delete-history"
-          onclick="deleteStory(event,'${story.id}')"
-          aria-label="Apagar história"
-        >×</button>
+        <button class="delete-history" onclick="deleteStory(event,'${story.id}')" aria-label="Apagar história">×</button>
       </div>`;
   }).join("");
 }
@@ -927,12 +619,7 @@ async function openStory(id){
   const story=stories.find(item=>item.id===id);
   if(!story)return;
   currentStoryId=story.id;
-  conversation=Array.isArray(story.messages)
-    ?story.messages.map(item=>({
-      role:item.role,
-      content:item.content
-    }))
-    :[];
+  conversation=Array.isArray(story.messages)?story.messages.map(item=>({role:item.role,content:item.content})):[];
   renderCurrentStory();
   renderHistory();
   closeMenu();
@@ -946,10 +633,8 @@ function renderCurrentStory(){
     return;
   }
   conversation.forEach(item=>{
-    if(item.role==="user")
-      addUserMessage(item.content,false);
-    else
-      addAuraInstant(item.content,false);
+    if(item.role==="user")addUserMessage(item.content,false);
+    else addAuraInstant(item.content,false);
   });
   scrollToBottom();
 }
@@ -957,11 +642,7 @@ async function deleteStory(event,id){
   event.stopPropagation();
   if(!currentUser)return;
   try{
-    const {error}=await supabaseClient
-      .from("stories")
-      .delete()
-      .eq("id",id)
-      .eq("user_id",currentUser.id);
+    const {error}=await supabaseClient.from("stories").delete().eq("id",id).eq("user_id",currentUser.id);
     if(error)throw error;
     stories=stories.filter(story=>story.id!==id);
     if(currentStoryId===id){
@@ -991,15 +672,9 @@ function newStory(){
 function welcomeHTML(){
   return `
     <div id="welcome" class="welcome">
-      <div class="aura-core">
-        <div class="ring"></div>
-        <div class="core"></div>
-      </div>
+      <div class="aura-core"><div class="ring"></div><div class="core"></div></div>
       <h1>AURA</h1>
-      <p class="tagline">
-        Sua história começa aqui.<br>
-        Crie. Escolha. Viva.
-      </p>
+      <p class="tagline">Sua história começa aqui.<br>Crie. Escolha. Viva.</p>
     </div>`;
 }
 function resetChat(){
@@ -1020,24 +695,14 @@ async function sendMessage(){
   const story=await ensureStory();
   if(!story)return;
   const currentWelcome=document.getElementById("welcome");
-  if(currentWelcome)
-    currentWelcome.remove();
+  if(currentWelcome)currentWelcome.remove();
   addUserMessage(message);
-  conversation.push({
-    role:"user",
-    content:message
-  });
+  conversation.push({role:"user",content:message});
   await saveCurrentConversation();
   const charged=await changeCredits(-1);
   if(!charged){
     setThinking(false);
-    addAuraInstant(
-      userLanguage==="en-US"
-        ?"You have no credits left."
-        :userLanguage==="es-ES"
-          ?"No tienes créditos disponibles."
-          :"Você não tem mais créditos disponíveis."
-    );
+    addAuraInstant(userLanguage==="en-US"?"You have no credits left.":userLanguage==="es-ES"?"No tienes créditos disponibles.":"Você não tem mais créditos disponíveis.");
     return;
   }
   input.value="";
@@ -1046,8 +711,7 @@ async function sendMessage(){
   try{
     const {data:sessionData}=await supabaseClient.auth.getSession();
     const accessToken=sessionData?.session?.access_token;
-    if(!accessToken)
-      throw new Error("Sessão expirada. Faça login novamente.");
+    if(!accessToken)throw new Error("Sessão expirada. Faça login novamente.");
     const response=await fetch("/api/chat",{
       method:"POST",
       headers:{
@@ -1062,12 +726,8 @@ async function sendMessage(){
       })
     });
     const data=await response.json();
-    if(!response.ok)
-      throw new Error(data.error||"Erro ao conversar com a Aura");
-    conversation.push({
-      role:"assistant",
-      content:data.reply
-    });
+    if(!response.ok)throw new Error(data.error||"Erro ao conversar com a Aura");
+    conversation.push({role:"assistant",content:data.reply});
     await saveCurrentConversation();
     setThinking(false);
     await streamAura(data.reply);
@@ -1076,13 +736,7 @@ async function sendMessage(){
     console.error(error);
     await changeCredits(1);
     setThinking(false);
-    addAuraInstant(
-      userLanguage==="en-US"
-        ?"I could not answer right now. Try again in a moment."
-        :userLanguage==="es-ES"
-          ?"No pude responder ahora. Inténtalo de nuevo en un momento."
-          :"Não consegui responder agora. Tente novamente em alguns instantes."
-    );
+    addAuraInstant(userLanguage==="en-US"?"I could not answer right now. Try again in a moment.":userLanguage==="es-ES"?"No pude responder ahora. Inténtalo de nuevo en un momento.":"Não consegui responder agora. Tente novamente em alguns instantes.");
   }
 }
 function addUserMessage(text,shouldScroll=true){
@@ -1096,8 +750,7 @@ function addUserMessage(text,shouldScroll=true){
   content.appendChild(bubble);
   wrapper.appendChild(content);
   chat.appendChild(wrapper);
-  if(shouldScroll)
-    scrollToBottom();
+  if(shouldScroll)scrollToBottom();
 }
 function addAuraInstant(text,shouldScroll=true){
   const wrapper=document.createElement("div");
@@ -1114,8 +767,7 @@ function addAuraInstant(text,shouldScroll=true){
   content.appendChild(bubble);
   wrapper.appendChild(content);
   chat.appendChild(wrapper);
-  if(shouldScroll)
-    scrollToBottom();
+  if(shouldScroll)scrollToBottom();
 }
 async function streamAura(text){
   isThinking=true;
@@ -1160,16 +812,12 @@ async function streamAura(text){
       word.className="stream-word";
       word.textContent=part;
       line.appendChild(word);
-      const progress=
-        (blockIndex+(i/Math.max(words.length,1)))/total;
-      mist.style.left=
-        `${Math.min(8+progress*84,92)}%`;
+      const progress=(blockIndex+(i/Math.max(words.length,1)))/total;
+      mist.style.left=`${Math.min(8+progress*84,92)}%`;
       scrollToBottom();
       let delay=48;
-      if(/[,:;]$/.test(part))
-        delay=105;
-      if(/[.!?…]$/.test(part))
-        delay=145;
+      if(/[,:;]$/.test(part))delay=105;
+      if(/[.!?…]$/.test(part))delay=145;
       await wait(delay);
     }
     if(blockIndex<blocks.length-1){
@@ -1184,28 +832,22 @@ async function streamAura(text){
   sendButton.disabled=false;
   scrollToBottom();
 }
-function wait(ms){
-  return new Promise(resolve=>setTimeout(resolve,ms));
-}
+function wait(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
 function setThinking(thinking){
   isThinking=thinking;
   sendButton.disabled=thinking;
   const old=document.getElementById("thinking");
-  if(old)
-    old.remove();
+  if(old)old.remove();
   if(!thinking)return;
   const element=document.createElement("div");
   element.id="thinking";
   element.className="thinking";
-  element.innerHTML=
-    '<div class="thinking-core"></div><span>A Aura está pensando...</span>';
+  element.innerHTML='<div class="thinking-core"></div><span>A Aura está pensando...</span>';
   chat.appendChild(element);
   scrollToBottom();
 }
 function scrollToBottom(){
-  requestAnimationFrame(()=>{
-    chat.scrollTop=chat.scrollHeight;
-  });
+  requestAnimationFrame(()=>{chat.scrollTop=chat.scrollHeight});
 }
 input.addEventListener("input",resizeInput);
 function resizeInput(){
@@ -1230,19 +872,11 @@ function closeMenu(){
 function formatDate(timestamp){
   const date=new Date(timestamp);
   const now=new Date();
-  const sameDay=
-    date.toDateString()===now.toDateString();
+  const sameDay=date.toDateString()===now.toDateString();
   if(sameDay){
-    return "Hoje · "+
-      date.toLocaleTimeString("pt-BR",{
-        hour:"2-digit",
-        minute:"2-digit"
-      });
+    return "Hoje · "+date.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
   }
-  return date.toLocaleDateString("pt-BR",{
-    day:"2-digit",
-    month:"short"
-  });
+  return date.toLocaleDateString("pt-BR",{day:"2-digit",month:"short"});
 }
 function escapeHtml(text){
   return String(text)
@@ -1257,10 +891,7 @@ function showToast(text){
   toast.textContent=text;
   toast.classList.add("show");
   clearTimeout(window.auraToastTimer);
-  window.auraToastTimer=setTimeout(
-    ()=>toast.classList.remove("show"),
-    1800
-  );
+  window.auraToastTimer=setTimeout(()=>toast.classList.remove("show"),1800);
 }
 applyLanguage();
 renderPlans();
