@@ -17,7 +17,7 @@
       width: 100%;
       height: 100%;
       background: #050507;
-      color: white;
+      color: #f8f5f7;
       font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -50,9 +50,9 @@
       padding: 24px;
       background:
         radial-gradient(
-          circle at 50% 35%,
-          rgba(255, 70, 170, 0.13),
-          transparent 35%
+          circle at 50% 38%,
+          rgba(255, 78, 166, 0.09),
+          transparent 32%
         ),
         #050507;
     }
@@ -62,10 +62,9 @@
       text-align: center;
     }
     .auth-core {
-      width: 115px;
-      height: 115px;
-      margin: 0 auto 30px;
-      border-radius: 50%;
+      width: 124px;
+      height: 124px;
+      margin: 0 auto 34px;
       position: relative;
       display: flex;
       align-items: center;
@@ -75,50 +74,58 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 1px solid rgba(255, 105, 190, .75);
+      border: 1px solid rgba(255, 105, 184, .68);
       box-shadow:
-        0 0 18px rgba(255, 70, 170, .22),
-        0 0 42px rgba(255, 70, 170, .12),
-        inset 0 0 25px rgba(255, 70, 170, .06);
+        0 0 18px rgba(255, 68, 157, .15),
+        0 0 48px rgba(255, 68, 157, .07),
+        inset 0 0 28px rgba(255, 68, 157, .04);
       animation:
-        auraPulse 4s ease-in-out infinite,
-        pinkGlow 5s ease-in-out infinite;
+        auraPulse 6s ease-in-out infinite,
+        pinkGlow 7s ease-in-out infinite;
     }
     .auth-ring::before {
       content: "";
       position: absolute;
-      inset: 9px;
+      inset: 10px;
       border-radius: 50%;
       border: 1px solid rgba(255,255,255,.10);
     }
     .auth-ring::after {
       content: "";
       position: absolute;
-      inset: 18px;
+      inset: 21px;
       border-radius: 50%;
-      border: 1px solid rgba(255, 100, 190, .20);
+      border: 1px solid rgba(255, 130, 195, .14);
     }
     .auth-core-dot {
-      width: 27px;
-      height: 27px;
+      width: 25px;
+      height: 25px;
       border-radius: 50%;
-      background: #ff9bd5;
+      background:
+        radial-gradient(
+          circle at 35% 30%,
+          #fff,
+          #ffd7e9 24%,
+          #ff91c5 54%,
+          #ff5da9 100%
+        );
       box-shadow:
-        0 0 12px rgba(255, 155, 213, .95),
-        0 0 30px rgba(255, 70, 170, .65),
-        0 0 60px rgba(255, 40, 150, .28);
-      animation: corePulse 3s ease-in-out infinite;
+        0 0 12px rgba(255, 205, 228, .9),
+        0 0 30px rgba(255, 91, 169, .42),
+        0 0 60px rgba(255, 60, 153, .16);
+      animation: corePulse 5s ease-in-out infinite;
     }
     .auth-title {
       font-size: 35px;
       font-weight: 500;
-      letter-spacing: 8px;
-      margin-bottom: 10px;
+      letter-spacing: 9px;
+      margin-left: 9px;
+      margin-bottom: 12px;
     }
     .auth-subtitle {
-      color: rgba(255,255,255,.48);
-      font-size: 14px;
-      line-height: 1.6;
+      color: rgba(255,255,255,.46);
+      font-size: 13px;
+      line-height: 1.7;
       margin-bottom: 30px;
     }
     .auth-form {
@@ -129,35 +136,48 @@
     .auth-input {
       width: 100%;
       height: 52px;
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: 17px;
-      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.085);
+      border-radius: 16px;
+      background: rgba(255,255,255,.045);
       color: white;
       outline: none;
       padding: 0 16px;
       font-size: 15px;
-      backdrop-filter: blur(15px);
+      backdrop-filter: blur(18px);
+      transition:
+        border-color .25s ease,
+        background .25s ease,
+        box-shadow .25s ease;
     }
     .auth-input:focus {
-      border-color: rgba(255, 100, 190, .55);
-      box-shadow: 0 0 25px rgba(255, 70, 170, .10);
+      border-color: rgba(255, 108, 183, .45);
+      background: rgba(255,255,255,.055);
+      box-shadow:
+        0 0 24px rgba(255, 68, 157, .07);
     }
     .auth-input::placeholder {
-      color: rgba(255,255,255,.30);
+      color: rgba(255,255,255,.27);
     }
     .auth-button {
       width: 100%;
       height: 52px;
       border: none;
-      border-radius: 17px;
-      background: #ff9bd5;
-      color: #09070a;
-      font-size: 15px;
+      border-radius: 16px;
+      background: #ff9dca;
+      color: #080609;
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      margin-top: 4px;
+      margin-top: 5px;
       box-shadow:
-        0 8px 25px rgba(255, 70, 170, .14);
+        0 10px 30px rgba(255, 68, 157, .11);
+      transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        opacity .2s ease;
+    }
+    .auth-button:active {
+      transform: scale(.985);
     }
     .auth-button:disabled {
       opacity: .45;
@@ -166,22 +186,22 @@
       margin-top: 20px;
       border: none;
       background: none;
-      color: rgba(255,255,255,.55);
+      color: rgba(255,255,255,.48);
       font-size: 13px;
       cursor: pointer;
     }
     .auth-switch span {
-      color: #ff9bd5;
+      color: #ff9dca;
     }
     .auth-error {
       min-height: 18px;
       margin-top: 12px;
-      color: #ff9dba;
+      color: #ff9ebc;
       font-size: 12px;
       line-height: 1.4;
     }
     .auth-success {
-      color: #9fffd2;
+      color: #ffb5d6;
     }
     /* =====================================================
        APP
@@ -193,9 +213,9 @@
       overflow: hidden;
       background:
         radial-gradient(
-          circle at 50% -10%,
-          rgba(255, 70, 170, 0.10),
-          transparent 40%
+          circle at 50% -12%,
+          rgba(255, 68, 157, .065),
+          transparent 38%
         ),
         #050507;
     }
@@ -219,29 +239,34 @@
       background:
         linear-gradient(
           to bottom,
-          rgba(5,5,7,.97),
-          rgba(5,5,7,.72),
+          rgba(5,5,7,.98),
+          rgba(5,5,7,.78),
           transparent
         );
-      backdrop-filter: blur(14px);
+      backdrop-filter: blur(15px);
     }
     .top-action {
       width: 42px;
       height: 42px;
-      border: 1px solid rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.065);
       border-radius: 14px;
-      background: rgba(255,255,255,.055);
-      color: rgba(255,255,255,.75);
+      background: rgba(255,255,255,.035);
+      color: rgba(255,255,255,.72);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       transition:
         transform .18s ease,
-        background .18s ease;
+        background .18s ease,
+        border-color .18s ease;
     }
     .top-action:active {
       transform: scale(.92);
+    }
+    .top-action:hover {
+      background: rgba(255,255,255,.055);
+      border-color: rgba(255, 105, 184, .14);
     }
     .hamburger {
       width: 18px;
@@ -253,11 +278,11 @@
       display: block;
       height: 1.5px;
       width: 100%;
-      background: rgba(255,255,255,.78);
+      background: rgba(255,255,255,.72);
       border-radius: 10px;
     }
     .hamburger span:nth-child(2) {
-      width: 75%;
+      width: 72%;
     }
     .plus-icon {
       font-size: 24px;
@@ -271,8 +296,8 @@
       gap: 9px;
     }
     .mini-core {
-      width: 30px;
-      height: 30px;
+      width: 29px;
+      height: 29px;
       border-radius: 50%;
       position: relative;
       display: flex;
@@ -283,13 +308,13 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 1px solid rgba(255, 105, 190, .75);
+      border: 1px solid rgba(255, 105, 184, .68);
       box-shadow:
-        0 0 12px rgba(255, 70, 170, .22),
-        inset 0 0 10px rgba(255, 70, 170, .08);
+        0 0 11px rgba(255, 68, 157, .15),
+        inset 0 0 10px rgba(255, 68, 157, .04);
       animation:
-        miniPulse 3s ease-in-out infinite,
-        pinkGlow 5s ease-in-out infinite;
+        miniPulse 5s ease-in-out infinite,
+        pinkGlow 7s ease-in-out infinite;
     }
     .mini-ring::before {
       content: "";
@@ -299,16 +324,22 @@
       border: 1px solid rgba(255,255,255,.10);
     }
     .mini-dot {
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
-      background: #ff9bd5;
+      background:
+        radial-gradient(
+          circle at 35% 30%,
+          #fff,
+          #ffb7d6 45%,
+          #ff6caf
+        );
       box-shadow:
-        0 0 8px rgba(255,155,213,.95),
-        0 0 18px rgba(255,70,170,.65);
+        0 0 8px rgba(255,188,217,.75),
+        0 0 18px rgba(255,68,157,.35);
     }
     .brand-name {
-      font-size: 13px;
+      font-size: 12px;
       letter-spacing: 4px;
       font-weight: 500;
     }
@@ -319,8 +350,8 @@
       position: fixed;
       inset: 0;
       z-index: 100;
-      background: rgba(0,0,0,.48);
-      backdrop-filter: blur(3px);
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(4px);
       opacity: 0;
       pointer-events: none;
       transition: opacity .28s ease;
@@ -340,15 +371,17 @@
       flex-direction: column;
       background:
         radial-gradient(
-          circle at 20% 0%,
-          rgba(255,70,170,.09),
-          transparent 35%
+          circle at 10% 0%,
+          rgba(255, 68, 157, .065),
+          transparent 30%
         ),
-        rgba(9,9,12,.98);
-      border-right: 1px solid rgba(255,255,255,.08);
+        rgba(7,7,9,.985);
+      border-right: 1px solid rgba(255,255,255,.065);
       transform: translateX(-105%);
-      transition: transform .34s cubic-bezier(.22,.8,.25,1);
-      box-shadow: 20px 0 70px rgba(0,0,0,.45);
+      transition:
+        transform .36s cubic-bezier(.22,.8,.25,1);
+      box-shadow:
+        20px 0 70px rgba(0,0,0,.5);
       padding:
         max(16px, env(safe-area-inset-top))
         14px
@@ -361,7 +394,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 4px 4px 18px;
+      padding: 4px 4px 22px;
     }
     .menu-logo {
       display: flex;
@@ -369,61 +402,68 @@
       gap: 10px;
     }
     .menu-logo .mini-core {
-      width: 28px;
-      height: 28px;
+      width: 27px;
+      height: 27px;
     }
     .menu-logo-text {
-      font-size: 13px;
+      font-size: 12px;
       letter-spacing: 4px;
     }
     .close-menu {
       width: 38px;
       height: 38px;
-      border: none;
+      border: 1px solid rgba(255,255,255,.045);
       border-radius: 12px;
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.7);
+      background: rgba(255,255,255,.035);
+      color: rgba(255,255,255,.62);
       font-size: 22px;
       cursor: pointer;
     }
     .new-story-menu {
       width: 100%;
       height: 52px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 15px;
+      border: 1px solid rgba(255, 105, 184, .12);
       background:
         linear-gradient(
           135deg,
-          rgba(255,255,255,.10),
-          rgba(255,70,170,.09)
+          rgba(255,255,255,.055),
+          rgba(255,68,157,.055)
         );
-      color: white;
+      color: rgba(255,255,255,.91);
       display: flex;
       align-items: center;
       gap: 12px;
       padding: 0 15px;
       cursor: pointer;
-      margin-bottom: 18px;
-      transition: transform .18s ease;
+      margin-bottom: 22px;
+      transition:
+        transform .18s ease,
+        border-color .18s ease,
+        background .18s ease;
     }
     .new-story-menu:active {
       transform: scale(.97);
     }
+    .new-story-menu:hover {
+      border-color: rgba(255,105,184,.20);
+      background: rgba(255,68,157,.06);
+    }
     .new-story-icon {
       font-size: 21px;
       font-weight: 300;
-      color: #ff9bd5;
+      color: #ff9dca;
     }
     .new-story-text {
       font-size: 14px;
       font-weight: 500;
     }
     .history-title {
-      padding: 4px 8px 9px;
-      font-size: 10px;
-      letter-spacing: 2.5px;
+      padding: 4px 8px 11px;
+      font-size: 9px;
+      letter-spacing: 2.8px;
       text-transform: uppercase;
-      color: rgba(255,255,255,.32);
+      color: rgba(255,255,255,.27);
     }
     .history-list {
       flex: 1;
@@ -435,14 +475,14 @@
       width: 3px;
     }
     .history-list::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,.10);
+      background: rgba(255,255,255,.08);
       border-radius: 10px;
     }
     .history-empty {
-      padding: 24px 10px;
-      color: rgba(255,255,255,.32);
+      padding: 30px 12px;
+      color: rgba(255,255,255,.28);
       font-size: 13px;
-      line-height: 1.6;
+      line-height: 1.7;
       text-align: center;
     }
     .history-item {
@@ -451,26 +491,27 @@
       align-items: center;
       width: 100%;
       min-height: 57px;
-      padding: 9px 9px 9px 12px;
-      margin-bottom: 5px;
-      border-radius: 14px;
+      padding: 9px 9px 9px 10px;
+      margin-bottom: 4px;
+      border-radius: 13px;
       border: 1px solid transparent;
       background: transparent;
       color: white;
       cursor: pointer;
       text-align: left;
       transition:
-        background .18s ease,
-        border .18s ease;
+        background .2s ease,
+        border .2s ease;
     }
     .history-item:hover,
     .history-item.active {
-      background: rgba(255,255,255,.065);
-      border-color: rgba(255, 100, 190, .10);
+      background: rgba(255,255,255,.045);
+      border-color:
+        rgba(255,105,184,.10);
     }
     .history-aura {
-      width: 29px;
-      height: 29px;
+      width: 28px;
+      height: 28px;
       flex-shrink: 0;
       border-radius: 50%;
       position: relative;
@@ -483,25 +524,26 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 1px solid rgba(255,105,190,.65);
+      border: 1px solid rgba(255,105,184,.55);
       box-shadow:
-        0 0 10px rgba(255,70,170,.15);
-      animation: pinkGlow 5s ease-in-out infinite;
+        0 0 9px rgba(255,68,157,.10);
+      animation:
+        pinkGlow 7s ease-in-out infinite;
     }
     .history-aura-ring::before {
       content: "";
       position: absolute;
       inset: 5px;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.08);
     }
     .history-aura-dot {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
       border-radius: 50%;
-      background: #ff9bd5;
+      background: #ff9dca;
       box-shadow:
-        0 0 9px rgba(255,155,213,.85);
+        0 0 8px rgba(255,157,202,.72);
     }
     .history-info {
       min-width: 0;
@@ -509,7 +551,7 @@
     }
     .history-name {
       font-size: 13px;
-      color: rgba(255,255,255,.88);
+      color: rgba(255,255,255,.86);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -517,7 +559,7 @@
     }
     .history-date {
       font-size: 10px;
-      color: rgba(255,255,255,.28);
+      color: rgba(255,255,255,.25);
     }
     .delete-history {
       width: 32px;
@@ -526,7 +568,7 @@
       border: none;
       border-radius: 10px;
       background: transparent;
-      color: rgba(255,255,255,.25);
+      color: rgba(255,255,255,.22);
       cursor: pointer;
       font-size: 15px;
       opacity: 0;
@@ -537,8 +579,8 @@
       opacity: 1;
     }
     .account-area {
-      border-top: 1px solid rgba(255,255,255,.07);
-      padding-top: 13px;
+      border-top: 1px solid rgba(255,255,255,.055);
+      padding-top: 14px;
       margin-top: 8px;
     }
     .account-card {
@@ -546,8 +588,8 @@
       align-items: center;
       gap: 11px;
       padding: 10px;
-      border-radius: 14px;
-      background: rgba(255,255,255,.04);
+      border-radius: 13px;
+      background: rgba(255,255,255,.03);
       margin-bottom: 7px;
     }
     .account-avatar {
@@ -560,8 +602,8 @@
       background:
         linear-gradient(
           135deg,
-          rgba(255,255,255,.16),
-          rgba(255,70,170,.18)
+          rgba(255,255,255,.10),
+          rgba(255,68,157,.13)
         );
       color: white;
       font-size: 14px;
@@ -571,13 +613,14 @@
       flex: 1;
     }
     .account-label {
-      font-size: 10px;
-      color: rgba(255,255,255,.3);
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      color: rgba(255,255,255,.25);
       margin-bottom: 3px;
     }
     .account-email {
       font-size: 11px;
-      color: rgba(255,255,255,.7);
+      color: rgba(255,255,255,.63);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -588,14 +631,14 @@
       border: none;
       border-radius: 13px;
       background: transparent;
-      color: rgba(255,150,175,.75);
+      color: rgba(255,150,192,.65);
       text-align: left;
       padding: 0 11px;
       cursor: pointer;
       font-size: 12px;
     }
     .logout-button:active {
-      background: rgba(255,100,140,.08);
+      background: rgba(255,68,157,.07);
     }
     /* =====================================================
        CHAT
@@ -616,9 +659,12 @@
       width: 4px;
     }
     .chat::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,.12);
+      background: rgba(255,255,255,.09);
       border-radius: 10px;
     }
+    /* =====================================================
+       WELCOME
+    ===================================================== */
     .welcome {
       min-height: calc(100vh - 220px);
       display: flex;
@@ -629,9 +675,9 @@
       padding: 30px 0;
     }
     .aura-core {
-      width: 150px;
-      height: 150px;
-      margin-bottom: 34px;
+      width: 154px;
+      height: 154px;
+      margin-bottom: 38px;
       border-radius: 50%;
       position: relative;
       display: flex;
@@ -642,70 +688,84 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 1px solid rgba(255,105,190,.78);
+      border: 1px solid rgba(255,105,184,.68);
       box-shadow:
-        0 0 15px rgba(255,70,170,.22),
-        0 0 35px rgba(255,70,170,.12),
-        inset 0 0 30px rgba(255,70,170,.05);
+        0 0 18px rgba(255,68,157,.15),
+        0 0 44px rgba(255,68,157,.07),
+        inset 0 0 32px rgba(255,68,157,.035);
       animation:
-        auraPulse 4s ease-in-out infinite,
-        pinkGlow 5s ease-in-out infinite;
+        auraPulse 6s ease-in-out infinite,
+        pinkGlow 7s ease-in-out infinite;
     }
     .ring::before {
       content: "";
       position: absolute;
-      inset: 9px;
+      inset: 10px;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.12);
       box-shadow:
-        inset 0 0 20px rgba(255,255,255,.04);
+        inset 0 0 22px rgba(255,255,255,.025);
     }
     .ring::after {
       content: "";
       position: absolute;
-      inset: -9px;
+      inset: -13px;
       border-radius: 50%;
       background:
         radial-gradient(
           circle,
-          transparent 45%,
-          rgba(255,70,170,.18) 58%,
+          transparent 43%,
+          rgba(255,68,157,.12) 57%,
           transparent 73%
         );
-      filter: blur(10px);
-      opacity: .65;
+      filter: blur(11px);
+      opacity: .58;
       z-index: -1;
       animation:
-        coreHalo 4s ease-in-out infinite;
+        coreHalo 6s ease-in-out infinite;
     }
     .core {
-      width: 31px;
-      height: 31px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
-      background: #ff9bd5;
+      background:
+        radial-gradient(
+          circle at 35% 30%,
+          #ffffff 0%,
+          #ffe9f2 20%,
+          #ffc0db 43%,
+          #ff8abb 67%,
+          #ff5da7 100%
+        );
       box-shadow:
-        0 0 10px rgba(255,155,213,.95),
-        0 0 25px rgba(255,100,190,.80),
-        0 0 50px rgba(255,70,170,.55),
-        0 0 85px rgba(255,40,150,.22);
-      animation: corePulse 3s ease-in-out infinite;
+        0 0 12px rgba(255,236,245,.95),
+        0 0 28px rgba(255,147,194,.60),
+        0 0 54px rgba(255,68,157,.25),
+        0 0 90px rgba(255,68,157,.09);
+      animation: corePulse 5s ease-in-out infinite;
     }
     h1 {
       font-size: 38px;
       font-weight: 500;
-      letter-spacing: 8px;
-      margin-bottom: 14px;
+      letter-spacing: 9px;
+      margin-left: 9px;
+      margin-bottom: 16px;
     }
     .tagline {
-      color: rgba(255,255,255,.62);
-      font-size: 15px;
-      line-height: 1.65;
+      color: rgba(255,255,255,.48);
+      font-size: 13px;
+      letter-spacing: .4px;
+      line-height: 1.7;
       margin-bottom: 30px;
     }
+    /* =====================================================
+       MESSAGES
+    ===================================================== */
     .message {
       display: flex;
-      margin-bottom: 18px;
-      animation: messageAppear .35s ease;
+      margin-bottom: 25px;
+      animation:
+        messageAppear .4s ease;
     }
     .message.user {
       justify-content: flex-end;
@@ -714,64 +774,66 @@
       justify-content: flex-start;
     }
     .message-content {
-      max-width: 86%;
+      max-width: 82%;
     }
     .bubble {
       position: relative;
-      padding: 14px 16px;
-      border-radius: 20px;
+      padding: 13px 15px;
+      border-radius: 17px;
       font-size: 15px;
-      line-height: 1.65;
+      line-height: 1.72;
       white-space: pre-wrap;
       word-break: break-word;
     }
     .message.user .bubble {
-      background: rgba(255,255,255,.10);
-      border: 1px solid rgba(255,255,255,.08);
-      border-bottom-right-radius: 6px;
-      color: rgba(255,255,255,.94);
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.065);
+      border-bottom-right-radius: 5px;
+      color: rgba(255,255,255,.88);
     }
     .message.aura .bubble {
       background:
         linear-gradient(
           135deg,
-          rgba(255,255,255,.055),
-          rgba(255,70,170,.045)
+          rgba(255,255,255,.025),
+          rgba(255,68,157,.018)
         );
-      border: 1px solid rgba(255,255,255,.08);
-      border-bottom-left-radius: 6px;
-      color: rgba(255,255,255,.88);
+      border: 1px solid rgba(255,255,255,.055);
+      border-bottom-left-radius: 5px;
+      color: rgba(255,255,255,.86);
     }
     .aura-label {
-      font-size: 10px;
+      font-size: 9px;
       letter-spacing: 3px;
-      color: rgba(255,155,213,.58);
-      margin-bottom: 7px;
-      padding-left: 4px;
+      color: rgba(255,157,202,.58);
+      margin-bottom: 8px;
+      padding-left: 3px;
     }
     .stream-word {
       display: inline;
       opacity: 0;
       filter: blur(5px);
-      animation: wordReveal .20s ease forwards;
+      animation:
+        wordReveal .20s ease forwards;
     }
     .mist {
       position: absolute;
-      width: 120px;
-      height: 65px;
+      width: 115px;
+      height: 60px;
       left: 0;
       top: 50%;
-      transform: translate(-50%, -50%);
+      transform:
+        translate(-50%, -50%);
       border-radius: 50%;
       pointer-events: none;
       background:
         radial-gradient(
           ellipse,
-          rgba(255,100,190,.45),
-          rgba(255,70,170,.20) 40%,
+          rgba(255,153,202,.32),
+          rgba(255,68,157,.11) 40%,
           transparent 72%
         );
-      filter: blur(20px);
+      filter: blur(22px);
       opacity: 0;
       mix-blend-mode: screen;
       transition:
@@ -779,40 +841,44 @@
         opacity .25s ease;
     }
     .streaming .mist {
-      opacity: .75;
+      opacity: .55;
       animation:
-        mistRotate 2.5s linear infinite,
-        mistPulse 1.2s ease-in-out infinite;
+        mistRotate 3.5s linear infinite,
+        mistPulse 1.7s ease-in-out infinite;
     }
     .finished .mist {
       opacity: 0;
     }
+    /* =====================================================
+       THINKING
+    ===================================================== */
     .thinking {
       display: flex;
       align-items: center;
       gap: 9px;
-      color: rgba(255,255,255,.42);
-      font-size: 13px;
-      margin: 12px 0 20px 5px;
+      color: rgba(255,255,255,.35);
+      font-size: 12px;
+      margin: 12px 0 22px 4px;
     }
     .thinking-core {
-      width: 20px;
-      height: 20px;
+      width: 19px;
+      height: 19px;
       border-radius: 50%;
-      border: 1px solid rgba(255,105,190,.75);
+      border: 1px solid rgba(255,105,184,.65);
       background:
         radial-gradient(
           circle,
-          #ff9bd5 0%,
-          #ff5eae 28%,
-          rgba(255,70,170,.18) 65%,
-          transparent 70%
+          #fff 0%,
+          #ffb9d8 22%,
+          #ff72b0 42%,
+          rgba(255,68,157,.12) 68%,
+          transparent 72%
         );
       box-shadow:
-        0 0 10px rgba(255,70,170,.45);
+        0 0 11px rgba(255,68,157,.32);
       animation:
-        thinkingPulse 1s ease-in-out infinite,
-        pinkGlow 2s ease-in-out infinite;
+        thinkingPulse 1.8s ease-in-out infinite,
+        pinkGlow 3s ease-in-out infinite;
     }
     /* =====================================================
        COMPOSER
@@ -830,8 +896,8 @@
       background:
         linear-gradient(
           to top,
-          #050507 60%,
-          rgba(5,5,7,.94) 78%,
+          #050507 58%,
+          rgba(5,5,7,.95) 78%,
           transparent
         );
     }
@@ -847,23 +913,26 @@
       min-height: 52px;
       max-height: 130px;
       resize: none;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,.11);
-      background: rgba(255,255,255,.065);
+      border-radius: 19px;
+      border: 1px solid rgba(255,255,255,.085);
+      background: rgba(255,255,255,.045);
       color: white;
       outline: none;
       padding: 15px 17px;
       font-size: 15px;
       line-height: 1.4;
-      backdrop-filter: blur(15px);
+      backdrop-filter: blur(18px);
+      transition:
+        border-color .25s ease,
+        box-shadow .25s ease;
     }
     #messageInput:focus {
-      border-color: rgba(255,105,190,.42);
+      border-color: rgba(255,105,184,.35);
       box-shadow:
-        0 0 22px rgba(255,70,170,.07);
+        0 0 25px rgba(255,68,157,.055);
     }
     #messageInput::placeholder {
-      color: rgba(255,255,255,.30);
+      color: rgba(255,255,255,.27);
     }
     #sendButton {
       width: 52px;
@@ -871,21 +940,22 @@
       flex-shrink: 0;
       border: none;
       border-radius: 18px;
-      background: #ff9bd5;
-      color: #07070a;
+      background: #ff9dca;
+      color: #070609;
       cursor: pointer;
       font-size: 19px;
       box-shadow:
-        0 8px 25px rgba(255,70,170,.14);
+        0 8px 25px rgba(255,68,157,.11);
       transition:
         transform .18s,
-        opacity .18s;
+        opacity .18s,
+        box-shadow .18s;
     }
     #sendButton:active {
       transform: scale(.94);
     }
     #sendButton:disabled {
-      opacity: .35;
+      opacity: .32;
       cursor: default;
     }
     /* =====================================================
@@ -896,23 +966,26 @@
       left: 50%;
       bottom: 95px;
       z-index: 300;
-      transform: translate(-50%, 20px);
+      transform:
+        translate(-50%, 20px);
       padding: 11px 16px;
-      border-radius: 14px;
-      background: rgba(25,25,30,.92);
-      border: 1px solid rgba(255,105,190,.14);
-      box-shadow: 0 15px 40px rgba(0,0,0,.35);
-      color: rgba(255,255,255,.85);
+      border-radius: 13px;
+      background: rgba(20,20,24,.94);
+      border: 1px solid rgba(255,105,184,.12);
+      box-shadow:
+        0 15px 40px rgba(0,0,0,.35);
+      color: rgba(255,255,255,.82);
       font-size: 12px;
       opacity: 0;
       pointer-events: none;
       transition: .25s ease;
       white-space: nowrap;
-      backdrop-filter: blur(15px);
+      backdrop-filter: blur(18px);
     }
     .toast.show {
       opacity: 1;
-      transform: translate(-50%, 0);
+      transform:
+        translate(-50%, 0);
     }
     /* =====================================================
        ANIMAÇÕES
@@ -920,32 +993,32 @@
     @keyframes auraPulse {
       0%,100% {
         transform: scale(1);
-        filter: brightness(.88);
+        filter: brightness(.92);
       }
       50% {
-        transform: scale(1.035);
-        filter: brightness(1.18);
+        transform: scale(1.018);
+        filter: brightness(1.08);
       }
     }
     @keyframes pinkGlow {
       0%,100% {
         box-shadow:
-          0 0 12px rgba(255,70,170,.18),
-          0 0 30px rgba(255,70,170,.08);
+          0 0 12px rgba(255,68,157,.12),
+          0 0 30px rgba(255,68,157,.045);
       }
       50% {
         box-shadow:
-          0 0 20px rgba(255,70,170,.32),
-          0 0 48px rgba(255,70,170,.14);
+          0 0 18px rgba(255,68,157,.22),
+          0 0 42px rgba(255,68,157,.09);
       }
     }
     @keyframes corePulse {
       0%,100% {
-        transform: scale(.85);
+        transform: scale(.88);
         opacity: .88;
       }
       50% {
-        transform: scale(1.12);
+        transform: scale(1.08);
         opacity: 1;
       }
     }
@@ -954,33 +1027,33 @@
         transform: scale(1);
       }
       50% {
-        transform: scale(1.08);
+        transform: scale(1.045);
       }
     }
     @keyframes thinkingPulse {
       0%,100% {
-        transform: scale(.75);
+        transform: scale(.78);
         opacity: .45;
       }
       50% {
-        transform: scale(1.15);
+        transform: scale(1.12);
         opacity: 1;
       }
     }
     @keyframes coreHalo {
       0%,100% {
-        transform: scale(.88);
-        opacity: .45;
+        transform: scale(.92);
+        opacity: .35;
       }
       50% {
-        transform: scale(1.12);
-        opacity: .85;
+        transform: scale(1.08);
+        opacity: .68;
       }
     }
     @keyframes messageAppear {
       from {
         opacity: 0;
-        transform: translateY(8px);
+        transform: translateY(7px);
       }
       to {
         opacity: 1;
@@ -1004,21 +1077,21 @@
         transform:
           translate(-50%, -50%)
           rotate(0deg)
-          scale(.9);
+          scale(.92);
       }
       to {
         transform:
           translate(-50%, -50%)
           rotate(360deg)
-          scale(1.12);
+          scale(1.08);
       }
     }
     @keyframes mistPulse {
       0%,100% {
-        filter: blur(20px) brightness(.8);
+        filter: blur(22px) brightness(.8);
       }
       50% {
-        filter: blur(28px) brightness(1.35);
+        filter: blur(28px) brightness(1.15);
       }
     }
     /* =====================================================
@@ -1036,8 +1109,8 @@
         font-size: 34px;
       }
       .aura-core {
-        width: 135px;
-        height: 135px;
+        width: 138px;
+        height: 138px;
       }
       .core {
         width: 28px;
@@ -1053,209 +1126,228 @@
   </style>
 </head>
 <body>
+  <!-- =====================================================
+       AUTH
+  ===================================================== -->
   <div id="authScreen">
-<div class="auth-box">
-  <div class="auth-core">
-    <div class="auth-ring"></div>
-    <div class="auth-core-dot"></div>
+    <div class="auth-box">
+      <div class="auth-core">
+        <div class="auth-ring"></div>
+        <div class="auth-core-dot"></div>
+      </div>
+      <div class="auth-title">
+        AURA
+      </div>
+      <div class="auth-subtitle">
+        intelligence for your story
+      </div>
+      <div class="auth-form">
+        <input
+          id="authEmail"
+          class="auth-input"
+          type="email"
+          placeholder="Seu e-mail"
+          autocomplete="email"
+        >
+        <input
+          id="authPassword"
+          class="auth-input"
+          type="password"
+          placeholder="Sua senha"
+          autocomplete="current-password"
+        >
+        <button
+          id="authButton"
+          class="auth-button"
+          onclick="handleAuth()"
+        >
+          Entrar
+        </button>
+      </div>
+      <div
+        id="authMessage"
+        class="auth-error"
+      ></div>
+      <button
+        id="authSwitch"
+        class="auth-switch"
+        onclick="toggleAuthMode()"
+      >
+        Ainda não tenho uma conta.
+        <span>Criar conta</span>
+      </button>
+    </div>
   </div>
-  <div class="auth-title">
-    AURA
-  </div>
-  <div class="auth-subtitle">
-    Entre para continuar suas histórias.
-  </div>
-  <div class="auth-form">
-    <input
-      id="authEmail"
-      class="auth-input"
-      type="email"
-      placeholder="Seu e-mail"
-      autocomplete="email"
-    >
-    <input
-      id="authPassword"
-      class="auth-input"
-      type="password"
-      placeholder="Sua senha"
-      autocomplete="current-password"
-    >
-    <button
-      id="authButton"
-      class="auth-button"
-      onclick="handleAuth()"
-    >
-      Entrar
-    </button>
-  </div>
-  <div
-    id="authMessage"
-    class="auth-error"
-  ></div>
-  <button
-    id="authSwitch"
-    class="auth-switch"
-    onclick="toggleAuthMode()"
-  >
-    Ainda não tenho uma conta.
-    <span>Criar conta</span>
-  </button>
-</div>
-  </div>
+  <!-- =====================================================
+       APP
+  ===================================================== -->
   <main
     id="app"
     class="app"
     style="display:none;"
   >
-<div
-  id="menuOverlay"
-  class="menu-overlay"
-  onclick="closeMenu()"
-></div>
-<aside
-  id="sideMenu"
-  class="side-menu"
->
-  <div class="menu-header">
-    <div class="menu-logo">
-      <div class="mini-core">
-        <div class="mini-ring"></div>
-        <div class="mini-dot"></div>
-      </div>
-      <div class="menu-logo-text">
-        AURA
-      </div>
-    </div>
-    <button
-      class="close-menu"
+    <div
+      id="menuOverlay"
+      class="menu-overlay"
       onclick="closeMenu()"
-      aria-label="Fechar menu"
+    ></div>
+    <!-- ===================================================
+         SIDE MENU
+    =================================================== -->
+    <aside
+      id="sideMenu"
+      class="side-menu"
     >
-      ×
-    </button>
-  </div>
-  <button
-    class="new-story-menu"
-    onclick="newStory()"
-  >
-    <span class="new-story-icon">
-      +
-    </span>
-    <span class="new-story-text">
-      Nova história
-    </span>
-  </button>
-  <div class="history-title">
-    Suas histórias
-  </div>
-  <div
-    id="historyList"
-    class="history-list"
-  ></div>
-  <div class="account-area">
-    <div class="account-card">
-      <div
-        id="accountAvatar"
-        class="account-avatar"
-      >
-        A
-      </div>
-      <div class="account-info">
-        <div class="account-label">
-          CONTA
+      <div class="menu-header">
+        <div class="menu-logo">
+          <div class="mini-core">
+            <div class="mini-ring"></div>
+            <div class="mini-dot"></div>
+          </div>
+          <div class="menu-logo-text">
+            AURA
+          </div>
         </div>
-        <div
-          id="accountEmail"
-          class="account-email"
+        <button
+          class="close-menu"
+          onclick="closeMenu()"
+          aria-label="Fechar menu"
         >
-          —
+          ×
+        </button>
+      </div>
+      <button
+        class="new-story-menu"
+        onclick="newStory()"
+      >
+        <span class="new-story-icon">
+          +
+        </span>
+        <span class="new-story-text">
+          Nova história
+        </span>
+      </button>
+      <div class="history-title">
+        Suas histórias
+      </div>
+      <div
+        id="historyList"
+        class="history-list"
+      ></div>
+      <div class="account-area">
+        <div class="account-card">
+          <div
+            id="accountAvatar"
+            class="account-avatar"
+          >
+            A
+          </div>
+          <div class="account-info">
+            <div class="account-label">
+              CONTA
+            </div>
+            <div
+              id="accountEmail"
+              class="account-email"
+            >
+              —
+            </div>
+          </div>
+        </div>
+        <button
+          class="logout-button"
+          onclick="logout()"
+        >
+          ↪&nbsp;&nbsp; Sair da conta
+        </button>
+      </div>
+    </aside>
+    <!-- ===================================================
+         TOPBAR
+    =================================================== -->
+    <header class="topbar">
+      <button
+        class="top-action"
+        onclick="openMenu()"
+        aria-label="Abrir histórias"
+      >
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </button>
+      <div class="brand">
+        <div class="mini-core">
+          <div class="mini-ring"></div>
+          <div class="mini-dot"></div>
+        </div>
+        <div class="brand-name">
+          AURA
         </div>
       </div>
-    </div>
-    <button
-      class="logout-button"
-      onclick="logout()"
+      <button
+        class="top-action"
+        onclick="newStory()"
+        aria-label="Nova história"
+      >
+        <div class="plus-icon">
+          +
+        </div>
+      </button>
+    </header>
+    <!-- ===================================================
+         CHAT
+    =================================================== -->
+    <section
+      id="chat"
+      class="chat"
     >
-      ↪&nbsp;&nbsp; Sair da conta
-    </button>
-  </div>
-</aside>
-<header class="topbar">
-  <button
-    class="top-action"
-    onclick="openMenu()"
-    aria-label="Abrir histórias"
-  >
-    <div class="hamburger">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-  </button>
-  <div class="brand">
-    <div class="mini-core">
-      <div class="mini-ring"></div>
-      <div class="mini-dot"></div>
-    </div>
-    <div class="brand-name">
-      AURA
-    </div>
-  </div>
-  <button
-    class="top-action"
-    onclick="newStory()"
-    aria-label="Nova história"
-  >
-    <div class="plus-icon">
-      +
-    </div>
-  </button>
-</header>
-<section
-  id="chat"
-  class="chat"
->
-  <div
-    id="welcome"
-    class="welcome"
-  >
-    <div class="aura-core">
-      <div class="ring"></div>
-      <div class="core"></div>
-    </div>
-    <h1>
-      AURA
-    </h1>
-    <p class="tagline">
-      Sua história começa aqui.
-      <br>
-      Crie. Escolha. Viva.
-    </p>
-  </div>
-</section>
-<footer class="composer">
-  <div class="composer-inner">
-    <textarea
-      id="messageInput"
-      rows="1"
-      placeholder="Comece uma história..."
-      autocomplete="off"
-    ></textarea>
-    <button
-      id="sendButton"
-      onclick="sendMessage()"
-      aria-label="Enviar"
-    >
-      ↑
-    </button>
-  </div>
-</footer>
+      <div
+        id="welcome"
+        class="welcome"
+      >
+        <div class="aura-core">
+          <div class="ring"></div>
+          <div class="core"></div>
+        </div>
+        <h1>
+          AURA
+        </h1>
+        <p class="tagline">
+          intelligence for your story
+        </p>
+      </div>
+    </section>
+    <!-- ===================================================
+         COMPOSER
+    =================================================== -->
+    <footer class="composer">
+      <div class="composer-inner">
+        <textarea
+          id="messageInput"
+          rows="1"
+          placeholder="Comece uma história..."
+          autocomplete="off"
+        ></textarea>
+        <button
+          id="sendButton"
+          onclick="sendMessage()"
+          aria-label="Enviar"
+        >
+          ↑
+        </button>
+      </div>
+    </footer>
   </main>
   <div
     id="toast"
     class="toast"
   ></div>
   <script>
+    /* =====================================================
+       SUPABASE
+    ===================================================== */
     const SUPABASE_URL =
       "https://vqmfsshmjdfjlnmbemxv.supabase.co";
     const SUPABASE_KEY =
@@ -1265,6 +1357,9 @@
         SUPABASE_URL,
         SUPABASE_KEY
       );
+    /* =====================================================
+       STATE
+    ===================================================== */
     let authMode = "login";
     let conversation = [];
     let isThinking = false;
@@ -1278,6 +1373,9 @@
       document.getElementById("messageInput");
     const sendButton =
       document.getElementById("sendButton");
+    /* =====================================================
+       AUTH MODE
+    ===================================================== */
     function toggleAuthMode() {
       const button =
         document.getElementById("authButton");
@@ -1291,20 +1389,25 @@
       message.className = "auth-error";
       if (authMode === "login") {
         authMode = "signup";
-        button.textContent = "Criar conta";
+        button.textContent =
+          "Criar conta";
         subtitle.textContent =
           "Crie sua conta e comece sua história.";
         switchButton.innerHTML =
           'Já tenho uma conta. <span>Entrar</span>';
       } else {
         authMode = "login";
-        button.textContent = "Entrar";
+        button.textContent =
+          "Entrar";
         subtitle.textContent =
-          "Entre para continuar suas histórias.";
+          "intelligence for your story";
         switchButton.innerHTML =
           'Ainda não tenho uma conta. <span>Criar conta</span>';
       }
     }
+    /* =====================================================
+       AUTH
+    ===================================================== */
     async function handleAuth() {
       const email =
         document
@@ -1376,7 +1479,9 @@
       } catch (error) {
         console.error(error);
         message.textContent =
-          translateAuthError(error.message);
+          translateAuthError(
+            error.message
+          );
       } finally {
         button.disabled = false;
         button.textContent =
@@ -1412,8 +1517,14 @@
       }
       return error;
     }
+    /* =====================================================
+       APP
+    ===================================================== */
     async function showApp() {
-      if (appInitialized && currentUser) {
+      if (
+        appInitialized &&
+        currentUser
+      ) {
         return;
       }
       appInitialized = true;
@@ -1482,6 +1593,9 @@
           .charAt(0)
           .toUpperCase();
     }
+    /* =====================================================
+       LOGOUT
+    ===================================================== */
     async function logout() {
       await supabaseClient.auth.signOut();
       currentUser = null;
@@ -1507,6 +1621,9 @@
         "Você saiu da conta."
       );
     }
+    /* =====================================================
+       STORIES
+    ===================================================== */
     async function loadStories() {
       if (!currentUser) {
         return;
@@ -1736,6 +1853,9 @@
       }
       return title;
     }
+    /* =====================================================
+       HISTORY
+    ===================================================== */
     function renderHistory() {
       const list =
         document.getElementById(
@@ -1847,9 +1967,7 @@
             </div>
             <h1>AURA</h1>
             <p class="tagline">
-              Sua história começa aqui.
-              <br>
-              Crie. Escolha. Viva.
+              intelligence for your story
             </p>
           </div>
         `;
@@ -1858,8 +1976,7 @@
       conversation.forEach(
         item => {
           if (
-            item.role ===
-            "user"
+            item.role === "user"
           ) {
             addUserMessage(
               item.content,
@@ -1957,9 +2074,7 @@
           </div>
           <h1>AURA</h1>
           <p class="tagline">
-            Sua história começa aqui.
-            <br>
-            Crie. Escolha. Viva.
+            intelligence for your story
           </p>
         </div>
       `;
@@ -1975,6 +2090,9 @@
       }
       return await createStory();
     }
+    /* =====================================================
+       CHAT
+    ===================================================== */
     async function sendMessage() {
       if (isThinking) {
         return;
@@ -2140,9 +2258,10 @@
         scrollToBottom();
       }
     }
-    async function streamAura(
-      text
-    ) {
+    /* =====================================================
+       STREAMING
+    ===================================================== */
+    async function streamAura(text) {
       isThinking = true;
       sendButton.disabled =
         true;
@@ -2239,27 +2358,22 @@
             8 + progress * 84,
             92
           )}%`;
-        let delay =
-          105;
+        let delay = 105;
         if (
           part.endsWith(".") ||
           part.endsWith("!") ||
           part.endsWith("?")
         ) {
-          delay =
-            360;
+          delay = 360;
         } else if (
           part.endsWith(",") ||
           part.endsWith(";") ||
           part.endsWith(":")
         ) {
-          delay =
-            210;
+          delay = 210;
         }
         scrollToBottom();
-        await wait(
-          delay
-        );
+        await wait(delay);
       }
       wrapper.classList.remove(
         "streaming"
@@ -2282,6 +2396,9 @@
           )
       );
     }
+    /* =====================================================
+       THINKING
+    ===================================================== */
     function setThinking(
       thinking
     ) {
@@ -2318,6 +2435,9 @@
       );
       scrollToBottom();
     }
+    /* =====================================================
+       INPUT
+    ===================================================== */
     function scrollToBottom() {
       requestAnimationFrame(
         () => {
@@ -2351,6 +2471,9 @@
         }
       }
     );
+    /* =====================================================
+       MENU
+    ===================================================== */
     function openMenu() {
       document
         .getElementById(
@@ -2384,6 +2507,9 @@
           "open"
         );
     }
+    /* =====================================================
+       HELPERS
+    ===================================================== */
     function formatDate(
       timestamp
     ) {
@@ -2466,6 +2592,9 @@
           1800
         );
     }
+    /* =====================================================
+       START
+    ===================================================== */
     checkSession();
   </script>
 </body>
