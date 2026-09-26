@@ -1,17 +1,13 @@
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({
-      error: "Método não permitido"
-    });
+    return res.status(405).json({ error: "Método não permitido" });
   }
 
   try {
     const { message, history = [] } = req.body;
 
     if (!message) {
-      return res.status(400).json({
-        error: "Mensagem vazia"
-      });
+      return res.status(400).json({ error: "Mensagem vazia" });
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
@@ -33,169 +29,65 @@ export default async function handler(req, res) {
       }
     ];
 
-    const systemPrompt = `
-Você é a Aura, a inteligência artificial da Aura Line.
-
-Sua função é criar e conduzir histórias interativas.
-
-A pessoa pode criar qualquer tipo de história:
-carreira, Fórmula 1, música, negócios, romance,
-aventura, fantasia, ficção ou uma vida completamente nova.
-
-A história deve parecer viva e contínua.
-
-Você deve:
-- lembrar dos acontecimentos anteriores;
-- respeitar as escolhas da pessoa;
-- criar personagens e acontecimentos;
-- apresentar consequências;
-- criar diálogos;
-- descrever lugares e situações;
-- manter continuidade;
-- nunca decidir ações importantes pelo personagem do usuário;
-- terminar cenas dando espaço para o usuário decidir o que fazer.
-
-Escreva em português do Brasil.
-
-Não diga que a história é uma simulação.
-
-Faça a experiência parecer uma vida narrativa interativa.
-`;
-
     const requestBody = {
       systemInstruction: {
-        parts: [{ text: systemPrompt }]
+        parts: [{
+          text: `Você é Aura, a IA da Aura Line.
+
+Crie histórias interativas contínuas em português do Brasil.
+
+Lembre dos acontecimentos, personagens, escolhas e consequências.
+Nunca decida ações importantes pelo personagem do usuário.
+Mantenha a história realista e envolvente.
+Responda de forma DIRETA, sem textos enormes.
+Normalmente use 2 a 5 parágrafos curtos e termine dando espaço para o usuário decidir.
+
+O usuário pode criar qualquer tipo de história: carreira, F1, música, negócios, romance, aventura, fantasia ou vida cotidiana.
+
+Não diga que a história é uma simulação.`
+        }]
       },
       contents,
       generationConfig: {
-        maxOutputTokens: 1200
+        temperature: 0.8,
+        maxOutputTokens: 700
       }
     };
 
-    const models = [
-      "gemini-3.8-flash",
-      "gemini-3.7-flash"
-    ];
+    const url =
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" +
+      encodeURIComponent(apiKey);
 
-    let lastError = null;
-
-    for (const model of models) {
-
-      const url =
-        "https://generativelanguage.googleapis.com/v1beta/models/" +
-        model +
-        ":generateContent?key=" +
-        encodeURIComponent(apiKey);
-
-      for (let attempt = 1; attempt <= 4; attempt++) {
-
-        try {
-
-          const response = await fetch(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(requestBody)
-          });
-
-          const data = await response.json();
-
-          if (response.ok) {
-
-            const reply =
-              data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-            if (reply) {
-              return res.status(200).json({
-                reply
-              });
-            }
-
-            lastError = "A IA não retornou texto.";
-
-            break;
-          }
-
-          lastError =
-            data?.error?.message ||
-            "Erro ao consultar a IA.";
-
-          console.error(
-            "Gemini",
-            model,
-            "tentativa",
-            attempt,
-            response.status,
-            lastError
-          );
-
-          /*
-            503 = serviço temporariamente indisponível.
-            429 = limite temporário.
-            
-            Nesses casos esperamos e tentamos novamente.
-          */
-
-          if (
-            (response.status === 503 ||
-             response.status === 429) &&
-            attempt < 4
-          ) {
-
-            const delay =
-              3000 * Math.pow(2, attempt - 1);
-
-            await new Promise(resolve =>
-              setTimeout(resolve, delay)
-            );
-
-            continue;
-          }
-
-          break;
-
-        } catch (error) {
-
-          lastError = error.message;
-
-          console.error(
-            "Erro de conexão:",
-            error
-          );
-
-          if (attempt < 4) {
-
-            const delay =
-              3000 * Math.pow(2, attempt - 1);
-
-            await new Promise(resolve =>
-              setTimeout(resolve, delay)
-            );
-
-          }
-        }
-      }
-
-      /*
-        Se o 3.8 estiver temporariamente indisponível,
-        tenta automaticamente o 3.7.
-      */
-
-      console.log(
-        "Tentando modelo reserva:",
-        model
-      );
-    }
-
-    return res.status(503).json({
-      error:
-        "A Aura está temporariamente com alta demanda. Tente novamente em alguns segundos.",
-      details: lastError
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(requestBody)
     });
 
-  } catch (error) {
+    const data = await response.json();
 
+    if (!response.ok) {
+      console.error("Gemini:", response.status, data);
+
+      return res.status(503).json({
+        error: "A Aura está temporariamente indisponível. Tente novamente."
+      });
+    }
+
+    const reply =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!reply) {
+      return res.status(500).json({
+        error: "A IA não retornou uma resposta."
+      });
+    }
+
+    return res.status(200).json({ reply });
+
+  } catch (error) {
     console.error(error);
 
     return res.status(500).json({
