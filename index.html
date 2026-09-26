@@ -14,8 +14,7 @@
 
     body {
       font-family: Arial, Helvetica, sans-serif;
-      background:
-        radial-gradient(circle at top, #24113f 0%, #09070f 45%, #050509 100%);
+      background: radial-gradient(circle at top, #24113f 0%, #09070f 45%, #050509 100%);
       color: white;
       min-height: 100vh;
     }
@@ -27,29 +26,6 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-    }
-
-    header {
-      padding: 25px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-
-    .logo {
-      font-size: 25px;
-      font-weight: 800;
-      letter-spacing: 3px;
-    }
-
-    .logo span {
-      color: #c084fc;
-    }
-
-    .status {
-      font-size: 12px;
-      color: #a7f3d0;
     }
 
     .welcome {
@@ -152,8 +128,20 @@
       align-items: center;
     }
 
-    .chat-title {
-      font-weight: 700;
+    .logo {
+      font-size: 25px;
+      font-weight: 800;
+      letter-spacing: 3px;
+    }
+
+    .logo span {
+      color: #c084fc;
+    }
+
+    .status {
+      font-size: 12px;
+      color: #a7f3d0;
+      margin-top: 4px;
     }
 
     .new-story {
@@ -196,6 +184,11 @@
       background: linear-gradient(135deg,#7c3aed,#a21caf);
     }
 
+    .loading .bubble {
+      opacity: .65;
+      font-style: italic;
+    }
+
     .composer {
       position: fixed;
       bottom: 0;
@@ -222,13 +215,7 @@
       padding: 0;
     }
 
-    .typing {
-      opacity: .6;
-      font-style: italic;
-    }
-
-    @media (max-width: 600px) {
-
+    @media (max-width:600px) {
       .input-area {
         flex-direction: column;
       }
@@ -256,13 +243,9 @@
 
 <div class="app">
 
-  <!-- TELA INICIAL -->
-
   <section id="welcome" class="welcome">
 
-    <div class="tag">
-      AURA LINE AI
-    </div>
+    <div class="tag">AURA LINE AI</div>
 
     <h1>
       Sua história.<br>
@@ -289,38 +272,28 @@
 
     <div class="examples">
 
-      <div
-        class="example"
-        onclick="setExample('Quero começar uma carreira como piloto de Fórmula 1.')"
-      >
+      <div class="example"
+        onclick="setExample('Quero começar uma carreira como piloto de Fórmula 1.')">
         🏎️ Fórmula 1
       </div>
 
-      <div
-        class="example"
-        onclick="setExample('Quero começar uma carreira como DJ e produtor musical.')"
-      >
+      <div class="example"
+        onclick="setExample('Quero começar uma carreira como DJ e produtor musical.')">
         🎧 Música
       </div>
 
-      <div
-        class="example"
-        onclick="setExample('Quero criar uma história de romance.')"
-      >
+      <div class="example"
+        onclick="setExample('Quero criar uma história de romance.')">
         ❤️ Romance
       </div>
 
-      <div
-        class="example"
-        onclick="setExample('Quero criar uma história onde me torno um grande empresário.')"
-      >
+      <div class="example"
+        onclick="setExample('Quero criar uma história onde me torno um grande empresário.')">
         💼 Negócios
       </div>
 
-      <div
-        class="example"
-        onclick="setExample('Quero viver uma aventura completamente fictícia.')"
-      >
+      <div class="example"
+        onclick="setExample('Quero viver uma aventura completamente fictícia.')">
         🌎 Aventura
       </div>
 
@@ -328,8 +301,6 @@
 
   </section>
 
-
-  <!-- CHAT -->
 
   <section id="chat" class="chat">
 
@@ -349,18 +320,14 @@
 
       <button
         class="new-story"
-        onclick="newStory()"
-      >
+        onclick="newStory()">
         Nova história
       </button>
 
     </div>
 
 
-    <div
-      id="messages"
-      class="messages"
-    ></div>
+    <div id="messages" class="messages"></div>
 
 
     <div class="composer">
@@ -375,8 +342,7 @@
 
         <button
           class="send"
-          onclick="sendMessage()"
-        >
+          onclick="sendMessage()">
           ↑
         </button>
 
@@ -395,9 +361,7 @@ let conversation = [];
 
 
 function setExample(text) {
-
   document.getElementById("storyInput").value = text;
-
 }
 
 
@@ -407,15 +371,11 @@ function startStory() {
     document.getElementById("storyInput").value.trim();
 
   if (!input) {
-
     alert("Conte primeiro como sua história começa.");
-
     return;
-
   }
 
   document.getElementById("welcome").style.display = "none";
-
   document.getElementById("chat").style.display = "flex";
 
   conversation = [];
@@ -423,11 +383,10 @@ function startStory() {
   addMessage("user", input);
 
   sendToAI(input);
-
 }
 
 
-function addMessage(role, text) {
+function addMessage(role, text, extraClass = "") {
 
   const messages =
     document.getElementById("messages");
@@ -436,7 +395,7 @@ function addMessage(role, text) {
     document.createElement("div");
 
   wrapper.className =
-    "message " + role;
+    "message " + role + " " + extraClass;
 
   const bubble =
     document.createElement("div");
@@ -452,15 +411,18 @@ function addMessage(role, text) {
   messages.scrollTop =
     messages.scrollHeight;
 
+  return wrapper;
 }
 
 
 async function sendToAI(message) {
 
-  addMessage(
-    "assistant",
-    "✨ Sua história está sendo preparada..."
-  );
+  const loadingMessage =
+    addMessage(
+      "assistant",
+      "✨ Sua história está sendo preparada...",
+      "loading"
+    );
 
   try {
 
@@ -474,11 +436,8 @@ async function sendToAI(message) {
         },
 
         body: JSON.stringify({
-
           message: message,
-
           history: conversation
-
         })
       }
     );
@@ -488,17 +447,27 @@ async function sendToAI(message) {
       await response.json();
 
 
-    const messages =
-      document.getElementById("messages");
-
-
-    messages.lastElementChild.remove();
+    if (
+      loadingMessage &&
+      loadingMessage.parentNode
+    ) {
+      loadingMessage.remove();
+    }
 
 
     if (!response.ok) {
 
       throw new Error(
         data.error || "Erro na IA."
+      );
+
+    }
+
+
+    if (!data.reply) {
+
+      throw new Error(
+        "A IA não retornou uma resposta."
       );
 
     }
@@ -511,39 +480,25 @@ async function sendToAI(message) {
 
 
     conversation.push({
-
       role: "user",
-
       content: message
-
     });
 
 
     conversation.push({
-
       role: "assistant",
-
       content: data.reply
-
     });
 
 
   } catch (error) {
 
-    const messages =
-      document.getElementById("messages");
-
-
-    messages.lastElementChild.remove();
-
+    console.error(error);
 
     addMessage(
       "assistant",
       "Não consegui continuar sua história agora. Verifique a configuração da IA e tente novamente."
     );
-
-
-    console.error(error);
 
   }
 
@@ -558,18 +513,14 @@ async function sendMessage() {
   const message =
     input.value.trim();
 
-
   if (!message) return;
 
-
   input.value = "";
-
 
   addMessage(
     "user",
     message
   );
-
 
   await sendToAI(message);
 
@@ -607,6 +558,10 @@ function newStory() {
   document.getElementById(
     "welcome"
   ).style.display = "flex";
+
+  document.getElementById(
+    "storyInput"
+  ).value = "";
 
 }
 
