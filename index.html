@@ -1690,7 +1690,150 @@ sendBtn.onclick=sendMessage;
 /* =========================================================
    SEND
 ========================================================= */
-async function progressiveText(element,text){
+async function sendMessage(){
+  if(isSending) return;
+
+  const message=input.value.trim();
+  if(!message) return;
+
+  if(!currentUser){
+    toast("Entre na sua conta primeiro.");
+    return;
+  }
+
+  if(credits<=0){
+    openPlans();
+    toast("Seus créditos acabaram.");
+    return;
+  }
+
+  isSending=true;
+  sendBtn.disabled=true;
+
+  input.value="";
+  autoResize();
+
+  conversation.push({
+    role:"user",
+    content:message
+  });
+
+  addMessage("user",message);
+
+  if(!currentStoryId){
+    const story=await createStory("Nova história");
+    if(story){
+      currentStoryId=story.id;
+    }
+  }
+
+  const thinking=addThinking();
+
+  try{
+    let {data:sessionData}=await supabaseClient.auth.getSession();
+    let session=sessionData?.session;
+
+    if(!session?.access_token){
+      const refreshed=await supabaseClient.auth.refreshSession();
+      session=refreshed.data?.session;
+    }
+
+    if(!session?.access_token){
+      throw new Error("Sessão expirada. Entre novamente.");
+    }
+
+    const response=await fetch("/api/chat",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":`Bearer ${session.access_token}`
+      },
+      body:JSON.stringify({
+        message,
+        history:conversation.slice(0,-1),
+        language:userLanguage,
+        plan:currentPlan,
+        planConfig:{
+          name:getPlan().name,
+          model:getPlan().model,
+          memory:getPlan().memory,
+          research:getPlan().research,
+          speed:getPlan().speed,
+          context:getPlan().context,
+          complexity:getPlan().complexity
+        }
+      })
+    });
+
+    const data=await response.json().catch(()=>({}));
+
+    if(!response.ok){
+      if(response.status===401){
+        toast("Sua sessão expirou. Entre novamente.");
+        await supabaseClient.auth.signOut();
+        return;
+      }
+
+      if(response.status===402){
+        if(typeof data.credits==="number"){
+          credits=data.credits;
+          updateCreditsUI();
+        }else{
+          await loadCredits();
+        }
+
+        openPlans();
+        toast(data.error||"Seus créditos acabaram.");
+        return;
+      }
+
+      throw new Error(data.error||"Erro na API.");
+    }
+
+    if(typeof data.credits==="number"){
+      credits=data.credits;
+      updateCreditsUI();
+    }else{
+      await loadCredits();
+    }
+
+    const reply=String(data.reply||"");
+
+    thinking.remove();
+
+    if(!reply){
+      throw new Error("A Aura não retornou uma resposta.");
+    }
+
+    const auraMessage=addMessage("aura","");
+    const content=auraMessage.querySelector(".content");
+
+    conversation.push({
+      role:"assistant",
+      content:reply
+    });
+
+    await progressiveText(content,reply);
+    await saveStory();
+
+  }catch(error){
+    console.error(error);
+
+    thinking.remove();
+
+    addMessage(
+      "aura",
+      error.message==="Sessão expirada. Entre novamente."
+        ? "Sua sessão expirou. Entre novamente para continuar."
+        : "Não consegui responder agora. Tente novamente em alguns instantes."
+    );
+  }
+
+  isSending=false;
+  sendBtn.disabled=false;
+  input.focus();
+}
+  async function progressiveText(element,text){
   const words=text.split(/(\s+)/);
   let result="";
   for(const part of words){
