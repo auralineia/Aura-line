@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050507">
   <title>Aura Line</title>
 
   <style>
@@ -12,50 +13,229 @@
       padding: 0;
     }
 
+    html,
     body {
-      min-height: 100vh;
-      background:
-        radial-gradient(circle at center, #15151d 0%, #08080c 42%, #030304 100%);
+      width: 100%;
+      height: 100%;
+      background: #050507;
       color: white;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
-        "Helvetica Neue", Arial, sans-serif;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+    }
+
+    body {
       overflow: hidden;
     }
 
+    button,
+    input {
+      font: inherit;
+    }
+
+    /* =========================
+       APP
+    ========================= */
+
     .app {
-      min-height: 100vh;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+
+      background:
+        radial-gradient(
+          circle at 50% -10%,
+          rgba(130, 100, 255, 0.16),
+          transparent 40%
+        ),
+        #050507;
+    }
+
+    /* =========================
+       TOP BAR
+    ========================= */
+
+    .topbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 82px;
+
+      z-index: 20;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding:
+        max(16px, env(safe-area-inset-top))
+        18px
+        12px;
+
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(5,5,7,.96),
+          rgba(5,5,7,.72),
+          transparent
+        );
+
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mini-core {
+      width: 30px;
+      height: 30px;
+
+      border-radius: 50%;
+
+      position: relative;
+
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
-      padding: 30px;
     }
 
-    .glow {
+    .mini-ring {
       position: absolute;
-      width: 360px;
-      height: 360px;
+      inset: 0;
+
       border-radius: 50%;
-      background: rgba(130, 100, 255, 0.10);
-      filter: blur(80px);
-      animation: breathe 5s ease-in-out infinite;
+
+      border: 1px solid transparent;
+
+      background:
+        linear-gradient(#050507,#050507) padding-box,
+        conic-gradient(
+          from 0deg,
+          #ff7bd5,
+          #9d8cff,
+          #65d9ff,
+          #8affc1,
+          #ffdc7a,
+          #ff7bd5
+        ) border-box;
+
+      animation:
+        colorSpin 5s linear infinite,
+        miniPulse 3s ease-in-out infinite;
+
+      box-shadow:
+        0 0 15px rgba(150,120,255,.25);
     }
 
-    .content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      width: 100%;
-      max-width: 430px;
-      animation: appear 1s ease;
+    .mini-dot {
+      width: 7px;
+      height: 7px;
+
+      border-radius: 50%;
+
+      background: white;
+
+      box-shadow:
+        0 0 10px white,
+        0 0 20px rgba(160,130,255,.9);
     }
+
+    .brand-name {
+      font-size: 13px;
+      letter-spacing: 4px;
+      font-weight: 500;
+    }
+
+    .menu-button {
+      width: 42px;
+      height: 42px;
+
+      border: none;
+      border-radius: 14px;
+
+      background: rgba(255,255,255,.06);
+
+      color: rgba(255,255,255,.7);
+
+      cursor: pointer;
+
+      font-size: 19px;
+    }
+
+    /* =========================
+       CHAT
+    ========================= */
+
+    .chat {
+      position: absolute;
+
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      padding:
+        105px
+        18px
+        120px;
+
+      scroll-behavior: smooth;
+
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .chat::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .chat::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.12);
+      border-radius: 10px;
+    }
+
+    /* =========================
+       WELCOME
+    ========================= */
+
+    .welcome {
+      min-height: calc(100vh - 220px);
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      text-align: center;
+
+      padding: 30px 0;
+    }
+
+    /* =========================
+       AURA CORE
+    ========================= */
 
     .aura-core {
       width: 150px;
       height: 150px;
-      margin: 0 auto 38px;
+
+      margin-bottom: 34px;
+
       border-radius: 50%;
+
       position: relative;
+
       display: flex;
       align-items: center;
       justify-content: center;
@@ -63,102 +243,396 @@
 
     .ring {
       position: absolute;
+
       inset: 0;
+
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.55);
+
+      border: 2px solid transparent;
+
+      background:
+        linear-gradient(#050507,#050507) padding-box,
+        conic-gradient(
+          from 0deg,
+          #ff79d1,
+          #a887ff,
+          #66d8ff,
+          #73ffd1,
+          #ffe27a,
+          #ff8ac8,
+          #a887ff,
+          #ff79d1
+        ) border-box;
+
+      animation:
+        colorSpin 6s linear infinite,
+        auraPulse 4s ease-in-out infinite;
+
       box-shadow:
-        0 0 25px rgba(160,130,255,0.25),
-        inset 0 0 25px rgba(160,130,255,0.10);
-      animation: pulse 4s ease-in-out infinite;
+        0 0 12px rgba(255,120,210,.25),
+        0 0 30px rgba(130,100,255,.20),
+        0 0 55px rgba(90,210,255,.12);
     }
 
     .ring::before {
       content: "";
+
       position: absolute;
-      inset: 10px;
+
+      inset: 9px;
+
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.16);
+
+      border: 1px solid rgba(255,255,255,.18);
+
+      box-shadow:
+        inset 0 0 20px rgba(255,255,255,.05);
+    }
+
+    .ring::after {
+      content: "";
+
+      position: absolute;
+
+      inset: -10px;
+
+      border-radius: 50%;
+
+      background:
+        conic-gradient(
+          from 0deg,
+          transparent,
+          rgba(255,100,210,.45),
+          transparent,
+          rgba(90,210,255,.35),
+          transparent,
+          rgba(150,120,255,.4),
+          transparent
+        );
+
+      filter: blur(12px);
+
+      opacity: .55;
+
+      z-index: -1;
+
+      animation: colorSpin 8s linear infinite;
     }
 
     .core {
-      width: 30px;
-      height: 30px;
+      width: 31px;
+      height: 31px;
+
       border-radius: 50%;
+
       background: white;
+
       box-shadow:
-        0 0 12px white,
-        0 0 35px rgba(170,140,255,0.9),
-        0 0 70px rgba(130,100,255,0.55);
+        0 0 10px white,
+        0 0 25px rgba(255,255,255,.95),
+        0 0 50px rgba(170,140,255,.9),
+        0 0 85px rgba(110,170,255,.5);
+
       animation: corePulse 3s ease-in-out infinite;
     }
 
+    /* =========================
+       TEXT
+    ========================= */
+
     h1 {
       font-size: 38px;
+
       font-weight: 500;
+
       letter-spacing: 8px;
+
       margin-bottom: 14px;
     }
 
     .tagline {
-      color: rgba(255,255,255,0.62);
+      color: rgba(255,255,255,.62);
+
       font-size: 15px;
-      line-height: 1.6;
-      margin-bottom: 38px;
+
+      line-height: 1.65;
+
+      margin-bottom: 30px;
     }
 
-    .primary {
-      width: 100%;
-      height: 58px;
-      border: none;
-      border-radius: 18px;
-      background: white;
-      color: #08080c;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform .2s, box-shadow .2s;
+    /* =========================
+       MESSAGES
+    ========================= */
+
+    .message {
+      display: flex;
+
+      margin-bottom: 18px;
+
+      animation: messageAppear .35s ease;
     }
 
-    .primary:active {
-      transform: scale(.97);
+    .message.user {
+      justify-content: flex-end;
     }
 
-    .secondary {
-      margin-top: 18px;
-      background: transparent;
-      border: none;
-      color: rgba(255,255,255,0.65);
+    .message.aura {
+      justify-content: flex-start;
+    }
+
+    .bubble {
+      max-width: 86%;
+
+      padding: 14px 16px;
+
+      border-radius: 20px;
+
       font-size: 15px;
-      cursor: pointer;
+
+      line-height: 1.65;
+
+      white-space: pre-wrap;
+
+      word-break: break-word;
     }
 
-    .footer {
+    .message.user .bubble {
+      background: rgba(255,255,255,.10);
+
+      border:
+        1px solid
+        rgba(255,255,255,.08);
+
+      border-bottom-right-radius: 6px;
+
+      color: rgba(255,255,255,.94);
+    }
+
+    .message.aura .bubble {
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255,255,255,.055),
+          rgba(130,100,255,.055)
+        );
+
+      border:
+        1px solid
+        rgba(255,255,255,.08);
+
+      border-bottom-left-radius: 6px;
+
+      color: rgba(255,255,255,.86);
+    }
+
+    .aura-label {
+      font-size: 10px;
+
+      letter-spacing: 3px;
+
+      color: rgba(255,255,255,.35);
+
+      margin-bottom: 7px;
+
+      padding-left: 4px;
+    }
+
+    /* =========================
+       THINKING
+    ========================= */
+
+    .thinking {
+      display: flex;
+
+      align-items: center;
+
+      gap: 9px;
+
+      color: rgba(255,255,255,.42);
+
+      font-size: 13px;
+
+      margin: 12px 0 20px 5px;
+    }
+
+    .thinking-core {
+      width: 20px;
+      height: 20px;
+
+      border-radius: 50%;
+
+      border: 1px solid transparent;
+
+      background:
+        linear-gradient(#050507,#050507) padding-box,
+        conic-gradient(
+          from 0deg,
+          #ff7bd5,
+          #8e7cff,
+          #65d9ff,
+          #ff7bd5
+        ) border-box;
+
+      animation:
+        colorSpin 1.5s linear infinite,
+        thinkingPulse 1s ease-in-out infinite;
+    }
+
+    /* =========================
+       INPUT AREA
+    ========================= */
+
+    .composer {
       position: absolute;
-      bottom: 25px;
-      color: rgba(255,255,255,0.25);
-      font-size: 11px;
-      letter-spacing: .4px;
+
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      z-index: 30;
+
+      padding:
+        12px
+        16px
+        max(14px, env(safe-area-inset-bottom));
+
+      background:
+        linear-gradient(
+          to top,
+          #050507 60%,
+          rgba(5,5,7,.94) 78%,
+          transparent
+        );
     }
 
-    input::placeholder {
-      color: rgba(255,255,255,0.35);
+    .composer-inner {
+      display: flex;
+
+      align-items: flex-end;
+
+      gap: 9px;
+
+      max-width: 700px;
+
+      margin: 0 auto;
     }
 
-    @keyframes pulse {
-      0%, 100% {
+    #messageInput {
+      flex: 1;
+
+      min-height: 52px;
+      max-height: 130px;
+
+      resize: none;
+
+      border-radius: 20px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.11);
+
+      background:
+        rgba(255,255,255,.065);
+
+      color: white;
+
+      outline: none;
+
+      padding:
+        15px
+        17px;
+
+      font-size: 15px;
+
+      line-height: 1.4;
+
+      backdrop-filter: blur(15px);
+    }
+
+    #messageInput::placeholder {
+      color: rgba(255,255,255,.30);
+    }
+
+    #sendButton {
+      width: 52px;
+      height: 52px;
+
+      flex-shrink: 0;
+
+      border: none;
+
+      border-radius: 18px;
+
+      background: white;
+
+      color: #07070a;
+
+      cursor: pointer;
+
+      font-size: 19px;
+
+      transition:
+        transform .18s,
+        opacity .18s;
+    }
+
+    #sendButton:active {
+      transform: scale(.94);
+    }
+
+    #sendButton:disabled {
+      opacity: .35;
+
+      cursor: default;
+    }
+
+    /* =========================
+       ANIMATIONS
+    ========================= */
+
+    @keyframes colorSpin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes auraPulse {
+      0%,100% {
         transform: scale(1);
-        opacity: .65;
+
+        filter:
+          brightness(.85);
       }
 
       50% {
-        transform: scale(1.06);
-        opacity: 1;
+        transform: scale(1.045);
+
+        filter:
+          brightness(1.25);
       }
     }
 
     @keyframes corePulse {
-      0%, 100% {
+      0%,100% {
         transform: scale(.85);
+
+        opacity: .88;
+      }
+
+      50% {
+        transform: scale(1.12);
+
+        opacity: 1;
+      }
+    }
+
+    @keyframes miniPulse {
+      0%,100% {
+        transform: scale(1);
       }
 
       50% {
@@ -166,28 +640,65 @@
       }
     }
 
-    @keyframes breathe {
-      0%, 100% {
-        transform: scale(.9);
-        opacity: .6;
+    @keyframes thinkingPulse {
+      0%,100% {
+        transform: scale(.75);
+
+        opacity: .45;
       }
 
       50% {
-        transform: scale(1.1);
+        transform: scale(1.15);
+
         opacity: 1;
       }
     }
 
-    @keyframes appear {
+    @keyframes messageAppear {
       from {
         opacity: 0;
-        transform: translateY(15px);
+
+        transform:
+          translateY(8px);
       }
 
       to {
         opacity: 1;
-        transform: translateY(0);
+
+        transform:
+          translateY(0);
       }
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 600px) {
+
+      .chat {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .bubble {
+        max-width: 90%;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+
+      .aura-core {
+        width: 135px;
+        height: 135px;
+      }
+
+      .core {
+        width: 28px;
+        height: 28px;
+      }
+
     }
   </style>
 </head>
@@ -196,353 +707,495 @@
 
   <main class="app">
 
-    <div class="glow"></div>
+    <!-- =====================
+         TOP BAR
+    ====================== -->
 
-    <section class="content">
+    <header class="topbar">
 
-      <div class="aura-core">
-        <div class="ring"></div>
-        <div class="core"></div>
+      <div class="brand">
+
+        <div class="mini-core">
+          <div class="mini-ring"></div>
+          <div class="mini-dot"></div>
+        </div>
+
+        <div class="brand-name">
+          AURA
+        </div>
+
       </div>
 
-      <h1>AURA</h1>
-
-      <p class="tagline">
-        Sua história começa aqui.
-        <br>
-        Crie. Escolha. Viva.
-      </p>
-
-      <button class="primary" onclick="startStory()">
-        ✦ Começar uma história
+      <button
+        class="menu-button"
+        onclick="newStory()"
+        aria-label="Nova história"
+      >
+        +
       </button>
 
-      <button class="secondary" onclick="login()">
-        Entrar
-      </button>
+    </header>
+
+
+    <!-- =====================
+         CHAT
+    ====================== -->
+
+    <section
+      id="chat"
+      class="chat"
+    >
+
+      <div
+        id="welcome"
+        class="welcome"
+      >
+
+        <div class="aura-core">
+
+          <div class="ring"></div>
+
+          <div class="core"></div>
+
+        </div>
+
+        <h1>AURA</h1>
+
+        <p class="tagline">
+          Sua história começa aqui.
+          <br>
+          Crie. Escolha. Viva.
+        </p>
+
+      </div>
 
     </section>
 
-    <div class="footer">
-      AURA LINE
-    </div>
+
+    <!-- =====================
+         COMPOSER
+    ====================== -->
+
+    <footer class="composer">
+
+      <div class="composer-inner">
+
+        <textarea
+          id="messageInput"
+          rows="1"
+          placeholder="Comece uma história..."
+          autocomplete="off"
+        ></textarea>
+
+        <button
+          id="sendButton"
+          onclick="sendMessage()"
+          aria-label="Enviar"
+        >
+          ↑
+        </button>
+
+      </div>
+
+    </footer>
 
   </main>
 
+
   <script>
+
+    /* =========================
+       STATE
+    ========================= */
 
     let conversation = [];
 
-
-    function startStory() {
-
-      document.querySelector(".content").innerHTML = `
-
-        <div class="aura-core">
-          <div class="ring"></div>
-          <div class="core"></div>
-        </div>
-
-        <h1>COMEÇAR</h1>
-
-        <p class="tagline">
-          Que história você quer viver?
-        </p>
-
-        <input
-          id="storyInput"
-          type="text"
-          placeholder="Ex: Quero ser piloto de F1..."
-          autocomplete="off"
-          style="
-            width:100%;
-            height:58px;
-            border-radius:18px;
-            border:1px solid rgba(255,255,255,.15);
-            background:rgba(255,255,255,.06);
-            color:white;
-            padding:0 18px;
-            font-size:15px;
-            outline:none;
-            margin-bottom:14px;
-          "
-        >
-
-        <button class="primary" onclick="createStory()">
-          ✦ Criar história
-        </button>
-
-      `;
-
-      setTimeout(() => {
-        document.getElementById("storyInput").focus();
-      }, 100);
-
-    }
+    let isThinking = false;
 
 
-    async function createStory() {
+    /* =========================
+       ELEMENTS
+    ========================= */
 
-      const input = document.getElementById("storyInput");
+    const chat =
+      document.getElementById("chat");
 
-      const story = input.value.trim();
+    const input =
+      document.getElementById("messageInput");
 
-      if (!story) {
-        input.focus();
-        return;
-      }
+    const sendButton =
+      document.getElementById("sendButton");
 
-      conversation = [
-        {
-          role: "user",
-          content: story
-        }
-      ];
-
-      showThinking();
-
-      try {
-
-        const response = await fetch("/api/chat", {
-
-          method: "POST",
-
-          headers: {
-            "Content-Type": "application/json"
-          },
-
-          body: JSON.stringify({
-            message: story,
-            history: []
-          })
-
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || "Erro ao conversar com a Aura");
-        }
-
-        conversation.push({
-          role: "assistant",
-          content: data.reply
-        });
-
-        showResponse(data.reply);
-
-      } catch (error) {
-
-        console.error(error);
-
-        showError();
-
-      }
-
-    }
+    const welcome =
+      document.getElementById("welcome");
 
 
-    function showThinking() {
-
-      document.querySelector(".content").innerHTML = `
-
-        <div class="aura-core">
-          <div class="ring"></div>
-          <div class="core"></div>
-        </div>
-
-        <h1>AURA</h1>
-
-        <p class="tagline">
-          A Aura está pensando...
-        </p>
-
-      `;
-
-    }
-
-
-    function showResponse(reply) {
-
-      document.querySelector(".content").innerHTML = `
-
-        <div class="aura-core">
-          <div class="ring"></div>
-          <div class="core"></div>
-        </div>
-
-        <h1>AURA</h1>
-
-        <div
-          style="
-            color:rgba(255,255,255,.82);
-            font-size:15px;
-            line-height:1.7;
-            margin-bottom:30px;
-            max-height:260px;
-            overflow-y:auto;
-            text-align:left;
-            white-space:pre-wrap;
-          "
-        >${escapeHtml(reply)}</div>
-
-        <button class="primary" onclick="continueStory()">
-          Continuar
-        </button>
-
-      `;
-
-    }
-
-
-    function continueStory() {
-
-      document.querySelector(".content").innerHTML = `
-
-        <div class="aura-core">
-          <div class="ring"></div>
-          <div class="core"></div>
-        </div>
-
-        <h1>AURA</h1>
-
-        <p class="tagline">
-          Continue sua história...
-        </p>
-
-        <input
-          id="continueInput"
-          type="text"
-          placeholder="O que acontece agora?"
-          autocomplete="off"
-          style="
-            width:100%;
-            height:58px;
-            border-radius:18px;
-            border:1px solid rgba(255,255,255,.15);
-            background:rgba(255,255,255,.06);
-            color:white;
-            padding:0 18px;
-            font-size:15px;
-            outline:none;
-            margin-bottom:14px;
-          "
-        >
-
-        <button class="primary" onclick="sendMessage()">
-          Enviar
-        </button>
-
-      `;
-
-      setTimeout(() => {
-        document.getElementById("continueInput").focus();
-      }, 100);
-
-    }
-
+    /* =========================
+       SEND MESSAGE
+    ========================= */
 
     async function sendMessage() {
 
-      const input = document.getElementById("continueInput");
-
-      const message = input.value.trim();
-
-      if (!message) {
-        input.focus();
+      if (isThinking) {
         return;
       }
+
+      const message =
+        input.value.trim();
+
+      if (!message) {
+        return;
+      }
+
+      if (welcome) {
+        welcome.remove();
+      }
+
+      addMessage(
+        "user",
+        message
+      );
 
       conversation.push({
         role: "user",
         content: message
       });
 
-      showThinking();
+      input.value = "";
+
+      resizeInput();
+
+      setThinking(true);
 
       try {
 
-        const response = await fetch("/api/chat", {
+        const response =
+          await fetch("/api/chat", {
 
-          method: "POST",
+            method: "POST",
 
-          headers: {
-            "Content-Type": "application/json"
-          },
+            headers: {
+              "Content-Type": "application/json"
+            },
 
-          body: JSON.stringify({
-            message: message,
-            history: conversation.slice(0, -1)
-          })
+            body: JSON.stringify({
 
-        });
+              message: message,
 
-        const data = await response.json();
+              history:
+                conversation.slice(0, -1)
+
+            })
+
+          });
+
+
+        const data =
+          await response.json();
+
 
         if (!response.ok) {
-          throw new Error(data.error || "Erro ao conversar com a Aura");
+
+          throw new Error(
+            data.error ||
+            "Erro ao conversar com a Aura"
+          );
+
         }
 
+
         conversation.push({
+
           role: "assistant",
+
           content: data.reply
+
         });
 
-        showResponse(data.reply);
+
+        setThinking(false);
+
+
+        addMessage(
+          "aura",
+          data.reply
+        );
+
 
       } catch (error) {
 
         console.error(error);
 
-        showError();
+        setThinking(false);
+
+        addMessage(
+          "aura",
+          "Não consegui responder agora. Tente novamente em alguns instantes."
+        );
 
       }
 
     }
 
 
-    function showError() {
+    /* =========================
+       ADD MESSAGE
+    ========================= */
 
-      document.querySelector(".content").innerHTML = `
+    function addMessage(
+      role,
+      text
+    ) {
 
-        <div class="aura-core">
-          <div class="ring"></div>
-          <div class="core"></div>
-        </div>
+      const wrapper =
+        document.createElement("div");
 
-        <h1>AURA</h1>
+      wrapper.className =
+        `message ${role}`;
 
-        <p class="tagline">
-          Não consegui falar com você agora.
-          <br><br>
-          Tente novamente em alguns instantes.
-        </p>
 
-        <button class="primary" onclick="location.reload()">
-          Tentar novamente
-        </button>
+      if (role === "aura") {
+
+        const label =
+          document.createElement("div");
+
+        label.className =
+          "aura-label";
+
+        label.textContent =
+          "AURA";
+
+        const bubble =
+          document.createElement("div");
+
+        bubble.className =
+          "bubble";
+
+        bubble.textContent =
+          text;
+
+
+        const container =
+          document.createElement("div");
+
+        container.appendChild(label);
+
+        container.appendChild(bubble);
+
+        wrapper.appendChild(container);
+
+
+      } else {
+
+        const bubble =
+          document.createElement("div");
+
+        bubble.className =
+          "bubble";
+
+        bubble.textContent =
+          text;
+
+        wrapper.appendChild(
+          bubble
+        );
+
+      }
+
+
+      chat.appendChild(
+        wrapper
+      );
+
+
+      scrollToBottom();
+
+    }
+
+
+    /* =========================
+       THINKING
+    ========================= */
+
+    function setThinking(
+      thinking
+    ) {
+
+      isThinking =
+        thinking;
+
+      sendButton.disabled =
+        thinking;
+
+
+      const oldThinking =
+        document.getElementById(
+          "thinking"
+        );
+
+      if (oldThinking) {
+        oldThinking.remove();
+      }
+
+
+      if (!thinking) {
+        return;
+      }
+
+
+      const element =
+        document.createElement("div");
+
+      element.id =
+        "thinking";
+
+      element.className =
+        "thinking";
+
+
+      element.innerHTML = `
+
+        <div class="thinking-core"></div>
+
+        <span>
+          A Aura está pensando...
+        </span>
 
       `;
 
+
+      chat.appendChild(
+        element
+      );
+
+
+      scrollToBottom();
+
+    }
+
+
+    /* =========================
+       SCROLL
+    ========================= */
+
+    function scrollToBottom() {
+
+      requestAnimationFrame(() => {
+
+        chat.scrollTo({
+
+          top:
+            chat.scrollHeight,
+
+          behavior:
+            "smooth"
+
+        });
+
+      });
+
     }
 
 
-    function login() {
+    /* =========================
+       TEXTAREA
+    ========================= */
 
-      alert("Login da Aura Line em breve.");
+    input.addEventListener(
+      "input",
+      resizeInput
+    );
+
+
+    function resizeInput() {
+
+      input.style.height =
+        "auto";
+
+      input.style.height =
+        Math.min(
+          input.scrollHeight,
+          130
+        ) + "px";
 
     }
 
 
-    function escapeHtml(text) {
+    /* =========================
+       ENTER
+    ========================= */
 
-      const div = document.createElement("div");
+    input.addEventListener(
+      "keydown",
+      function(event) {
 
-      div.textContent = text;
+        if (
+          event.key === "Enter" &&
+          !event.shiftKey
+        ) {
 
-      return div.innerHTML;
+          event.preventDefault();
+
+          sendMessage();
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       NEW STORY
+    ========================= */
+
+    function newStory() {
+
+      conversation = [];
+
+      chat.innerHTML = `
+
+        <div
+          id="welcome"
+          class="welcome"
+        >
+
+          <div class="aura-core">
+
+            <div class="ring"></div>
+
+            <div class="core"></div>
+
+          </div>
+
+          <h1>AURA</h1>
+
+          <p class="tagline">
+            Sua história começa aqui.
+            <br>
+            Crie. Escolha. Viva.
+          </p>
+
+        </div>
+
+      `;
+
+      input.value = "";
+
+      resizeInput();
+
+      input.placeholder =
+        "Comece uma nova história...";
+
+      input.focus();
 
     }
+
+
+    /* =========================
+       START
+    ========================= */
+
+    input.focus();
 
   </script>
 
