@@ -13,8 +13,7 @@
       padding: 0;
     }
 
-    html,
-    body {
+    html, body {
       width: 100%;
       height: 100%;
       background: #050507;
@@ -32,15 +31,9 @@
       overflow: hidden;
     }
 
-    button,
-    input,
-    textarea {
+    button, input, textarea {
       font: inherit;
     }
-
-    /* =========================
-       APP
-    ========================= */
 
     .app {
       width: 100%;
@@ -57,9 +50,7 @@
         #050507;
     }
 
-    /* =========================
-       TOP BAR
-    ========================= */
+    /* TOP */
 
     .topbar {
       position: absolute;
@@ -67,7 +58,6 @@
       left: 0;
       right: 0;
       height: 82px;
-
       z-index: 20;
 
       display: flex;
@@ -99,9 +89,7 @@
     .mini-core {
       width: 30px;
       height: 30px;
-
       border-radius: 50%;
-
       position: relative;
 
       display: flex;
@@ -112,9 +100,7 @@
     .mini-ring {
       position: absolute;
       inset: 0;
-
       border-radius: 50%;
-
       border: 1px solid transparent;
 
       background:
@@ -140,9 +126,7 @@
     .mini-dot {
       width: 7px;
       height: 7px;
-
       border-radius: 50%;
-
       background: white;
 
       box-shadow:
@@ -159,26 +143,18 @@
     .menu-button {
       width: 42px;
       height: 42px;
-
       border: none;
       border-radius: 14px;
-
       background: rgba(255,255,255,.06);
-
       color: rgba(255,255,255,.7);
-
       cursor: pointer;
-
       font-size: 19px;
     }
 
-    /* =========================
-       CHAT
-    ========================= */
+    /* CHAT */
 
     .chat {
       position: absolute;
-
       top: 0;
       left: 0;
       right: 0;
@@ -193,7 +169,6 @@
         120px;
 
       scroll-behavior: smooth;
-
       -webkit-overflow-scrolling: touch;
     }
 
@@ -206,9 +181,7 @@
       border-radius: 10px;
     }
 
-    /* =========================
-       WELCOME
-    ========================= */
+    /* WELCOME */
 
     .welcome {
       min-height: calc(100vh - 220px);
@@ -219,22 +192,15 @@
       justify-content: center;
 
       text-align: center;
-
       padding: 30px 0;
     }
-
-    /* =========================
-       AURA CORE
-    ========================= */
 
     .aura-core {
       width: 150px;
       height: 150px;
-
       margin-bottom: 34px;
 
       border-radius: 50%;
-
       position: relative;
 
       display: flex;
@@ -244,11 +210,8 @@
 
     .ring {
       position: absolute;
-
       inset: 0;
-
       border-radius: 50%;
-
       border: 2px solid transparent;
 
       background:
@@ -277,13 +240,9 @@
 
     .ring::before {
       content: "";
-
       position: absolute;
-
       inset: 9px;
-
       border-radius: 50%;
-
       border: 1px solid rgba(255,255,255,.18);
 
       box-shadow:
@@ -292,11 +251,8 @@
 
     .ring::after {
       content: "";
-
       position: absolute;
-
       inset: -10px;
-
       border-radius: 50%;
 
       background:
@@ -312,21 +268,16 @@
         );
 
       filter: blur(12px);
-
       opacity: .55;
-
       z-index: -1;
 
-      animation:
-        colorSpin 8s linear infinite;
+      animation: colorSpin 8s linear infinite;
     }
 
     .core {
       width: 31px;
       height: 31px;
-
       border-radius: 50%;
-
       background: white;
 
       box-shadow:
@@ -335,45 +286,29 @@
         0 0 50px rgba(170,140,255,.9),
         0 0 85px rgba(110,170,255,.5);
 
-      animation:
-        corePulse 3s ease-in-out infinite;
+      animation: corePulse 3s ease-in-out infinite;
     }
-
-    /* =========================
-       TEXT
-    ========================= */
 
     h1 {
       font-size: 38px;
-
       font-weight: 500;
-
       letter-spacing: 8px;
-
       margin-bottom: 14px;
     }
 
     .tagline {
       color: rgba(255,255,255,.62);
-
       font-size: 15px;
-
       line-height: 1.65;
-
       margin-bottom: 30px;
     }
 
-    /* =========================
-       MESSAGES
-    ========================= */
+    /* MENSAGENS */
 
     .message {
       display: flex;
-
       margin-bottom: 18px;
-
-      animation:
-        messageAppear .35s ease;
+      animation: messageAppear .35s ease;
     }
 
     .message.user {
@@ -390,27 +325,19 @@
 
     .bubble {
       position: relative;
-
-      overflow: hidden;
-
-      padding:
-        14px
-        16px;
+      padding: 14px 16px;
 
       border-radius: 20px;
 
       font-size: 15px;
-
       line-height: 1.65;
 
       white-space: pre-wrap;
-
       word-break: break-word;
     }
 
     .message.user .bubble {
-      background:
-        rgba(255,255,255,.10);
+      background: rgba(255,255,255,.10);
 
       border:
         1px solid
@@ -442,88 +369,85 @@
 
     .aura-label {
       font-size: 10px;
-
       letter-spacing: 3px;
-
-      color:
-        rgba(255,255,255,.35);
+      color: rgba(255,255,255,.35);
 
       margin-bottom: 7px;
-
       padding-left: 4px;
     }
 
-    /* =========================
-       FURTA-COR NEBULA
-    ========================= */
+    /* PALAVRAS */
 
-    .nebula {
+    .stream-word {
+      display: inline;
+      opacity: 0;
+      filter: blur(5px);
+
+      animation:
+        wordReveal .20s ease forwards;
+    }
+
+    /* NÉVOA */
+
+    .mist {
       position: absolute;
 
-      width: 150px;
-      height: 80px;
+      width: 120px;
+      height: 65px;
 
-      left: 50%;
+      left: 0;
       top: 50%;
 
       transform:
         translate(-50%, -50%);
 
-      pointer-events: none;
-
       border-radius: 50%;
+
+      pointer-events: none;
 
       background:
         conic-gradient(
           from 0deg,
-          rgba(255,80,200,.0),
-          rgba(255,80,200,.34),
-          rgba(130,100,255,.38),
-          rgba(70,210,255,.34),
-          rgba(100,255,210,.26),
-          rgba(255,220,100,.28),
-          rgba(255,80,200,.0)
+          rgba(255,80,200,0),
+          rgba(255,80,200,.45),
+          rgba(140,100,255,.45),
+          rgba(70,210,255,.42),
+          rgba(100,255,210,.35),
+          rgba(255,220,100,.35),
+          rgba(255,80,200,0)
         );
 
-      filter: blur(22px);
+      filter: blur(20px);
 
       opacity: 0;
 
       mix-blend-mode: screen;
 
-      animation:
-        nebulaSpin 3s linear infinite;
-    }
-
-    .message.aura.streaming .nebula {
-      opacity: .72;
-
-      animation:
-        nebulaSpin 3s linear infinite,
-        nebulaBreath 1.5s ease-in-out infinite;
-    }
-
-    .message.aura.finished .nebula {
-      opacity: 0;
-
       transition:
-        opacity 1.2s ease;
+        left .12s linear,
+        opacity .25s ease;
     }
 
-    /* =========================
-       THINKING
-    ========================= */
+    .streaming .mist {
+      opacity: .75;
+
+      animation:
+        mistRotate 2.5s linear infinite,
+        mistPulse 1.2s ease-in-out infinite;
+    }
+
+    .finished .mist {
+      opacity: 0;
+    }
+
+    /* THINKING */
 
     .thinking {
       display: flex;
-
       align-items: center;
-
       gap: 9px;
 
-      color:
-        rgba(255,255,255,.42);
-
+      color: rgba(255,255,255,.42);
       font-size: 13px;
 
       margin:
@@ -536,7 +460,6 @@
     .thinking-core {
       width: 20px;
       height: 20px;
-
       border-radius: 50%;
 
       border: 1px solid transparent;
@@ -556,13 +479,10 @@
         thinkingPulse 1s ease-in-out infinite;
     }
 
-    /* =========================
-       INPUT
-    ========================= */
+    /* COMPOSER */
 
     .composer {
       position: absolute;
-
       left: 0;
       right: 0;
       bottom: 0;
@@ -585,13 +505,10 @@
 
     .composer-inner {
       display: flex;
-
       align-items: flex-end;
-
       gap: 9px;
 
       max-width: 700px;
-
       margin: 0 auto;
     }
 
@@ -621,15 +538,13 @@
         17px;
 
       font-size: 15px;
-
       line-height: 1.4;
 
       backdrop-filter: blur(15px);
     }
 
     #messageInput::placeholder {
-      color:
-        rgba(255,255,255,.30);
+      color: rgba(255,255,255,.30);
     }
 
     #sendButton {
@@ -639,15 +554,12 @@
       flex-shrink: 0;
 
       border: none;
-
       border-radius: 18px;
 
       background: white;
-
       color: #07070a;
 
       cursor: pointer;
-
       font-size: 19px;
 
       transition:
@@ -656,19 +568,15 @@
     }
 
     #sendButton:active {
-      transform:
-        scale(.94);
+      transform: scale(.94);
     }
 
     #sendButton:disabled {
       opacity: .35;
-
       cursor: default;
     }
 
-    /* =========================
-       ANIMATIONS
-    ========================= */
+    /* ANIMAÇÕES */
 
     @keyframes colorSpin {
       from {
@@ -683,29 +591,23 @@
     @keyframes auraPulse {
       0%,100% {
         transform: scale(1);
-
-        filter:
-          brightness(.85);
+        filter: brightness(.85);
       }
 
       50% {
         transform: scale(1.045);
-
-        filter:
-          brightness(1.25);
+        filter: brightness(1.25);
       }
     }
 
     @keyframes corePulse {
       0%,100% {
         transform: scale(.85);
-
         opacity: .88;
       }
 
       50% {
         transform: scale(1.12);
-
         opacity: 1;
       }
     }
@@ -723,13 +625,11 @@
     @keyframes thinkingPulse {
       0%,100% {
         transform: scale(.75);
-
         opacity: .45;
       }
 
       50% {
         transform: scale(1.15);
-
         opacity: 1;
       }
     }
@@ -737,20 +637,30 @@
     @keyframes messageAppear {
       from {
         opacity: 0;
-
-        transform:
-          translateY(8px);
+        transform: translateY(8px);
       }
 
       to {
         opacity: 1;
-
-        transform:
-          translateY(0);
+        transform: translateY(0);
       }
     }
 
-    @keyframes nebulaSpin {
+    @keyframes wordReveal {
+      from {
+        opacity: 0;
+        filter: blur(5px);
+        transform: translateY(3px);
+      }
+
+      to {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes mistRotate {
       from {
         transform:
           translate(-50%, -50%)
@@ -762,27 +672,19 @@
         transform:
           translate(-50%, -50%)
           rotate(360deg)
-          scale(1.1);
+          scale(1.12);
       }
     }
 
-    @keyframes nebulaBreath {
+    @keyframes mistPulse {
       0%,100% {
-        filter:
-          blur(22px)
-          brightness(.85);
+        filter: blur(20px) brightness(.8);
       }
 
       50% {
-        filter:
-          blur(30px)
-          brightness(1.35);
+        filter: blur(28px) brightness(1.35);
       }
     }
-
-    /* =========================
-       MOBILE
-    ========================= */
 
     @media (max-width: 600px) {
 
@@ -808,7 +710,6 @@
         width: 28px;
         height: 28px;
       }
-
     }
   </style>
 </head>
@@ -817,18 +718,13 @@
 
   <main class="app">
 
-    <!-- TOP BAR -->
-
     <header class="topbar">
 
       <div class="brand">
 
         <div class="mini-core">
-
           <div class="mini-ring"></div>
-
           <div class="mini-dot"></div>
-
         </div>
 
         <div class="brand-name">
@@ -847,8 +743,6 @@
 
     </header>
 
-
-    <!-- CHAT -->
 
     <section
       id="chat"
@@ -881,8 +775,6 @@
     </section>
 
 
-    <!-- COMPOSER -->
-
     <footer class="composer">
 
       <div class="composer-inner">
@@ -911,18 +803,9 @@
 
   <script>
 
-    /* =========================
-       STATE
-    ========================= */
-
     let conversation = [];
 
     let isThinking = false;
-
-
-    /* =========================
-       ELEMENTS
-    ========================= */
 
     const chat =
       document.getElementById("chat");
@@ -933,13 +816,8 @@
     const sendButton =
       document.getElementById("sendButton");
 
-    const welcome =
-      document.getElementById("welcome");
 
-
-    /* =========================
-       SEND MESSAGE
-    ========================= */
+    /* ENVIA */
 
     async function sendMessage() {
 
@@ -954,14 +832,14 @@
         return;
       }
 
-      if (document.getElementById("welcome")) {
-        document.getElementById("welcome").remove();
+      const currentWelcome =
+        document.getElementById("welcome");
+
+      if (currentWelcome) {
+        currentWelcome.remove();
       }
 
-      addMessage(
-        "user",
-        message
-      );
+      addUserMessage(message);
 
       conversation.push({
         role: "user",
@@ -999,39 +877,24 @@
             }
           );
 
-
         const data =
           await response.json();
 
-
         if (!response.ok) {
-
           throw new Error(
             data.error ||
             "Erro ao conversar com a Aura"
           );
-
         }
 
-
         conversation.push({
-
-          role:
-            "assistant",
-
-          content:
-            data.reply
-
+          role: "assistant",
+          content: data.reply
         });
-
 
         setThinking(false);
 
-
-        streamAuraMessage(
-          data.reply
-        );
-
+        await streamAura(data.reply);
 
       } catch (error) {
 
@@ -1039,31 +902,22 @@
 
         setThinking(false);
 
-        addMessage(
-          "aura",
+        addAuraInstant(
           "Não consegui responder agora. Tente novamente em alguns instantes."
         );
-
       }
-
     }
 
 
-    /* =========================
-       NORMAL MESSAGE
-    ========================= */
+    /* USUÁRIO */
 
-    function addMessage(
-      role,
-      text
-    ) {
+    function addUserMessage(text) {
 
       const wrapper =
         document.createElement("div");
 
       wrapper.className =
-        `message ${role}`;
-
+        "message user";
 
       const content =
         document.createElement("div");
@@ -1071,87 +925,40 @@
       content.className =
         "message-content";
 
+      const bubble =
+        document.createElement("div");
 
-      if (role === "aura") {
+      bubble.className =
+        "bubble";
 
-        const label =
-          document.createElement("div");
+      bubble.textContent =
+        text;
 
-        label.className =
-          "aura-label";
+      content.appendChild(bubble);
 
-        label.textContent =
-          "AURA";
+      wrapper.appendChild(content);
 
-        const bubble =
-          document.createElement("div");
-
-        bubble.className =
-          "bubble";
-
-        bubble.textContent =
-          text;
-
-        content.appendChild(
-          label
-        );
-
-        content.appendChild(
-          bubble
-        );
-
-      } else {
-
-        const bubble =
-          document.createElement("div");
-
-        bubble.className =
-          "bubble";
-
-        bubble.textContent =
-          text;
-
-        content.appendChild(
-          bubble
-        );
-
-      }
-
-
-      wrapper.appendChild(
-        content
-      );
-
-      chat.appendChild(
-        wrapper
-      );
+      chat.appendChild(wrapper);
 
       scrollToBottom();
-
     }
 
 
-    /* =========================
-       GRADUAL AURA RESPONSE
-    ========================= */
+    /* RESPOSTA NORMAL DE ERRO */
 
-    function streamAuraMessage(
-      text
-    ) {
+    function addAuraInstant(text) {
 
       const wrapper =
         document.createElement("div");
 
       wrapper.className =
-        "message aura streaming";
-
+        "message aura";
 
       const content =
         document.createElement("div");
 
       content.className =
         "message-content";
-
 
       const label =
         document.createElement("div");
@@ -1162,6 +969,53 @@
       label.textContent =
         "AURA";
 
+      const bubble =
+        document.createElement("div");
+
+      bubble.className =
+        "bubble";
+
+      bubble.textContent =
+        text;
+
+      content.appendChild(label);
+      content.appendChild(bubble);
+
+      wrapper.appendChild(content);
+
+      chat.appendChild(wrapper);
+
+      scrollToBottom();
+    }
+
+
+    /* AURA PALAVRA POR PALAVRA */
+
+    async function streamAura(text) {
+
+      isThinking = true;
+      sendButton.disabled = true;
+
+      const wrapper =
+        document.createElement("div");
+
+      wrapper.className =
+        "message aura streaming";
+
+      const content =
+        document.createElement("div");
+
+      content.className =
+        "message-content";
+
+      const label =
+        document.createElement("div");
+
+      label.className =
+        "aura-label";
+
+      label.textContent =
+        "AURA";
 
       const bubble =
         document.createElement("div");
@@ -1169,132 +1023,150 @@
       bubble.className =
         "bubble";
 
-
-      const nebula =
+      const mist =
         document.createElement("div");
 
-      nebula.className =
-        "nebula";
+      mist.className =
+        "mist";
 
+      bubble.appendChild(mist);
 
-      const textElement =
-        document.createElement("span");
+      content.appendChild(label);
+      content.appendChild(bubble);
 
+      wrapper.appendChild(content);
 
-      bubble.appendChild(
-        nebula
-      );
-
-      bubble.appendChild(
-        textElement
-      );
-
-
-      content.appendChild(
-        label
-      );
-
-      content.appendChild(
-        bubble
-      );
-
-      wrapper.appendChild(
-        content
-      );
-
-      chat.appendChild(
-        wrapper
-      );
-
+      chat.appendChild(wrapper);
 
       /*
-       * Divide a resposta em palavras.
+       * Cada palavra vira um elemento
+       * separado.
        */
 
-      const words =
+      const parts =
         text.split(/(\s+)/);
 
-      let index = 0;
+      const words =
+        parts.filter(
+          part =>
+            part.trim().length > 0
+        );
 
-      let currentText = "";
+      let wordNumber = 0;
 
 
-      function nextWord() {
+      for (const part of parts) {
 
-        if (index >= words.length) {
-
-          wrapper.classList.remove(
-            "streaming"
-          );
-
-          wrapper.classList.add(
-            "finished"
-          );
-
-          scrollToBottom();
-
-          return;
+        if (!part) {
+          continue;
         }
 
 
-        currentText +=
-          words[index];
+        if (part.trim() === "") {
 
-        textElement.textContent =
-          currentText;
+          const space =
+            document.createTextNode(part);
 
-        index++;
+          bubble.appendChild(space);
+
+          continue;
+        }
+
+
+        const word =
+          document.createElement("span");
+
+        word.className =
+          "stream-word";
+
+        word.textContent =
+          part;
+
+        bubble.appendChild(word);
+
+
+        /*
+         * A névoa acompanha
+         * aproximadamente o avanço.
+         */
+
+        wordNumber++;
+
+        const progress =
+          wordNumber / words.length;
+
+        mist.style.left =
+          `${Math.min(
+            8 + progress * 84,
+            92
+          )}%`;
+
+
+        /*
+         * FORÇA uma pausa real.
+         *
+         * Não é 30ms.
+         * A resposta fica perceptivelmente
+         * sendo construída.
+         */
+
+        let delay = 105;
+
+        if (
+          part.endsWith(".") ||
+          part.endsWith("!") ||
+          part.endsWith("?")
+        ) {
+
+          delay = 360;
+
+        } else if (
+          part.endsWith(",") ||
+          part.endsWith(";") ||
+          part.endsWith(":")
+        ) {
+
+          delay = 210;
+
+        }
 
 
         scrollToBottom();
 
-
-        /*
-         * Velocidade natural.
-         */
-
-        const piece =
-          words[index - 1];
-
-        let delay = 32;
-
-        if (
-          piece.includes(".") ||
-          piece.includes("!") ||
-          piece.includes("?")
-        ) {
-
-          delay = 170;
-
-        } else if (
-          piece.includes(",")
-        ) {
-
-          delay = 80;
-
-        }
-
-
-        setTimeout(
-          nextWord,
-          delay
-        );
-
+        await wait(delay);
       }
 
 
-      nextWord();
+      wrapper.classList.remove(
+        "streaming"
+      );
 
+      wrapper.classList.add(
+        "finished"
+      );
+
+      await wait(700);
+
+      isThinking = false;
+
+      sendButton.disabled = false;
+
+      scrollToBottom();
     }
 
 
-    /* =========================
-       THINKING
-    ========================= */
+    function wait(ms) {
 
-    function setThinking(
-      thinking
-    ) {
+      return new Promise(
+        resolve =>
+          setTimeout(resolve, ms)
+      );
+    }
+
+
+    /* THINKING */
+
+    function setThinking(thinking) {
 
       isThinking =
         thinking;
@@ -1302,21 +1174,18 @@
       sendButton.disabled =
         thinking;
 
-
-      const oldThinking =
+      const old =
         document.getElementById(
           "thinking"
         );
 
-      if (oldThinking) {
-        oldThinking.remove();
+      if (old) {
+        old.remove();
       }
-
 
       if (!thinking) {
         return;
       }
-
 
       const element =
         document.createElement("div");
@@ -1326,7 +1195,6 @@
 
       element.className =
         "thinking";
-
 
       element.innerHTML = `
 
@@ -1338,51 +1206,31 @@
 
       `;
 
-
-      chat.appendChild(
-        element
-      );
-
+      chat.appendChild(element);
 
       scrollToBottom();
-
     }
 
 
-    /* =========================
-       SCROLL
-    ========================= */
+    /* SCROLL */
 
     function scrollToBottom() {
 
-      requestAnimationFrame(
-        () => {
+      requestAnimationFrame(() => {
 
-          chat.scrollTo({
+        chat.scrollTop =
+          chat.scrollHeight;
 
-            top:
-              chat.scrollHeight,
-
-            behavior:
-              "smooth"
-
-          });
-
-        }
-      );
-
+      });
     }
 
 
-    /* =========================
-       TEXTAREA
-    ========================= */
+    /* TEXTAREA */
 
     input.addEventListener(
       "input",
       resizeInput
     );
-
 
     function resizeInput() {
 
@@ -1394,13 +1242,10 @@
           input.scrollHeight,
           130
         ) + "px";
-
     }
 
 
-    /* =========================
-       ENTER
-    ========================= */
+    /* ENTER */
 
     input.addEventListener(
       "keydown",
@@ -1414,16 +1259,12 @@
           event.preventDefault();
 
           sendMessage();
-
         }
-
       }
     );
 
 
-    /* =========================
-       NEW STORY
-    ========================= */
+    /* NOVA HISTÓRIA */
 
     function newStory() {
 
@@ -1456,7 +1297,6 @@
 
       `;
 
-
       input.value = "";
 
       resizeInput();
@@ -1465,13 +1305,8 @@
         "Comece uma nova história...";
 
       input.focus();
-
     }
 
-
-    /* =========================
-       START
-    ========================= */
 
     input.focus();
 
