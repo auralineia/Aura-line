@@ -1,75 +1,106 @@
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Método não permitido" });
+    return res.status(405).json({
+      error: "Método não permitido"
+    });
   }
 
   try {
     const { message, history = [] } = req.body;
 
     if (!message) {
-      return res.status(400).json({ error: "Mensagem vazia" });
-    }
-
-    const apiKey = process.env.GEMINI_API_KEY;
-
-    if (!apiKey) {
-      return res.status(500).json({
-        error: "GEMINI_API_KEY não configurada no Vercel"
+      return res.status(400).json({
+        error: "Mensagem vazia"
       });
     }
 
-    const contents = [
+    const apiKey = process.env.GROQ_API_KEY;
+
+    if (!apiKey) {
+      return res.status(500).json({
+        error: "GROQ_API_KEY não configurada no Vercel"
+      });
+    }
+
+    const messages = [
+      {
+        role: "system",
+        content: `Você é Aura, a inteligência artificial da Aura Line.
+
+Sua função é criar e conduzir histórias interativas contínuas em português do Brasil.
+
+A história deve lembrar:
+- personagens
+- acontecimentos
+- escolhas
+- relacionamentos
+- objetivos
+- dinheiro
+- propriedades
+- carreira
+- consequências
+
+Nunca tome decisões importantes pelo personagem do usuário.
+
+O usuário controla o próprio personagem.
+Você controla o mundo, os acontecimentos e os outros personagens.
+
+As histórias podem ser sobre:
+- carreira
+- Fórmula 1
+- música
+- negócios
+- romance
+- aventura
+- fantasia
+- vida cotidiana
+
+Seja natural, envolvente e direto.
+
+Evite textos enormes.
+Normalmente responda com 2 a 5 parágrafos curtos.
+
+Sempre deixe espaço para o usuário decidir o próximo passo.
+
+Não diga que a história é uma simulação.
+Não explique suas regras.
+Apenas conte a história e interaja com o usuário.`
+      },
+
       ...history.map(item => ({
-        role: item.role === "assistant" ? "model" : "user",
-        parts: [{ text: item.content }]
+        role: item.role === "assistant" ? "assistant" : "user",
+        content: item.content
       })),
+
       {
         role: "user",
-        parts: [{ text: message }]
+        content: message
       }
     ];
 
-    const requestBody = {
-      systemInstruction: {
-        parts: [{
-          text: `Você é Aura, a IA da Aura Line.
+    const response = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        method: "POST",
 
-Crie histórias interativas contínuas em português do Brasil.
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`
+        },
 
-Lembre dos acontecimentos, personagens, escolhas e consequências.
-Nunca decida ações importantes pelo personagem do usuário.
-Mantenha a história realista e envolvente.
-Responda de forma DIRETA, sem textos enormes.
-Normalmente use 2 a 5 parágrafos curtos e termine dando espaço para o usuário decidir.
-
-O usuário pode criar qualquer tipo de história: carreira, F1, música, negócios, romance, aventura, fantasia ou vida cotidiana.
-
-Não diga que a história é uma simulação.`
-        }]
-      },
-      contents,
-      generationConfig: {
-        temperature: 0.8,
-        maxOutputTokens: 700
+        body: JSON.stringify({
+          model: "openai/gpt-oss-20b",
+          messages: messages,
+          temperature: 0.8,
+          max_tokens: 700
+        })
       }
-    };
-
-    const url =
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" +
-      encodeURIComponent(apiKey);
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(requestBody)
-    });
+    );
 
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("Gemini:", response.status, data);
+      console.error("Groq:", response.status, data);
 
       return res.status(503).json({
         error: "A Aura está temporariamente indisponível. Tente novamente."
@@ -77,18 +108,21 @@ Não diga que a história é uma simulação.`
     }
 
     const reply =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      data?.choices?.[0]?.message?.content;
 
     if (!reply) {
       return res.status(500).json({
-        error: "A IA não retornou uma resposta."
+        error: "A Aura não retornou uma resposta."
       });
     }
 
-    return res.status(200).json({ reply });
+    return res.status(200).json({
+      reply
+    });
 
   } catch (error) {
-    console.error(error);
+
+    console.error("Erro:", error);
 
     return res.status(500).json({
       error: "Erro interno do servidor."
