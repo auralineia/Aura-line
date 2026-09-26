@@ -98,12 +98,12 @@ Faça a experiência parecer uma vida narrativa interativa.
     const data = await response.json();
 
     if (!response.ok) {
-      console.error(data);
+  console.error(data);
 
-      return res.status(response.status).json({
-        error: "Erro ao consultar a IA"
-      });
-    }
+  return res.status(503).json({
+    error: data?.error?.message || "A IA está temporariamente indisponível. Tente novamente."
+  });
+}
 
     const reply =
       data?.candidates?.[0]?.content?.parts?.[0]?.text;
