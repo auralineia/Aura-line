@@ -5,16 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050507">
   <title>Aura Line</title>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
     html,
     body {
       width: 100%;
@@ -29,25 +26,20 @@
         Arial,
         sans-serif;
     }
-
     body {
       overflow: hidden;
     }
-
     button,
     input,
     textarea {
       font: inherit;
     }
-
     button {
       -webkit-tap-highlight-color: transparent;
     }
-
     /* =====================================================
        AUTH
     ===================================================== */
-
     #authScreen {
       position: fixed;
       inset: 0;
@@ -59,18 +51,16 @@
       background:
         radial-gradient(
           circle at 50% 35%,
-          rgba(130, 100, 255, 0.18),
+          rgba(255, 70, 170, 0.13),
           transparent 35%
         ),
         #050507;
     }
-
     .auth-box {
       width: 100%;
       max-width: 390px;
       text-align: center;
     }
-
     .auth-core {
       width: 115px;
       height: 115px;
@@ -81,65 +71,61 @@
       align-items: center;
       justify-content: center;
     }
-
     .auth-ring {
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 2px solid transparent;
-      background:
-        linear-gradient(#050507,#050507) padding-box,
-        conic-gradient(
-          from 0deg,
-          #ff79d1,
-          #a887ff,
-          #66d8ff,
-          #73ffd1,
-          #ffe27a,
-          #ff8ac8,
-          #a887ff,
-          #ff79d1
-        ) border-box;
-      animation:
-        colorSpin 6s linear infinite,
-        auraPulse 4s ease-in-out infinite;
+      border: 1px solid rgba(255, 105, 190, .75);
       box-shadow:
-        0 0 20px rgba(255,120,210,.25),
-        0 0 45px rgba(130,100,255,.20),
-        0 0 75px rgba(90,210,255,.12);
+        0 0 18px rgba(255, 70, 170, .22),
+        0 0 42px rgba(255, 70, 170, .12),
+        inset 0 0 25px rgba(255, 70, 170, .06);
+      animation:
+        auraPulse 4s ease-in-out infinite,
+        pinkGlow 5s ease-in-out infinite;
     }
-
+    .auth-ring::before {
+      content: "";
+      position: absolute;
+      inset: 9px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    .auth-ring::after {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 100, 190, .20);
+    }
     .auth-core-dot {
       width: 27px;
       height: 27px;
       border-radius: 50%;
-      background: white;
+      background: #ff9bd5;
       box-shadow:
-        0 0 12px white,
-        0 0 30px rgba(255,255,255,.95),
-        0 0 60px rgba(170,140,255,.9);
+        0 0 12px rgba(255, 155, 213, .95),
+        0 0 30px rgba(255, 70, 170, .65),
+        0 0 60px rgba(255, 40, 150, .28);
+      animation: corePulse 3s ease-in-out infinite;
     }
-
     .auth-title {
       font-size: 35px;
       font-weight: 500;
       letter-spacing: 8px;
       margin-bottom: 10px;
     }
-
     .auth-subtitle {
       color: rgba(255,255,255,.48);
       font-size: 14px;
       line-height: 1.6;
       margin-bottom: 30px;
     }
-
     .auth-form {
       display: flex;
       flex-direction: column;
       gap: 11px;
     }
-
     .auth-input {
       width: 100%;
       height: 52px;
@@ -152,33 +138,30 @@
       font-size: 15px;
       backdrop-filter: blur(15px);
     }
-
     .auth-input:focus {
-      border-color: rgba(170,140,255,.55);
-      box-shadow: 0 0 25px rgba(130,100,255,.10);
+      border-color: rgba(255, 100, 190, .55);
+      box-shadow: 0 0 25px rgba(255, 70, 170, .10);
     }
-
     .auth-input::placeholder {
       color: rgba(255,255,255,.30);
     }
-
     .auth-button {
       width: 100%;
       height: 52px;
       border: none;
       border-radius: 17px;
-      background: white;
-      color: #07070a;
+      background: #ff9bd5;
+      color: #09070a;
       font-size: 15px;
       font-weight: 600;
       cursor: pointer;
       margin-top: 4px;
+      box-shadow:
+        0 8px 25px rgba(255, 70, 170, .14);
     }
-
     .auth-button:disabled {
       opacity: .45;
     }
-
     .auth-switch {
       margin-top: 20px;
       border: none;
@@ -187,11 +170,9 @@
       font-size: 13px;
       cursor: pointer;
     }
-
     .auth-switch span {
-      color: white;
+      color: #ff9bd5;
     }
-
     .auth-error {
       min-height: 18px;
       margin-top: 12px;
@@ -199,15 +180,12 @@
       font-size: 12px;
       line-height: 1.4;
     }
-
     .auth-success {
       color: #9fffd2;
     }
-
     /* =====================================================
        APP
     ===================================================== */
-
     .app {
       width: 100%;
       height: 100%;
@@ -216,16 +194,14 @@
       background:
         radial-gradient(
           circle at 50% -10%,
-          rgba(130, 100, 255, 0.16),
+          rgba(255, 70, 170, 0.10),
           transparent 40%
         ),
         #050507;
     }
-
     /* =====================================================
        TOPBAR
     ===================================================== */
-
     .topbar {
       position: absolute;
       top: 0;
@@ -249,7 +225,6 @@
         );
       backdrop-filter: blur(14px);
     }
-
     .top-action {
       width: 42px;
       height: 42px;
@@ -265,18 +240,15 @@
         transform .18s ease,
         background .18s ease;
     }
-
     .top-action:active {
       transform: scale(.92);
     }
-
     .hamburger {
       width: 18px;
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
-
     .hamburger span {
       display: block;
       height: 1.5px;
@@ -284,24 +256,20 @@
       background: rgba(255,255,255,.78);
       border-radius: 10px;
     }
-
     .hamburger span:nth-child(2) {
       width: 75%;
     }
-
     .plus-icon {
       font-size: 24px;
       font-weight: 300;
       line-height: 1;
     }
-
     .brand {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 9px;
     }
-
     .mini-core {
       width: 30px;
       height: 30px;
@@ -311,50 +279,42 @@
       align-items: center;
       justify-content: center;
     }
-
     .mini-ring {
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 1px solid transparent;
-      background:
-        linear-gradient(#050507,#050507) padding-box,
-        conic-gradient(
-          from 0deg,
-          #ff7bd5,
-          #9d8cff,
-          #65d9ff,
-          #8affc1,
-          #ffdc7a,
-          #ff7bd5
-        ) border-box;
-      animation:
-        colorSpin 5s linear infinite,
-        miniPulse 3s ease-in-out infinite;
+      border: 1px solid rgba(255, 105, 190, .75);
       box-shadow:
-        0 0 15px rgba(150,120,255,.25);
+        0 0 12px rgba(255, 70, 170, .22),
+        inset 0 0 10px rgba(255, 70, 170, .08);
+      animation:
+        miniPulse 3s ease-in-out infinite,
+        pinkGlow 5s ease-in-out infinite;
     }
-
+    .mini-ring::before {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.10);
+    }
     .mini-dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: white;
+      background: #ff9bd5;
       box-shadow:
-        0 0 10px white,
-        0 0 20px rgba(160,130,255,.9);
+        0 0 8px rgba(255,155,213,.95),
+        0 0 18px rgba(255,70,170,.65);
     }
-
     .brand-name {
       font-size: 13px;
       letter-spacing: 4px;
       font-weight: 500;
     }
-
     /* =====================================================
        SIDE MENU
     ===================================================== */
-
     .menu-overlay {
       position: fixed;
       inset: 0;
@@ -365,12 +325,10 @@
       pointer-events: none;
       transition: opacity .28s ease;
     }
-
     .menu-overlay.open {
       opacity: 1;
       pointer-events: auto;
     }
-
     .side-menu {
       position: fixed;
       top: 0;
@@ -383,7 +341,7 @@
       background:
         radial-gradient(
           circle at 20% 0%,
-          rgba(130,100,255,.13),
+          rgba(255,70,170,.09),
           transparent 35%
         ),
         rgba(9,9,12,.98);
@@ -396,34 +354,28 @@
         14px
         max(16px, env(safe-area-inset-bottom));
     }
-
     .side-menu.open {
       transform: translateX(0);
     }
-
     .menu-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 4px 4px 18px;
     }
-
     .menu-logo {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-
     .menu-logo .mini-core {
       width: 28px;
       height: 28px;
     }
-
     .menu-logo-text {
       font-size: 13px;
       letter-spacing: 4px;
     }
-
     .close-menu {
       width: 38px;
       height: 38px;
@@ -434,7 +386,6 @@
       font-size: 22px;
       cursor: pointer;
     }
-
     .new-story-menu {
       width: 100%;
       height: 52px;
@@ -444,7 +395,7 @@
         linear-gradient(
           135deg,
           rgba(255,255,255,.10),
-          rgba(130,100,255,.10)
+          rgba(255,70,170,.09)
         );
       color: white;
       display: flex;
@@ -455,21 +406,18 @@
       margin-bottom: 18px;
       transition: transform .18s ease;
     }
-
     .new-story-menu:active {
       transform: scale(.97);
     }
-
     .new-story-icon {
       font-size: 21px;
       font-weight: 300;
+      color: #ff9bd5;
     }
-
     .new-story-text {
       font-size: 14px;
       font-weight: 500;
     }
-
     .history-title {
       padding: 4px 8px 9px;
       font-size: 10px;
@@ -477,23 +425,19 @@
       text-transform: uppercase;
       color: rgba(255,255,255,.32);
     }
-
     .history-list {
       flex: 1;
       overflow-y: auto;
       padding: 0 0 10px;
       -webkit-overflow-scrolling: touch;
     }
-
     .history-list::-webkit-scrollbar {
       width: 3px;
     }
-
     .history-list::-webkit-scrollbar-thumb {
       background: rgba(255,255,255,.10);
       border-radius: 10px;
     }
-
     .history-empty {
       padding: 24px 10px;
       color: rgba(255,255,255,.32);
@@ -501,7 +445,6 @@
       line-height: 1.6;
       text-align: center;
     }
-
     .history-item {
       position: relative;
       display: flex;
@@ -520,13 +463,11 @@
         background .18s ease,
         border .18s ease;
     }
-
     .history-item:hover,
     .history-item.active {
       background: rgba(255,255,255,.065);
-      border-color: rgba(255,255,255,.06);
+      border-color: rgba(255, 100, 190, .10);
     }
-
     .history-aura {
       width: 29px;
       height: 29px;
@@ -538,37 +479,34 @@
       align-items: center;
       justify-content: center;
     }
-
     .history-aura-ring {
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 1px solid transparent;
-      background:
-        linear-gradient(#09090c,#09090c) padding-box,
-        conic-gradient(
-          #ff7bd5,
-          #9d8cff,
-          #65d9ff,
-          #8affc1,
-          #ff7bd5
-        ) border-box;
-      animation: colorSpin 6s linear infinite;
+      border: 1px solid rgba(255,105,190,.65);
+      box-shadow:
+        0 0 10px rgba(255,70,170,.15);
+      animation: pinkGlow 5s ease-in-out infinite;
     }
-
+    .history-aura-ring::before {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.10);
+    }
     .history-aura-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: white;
-      box-shadow: 0 0 9px white;
+      background: #ff9bd5;
+      box-shadow:
+        0 0 9px rgba(255,155,213,.85);
     }
-
     .history-info {
       min-width: 0;
       flex: 1;
     }
-
     .history-name {
       font-size: 13px;
       color: rgba(255,255,255,.88);
@@ -577,12 +515,10 @@
       text-overflow: ellipsis;
       margin-bottom: 4px;
     }
-
     .history-date {
       font-size: 10px;
       color: rgba(255,255,255,.28);
     }
-
     .delete-history {
       width: 32px;
       height: 32px;
@@ -596,18 +532,15 @@
       opacity: 0;
       transition: opacity .18s ease;
     }
-
     .history-item:hover .delete-history,
     .history-item.active .delete-history {
       opacity: 1;
     }
-
     .account-area {
       border-top: 1px solid rgba(255,255,255,.07);
       padding-top: 13px;
       margin-top: 8px;
     }
-
     .account-card {
       display: flex;
       align-items: center;
@@ -617,7 +550,6 @@
       background: rgba(255,255,255,.04);
       margin-bottom: 7px;
     }
-
     .account-avatar {
       width: 34px;
       height: 34px;
@@ -629,23 +561,20 @@
         linear-gradient(
           135deg,
           rgba(255,255,255,.16),
-          rgba(130,100,255,.20)
+          rgba(255,70,170,.18)
         );
       color: white;
       font-size: 14px;
     }
-
     .account-info {
       min-width: 0;
       flex: 1;
     }
-
     .account-label {
       font-size: 10px;
       color: rgba(255,255,255,.3);
       margin-bottom: 3px;
     }
-
     .account-email {
       font-size: 11px;
       color: rgba(255,255,255,.7);
@@ -653,7 +582,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
     .logout-button {
       width: 100%;
       height: 43px;
@@ -666,15 +594,12 @@
       cursor: pointer;
       font-size: 12px;
     }
-
     .logout-button:active {
       background: rgba(255,100,140,.08);
     }
-
     /* =====================================================
        CHAT
     ===================================================== */
-
     .chat {
       position: absolute;
       top: 0;
@@ -687,16 +612,13 @@
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
     }
-
     .chat::-webkit-scrollbar {
       width: 4px;
     }
-
     .chat::-webkit-scrollbar-thumb {
       background: rgba(255,255,255,.12);
       border-radius: 10px;
     }
-
     .welcome {
       min-height: calc(100vh - 220px);
       display: flex;
@@ -706,7 +628,6 @@
       text-align: center;
       padding: 30px 0;
     }
-
     .aura-core {
       width: 150px;
       height: 150px;
@@ -717,111 +638,84 @@
       align-items: center;
       justify-content: center;
     }
-
     .ring {
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 2px solid transparent;
-      background:
-        linear-gradient(#050507,#050507) padding-box,
-        conic-gradient(
-          from 0deg,
-          #ff79d1,
-          #a887ff,
-          #66d8ff,
-          #73ffd1,
-          #ffe27a,
-          #ff8ac8,
-          #a887ff,
-          #ff79d1
-        ) border-box;
-      animation:
-        colorSpin 6s linear infinite,
-        auraPulse 4s ease-in-out infinite;
+      border: 1px solid rgba(255,105,190,.78);
       box-shadow:
-        0 0 12px rgba(255,120,210,.25),
-        0 0 30px rgba(130,100,255,.20),
-        0 0 55px rgba(90,210,255,.12);
+        0 0 15px rgba(255,70,170,.22),
+        0 0 35px rgba(255,70,170,.12),
+        inset 0 0 30px rgba(255,70,170,.05);
+      animation:
+        auraPulse 4s ease-in-out infinite,
+        pinkGlow 5s ease-in-out infinite;
     }
-
     .ring::before {
       content: "";
       position: absolute;
       inset: 9px;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.15);
       box-shadow:
-        inset 0 0 20px rgba(255,255,255,.05);
+        inset 0 0 20px rgba(255,255,255,.04);
     }
-
     .ring::after {
       content: "";
       position: absolute;
-      inset: -10px;
+      inset: -9px;
       border-radius: 50%;
       background:
-        conic-gradient(
-          from 0deg,
-          transparent,
-          rgba(255,100,210,.45),
-          transparent,
-          rgba(90,210,255,.35),
-          transparent,
-          rgba(150,120,255,.4),
-          transparent
+        radial-gradient(
+          circle,
+          transparent 45%,
+          rgba(255,70,170,.18) 58%,
+          transparent 73%
         );
-      filter: blur(12px);
-      opacity: .55;
+      filter: blur(10px);
+      opacity: .65;
       z-index: -1;
-      animation: colorSpin 8s linear infinite;
+      animation:
+        coreHalo 4s ease-in-out infinite;
     }
-
     .core {
       width: 31px;
       height: 31px;
       border-radius: 50%;
-      background: white;
+      background: #ff9bd5;
       box-shadow:
-        0 0 10px white,
-        0 0 25px rgba(255,255,255,.95),
-        0 0 50px rgba(170,140,255,.9),
-        0 0 85px rgba(110,170,255,.5);
+        0 0 10px rgba(255,155,213,.95),
+        0 0 25px rgba(255,100,190,.80),
+        0 0 50px rgba(255,70,170,.55),
+        0 0 85px rgba(255,40,150,.22);
       animation: corePulse 3s ease-in-out infinite;
     }
-
     h1 {
       font-size: 38px;
       font-weight: 500;
       letter-spacing: 8px;
       margin-bottom: 14px;
     }
-
     .tagline {
       color: rgba(255,255,255,.62);
       font-size: 15px;
       line-height: 1.65;
       margin-bottom: 30px;
     }
-
     .message {
       display: flex;
       margin-bottom: 18px;
       animation: messageAppear .35s ease;
     }
-
     .message.user {
       justify-content: flex-end;
     }
-
     .message.aura {
       justify-content: flex-start;
     }
-
     .message-content {
       max-width: 86%;
     }
-
     .bubble {
       position: relative;
       padding: 14px 16px;
@@ -831,41 +725,36 @@
       white-space: pre-wrap;
       word-break: break-word;
     }
-
     .message.user .bubble {
       background: rgba(255,255,255,.10);
       border: 1px solid rgba(255,255,255,.08);
       border-bottom-right-radius: 6px;
       color: rgba(255,255,255,.94);
     }
-
     .message.aura .bubble {
       background:
         linear-gradient(
           135deg,
           rgba(255,255,255,.055),
-          rgba(130,100,255,.055)
+          rgba(255,70,170,.045)
         );
       border: 1px solid rgba(255,255,255,.08);
       border-bottom-left-radius: 6px;
       color: rgba(255,255,255,.88);
     }
-
     .aura-label {
       font-size: 10px;
       letter-spacing: 3px;
-      color: rgba(255,255,255,.35);
+      color: rgba(255,155,213,.58);
       margin-bottom: 7px;
       padding-left: 4px;
     }
-
     .stream-word {
       display: inline;
       opacity: 0;
       filter: blur(5px);
       animation: wordReveal .20s ease forwards;
     }
-
     .mist {
       position: absolute;
       width: 120px;
@@ -876,15 +765,11 @@
       border-radius: 50%;
       pointer-events: none;
       background:
-        conic-gradient(
-          from 0deg,
-          rgba(255,80,200,0),
-          rgba(255,80,200,.45),
-          rgba(140,100,255,.45),
-          rgba(70,210,255,.42),
-          rgba(100,255,210,.35),
-          rgba(255,220,100,.35),
-          rgba(255,80,200,0)
+        radial-gradient(
+          ellipse,
+          rgba(255,100,190,.45),
+          rgba(255,70,170,.20) 40%,
+          transparent 72%
         );
       filter: blur(20px);
       opacity: 0;
@@ -893,18 +778,15 @@
         left .12s linear,
         opacity .25s ease;
     }
-
     .streaming .mist {
       opacity: .75;
       animation:
         mistRotate 2.5s linear infinite,
         mistPulse 1.2s ease-in-out infinite;
     }
-
     .finished .mist {
       opacity: 0;
     }
-
     .thinking {
       display: flex;
       align-items: center;
@@ -913,30 +795,28 @@
       font-size: 13px;
       margin: 12px 0 20px 5px;
     }
-
     .thinking-core {
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      border: 1px solid transparent;
+      border: 1px solid rgba(255,105,190,.75);
       background:
-        linear-gradient(#050507,#050507) padding-box,
-        conic-gradient(
-          from 0deg,
-          #ff7bd5,
-          #8e7cff,
-          #65d9ff,
-          #ff7bd5
-        ) border-box;
+        radial-gradient(
+          circle,
+          #ff9bd5 0%,
+          #ff5eae 28%,
+          rgba(255,70,170,.18) 65%,
+          transparent 70%
+        );
+      box-shadow:
+        0 0 10px rgba(255,70,170,.45);
       animation:
-        colorSpin 1.5s linear infinite,
-        thinkingPulse 1s ease-in-out infinite;
+        thinkingPulse 1s ease-in-out infinite,
+        pinkGlow 2s ease-in-out infinite;
     }
-
     /* =====================================================
        COMPOSER
     ===================================================== */
-
     .composer {
       position: absolute;
       left: 0;
@@ -955,7 +835,6 @@
           transparent
         );
     }
-
     .composer-inner {
       display: flex;
       align-items: flex-end;
@@ -963,7 +842,6 @@
       max-width: 700px;
       margin: 0 auto;
     }
-
     #messageInput {
       flex: 1;
       min-height: 52px;
@@ -979,39 +857,40 @@
       line-height: 1.4;
       backdrop-filter: blur(15px);
     }
-
+    #messageInput:focus {
+      border-color: rgba(255,105,190,.42);
+      box-shadow:
+        0 0 22px rgba(255,70,170,.07);
+    }
     #messageInput::placeholder {
       color: rgba(255,255,255,.30);
     }
-
     #sendButton {
       width: 52px;
       height: 52px;
       flex-shrink: 0;
       border: none;
       border-radius: 18px;
-      background: white;
+      background: #ff9bd5;
       color: #07070a;
       cursor: pointer;
       font-size: 19px;
+      box-shadow:
+        0 8px 25px rgba(255,70,170,.14);
       transition:
         transform .18s,
         opacity .18s;
     }
-
     #sendButton:active {
       transform: scale(.94);
     }
-
     #sendButton:disabled {
       opacity: .35;
       cursor: default;
     }
-
     /* =====================================================
        TOAST
     ===================================================== */
-
     .toast {
       position: fixed;
       left: 50%;
@@ -1021,7 +900,7 @@
       padding: 11px 16px;
       border-radius: 14px;
       background: rgba(25,25,30,.92);
-      border: 1px solid rgba(255,255,255,.09);
+      border: 1px solid rgba(255,105,190,.14);
       box-shadow: 0 15px 40px rgba(0,0,0,.35);
       color: rgba(255,255,255,.85);
       font-size: 12px;
@@ -1031,98 +910,95 @@
       white-space: nowrap;
       backdrop-filter: blur(15px);
     }
-
     .toast.show {
       opacity: 1;
       transform: translate(-50%, 0);
     }
-
     /* =====================================================
        ANIMAÇÕES
     ===================================================== */
-
-    @keyframes colorSpin {
-      from {
-        transform: rotate(0deg);
-      }
-
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
     @keyframes auraPulse {
       0%,100% {
         transform: scale(1);
-        filter: brightness(.85);
+        filter: brightness(.88);
       }
-
       50% {
-        transform: scale(1.045);
-        filter: brightness(1.25);
+        transform: scale(1.035);
+        filter: brightness(1.18);
       }
     }
-
+    @keyframes pinkGlow {
+      0%,100% {
+        box-shadow:
+          0 0 12px rgba(255,70,170,.18),
+          0 0 30px rgba(255,70,170,.08);
+      }
+      50% {
+        box-shadow:
+          0 0 20px rgba(255,70,170,.32),
+          0 0 48px rgba(255,70,170,.14);
+      }
+    }
     @keyframes corePulse {
       0%,100% {
         transform: scale(.85);
         opacity: .88;
       }
-
       50% {
         transform: scale(1.12);
         opacity: 1;
       }
     }
-
     @keyframes miniPulse {
       0%,100% {
         transform: scale(1);
       }
-
       50% {
         transform: scale(1.08);
       }
     }
-
     @keyframes thinkingPulse {
       0%,100% {
         transform: scale(.75);
         opacity: .45;
       }
-
       50% {
         transform: scale(1.15);
         opacity: 1;
       }
     }
-
+    @keyframes coreHalo {
+      0%,100% {
+        transform: scale(.88);
+        opacity: .45;
+      }
+      50% {
+        transform: scale(1.12);
+        opacity: .85;
+      }
+    }
     @keyframes messageAppear {
       from {
         opacity: 0;
         transform: translateY(8px);
       }
-
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
-
     @keyframes wordReveal {
       from {
         opacity: 0;
         filter: blur(5px);
         transform: translateY(3px);
       }
-
       to {
         opacity: 1;
         filter: blur(0);
         transform: translateY(0);
       }
     }
-
     @keyframes mistRotate {
       from {
         transform:
@@ -1130,7 +1006,6 @@
           rotate(0deg)
           scale(.9);
       }
-
       to {
         transform:
           translate(-50%, -50%)
@@ -1138,508 +1013,331 @@
           scale(1.12);
       }
     }
-
     @keyframes mistPulse {
       0%,100% {
         filter: blur(20px) brightness(.8);
       }
-
       50% {
         filter: blur(28px) brightness(1.35);
       }
     }
-
     /* =====================================================
        MOBILE
     ===================================================== */
-
     @media (max-width: 600px) {
-
       .chat {
         padding-left: 14px;
         padding-right: 14px;
       }
-
       .message-content {
         max-width: 90%;
       }
-
       h1 {
         font-size: 34px;
       }
-
       .aura-core {
         width: 135px;
         height: 135px;
       }
-
       .core {
         width: 28px;
         height: 28px;
       }
-
       .side-menu {
         width: min(335px, 91vw);
       }
-
       .delete-history {
         opacity: .65;
       }
     }
   </style>
 </head>
-
 <body>
-
-  <!-- AUTH -->
-
   <div id="authScreen">
-
-    <div class="auth-box">
-
-      <div class="auth-core">
-        <div class="auth-ring"></div>
-        <div class="auth-core-dot"></div>
-      </div>
-
-      <div class="auth-title">
-        AURA
-      </div>
-
-      <div class="auth-subtitle">
-        Entre para continuar suas histórias.
-      </div>
-
-      <div class="auth-form">
-
-        <input
-          id="authEmail"
-          class="auth-input"
-          type="email"
-          placeholder="Seu e-mail"
-          autocomplete="email"
-        >
-
-        <input
-          id="authPassword"
-          class="auth-input"
-          type="password"
-          placeholder="Sua senha"
-          autocomplete="current-password"
-        >
-
-        <button
-          id="authButton"
-          class="auth-button"
-          onclick="handleAuth()"
-        >
-          Entrar
-        </button>
-
-      </div>
-
-      <div
-        id="authMessage"
-        class="auth-error"
-      ></div>
-
-      <button
-        id="authSwitch"
-        class="auth-switch"
-        onclick="toggleAuthMode()"
-      >
-        Ainda não tenho uma conta.
-        <span>Criar conta</span>
-      </button>
-
-    </div>
-
+<div class="auth-box">
+  <div class="auth-core">
+    <div class="auth-ring"></div>
+    <div class="auth-core-dot"></div>
   </div>
-
-
-  <!-- APP -->
-
+  <div class="auth-title">
+    AURA
+  </div>
+  <div class="auth-subtitle">
+    Entre para continuar suas histórias.
+  </div>
+  <div class="auth-form">
+    <input
+      id="authEmail"
+      class="auth-input"
+      type="email"
+      placeholder="Seu e-mail"
+      autocomplete="email"
+    >
+    <input
+      id="authPassword"
+      class="auth-input"
+      type="password"
+      placeholder="Sua senha"
+      autocomplete="current-password"
+    >
+    <button
+      id="authButton"
+      class="auth-button"
+      onclick="handleAuth()"
+    >
+      Entrar
+    </button>
+  </div>
+  <div
+    id="authMessage"
+    class="auth-error"
+  ></div>
+  <button
+    id="authSwitch"
+    class="auth-switch"
+    onclick="toggleAuthMode()"
+  >
+    Ainda não tenho uma conta.
+    <span>Criar conta</span>
+  </button>
+</div>
+  </div>
   <main
     id="app"
     class="app"
     style="display:none;"
   >
-
-    <div
-      id="menuOverlay"
-      class="menu-overlay"
+<div
+  id="menuOverlay"
+  class="menu-overlay"
+  onclick="closeMenu()"
+></div>
+<aside
+  id="sideMenu"
+  class="side-menu"
+>
+  <div class="menu-header">
+    <div class="menu-logo">
+      <div class="mini-core">
+        <div class="mini-ring"></div>
+        <div class="mini-dot"></div>
+      </div>
+      <div class="menu-logo-text">
+        AURA
+      </div>
+    </div>
+    <button
+      class="close-menu"
       onclick="closeMenu()"
-    ></div>
-
-
-    <aside
-      id="sideMenu"
-      class="side-menu"
+      aria-label="Fechar menu"
     >
-
-      <div class="menu-header">
-
-        <div class="menu-logo">
-
-          <div class="mini-core">
-            <div class="mini-ring"></div>
-            <div class="mini-dot"></div>
-          </div>
-
-          <div class="menu-logo-text">
-            AURA
-          </div>
-
-        </div>
-
-        <button
-          class="close-menu"
-          onclick="closeMenu()"
-          aria-label="Fechar menu"
-        >
-          ×
-        </button>
-
-      </div>
-
-
-      <button
-        class="new-story-menu"
-        onclick="newStory()"
-      >
-
-        <span class="new-story-icon">
-          +
-        </span>
-
-        <span class="new-story-text">
-          Nova história
-        </span>
-
-      </button>
-
-
-      <div class="history-title">
-        Suas histórias
-      </div>
-
-
+      ×
+    </button>
+  </div>
+  <button
+    class="new-story-menu"
+    onclick="newStory()"
+  >
+    <span class="new-story-icon">
+      +
+    </span>
+    <span class="new-story-text">
+      Nova história
+    </span>
+  </button>
+  <div class="history-title">
+    Suas histórias
+  </div>
+  <div
+    id="historyList"
+    class="history-list"
+  ></div>
+  <div class="account-area">
+    <div class="account-card">
       <div
-        id="historyList"
-        class="history-list"
-      ></div>
-
-
-      <div class="account-area">
-
-        <div class="account-card">
-
-          <div
-            id="accountAvatar"
-            class="account-avatar"
-          >
-            A
-          </div>
-
-          <div class="account-info">
-
-            <div class="account-label">
-              CONTA
-            </div>
-
-            <div
-              id="accountEmail"
-              class="account-email"
-            >
-              —
-            </div>
-
-          </div>
-
+        id="accountAvatar"
+        class="account-avatar"
+      >
+        A
+      </div>
+      <div class="account-info">
+        <div class="account-label">
+          CONTA
         </div>
-
-
-        <button
-          class="logout-button"
-          onclick="logout()"
+        <div
+          id="accountEmail"
+          class="account-email"
         >
-          ↪&nbsp;&nbsp; Sair da conta
-        </button>
-
+          —
+        </div>
       </div>
-
-    </aside>
-
-
-    <header class="topbar">
-
-      <button
-        class="top-action"
-        onclick="openMenu()"
-        aria-label="Abrir histórias"
-      >
-
-        <div class="hamburger">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-
-      </button>
-
-
-      <div class="brand">
-
-        <div class="mini-core">
-          <div class="mini-ring"></div>
-          <div class="mini-dot"></div>
-        </div>
-
-        <div class="brand-name">
-          AURA
-        </div>
-
-      </div>
-
-
-      <button
-        class="top-action"
-        onclick="newStory()"
-        aria-label="Nova história"
-      >
-
-        <div class="plus-icon">
-          +
-        </div>
-
-      </button>
-
-    </header>
-
-
-    <section
-      id="chat"
-      class="chat"
+    </div>
+    <button
+      class="logout-button"
+      onclick="logout()"
     >
-
-      <div
-        id="welcome"
-        class="welcome"
-      >
-
-        <div class="aura-core">
-
-          <div class="ring"></div>
-
-          <div class="core"></div>
-
-        </div>
-
-        <h1>
-          AURA
-        </h1>
-
-        <p class="tagline">
-          Sua história começa aqui.
-          <br>
-          Crie. Escolha. Viva.
-        </p>
-
-      </div>
-
-    </section>
-
-
-    <footer class="composer">
-
-      <div class="composer-inner">
-
-        <textarea
-          id="messageInput"
-          rows="1"
-          placeholder="Comece uma história..."
-          autocomplete="off"
-        ></textarea>
-
-        <button
-          id="sendButton"
-          onclick="sendMessage()"
-          aria-label="Enviar"
-        >
-          ↑
-        </button>
-
-      </div>
-
-    </footer>
-
+      ↪&nbsp;&nbsp; Sair da conta
+    </button>
+  </div>
+</aside>
+<header class="topbar">
+  <button
+    class="top-action"
+    onclick="openMenu()"
+    aria-label="Abrir histórias"
+  >
+    <div class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </button>
+  <div class="brand">
+    <div class="mini-core">
+      <div class="mini-ring"></div>
+      <div class="mini-dot"></div>
+    </div>
+    <div class="brand-name">
+      AURA
+    </div>
+  </div>
+  <button
+    class="top-action"
+    onclick="newStory()"
+    aria-label="Nova história"
+  >
+    <div class="plus-icon">
+      +
+    </div>
+  </button>
+</header>
+<section
+  id="chat"
+  class="chat"
+>
+  <div
+    id="welcome"
+    class="welcome"
+  >
+    <div class="aura-core">
+      <div class="ring"></div>
+      <div class="core"></div>
+    </div>
+    <h1>
+      AURA
+    </h1>
+    <p class="tagline">
+      Sua história começa aqui.
+      <br>
+      Crie. Escolha. Viva.
+    </p>
+  </div>
+</section>
+<footer class="composer">
+  <div class="composer-inner">
+    <textarea
+      id="messageInput"
+      rows="1"
+      placeholder="Comece uma história..."
+      autocomplete="off"
+    ></textarea>
+    <button
+      id="sendButton"
+      onclick="sendMessage()"
+      aria-label="Enviar"
+    >
+      ↑
+    </button>
+  </div>
+</footer>
   </main>
-
-
   <div
     id="toast"
     class="toast"
   ></div>
-
-
   <script>
-
-    /* =====================================================
-       SUPABASE
-    ===================================================== */
-
     const SUPABASE_URL =
       "https://vqmfsshmjdfjlnmbemxv.supabase.co";
-
     const SUPABASE_KEY =
       "sb_publishable_nCCjJPHoTODWLHvwTWN_AA_J8JivYaE";
-
     const supabaseClient =
       window.supabase.createClient(
         SUPABASE_URL,
         SUPABASE_KEY
       );
-
-
-    /* =====================================================
-       ESTADO
-    ===================================================== */
-
     let authMode = "login";
-
     let conversation = [];
-
     let isThinking = false;
-
     let currentStoryId = null;
-
     let stories = [];
-
     let currentUser = null;
-
     let appInitialized = false;
-
-
     const chat =
       document.getElementById("chat");
-
     const input =
       document.getElementById("messageInput");
-
     const sendButton =
       document.getElementById("sendButton");
-
-
-    /* =====================================================
-       AUTENTICAÇÃO
-    ===================================================== */
-
     function toggleAuthMode() {
-
       const button =
         document.getElementById("authButton");
-
       const switchButton =
         document.getElementById("authSwitch");
-
       const subtitle =
         document.querySelector(".auth-subtitle");
-
       const message =
         document.getElementById("authMessage");
-
-
       message.textContent = "";
-
-      message.className =
-        "auth-error";
-
-
+      message.className = "auth-error";
       if (authMode === "login") {
-
         authMode = "signup";
-
-        button.textContent =
-          "Criar conta";
-
+        button.textContent = "Criar conta";
         subtitle.textContent =
           "Crie sua conta e comece sua história.";
-
         switchButton.innerHTML =
           'Já tenho uma conta. <span>Entrar</span>';
-
       } else {
-
         authMode = "login";
-
-        button.textContent =
-          "Entrar";
-
+        button.textContent = "Entrar";
         subtitle.textContent =
           "Entre para continuar suas histórias.";
-
         switchButton.innerHTML =
           'Ainda não tenho uma conta. <span>Criar conta</span>';
       }
     }
-
-
     async function handleAuth() {
-
       const email =
         document
           .getElementById("authEmail")
           .value
           .trim();
-
       const password =
         document
           .getElementById("authPassword")
           .value;
-
       const button =
         document.getElementById("authButton");
-
       const message =
         document.getElementById("authMessage");
-
-
       message.textContent = "";
-
-      message.className =
-        "auth-error";
-
-
+      message.className = "auth-error";
       if (!email || !password) {
-
         message.textContent =
           "Preencha seu e-mail e sua senha.";
-
         return;
       }
-
-
       if (password.length < 6) {
-
         message.textContent =
           "A senha precisa ter pelo menos 6 caracteres.";
-
         return;
       }
-
-
       button.disabled = true;
-
       button.textContent =
         authMode === "login"
           ? "Entrando..."
           : "Criando...";
-
-
       try {
-
         if (authMode === "signup") {
-
           const {
             data,
             error
@@ -1648,31 +1346,19 @@
               email,
               password
             });
-
-
           if (error) {
             throw error;
           }
-
-
           if (data.session) {
-
-            currentUser =
-              data.user;
-
+            currentUser = data.user;
             await showApp();
-
           } else {
-
             message.className =
               "auth-error auth-success";
-
             message.textContent =
               "Conta criada. Verifique seu e-mail para confirmar o cadastro.";
           }
-
         } else {
-
           const {
             data,
             error
@@ -1681,52 +1367,30 @@
               email,
               password
             });
-
-
           if (error) {
             throw error;
           }
-
-
-          currentUser =
-            data.user;
-
+          currentUser = data.user;
           await showApp();
         }
-
-
       } catch (error) {
-
         console.error(error);
-
         message.textContent =
-          translateAuthError(
-            error.message
-          );
-
+          translateAuthError(error.message);
       } finally {
-
         button.disabled = false;
-
         button.textContent =
           authMode === "login"
             ? "Entrar"
             : "Criar conta";
       }
     }
-
-
     function translateAuthError(error) {
-
       if (!error) {
         return "Não foi possível continuar.";
       }
-
-
       const text =
         error.toLowerCase();
-
-
       if (
         text.includes(
           "invalid login credentials"
@@ -1734,8 +1398,6 @@
       ) {
         return "E-mail ou senha incorretos.";
       }
-
-
       if (
         text.includes(
           "user already registered"
@@ -1743,202 +1405,113 @@
       ) {
         return "Esse e-mail já possui uma conta.";
       }
-
-
       if (
-        text.includes(
-          "password"
-        )
+        text.includes("password")
       ) {
         return "Verifique sua senha.";
       }
-
-
       return error;
     }
-
-
     async function showApp() {
-
       if (appInitialized && currentUser) {
         return;
       }
-
-
       appInitialized = true;
-
-
       document.getElementById(
         "authScreen"
       ).style.display = "none";
-
       document.getElementById(
         "app"
       ).style.display = "block";
-
-
       if (!currentUser) {
-
-        const {
-          data
-        } =
+        const { data } =
           await supabaseClient.auth.getUser();
-
-        currentUser =
-          data.user;
+        currentUser = data.user;
       }
-
-
       updateAccountUI();
-
       await loadStories();
-
       setTimeout(() => {
-
         input.focus();
-
       }, 150);
     }
-
-
     async function checkSession() {
-
-      const {
-        data
-      } =
+      const { data } =
         await supabaseClient.auth.getSession();
-
-
       if (data.session) {
-
         currentUser =
           data.session.user;
-
         await showApp();
-
       } else {
-
         document.getElementById(
           "authScreen"
         ).style.display = "flex";
       }
     }
-
-
     supabaseClient.auth.onAuthStateChange(
       async (event, session) => {
-
         if (session) {
-
           currentUser =
             session.user;
-
           await showApp();
-
         } else if (
           event === "SIGNED_OUT"
         ) {
-
           appInitialized = false;
         }
-
       }
     );
-
-
-    /* =====================================================
-       CONTA
-    ===================================================== */
-
     function updateAccountUI() {
-
       if (!currentUser) {
         return;
       }
-
-
       const email =
         currentUser.email ||
         "Conta Aura";
-
-
       const emailElement =
         document.getElementById(
           "accountEmail"
         );
-
-
       const avatar =
         document.getElementById(
           "accountAvatar"
         );
-
-
       emailElement.textContent =
         email;
-
-
       avatar.textContent =
         email
           .charAt(0)
           .toUpperCase();
     }
-
-
     async function logout() {
-
       await supabaseClient.auth.signOut();
-
       currentUser = null;
-
       conversation = [];
-
       currentStoryId = null;
-
       stories = [];
-
       appInitialized = false;
-
       closeMenu();
-
       document.getElementById(
         "app"
       ).style.display = "none";
-
       document.getElementById(
         "authScreen"
       ).style.display = "flex";
-
-
       document.getElementById(
         "authPassword"
       ).value = "";
-
       document.getElementById(
         "authMessage"
       ).textContent = "";
-
       resetChat();
-
       showToast(
         "Você saiu da conta."
       );
     }
-
-
-    /* =====================================================
-       HISTÓRIAS — SUPABASE
-    ===================================================== */
-
     async function loadStories() {
-
       if (!currentUser) {
         return;
       }
-
-
       try {
-
         const {
           data,
           error
@@ -1958,71 +1531,46 @@
                 ascending: false
               }
             );
-
-
         if (error) {
           throw error;
         }
-
-
         stories =
           (data || []).map(
             story => ({
-              id:
-                story.id,
-
+              id: story.id,
               title:
                 story.title ||
                 "Nova história",
-
               messages:
                 Array.isArray(
                   story.messages
                 )
                   ? story.messages
                   : [],
-
               createdAt:
                 story.created_at,
-
               updatedAt:
                 story.updated_at
             })
           );
-
-
         renderHistory();
-
-
       } catch (error) {
-
         console.error(
           "Erro ao carregar histórias:",
           error
         );
-
-
         stories = [];
-
         renderHistory();
-
-
         showToast(
           "Não foi possível carregar suas histórias."
         );
       }
     }
-
-
     async function createStory() {
-
       if (!currentUser) {
         return null;
       }
-
-
       try {
-
         const {
           data,
           error
@@ -2032,10 +1580,8 @@
             .insert({
               user_id:
                 currentUser.id,
-
               title:
                 "Nova história",
-
               messages:
                 []
             })
@@ -2043,139 +1589,87 @@
               "id, title, messages, created_at, updated_at"
             )
             .single();
-
-
         if (error) {
           throw error;
         }
-
-
         const story = {
-
           id:
             data.id,
-
           title:
             data.title,
-
           messages:
             data.messages || [],
-
           createdAt:
             data.created_at,
-
           updatedAt:
             data.updated_at
         };
-
-
-        stories.unshift(
-          story
-        );
-
-
+        stories.unshift(story);
         currentStoryId =
           story.id;
-
         conversation = [];
-
         renderHistory();
-
         renderCurrentStory();
-
         closeMenu();
-
         input.focus();
-
-
         return story;
-
-
       } catch (error) {
-
         console.error(
           "Erro ao criar história:",
           error
         );
-
-
         showToast(
           "Não foi possível criar a história."
         );
-
-
         return null;
       }
     }
-
-
     function getCurrentStory() {
-
       return stories.find(
         story =>
           story.id ===
           currentStoryId
       );
     }
-
-
     async function saveCurrentConversation() {
-
       if (
         !currentStoryId ||
         !currentUser
       ) {
         return;
       }
-
-
       const story =
         getCurrentStory();
-
-
       if (!story) {
         return;
       }
-
-
       const messages =
         conversation.map(
           item => ({
             role:
               item.role,
-
             content:
               item.content
           })
         );
-
-
       const firstUser =
         conversation.find(
           item =>
             item.role === "user"
         );
-
-
       let title =
         story.title ||
         "Nova história";
-
-
       if (
         firstUser &&
         firstUser.content
       ) {
-
         title =
           createStoryTitle(
             firstUser.content
           );
       }
-
-
       try {
-
         const {
           data,
           error
@@ -2185,10 +1679,8 @@
             .update({
               title:
                 title,
-
               messages:
                 messages,
-
               updated_at:
                 new Date().toISOString()
             })
@@ -2204,59 +1696,37 @@
               "id, title, messages, created_at, updated_at"
             )
             .single();
-
-
         if (error) {
           throw error;
         }
-
-
         story.title =
           data.title;
-
         story.messages =
           data.messages || [];
-
         story.createdAt =
           data.created_at;
-
         story.updatedAt =
           data.updated_at;
-
-
         renderHistory();
-
-
       } catch (error) {
-
         console.error(
           "Erro ao salvar história:",
           error
         );
-
-
         showToast(
           "Não foi possível salvar a história."
         );
       }
     }
-
-
     function createStoryTitle(text) {
-
       let title =
         text
           .replace(/\s+/g, " ")
           .trim();
-
-
       if (!title) {
         return "Nova história";
       }
-
-
       if (title.length > 34) {
-
         title =
           title.substring(
             0,
@@ -2264,43 +1734,26 @@
           ).trim() +
           "...";
       }
-
-
       return title;
     }
-
-
     function renderHistory() {
-
       const list =
         document.getElementById(
           "historyList"
         );
-
-
       if (!list) {
         return;
       }
-
-
       if (!stories.length) {
-
         list.innerHTML = `
-
           <div class="history-empty">
-
             Suas histórias aparecerão aqui.
             <br><br>
             Comece uma nova aventura.
-
           </div>
-
         `;
-
         return;
       }
-
-
       const ordered =
         [...stories].sort(
           (a, b) =>
@@ -2311,48 +1764,31 @@
               a.updatedAt
             )
         );
-
-
       list.innerHTML =
         ordered.map(
           story => {
-
             const active =
               story.id ===
               currentStoryId
                 ? "active"
                 : "";
-
-
             return `
-
               <div
                 class="history-item ${active}"
                 onclick="openStory('${story.id}')"
               >
-
                 <div class="history-aura">
-
                   <div class="history-aura-ring"></div>
-
                   <div class="history-aura-dot"></div>
-
                 </div>
-
-
                 <div class="history-info">
-
                   <div class="history-name">
                     ${escapeHtml(story.title)}
                   </div>
-
                   <div class="history-date">
                     ${formatDate(story.updatedAt)}
                   </div>
-
                 </div>
-
-
                 <button
                   class="delete-history"
                   onclick="deleteStory(event, '${story.id}')"
@@ -2360,34 +1796,23 @@
                 >
                   ×
                 </button>
-
               </div>
-
             `;
           }
         )
         .join("");
     }
-
-
     async function openStory(id) {
-
       const story =
         stories.find(
           item =>
             item.id === id
         );
-
-
       if (!story) {
         return;
       }
-
-
       currentStoryId =
         story.id;
-
-
       conversation =
         Array.isArray(
           story.messages
@@ -2396,109 +1821,69 @@
               item => ({
                 role:
                   item.role,
-
                 content:
                   item.content
               })
             )
           : [];
-
-
       renderCurrentStory();
-
       renderHistory();
-
       closeMenu();
-
       input.placeholder =
         "Continue sua história...";
-
       input.focus();
     }
-
-
     function renderCurrentStory() {
-
       chat.innerHTML = "";
-
-
       if (!conversation.length) {
-
         chat.innerHTML = `
-
           <div
             id="welcome"
             class="welcome"
           >
-
             <div class="aura-core">
-
               <div class="ring"></div>
-
               <div class="core"></div>
-
             </div>
-
             <h1>AURA</h1>
-
             <p class="tagline">
               Sua história começa aqui.
               <br>
               Crie. Escolha. Viva.
             </p>
-
           </div>
-
         `;
-
         return;
       }
-
-
       conversation.forEach(
         item => {
-
           if (
             item.role ===
             "user"
           ) {
-
             addUserMessage(
               item.content,
               false
             );
-
           } else {
-
             addAuraInstant(
               item.content,
               false
             );
           }
-
         }
       );
-
-
       scrollToBottom();
     }
-
-
     async function deleteStory(
       event,
       id
     ) {
-
       event.stopPropagation();
-
-
       if (!currentUser) {
         return;
       }
-
-
       try {
-
         const {
           error
         } =
@@ -2513,637 +1898,382 @@
               "user_id",
               currentUser.id
             );
-
-
         if (error) {
           throw error;
         }
-
-
         stories =
           stories.filter(
             story =>
               story.id !== id
           );
-
-
         if (
           currentStoryId ===
           id
         ) {
-
           currentStoryId =
             null;
-
           conversation = [];
-
           input.placeholder =
             "Comece uma história...";
-
           renderCurrentStory();
         }
-
-
         renderHistory();
-
-
         showToast(
           "História apagada."
         );
-
-
       } catch (error) {
-
         console.error(
           "Erro ao apagar história:",
           error
         );
-
-
         showToast(
           "Não foi possível apagar a história."
         );
       }
     }
-
-
     function newStory() {
-
       conversation = [];
-
       currentStoryId = null;
-
       resetChat();
-
       closeMenu();
-
       input.value = "";
-
       resizeInput();
-
       input.placeholder =
         "Comece uma nova história...";
-
       input.focus();
-
       showToast(
         "Nova história."
       );
     }
-
-
     function resetChat() {
-
       chat.innerHTML = `
-
         <div
           id="welcome"
           class="welcome"
         >
-
           <div class="aura-core">
-
             <div class="ring"></div>
-
             <div class="core"></div>
-
           </div>
-
           <h1>AURA</h1>
-
           <p class="tagline">
             Sua história começa aqui.
             <br>
             Crie. Escolha. Viva.
           </p>
-
         </div>
-
       `;
-
       renderHistory();
     }
-
-
     async function ensureStory() {
-
       if (currentStoryId) {
-
         const existing =
           getCurrentStory();
-
         if (existing) {
           return existing;
         }
       }
-
-
       return await createStory();
     }
-
-
-    /* =====================================================
-       CHAT
-    ===================================================== */
-
     async function sendMessage() {
-
       if (isThinking) {
         return;
       }
-
-
       const message =
         input.value.trim();
-
-
       if (!message) {
         return;
       }
-
-
       const story =
         await ensureStory();
-
-
       if (!story) {
         return;
       }
-
-
       const currentWelcome =
         document.getElementById(
           "welcome"
         );
-
-
       if (currentWelcome) {
         currentWelcome.remove();
       }
-
-
-      addUserMessage(
-        message
-      );
-
-
+      addUserMessage(message);
       conversation.push({
         role: "user",
         content: message
       });
-
-
       await saveCurrentConversation();
-
-
       input.value = "";
-
       resizeInput();
-
-
       setThinking(true);
-
-
       try {
-
         const response =
           await fetch(
             "/api/chat",
             {
               method: "POST",
-
               headers: {
                 "Content-Type":
                   "application/json"
               },
-
               body:
                 JSON.stringify({
-
                   message:
                     message,
-
                   history:
                     conversation.slice(
                       0,
                       -1
                     )
-
                 })
             }
           );
-
-
         const data =
           await response.json();
-
-
         if (!response.ok) {
-
           throw new Error(
             data.error ||
             "Erro ao conversar com a Aura"
           );
         }
-
-
         conversation.push({
           role:
             "assistant",
-
           content:
             data.reply
         });
-
-
         await saveCurrentConversation();
-
-
         setThinking(false);
-
-
         await streamAura(
           data.reply
         );
-
-
         await saveCurrentConversation();
-
-
       } catch (error) {
-
         console.error(error);
-
-
         setThinking(false);
-
-
         addAuraInstant(
           "Não consegui responder agora. Tente novamente em alguns instantes."
         );
       }
     }
-
-
     function addUserMessage(
       text,
       shouldScroll = true
     ) {
-
       const wrapper =
         document.createElement(
           "div"
         );
-
-
       wrapper.className =
         "message user";
-
-
       const content =
         document.createElement(
           "div"
         );
-
-
       content.className =
         "message-content";
-
-
       const bubble =
         document.createElement(
           "div"
         );
-
-
       bubble.className =
         "bubble";
-
-
       bubble.textContent =
         text;
-
-
       content.appendChild(
         bubble
       );
-
-
       wrapper.appendChild(
         content
       );
-
-
       chat.appendChild(
         wrapper
       );
-
-
       if (shouldScroll) {
         scrollToBottom();
       }
     }
-
-
     function addAuraInstant(
       text,
       shouldScroll = true
     ) {
-
       const wrapper =
         document.createElement(
           "div"
         );
-
-
       wrapper.className =
         "message aura";
-
-
       const content =
         document.createElement(
           "div"
         );
-
-
       content.className =
         "message-content";
-
-
       const label =
         document.createElement(
           "div"
         );
-
-
       label.className =
         "aura-label";
-
-
       label.textContent =
         "AURA";
-
-
       const bubble =
         document.createElement(
           "div"
         );
-
-
       bubble.className =
         "bubble";
-
-
       bubble.textContent =
         text;
-
-
       content.appendChild(
         label
       );
-
-
       content.appendChild(
         bubble
       );
-
-
       wrapper.appendChild(
         content
       );
-
-
       chat.appendChild(
         wrapper
       );
-
-
       if (shouldScroll) {
         scrollToBottom();
       }
     }
-
-
     async function streamAura(
       text
     ) {
-
       isThinking = true;
-
       sendButton.disabled =
         true;
-
-
       const wrapper =
         document.createElement(
           "div"
         );
-
-
       wrapper.className =
         "message aura streaming";
-
-
       const content =
         document.createElement(
           "div"
         );
-
-
       content.className =
         "message-content";
-
-
       const label =
         document.createElement(
           "div"
         );
-
-
       label.className =
         "aura-label";
-
-
       label.textContent =
         "AURA";
-
-
       const bubble =
         document.createElement(
           "div"
         );
-
-
       bubble.className =
         "bubble";
-
-
       const mist =
         document.createElement(
           "div"
         );
-
-
       mist.className =
         "mist";
-
-
       bubble.appendChild(
         mist
       );
-
-
       content.appendChild(
         label
       );
-
-
       content.appendChild(
         bubble
       );
-
-
       wrapper.appendChild(
         content
       );
-
-
       chat.appendChild(
         wrapper
       );
-
-
       const parts =
         text.split(
           /(\s+)/
         );
-
-
       const words =
         parts.filter(
           part =>
             part.trim().length > 0
         );
-
-
       let wordNumber = 0;
-
-
       for (
         const part of parts
       ) {
-
         if (!part) {
           continue;
         }
-
-
         if (
           part.trim() === ""
         ) {
-
           bubble.appendChild(
             document.createTextNode(
               part
             )
           );
-
           continue;
         }
-
-
         const word =
           document.createElement(
             "span"
           );
-
-
         word.className =
           "stream-word";
-
-
         word.textContent =
           part;
-
-
         bubble.appendChild(
           word
         );
-
-
         wordNumber++;
-
-
         const progress =
           wordNumber /
           words.length;
-
-
         mist.style.left =
           `${Math.min(
             8 + progress * 84,
             92
           )}%`;
-
-
         let delay =
           105;
-
-
         if (
           part.endsWith(".") ||
           part.endsWith("!") ||
           part.endsWith("?")
         ) {
-
           delay =
             360;
-
         } else if (
           part.endsWith(",") ||
           part.endsWith(";") ||
           part.endsWith(":")
         ) {
-
           delay =
             210;
         }
-
-
         scrollToBottom();
-
-
         await wait(
           delay
         );
       }
-
-
       wrapper.classList.remove(
         "streaming"
       );
-
-
       wrapper.classList.add(
         "finished"
       );
-
-
       await wait(700);
-
-
       isThinking = false;
-
       sendButton.disabled =
         false;
-
-
       scrollToBottom();
     }
-
-
     function wait(ms) {
-
       return new Promise(
         resolve =>
           setTimeout(
@@ -3152,127 +2282,76 @@
           )
       );
     }
-
-
     function setThinking(
       thinking
     ) {
-
       isThinking =
         thinking;
-
-
       sendButton.disabled =
         thinking;
-
-
       const old =
         document.getElementById(
           "thinking"
         );
-
-
       if (old) {
         old.remove();
       }
-
-
       if (!thinking) {
         return;
       }
-
-
       const element =
         document.createElement(
           "div"
         );
-
-
       element.id =
         "thinking";
-
-
       element.className =
         "thinking";
-
-
       element.innerHTML = `
-
         <div class="thinking-core"></div>
-
         <span>
           A Aura está pensando...
         </span>
-
       `;
-
-
       chat.appendChild(
         element
       );
-
-
       scrollToBottom();
     }
-
-
     function scrollToBottom() {
-
       requestAnimationFrame(
         () => {
-
           chat.scrollTop =
             chat.scrollHeight;
-
         }
       );
     }
-
-
     input.addEventListener(
       "input",
       resizeInput
     );
-
-
     function resizeInput() {
-
       input.style.height =
         "auto";
-
-
       input.style.height =
         Math.min(
           input.scrollHeight,
           130
         ) + "px";
     }
-
-
     input.addEventListener(
       "keydown",
       function(event) {
-
         if (
           event.key === "Enter" &&
           !event.shiftKey
         ) {
-
           event.preventDefault();
-
           sendMessage();
         }
-
       }
     );
-
-
-    /* =====================================================
-       MENU
-    ===================================================== */
-
     function openMenu() {
-
       document
         .getElementById(
           "sideMenu"
@@ -3280,8 +2359,6 @@
         .classList.add(
           "open"
         );
-
-
       document
         .getElementById(
           "menuOverlay"
@@ -3289,14 +2366,9 @@
         .classList.add(
           "open"
         );
-
-
       renderHistory();
     }
-
-
     function closeMenu() {
-
       document
         .getElementById(
           "sideMenu"
@@ -3304,8 +2376,6 @@
         .classList.remove(
           "open"
         );
-
-
       document
         .getElementById(
           "menuOverlay"
@@ -3314,33 +2384,19 @@
           "open"
         );
     }
-
-
-    /* =====================================================
-       UTILIDADES
-    ===================================================== */
-
     function formatDate(
       timestamp
     ) {
-
       const date =
         new Date(
           timestamp
         );
-
-
       const now =
         new Date();
-
-
       const sameDay =
         date.toDateString() ===
         now.toDateString();
-
-
       if (sameDay) {
-
         return (
           "Hoje · " +
           date.toLocaleTimeString(
@@ -3352,8 +2408,6 @@
           )
         );
       }
-
-
       return date.toLocaleDateString(
         "pt-BR",
         {
@@ -3362,12 +2416,9 @@
         }
       );
     }
-
-
     function escapeHtml(
       text
     ) {
-
       return String(text)
         .replace(
           /&/g,
@@ -3390,53 +2441,32 @@
           "&#039;"
         );
     }
-
-
     function showToast(
       text
     ) {
-
       const toast =
         document.getElementById(
           "toast"
         );
-
-
       toast.textContent =
         text;
-
-
       toast.classList.add(
         "show"
       );
-
-
       clearTimeout(
         window.auraToastTimer
       );
-
-
       window.auraToastTimer =
         setTimeout(
           () => {
-
             toast.classList.remove(
               "show"
             );
-
           },
           1800
         );
     }
-
-
-    /* =====================================================
-       INICIAR
-    ===================================================== */
-
     checkSession();
-
   </script>
-
 </body>
 </html>
