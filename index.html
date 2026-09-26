@@ -625,6 +625,14 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    /* NOVO: CRÉDITOS */
+    .account-credits {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #ff9dca;
+      letter-spacing: .2px;
+      font-weight: 500;
+    }
     .logout-button {
       width: 100%;
       height: 43px;
@@ -1252,6 +1260,12 @@
             >
               —
             </div>
+            <div
+              id="accountCredits"
+              class="account-credits"
+            >
+              Créditos: —
+            </div>
           </div>
         </div>
         <button
@@ -1367,6 +1381,8 @@
     let stories = [];
     let currentUser = null;
     let appInitialized = false;
+    /* NOVO: CRÉDITOS */
+    let userCredits = 0;
     const chat =
       document.getElementById("chat");
     const input =
@@ -1537,9 +1553,11 @@
       if (!currentUser) {
         const { data } =
           await supabaseClient.auth.getUser();
-        currentUser = data.user;
+        currentUser =
+          data.user;
       }
       updateAccountUI();
+      await loadCredits();
       await loadStories();
       setTimeout(() => {
         input.focus();
@@ -1592,6 +1610,114 @@
         email
           .charAt(0)
           .toUpperCase();
+      updateCreditsUI();
+    }
+    /* =====================================================
+       CRÉDITOS
+    ===================================================== */
+    async function loadCredits() {
+      if (!currentUser) {
+        return;
+      }
+      try {
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from("user_credits")
+            .select("credits")
+            .eq(
+              "user_id",
+              currentUser.id
+            )
+            .maybeSingle();
+        if (error) {
+          throw error;
+        }
+        if (data) {
+          userCredits =
+            Number(data.credits) || 0;
+        } else {
+          userCredits = 0;
+        }
+        updateCreditsUI();
+        updateSendButton();
+      } catch (error) {
+        console.error(
+          "Erro ao carregar créditos:",
+          error
+        );
+        userCredits = 0;
+        updateCreditsUI();
+        showToast(
+          "Não foi possível carregar seus créditos."
+        );
+      }
+    }
+    function updateCreditsUI() {
+      const element =
+        document.getElementById(
+          "accountCredits"
+        );
+      if (!element) {
+        return;
+      }
+      element.textContent =
+        `Créditos: ${userCredits}`;
+    }
+    async function consumeCredit() {
+      if (!currentUser) {
+        return false;
+      }
+      if (userCredits <= 0) {
+        return false;
+      }
+      const newCredits =
+        userCredits - 1;
+      try {
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from("user_credits")
+            .update({
+              credits:
+                newCredits
+            })
+            .eq(
+              "user_id",
+              currentUser.id
+            )
+            .select("credits")
+            .single();
+        if (error) {
+          throw error;
+        }
+        userCredits =
+          Number(data.credits) || 0;
+        updateCreditsUI();
+        return true;
+      } catch (error) {
+        console.error(
+          "Erro ao consumir crédito:",
+          error
+        );
+        return false;
+      }
+    }
+    function updateSendButton() {
+      if (!sendButton) {
+        return;
+      }
+      if (isThinking) {
+        sendButton.disabled =
+          true;
+        return;
+      }
+      sendButton.disabled =
+        userCredits <= 0;
     }
     /* =====================================================
        LOGOUT
@@ -1602,6 +1728,7 @@
       conversation = [];
       currentStoryId = null;
       stories = [];
+      userCredits = 0;
       appInitialized = false;
       closeMenu();
       document.getElementById(
@@ -1654,7 +1781,8 @@
         stories =
           (data || []).map(
             story => ({
-              id: story.id,
+              id:
+                story.id,
               title:
                 story.title ||
                 "Nova história",
@@ -2097,14 +2225,38 @@
       if (isThinking) {
         return;
       }
+      if (userCredits <= 0) {
+        showToast(
+          "Você não possui mais créditos."
+        );
+        updateSendButton();
+        return;
+      }
       const message =
         input.value.trim();
       if (!message) {
         return;
       }
+      /*
+       * Consumimos o crédito antes de enviar
+       * para evitar respostas sem cobrança.
+       */
+      const creditConsumed =
+        await consumeCredit();
+      if (!creditConsumed) {
+        showToast(
+          "Não foi possível usar seu crédito."
+        );
+        return;
+      }
       const story =
         await ensureStory();
       if (!story) {
+        /*
+         * Se não conseguirmos criar a história,
+         * devolvemos o crédito.
+         */
+        await restoreCredit();
         return;
       }
       const currentWelcome =
@@ -2170,6 +2322,43 @@
         setThinking(false);
         addAuraInstant(
           "Não consegui responder agora. Tente novamente em alguns instantes."
+        );
+      }
+    }
+    async function restoreCredit() {
+      if (!currentUser) {
+        return;
+      }
+      try {
+        const newCredits =
+          userCredits + 1;
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from("user_credits")
+            .update({
+              credits:
+                newCredits
+            })
+            .eq(
+              "user_id",
+              currentUser.id
+            )
+            .select("credits")
+            .single();
+        if (error) {
+          throw error;
+        }
+        userCredits =
+          Number(data.credits) || newCredits;
+        updateCreditsUI();
+        updateSendButton();
+      } catch (error) {
+        console.error(
+          "Erro ao devolver crédito:",
+          error
         );
       }
     }
@@ -2383,8 +2572,7 @@
       );
       await wait(700);
       isThinking = false;
-      sendButton.disabled =
-        false;
+      updateSendButton();
       scrollToBottom();
     }
     function wait(ms) {
@@ -2404,8 +2592,6 @@
     ) {
       isThinking =
         thinking;
-      sendButton.disabled =
-        thinking;
       const old =
         document.getElementById(
           "thinking"
@@ -2414,8 +2600,11 @@
         old.remove();
       }
       if (!thinking) {
+        updateSendButton();
         return;
       }
+      sendButton.disabled =
+        true;
       const element =
         document.createElement(
           "div"
@@ -2438,14 +2627,6 @@
     /* =====================================================
        INPUT
     ===================================================== */
-    function scrollToBottom() {
-      requestAnimationFrame(
-        () => {
-          chat.scrollTop =
-            chat.scrollHeight;
-        }
-      );
-    }
     input.addEventListener(
       "input",
       resizeInput
@@ -2490,6 +2671,7 @@
           "open"
         );
       renderHistory();
+      updateCreditsUI();
     }
     function closeMenu() {
       document
