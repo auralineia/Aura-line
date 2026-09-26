@@ -2,1716 +2,2809 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#050505">
-<meta name="description" content="AURA — intelligence for your story">
-<title>AURA — intelligence for your story</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<title>Aura</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 :root{
   --bg:#050505;
-  --bg2:#090909;
-  --panel:#0c0c0d;
-  --panel2:#111113;
-  --panel3:#171719;
-  --line:rgba(255,255,255,.08);
-  --line2:rgba(255,255,255,.13);
-  --text:#f7f7f8;
-  --muted:#99999f;
-  --muted2:#696970;
-  --pink:#ff3f9f;
-  --pink2:#ff70ba;
-  --pink3:#ff9bcd;
-  --pinkSoft:rgba(255,63,159,.12);
-  --pinkSoft2:rgba(255,63,159,.07);
-  --danger:#ff557d;
-  --green:#67e6a2;
+  --bg2:#0a0a0a;
+  --panel:#0d0d0f;
+  --panel2:#111114;
+  --border:rgba(255,255,255,.08);
+  --border-pink:rgba(255,48,151,.30);
+
+  --pink:#ff2f96;
+  --pink2:#ff4eab;
+  --pink3:#ff82c2;
+  --pink-soft:rgba(255,47,150,.12);
+  --pink-glow:rgba(255,47,150,.22);
+
+  --text:#f8f8fa;
+  --muted:#92929b;
+  --muted2:#686871;
+
+  --danger:#ff527d;
+  --success:#55e6a5;
+
   --radius:18px;
-  --sidebar:318px;
+  --sidebar:300px;
 }
+
 *{
   box-sizing:border-box;
   -webkit-tap-highlight-color:transparent;
 }
-html,body{
+
+html,
+body{
   margin:0;
   width:100%;
   height:100%;
-  overflow:hidden;
   background:var(--bg);
   color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,Arial,sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,Arial,sans-serif;
+  overflow:hidden;
 }
-button,input,textarea,select{
+
+button,
+input,
+textarea{
   font:inherit;
 }
+
 button{
   border:0;
   cursor:pointer;
 }
+
 .hidden{
   display:none!important;
 }
-/* =========================
-   AURA BRAND MARK
-========================= */
-.aura-mark{
-  position:relative;
-  width:34px;
-  height:34px;
-  flex:none;
-  display:grid;
-  place-items:center;
-}
-.aura-mark .core{
-  width:13px;
-  height:13px;
-  border-radius:50%;
-  background:
-    radial-gradient(circle at 40% 35%,#fff 0 12%,#ffd8eb 30%,var(--pink2) 62%,var(--pink) 100%);
-  box-shadow:
-    0 0 9px rgba(255,112,186,.9),
-    0 0 23px rgba(255,63,159,.55);
-  position:relative;
-  z-index:2;
-}
-.aura-mark .ring{
-  position:absolute;
-  inset:5px;
-  border:1px solid rgba(255,112,186,.82);
-  border-radius:50%;
-  transform:rotate(-20deg) scaleX(.82);
-  box-shadow:0 0 12px rgba(255,63,159,.25);
-}
-.aura-mark .ring2{
-  position:absolute;
-  inset:2px 8px;
-  border:1px solid rgba(255,155,205,.35);
-  border-radius:50%;
-  transform:rotate(42deg);
-}
-.aura-mark.thinking .core{
-  animation:auraPulse 1s infinite ease-in-out;
-}
-.aura-mark.thinking .ring{
-  animation:auraSpin 1.5s infinite linear;
-}
-@keyframes auraPulse{
-  0%,100%{transform:scale(.82);box-shadow:0 0 8px rgba(255,112,186,.6)}
-  50%{transform:scale(1.18);box-shadow:0 0 24px rgba(255,63,159,.95)}
-}
-@keyframes auraSpin{
-  from{transform:rotate(-20deg) scaleX(.82)}
-  to{transform:rotate(340deg) scaleX(.82)}
-}
-/* =========================
-   AUTH
-========================= */
-.auth{
-  width:100%;
-  height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-  background:
-    radial-gradient(circle at 50% 40%,rgba(255,63,159,.09),transparent 34%),
-    var(--bg);
-}
-.auth-box{
-  width:min(430px,100%);
-  text-align:center;
-}
-.auth-logo{
-  margin:0 auto 28px;
-  width:74px;
-  height:74px;
-}
-.auth-logo .core{
-  width:27px;
-  height:27px;
-}
-.auth-logo .ring{
-  inset:12px;
-}
-.auth-logo .ring2{
-  inset:6px 18px;
-}
-.auth h1{
-  font-size:32px;
-  letter-spacing:-1.5px;
-  margin:0 0 8px;
-  font-weight:700;
-}
-.tagline{
-  color:var(--muted);
-  font-size:15px;
-  margin-bottom:34px;
-}
-.auth-card{
-  background:rgba(13,13,14,.9);
-  border:1px solid var(--line);
-  border-radius:24px;
-  padding:22px;
-  box-shadow:0 20px 80px rgba(0,0,0,.4);
-}
-.field{
-  margin-bottom:12px;
-}
-.field input,
-.field textarea,
-.field select{
-  width:100%;
-  background:#101012;
-  color:var(--text);
-  border:1px solid var(--line);
-  outline:none;
-  border-radius:13px;
-  padding:14px 15px;
-  transition:.2s;
-}
-.field input:focus,
-.field textarea:focus,
-.field select:focus{
-  border-color:rgba(255,63,159,.55);
-  box-shadow:0 0 0 3px rgba(255,63,159,.08);
-}
-.primary-btn{
-  width:100%;
-  padding:14px 18px;
-  border-radius:13px;
-  color:#fff;
-  font-weight:650;
-  background:linear-gradient(135deg,#ff318f,#ff62b2);
-  box-shadow:0 8px 25px rgba(255,63,159,.18);
-}
-.primary-btn:hover{
-  filter:brightness(1.08);
-}
-.secondary-btn{
-  padding:12px 16px;
-  border-radius:12px;
-  background:#151517;
-  color:var(--text);
-  border:1px solid var(--line);
-}
-.auth-switch{
-  margin-top:17px;
-  color:var(--muted);
-  font-size:13px;
-}
-.auth-switch button{
-  color:var(--pink2);
-  background:none;
-  padding:0;
-}
+
 /* =========================
    APP
 ========================= */
-.app{
+
+#app{
+  position:relative;
   width:100%;
-  height:100%;
-  display:flex;
-  background:var(--bg);
+  height:100dvh;
+  min-height:100vh;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(255,47,150,.10),transparent 35%),
+    var(--bg);
 }
-.main{
-  min-width:0;
-  flex:1;
-  height:100%;
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar{
+  position:fixed;
+  z-index:100;
+  left:0;
+  top:0;
+  width:var(--sidebar);
+  height:100dvh;
+  background:
+    linear-gradient(180deg,#0b0b0d 0%,#080809 100%);
+  border-right:1px solid var(--border);
+  transform:translateX(-105%);
+  transition:transform .28s cubic-bezier(.2,.8,.2,1);
   display:flex;
   flex-direction:column;
-  position:relative;
+  box-shadow:20px 0 60px rgba(0,0,0,.35);
 }
-/* =========================
-   TOPBAR — INTENCIONALMENTE LIMPA
-========================= */
-.topbar{
-  height:68px;
-  flex:none;
+
+.sidebar.open{
+  transform:translateX(0);
+}
+
+.sidebar-head{
+  height:76px;
   display:flex;
   align-items:center;
+  justify-content:space-between;
   padding:0 18px;
-  border-bottom:1px solid rgba(255,255,255,.045);
-  position:relative;
-  z-index:5;
+  border-bottom:1px solid var(--border);
 }
-.menu-btn{
-  width:43px;
-  height:43px;
+
+.sidebar-brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.aura-mark{
+  width:36px;
+  height:36px;
+  border-radius:12px;
   display:grid;
   place-items:center;
-  background:transparent;
+  position:relative;
+  background:
+    radial-gradient(circle at 35% 30%,#ff9fd0 0%,#ff4ca7 27%,#ff167e 65%,#8f0649 100%);
+  box-shadow:
+    0 0 24px rgba(255,47,150,.35),
+    inset 0 1px 0 rgba(255,255,255,.35);
+  overflow:hidden;
+}
+
+.aura-mark::before{
+  content:"";
+  position:absolute;
+  inset:7px;
+  border:1px solid rgba(255,255,255,.65);
+  border-radius:50%;
+  opacity:.7;
+}
+
+.aura-mark span{
+  position:relative;
+  z-index:2;
+  font-size:14px;
+  font-weight:900;
+  color:#fff;
+  letter-spacing:-.5px;
+}
+
+.brand-name{
+  font-size:19px;
+  font-weight:750;
+  letter-spacing:-.6px;
+}
+
+.brand-name b{
+  color:var(--pink);
+}
+
+.close-menu{
+  width:40px;
+  height:40px;
   border-radius:12px;
+  background:rgba(255,255,255,.05);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-size:23px;
+}
+
+.sidebar-body{
+  flex:1;
+  overflow-y:auto;
+  padding:16px 12px 20px;
+}
+
+.sidebar-section{
+  margin-bottom:22px;
+}
+
+.sidebar-label{
+  color:#62626a;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1.4px;
+  font-weight:800;
+  padding:0 11px 8px;
+}
+
+.side-item{
+  width:100%;
+  min-height:48px;
+  border-radius:14px;
+  background:transparent;
+  color:#d7d7dc;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:0 12px;
+  margin:3px 0;
+  text-align:left;
+  transition:.18s ease;
+}
+
+.side-item:hover,
+.side-item.active{
+  background:rgba(255,47,150,.10);
   color:#fff;
 }
-.menu-btn:hover{
-  background:rgba(255,255,255,.06);
+
+.side-icon{
+  width:28px;
+  height:28px;
+  border-radius:9px;
+  display:grid;
+  place-items:center;
+  color:var(--pink);
+  background:rgba(255,47,150,.10);
+  font-size:15px;
+  flex:none;
 }
-.menu-lines{
-  width:20px;
-  height:16px;
+
+.side-item span:last-child{
+  font-size:14px;
+  font-weight:600;
+}
+
+.history-list{
   display:flex;
   flex-direction:column;
-  justify-content:space-between;
+  gap:4px;
+  max-height:330px;
+  overflow-y:auto;
 }
-.menu-lines span{
-  display:block;
-  height:1.5px;
+
+.history-empty{
+  color:#66666f;
+  font-size:12px;
+  line-height:1.5;
+  padding:10px 12px;
+}
+
+.history-item{
   width:100%;
+  border-radius:12px;
+  background:transparent;
+  color:#aaaab2;
+  text-align:left;
+  padding:10px 11px;
+  overflow:hidden;
+}
+
+.history-item:hover{
+  background:rgba(255,255,255,.045);
+  color:#fff;
+}
+
+.history-title{
+  font-size:12px;
+  font-weight:650;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.history-date{
+  font-size:10px;
+  color:#5f5f67;
+  margin-top:4px;
+}
+
+.sidebar-bottom{
+  border-top:1px solid var(--border);
+  padding:12px;
+}
+
+.user-card{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border-radius:14px;
+  background:rgba(255,255,255,.035);
+}
+
+.user-avatar{
+  width:36px;
+  height:36px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#ff4aa7,#9c0b59);
+  font-weight:800;
+  color:#fff;
+  flex:none;
+}
+
+.user-info{
+  min-width:0;
+  flex:1;
+}
+
+.user-email{
+  font-size:12px;
+  color:#d9d9de;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.user-plan{
+  color:var(--pink3);
+  font-size:10px;
+  margin-top:3px;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+  font-weight:800;
+}
+
+.logout-button{
+  width:34px;
+  height:34px;
   border-radius:10px;
+  background:rgba(255,255,255,.05);
+  color:#aaaab0;
+}
+
+/* =========================
+   OVERLAY
+========================= */
+
+.sidebar-overlay{
+  position:fixed;
+  z-index:90;
+  inset:0;
+  background:rgba(0,0,0,.64);
+  backdrop-filter:blur(3px);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s ease;
+}
+
+.sidebar-overlay.open{
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+
+.topbar{
+  position:absolute;
+  z-index:20;
+  left:0;
+  top:0;
+  width:100%;
+  height:74px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+  pointer-events:none;
+}
+
+.topbar-left,
+.topbar-right{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  pointer-events:auto;
+}
+
+.menu-button{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  background:rgba(10,10,11,.82);
+  border:1px solid rgba(255,255,255,.07);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  backdrop-filter:blur(18px);
+  box-shadow:0 10px 30px rgba(0,0,0,.18);
+}
+
+.menu-button i{
+  display:block;
+  width:18px;
+  height:2px;
+  border-radius:4px;
   background:#fff;
 }
-.brand{
+
+.top-brand{
   position:absolute;
   left:50%;
   transform:translateX(-50%);
   display:flex;
   align-items:center;
-  gap:9px;
+  gap:8px;
+  pointer-events:none;
 }
-.brand-name{
-  font-size:15px;
-  font-weight:750;
-  letter-spacing:2.5px;
+
+.top-brand .aura-mark{
+  width:30px;
+  height:30px;
+  border-radius:10px;
 }
+
+.top-brand .aura-mark::before{
+  inset:6px;
+}
+
+.top-brand .aura-mark span{
+  font-size:11px;
+}
+
+.top-brand-name{
+  font-size:17px;
+  font-weight:800;
+  letter-spacing:-.5px;
+}
+
+.top-brand-name b{
+  color:var(--pink);
+}
+
 .credit-pill{
-  margin-left:auto;
+  min-width:68px;
+  height:38px;
+  padding:0 11px;
+  border-radius:13px;
+  border:1px solid rgba(255,47,150,.24);
+  background:rgba(255,47,150,.08);
+  color:#fff;
   display:flex;
   align-items:center;
-  gap:7px;
-  padding:8px 11px;
-  border:1px solid rgba(255,63,159,.22);
-  background:rgba(255,63,159,.055);
-  border-radius:999px;
-  font-size:12px;
-  color:#f6d7e8;
+  justify-content:center;
+  gap:6px;
+  backdrop-filter:blur(18px);
 }
-.credit-dot{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:var(--pink);
-  box-shadow:0 0 8px var(--pink);
+
+.credit-symbol{
+  color:var(--pink);
+  font-size:13px;
+  font-weight:900;
 }
+
+#creditValue{
+  font-size:13px;
+  font-weight:800;
+}
+
 /* =========================
    CHAT
 ========================= */
-.chat{
+
+.chat-page{
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
+
+.chat-scroll{
   flex:1;
   min-height:0;
   overflow-y:auto;
-  padding:34px 20px 140px;
+  overflow-x:hidden;
+  padding:92px 16px 160px;
   scroll-behavior:smooth;
 }
+
 .chat-inner{
-  width:min(820px,100%);
+  width:100%;
+  max-width:840px;
   margin:0 auto;
 }
+
 .welcome{
-  min-height:calc(100vh - 210px);
+  min-height:calc(100dvh - 260px);
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
   text-align:center;
-  padding:20px;
+  padding:40px 15px 20px;
 }
-.welcome .aura-mark{
-  width:70px;
-  height:70px;
-  margin-bottom:24px;
+
+.welcome-aura{
+  position:relative;
+  width:82px;
+  height:82px;
+  border-radius:27px;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle at 35% 28%,#ffb7dc 0%,#ff5db0 25%,#ff187f 58%,#73043a 100%);
+  box-shadow:
+    0 0 35px rgba(255,47,150,.30),
+    0 0 90px rgba(255,47,150,.12),
+    inset 0 1px 0 rgba(255,255,255,.35);
+  animation:auraFloat 3.8s ease-in-out infinite;
 }
-.welcome .aura-mark .core{
-  width:27px;
-  height:27px;
+
+.welcome-aura::before,
+.welcome-aura::after{
+  content:"";
+  position:absolute;
+  border:1px solid rgba(255,116,186,.18);
+  border-radius:50%;
 }
-.welcome .aura-mark .ring{
-  inset:11px;
+
+.welcome-aura::before{
+  inset:-13px;
+  animation:pulseRing 2.8s ease-in-out infinite;
 }
-.welcome .aura-mark .ring2{
-  inset:6px 18px;
+
+.welcome-aura::after{
+  inset:-26px;
+  animation:pulseRing 2.8s ease-in-out infinite .7s;
 }
-.welcome h2{
-  margin:0;
-  font-size:30px;
+
+.welcome-aura span{
+  font-size:27px;
+  font-weight:950;
+  color:#fff;
+  position:relative;
+  z-index:2;
+  letter-spacing:-1px;
+}
+
+@keyframes auraFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-7px)}
+}
+
+@keyframes pulseRing{
+  0%,100%{opacity:.12;transform:scale(.98)}
+  50%{opacity:.35;transform:scale(1.04)}
+}
+
+.welcome h1{
+  margin:34px 0 8px;
+  font-size:31px;
   letter-spacing:-1.3px;
+  font-weight:850;
 }
+
+.welcome h1 span{
+  color:var(--pink);
+}
+
 .welcome p{
-  color:var(--muted);
-  margin:9px 0 0;
+  max-width:470px;
+  margin:0;
+  color:#85858d;
+  line-height:1.6;
   font-size:14px;
 }
-.messages{
-  display:flex;
-  flex-direction:column;
-  gap:22px;
+
+.suggestions{
+  width:100%;
+  max-width:640px;
+  margin-top:27px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:9px;
 }
+
+.suggestion{
+  min-height:48px;
+  padding:12px 13px;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:15px;
+  background:rgba(255,255,255,.025);
+  color:#cfcfd4;
+  text-align:left;
+  font-size:12px;
+  transition:.18s ease;
+}
+
+.suggestion:hover{
+  border-color:var(--border-pink);
+  background:rgba(255,47,150,.07);
+  color:#fff;
+}
+
+/* =========================
+   MESSAGES
+========================= */
+
 .message{
+  width:100%;
   display:flex;
-  gap:12px;
-  line-height:1.65;
-  font-size:15px;
+  margin:0 0 22px;
 }
+
 .message.user{
   justify-content:flex-end;
 }
-.message.user .bubble{
-  max-width:min(680px,85%);
-  background:#151517;
-  border:1px solid var(--line);
-  border-radius:18px 18px 5px 18px;
-  padding:12px 15px;
-}
+
 .message.aura{
-  align-items:flex-start;
+  justify-content:flex-start;
 }
-.message.aura .aura-mark{
-  width:28px;
-  height:28px;
-  margin-top:2px;
+
+.message-bubble{
+  max-width:min(720px,92%);
+  border-radius:20px;
+  line-height:1.65;
+  font-size:14px;
+  word-wrap:break-word;
 }
-.message.aura .aura-mark .core{
-  width:10px;
-  height:10px;
+
+.message.user .message-bubble{
+  padding:12px 15px;
+  color:#fff;
+  background:
+    linear-gradient(135deg,#ff3c9d,#d90d69);
+  border-bottom-right-radius:6px;
+  box-shadow:0 8px 28px rgba(255,47,150,.12);
 }
-.message.aura .aura-mark .ring{
-  inset:4px;
+
+.message.aura .message-bubble{
+  padding:3px 2px;
+  color:#e9e9ed;
 }
-.message.aura .aura-mark .ring2{
-  inset:2px 7px;
+
+.message.aura .message-content{
+  white-space:normal;
 }
-.message.aura .content{
-  max-width:760px;
-  color:#ededf0;
+
+.message-content p{
+  margin:0 0 12px;
 }
-.message.aura .content p{
-  margin:0 0 10px;
-}
-.message.aura .content p:last-child{
+
+.message-content p:last-child{
   margin-bottom:0;
 }
-.typing{
+
+.message-content strong{
+  color:#fff;
+}
+
+.message-content code{
+  background:rgba(255,255,255,.07);
+  padding:2px 6px;
+  border-radius:6px;
+  color:#ff9bcb;
+}
+
+.message-content pre{
+  background:#0b0b0d;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;
+  padding:14px;
+  overflow:auto;
+  margin:12px 0;
+}
+
+.message-content pre code{
+  background:none;
+  padding:0;
+  color:#eee;
+}
+
+.thinking{
   display:flex;
   align-items:center;
-  gap:10px;
-  color:var(--muted);
-  font-size:13px;
+  gap:9px;
+  min-height:34px;
 }
-.dots{
+
+.thinking-mark{
+  width:28px;
+  height:28px;
+  border-radius:9px;
+  background:linear-gradient(135deg,#ff48a4,#a2075c);
+  display:grid;
+  place-items:center;
+  box-shadow:0 0 20px rgba(255,47,150,.18);
+}
+
+.thinking-mark span{
+  font-size:10px;
+  font-weight:900;
+}
+
+.thinking-text{
+  color:#777780;
+  font-size:12px;
+}
+
+.thinking-dots{
   display:flex;
-  gap:4px;
+  gap:3px;
 }
-.dots i{
+
+.thinking-dots i{
   width:4px;
   height:4px;
   border-radius:50%;
-  background:var(--pink2);
-  animation:dot 1.1s infinite ease-in-out;
+  background:var(--pink);
+  animation:dot .9s infinite;
 }
-.dots i:nth-child(2){animation-delay:.15s}
-.dots i:nth-child(3){animation-delay:.3s}
+
+.thinking-dots i:nth-child(2){animation-delay:.15s}
+.thinking-dots i:nth-child(3){animation-delay:.3s}
+
 @keyframes dot{
-  0%,100%{opacity:.25;transform:translateY(0)}
-  50%{opacity:1;transform:translateY(-3px)}
+  0%,70%,100%{opacity:.25;transform:translateY(0)}
+  35%{opacity:1;transform:translateY(-3px)}
 }
+
 /* =========================
    COMPOSER
 ========================= */
+
 .composer-wrap{
   position:absolute;
+  z-index:30;
   left:0;
-  right:0;
   bottom:0;
-  padding:18px 20px 20px;
-  background:linear-gradient(to top,var(--bg) 72%,transparent);
+  width:100%;
+  padding:12px 15px calc(13px + env(safe-area-inset-bottom));
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5,5,5,0),
+      rgba(5,5,5,.86) 20%,
+      #050505 58%
+    );
   pointer-events:none;
 }
+
 .composer{
-  width:min(820px,100%);
-  margin:auto;
-  display:flex;
-  align-items:flex-end;
-  gap:8px;
-  padding:8px;
-  border:1px solid var(--line2);
-  background:rgba(13,13,14,.96);
-  border-radius:19px;
-  box-shadow:0 15px 50px rgba(0,0,0,.45);
+  width:100%;
+  max-width:840px;
+  margin:0 auto;
   pointer-events:auto;
 }
-.composer textarea{
+
+.composer-box{
+  min-height:58px;
+  display:flex;
+  align-items:flex-end;
+  gap:9px;
+  padding:8px;
+  background:rgba(15,15,17,.94);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:19px;
+  box-shadow:
+    0 15px 50px rgba(0,0,0,.45),
+    0 0 0 1px rgba(255,47,150,.025);
+  backdrop-filter:blur(24px);
+  transition:.2s ease;
+}
+
+.composer-box:focus-within{
+  border-color:rgba(255,47,150,.35);
+  box-shadow:
+    0 15px 50px rgba(0,0,0,.45),
+    0 0 30px rgba(255,47,150,.07);
+}
+
+#input{
   flex:1;
-  min-width:0;
-  max-height:150px;
   resize:none;
+  min-height:40px;
+  max-height:140px;
   border:0;
   outline:0;
   background:transparent;
   color:#fff;
   padding:10px 9px;
   line-height:1.45;
-}
-.composer textarea::placeholder{
-  color:#6f6f75;
-}
-.send-btn{
-  width:40px;
-  height:40px;
-  border-radius:13px;
-  background:var(--pink);
-  color:#fff;
-  display:grid;
-  place-items:center;
-  transition:.2s;
-}
-.send-btn:hover{
-  transform:translateY(-1px);
-  box-shadow:0 6px 20px rgba(255,63,159,.28);
-}
-.send-btn:disabled{
-  opacity:.35;
-  cursor:not-allowed;
-  transform:none;
-}
-.send-arrow{
-  width:14px;
-  height:14px;
-  border-right:2px solid white;
-  border-top:2px solid white;
-  transform:rotate(-45deg);
-  margin-left:-3px;
-}
-/* =========================
-   SIDEBAR
-========================= */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.58);
-  z-index:30;
-  opacity:0;
-  pointer-events:none;
-  transition:.25s;
-  backdrop-filter:blur(3px);
-}
-.overlay.show{
-  opacity:1;
-  pointer-events:auto;
-}
-.sidebar{
-  position:fixed;
-  left:0;
-  top:0;
-  bottom:0;
-  width:min(var(--sidebar),88vw);
-  background:#09090a;
-  border-right:1px solid var(--line);
-  z-index:40;
-  transform:translateX(-102%);
-  transition:transform .28s cubic-bezier(.2,.8,.2,1);
-  display:flex;
-  flex-direction:column;
-  box-shadow:20px 0 70px rgba(0,0,0,.35);
-}
-.sidebar.open{
-  transform:translateX(0);
-}
-.sidebar-head{
-  height:76px;
-  flex:none;
-  display:flex;
-  align-items:center;
-  padding:0 18px;
-  border-bottom:1px solid var(--line);
-}
-.sidebar-brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.sidebar-brand strong{
-  letter-spacing:2px;
   font-size:14px;
 }
-.close-sidebar{
-  margin-left:auto;
-  width:38px;
-  height:38px;
-  border-radius:11px;
-  background:#121214;
-  color:#bbb;
-  font-size:21px;
+
+#input::placeholder{
+  color:#62626b;
 }
-.sidebar-body{
-  overflow-y:auto;
-  padding:16px 12px 22px;
-}
-.section-label{
-  padding:11px 10px 7px;
-  color:#65656b;
-  font-size:10px;
-  font-weight:700;
-  letter-spacing:1.6px;
-  text-transform:uppercase;
-}
-.nav-item{
-  width:100%;
-  min-height:58px;
-  padding:9px 10px;
-  display:flex;
-  align-items:center;
-  gap:13px;
-  background:transparent;
-  color:#d8d8dc;
-  border-radius:14px;
-  text-align:left;
-  margin-bottom:3px;
-}
-.nav-item:hover{
-  background:#111113;
-}
-.nav-item.active{
-  background:rgba(255,63,159,.09);
-  color:#fff;
-}
-.nav-icon{
-  width:36px;
-  height:36px;
+
+.send-button{
+  width:42px;
+  height:42px;
+  border-radius:13px;
   flex:none;
+  background:linear-gradient(135deg,#ff48a5,#e90e70);
+  color:#fff;
   display:grid;
   place-items:center;
-  border-radius:11px;
-  color:var(--pink2);
-  background:rgba(255,63,159,.075);
-  border:1px solid rgba(255,63,159,.12);
+  box-shadow:0 7px 22px rgba(255,47,150,.22);
+  transition:.18s ease;
 }
-/* AURA ICON SYSTEM */
-.nav-icon svg{
-  width:19px;
-  height:19px;
-  stroke:currentColor;
+
+.send-button:hover{
+  transform:translateY(-1px);
+  box-shadow:0 10px 27px rgba(255,47,150,.30);
+}
+
+.send-button:disabled{
+  opacity:.45;
+  transform:none;
+  cursor:not-allowed;
+}
+
+.send-button svg{
+  width:18px;
+  height:18px;
   fill:none;
-  stroke-width:1.7;
+  stroke:currentColor;
+  stroke-width:2.2;
   stroke-linecap:round;
   stroke-linejoin:round;
 }
-.nav-copy{
-  min-width:0;
-  flex:1;
+
+.composer-note{
+  text-align:center;
+  color:#4d4d54;
+  font-size:9px;
+  margin-top:8px;
 }
-.nav-title{
-  font-size:13px;
-  font-weight:600;
-}
-.nav-sub{
-  margin-top:2px;
-  color:#68686e;
-  font-size:10px;
-}
-.nav-chevron{
-  color:#55555b;
-  font-size:17px;
-}
-.sidebar-profile{
-  margin-top:16px;
-  padding:14px;
-  border-radius:16px;
-  background:#0f0f11;
-  border:1px solid var(--line);
-}
-.profile-name{
-  font-size:13px;
-  font-weight:650;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-.profile-email{
-  color:#6d6d73;
-  font-size:10px;
-  margin-top:3px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-.plan-mini{
-  margin-top:11px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  color:#ddd;
-  font-size:11px;
-}
-.plan-mini b{
-  color:var(--pink2);
-}
+
 /* =========================
    MODALS
 ========================= */
-.modal-layer{
+
+.modal-overlay{
   position:fixed;
+  z-index:200;
   inset:0;
-  z-index:80;
-  display:flex;
+  background:rgba(0,0,0,.72);
+  backdrop-filter:blur(8px);
+  display:none;
   align-items:center;
   justify-content:center;
   padding:18px;
-  background:rgba(0,0,0,.7);
-  backdrop-filter:blur(7px);
 }
+
+.modal-overlay.open{
+  display:flex;
+}
+
 .modal{
-  width:min(720px,100%);
-  max-height:min(88vh,760px);
+  width:100%;
+  max-width:430px;
+  max-height:90dvh;
   overflow:auto;
-  background:#0b0b0d;
-  border:1px solid var(--line2);
-  border-radius:23px;
-  box-shadow:0 30px 100px rgba(0,0,0,.65);
+  border-radius:24px;
+  background:
+    linear-gradient(180deg,#111114,#09090a);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:
+    0 35px 100px rgba(0,0,0,.65),
+    0 0 50px rgba(255,47,150,.08);
+  padding:22px;
 }
-.modal.small{
-  width:min(470px,100%);
-}
+
 .modal-head{
-  position:sticky;
-  top:0;
-  z-index:2;
   display:flex;
   align-items:center;
-  padding:18px 20px;
-  background:rgba(11,11,13,.94);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--line);
+  justify-content:space-between;
+  margin-bottom:20px;
 }
-.modal-head h3{
-  margin:0;
-  font-size:16px;
+
+.modal-title{
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:-.6px;
 }
-.modal-head p{
-  margin:4px 0 0;
-  color:#737379;
-  font-size:11px;
-}
+
 .modal-close{
-  margin-left:auto;
   width:36px;
   height:36px;
-  border-radius:10px;
-  color:#aaa;
-  background:#151517;
-  font-size:18px;
+  border-radius:11px;
+  background:rgba(255,255,255,.05);
+  color:#bbb;
+  font-size:20px;
 }
-.modal-body{
-  padding:18px;
+
+.modal-subtitle{
+  color:#777780;
+  font-size:12px;
+  line-height:1.55;
+  margin:-10px 0 20px;
 }
-.setting-row{
-  display:flex;
+
+/* =========================
+   AUTH
+========================= */
+
+.auth-screen{
+  position:fixed;
+  z-index:500;
+  inset:0;
+  background:
+    radial-gradient(circle at 50% 10%,rgba(255,47,150,.13),transparent 34%),
+    #050505;
+  display:none;
   align-items:center;
-  gap:13px;
-  padding:14px 4px;
-  border-bottom:1px solid rgba(255,255,255,.055);
+  justify-content:center;
+  padding:20px;
 }
-.setting-row:last-child{
-  border-bottom:0;
+
+.auth-screen.open{
+  display:flex;
 }
-.setting-icon{
-  width:38px;
-  height:38px;
-  border-radius:12px;
+
+.auth-card{
+  width:100%;
+  max-width:410px;
+  text-align:center;
+}
+
+.auth-logo{
+  width:74px;
+  height:74px;
+  border-radius:25px;
+  margin:0 auto 22px;
   display:grid;
   place-items:center;
-  color:var(--pink2);
-  background:rgba(255,63,159,.07);
+  background:
+    radial-gradient(circle at 35% 28%,#ffb8dd,#ff3e9d 35%,#a20559 100%);
+  box-shadow:
+    0 0 50px rgba(255,47,150,.23);
 }
-.setting-icon svg{
-  width:19px;
-  height:19px;
-  stroke:currentColor;
-  fill:none;
-  stroke-width:1.7;
-  stroke-linecap:round;
-  stroke-linejoin:round;
+
+.auth-logo span{
+  font-size:24px;
+  font-weight:950;
 }
-.setting-info{
-  flex:1;
-  min-width:0;
+
+.auth-title{
+  font-size:30px;
+  font-weight:900;
+  letter-spacing:-1.2px;
+  margin-bottom:7px;
 }
-.setting-info strong{
+
+.auth-title span{
+  color:var(--pink);
+}
+
+.auth-description{
+  color:#777780;
   font-size:13px;
+  line-height:1.55;
+  margin-bottom:25px;
+}
+
+.auth-form{
+  text-align:left;
+}
+
+.field{
+  margin-bottom:12px;
+}
+
+.field label{
   display:block;
-}
-.setting-info span{
-  display:block;
-  margin-top:3px;
-  color:#707077;
+  color:#85858d;
   font-size:11px;
-  line-height:1.4;
+  font-weight:700;
+  margin:0 0 7px 3px;
 }
-.value{
-  color:var(--pink2);
-  font-size:11px;
-  white-space:nowrap;
-}
-.modal-actions{
-  display:flex;
-  gap:9px;
-  margin-top:18px;
-}
-.modal-actions button{
-  flex:1;
-}
-.danger-btn{
+
+.field input{
   width:100%;
-  padding:12px;
-  background:rgba(255,85,125,.07);
-  color:#ff7898;
-  border:1px solid rgba(255,85,125,.15);
-  border-radius:12px;
+  height:50px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.08);
+  outline:0;
+  background:#0d0d0f;
+  color:#fff;
+  padding:0 14px;
+  transition:.18s;
 }
+
+.field input:focus{
+  border-color:rgba(255,47,150,.45);
+  box-shadow:0 0 0 3px rgba(255,47,150,.06);
+}
+
+.primary-button{
+  width:100%;
+  height:50px;
+  border-radius:14px;
+  color:#fff;
+  font-weight:800;
+  background:linear-gradient(135deg,#ff43a2,#dc0c6a);
+  box-shadow:0 10px 30px rgba(255,47,150,.18);
+  margin-top:4px;
+}
+
+.auth-switch{
+  margin-top:17px;
+  color:#6f6f77;
+  font-size:12px;
+}
+
+.auth-switch button{
+  background:none;
+  color:var(--pink3);
+  font-weight:700;
+  margin-left:4px;
+}
+
+.auth-error{
+  color:#ff668c;
+  font-size:11px;
+  min-height:17px;
+  margin:5px 0 7px;
+}
+
 /* =========================
    PLANS
 ========================= */
+
 .plans{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
+  gap:10px;
 }
+
 .plan-card{
   position:relative;
-  border:1px solid var(--line);
-  background:#101012;
+  border:1px solid rgba(255,255,255,.08);
   border-radius:17px;
-  padding:16px;
+  padding:17px;
+  background:rgba(255,255,255,.025);
+  overflow:hidden;
 }
-.plan-card.selected{
-  border-color:rgba(255,63,159,.6);
-  box-shadow:0 0 0 1px rgba(255,63,159,.15);
+
+.plan-card.featured{
+  border-color:rgba(255,47,150,.35);
+  background:
+    linear-gradient(145deg,rgba(255,47,150,.10),rgba(255,255,255,.025));
 }
-.plan-card h4{
-  margin:0 0 5px;
+
+.plan-badge{
+  position:absolute;
+  top:13px;
+  right:13px;
+  color:#fff;
+  background:var(--pink);
+  padding:4px 7px;
+  border-radius:7px;
+  font-size:8px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.7px;
+}
+
+.plan-name{
   font-size:15px;
+  font-weight:850;
 }
+
 .plan-price{
-  color:#fff;
-  font-size:18px;
-  font-weight:700;
+  margin-top:7px;
+  font-size:21px;
+  font-weight:900;
 }
-.plan-price span{
-  color:#66666d;
+
+.plan-price small{
+  color:#66666f;
   font-size:10px;
-  font-weight:400;
+  font-weight:500;
 }
-.plan-credit{
-  color:var(--pink2);
+
+.plan-credits{
+  margin-top:4px;
+  color:var(--pink3);
   font-size:11px;
-  margin:8px 0 13px;
+  font-weight:750;
 }
-.plan-features{
-  margin:0;
-  padding:0;
-  list-style:none;
+
+.plan-description{
+  color:#74747c;
+  font-size:11px;
+  line-height:1.5;
+  margin-top:9px;
 }
-.plan-features li{
-  color:#8d8d93;
-  font-size:10px;
-  padding:4px 0;
-  line-height:1.35;
-}
-.plan-features li::before{
-  content:"";
-  display:inline-block;
-  width:4px;
-  height:4px;
-  background:var(--pink);
-  border-radius:50%;
-  margin-right:7px;
-  vertical-align:middle;
-}
-.plan-btn{
+
+.plan-button{
   width:100%;
+  height:39px;
+  border-radius:11px;
   margin-top:13px;
-  padding:10px;
-  border-radius:10px;
-  background:#171719;
-  color:#ddd;
-  border:1px solid var(--line);
-  font-size:11px;
-}
-.plan-card.selected .plan-btn{
-  background:var(--pink);
   color:#fff;
-  border-color:transparent;
+  background:rgba(255,255,255,.06);
+  font-size:11px;
+  font-weight:800;
 }
+
+.plan-card.featured .plan-button{
+  background:linear-gradient(135deg,#ff43a2,#dc0c6a);
+}
+
 /* =========================
-   HISTORY
+   SETTINGS / SUPPORT
 ========================= */
-.history-list{
+
+.settings-list{
   display:flex;
   flex-direction:column;
-  gap:7px;
+  gap:8px;
 }
-.history-item{
-  width:100%;
-  padding:13px;
-  border-radius:13px;
-  background:#101012;
-  border:1px solid var(--line);
-  color:#ddd;
-  text-align:left;
+
+.setting-row{
+  min-height:54px;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:14px;
+  padding:10px 12px;
+  background:rgba(255,255,255,.025);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
 }
-.history-item:hover{
-  border-color:rgba(255,63,159,.25);
+
+.setting-info{
+  min-width:0;
 }
-.history-item strong{
-  display:block;
+
+.setting-title{
   font-size:12px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+  font-weight:750;
 }
-.history-item span{
-  display:block;
-  color:#66666c;
+
+.setting-description{
+  color:#66666e;
   font-size:10px;
-  margin-top:4px;
+  margin-top:3px;
 }
-.empty{
-  padding:30px 10px;
-  text-align:center;
-  color:#66666d;
-  font-size:12px;
-}
-/* =========================
-   SUPPORT / FAQ
-========================= */
-.support-card{
-  padding:15px;
-  background:#101012;
-  border:1px solid var(--line);
-  border-radius:15px;
-  margin-bottom:9px;
-}
-.support-card strong{
-  display:block;
-  font-size:13px;
-}
-.support-card p{
-  margin:6px 0 0;
-  color:#77777e;
-  font-size:11px;
-  line-height:1.55;
-}
-.support-card button{
-  margin-top:11px;
-  padding:8px 11px;
+
+.setting-select{
+  background:#151518;
+  border:1px solid rgba(255,255,255,.08);
+  color:#fff;
   border-radius:9px;
-  background:rgba(255,63,159,.08);
-  color:var(--pink2);
+  padding:7px 8px;
+  outline:0;
   font-size:10px;
 }
+
+.support-box{
+  padding:16px;
+  border-radius:16px;
+  background:rgba(255,47,150,.06);
+  border:1px solid rgba(255,47,150,.15);
+}
+
+.support-box h3{
+  margin:0 0 7px;
+  font-size:15px;
+}
+
+.support-box p{
+  margin:0;
+  color:#888891;
+  font-size:11px;
+  line-height:1.6;
+}
+
+.support-button{
+  width:100%;
+  height:43px;
+  margin-top:13px;
+  border-radius:12px;
+  background:rgba(255,47,150,.12);
+  color:var(--pink3);
+  font-weight:800;
+  font-size:11px;
+}
+
+/* =========================
+   CREDIT MODAL
+========================= */
+
+.credit-summary{
+  text-align:center;
+  padding:12px 0 20px;
+}
+
+.credit-number{
+  font-size:42px;
+  line-height:1;
+  font-weight:950;
+  letter-spacing:-2px;
+  color:#fff;
+}
+
+.credit-caption{
+  margin-top:8px;
+  color:#777780;
+  font-size:11px;
+}
+
+.credit-bar{
+  height:7px;
+  border-radius:99px;
+  background:#19191c;
+  overflow:hidden;
+  margin-top:17px;
+}
+
+.credit-bar span{
+  display:block;
+  height:100%;
+  width:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,#ff3a9d,#ff8bc5);
+}
+
 /* =========================
    TOAST
 ========================= */
+
 .toast{
   position:fixed;
+  z-index:700;
   left:50%;
-  bottom:25px;
+  bottom:88px;
   transform:translate(-50%,20px);
-  z-index:200;
-  background:#161618;
-  border:1px solid var(--line2);
-  color:#eee;
-  padding:11px 15px;
-  border-radius:12px;
-  font-size:12px;
   opacity:0;
   pointer-events:none;
-  transition:.25s;
-  box-shadow:0 10px 35px rgba(0,0,0,.4);
+  background:#171719;
+  color:#eee;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 15px 40px rgba(0,0,0,.45);
+  padding:11px 15px;
+  border-radius:12px;
+  font-size:11px;
+  transition:.22s ease;
+  max-width:calc(100% - 32px);
+  text-align:center;
 }
+
 .toast.show{
   opacity:1;
   transform:translate(-50%,0);
 }
+
 /* =========================
-   RESPONSIVE
+   SCROLLBARS
 ========================= */
-@media(max-width:720px){
+
+::-webkit-scrollbar{
+  width:6px;
+  height:6px;
+}
+
+::-webkit-scrollbar-track{
+  background:transparent;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#26262b;
+  border-radius:10px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background:#34343b;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:600px){
   :root{
-    --sidebar:min(330px,88vw);
+    --sidebar:min(86vw,320px);
   }
+
   .topbar{
-    height:62px;
+    height:68px;
     padding:0 11px;
   }
+
+  .menu-button{
+    width:42px;
+    height:42px;
+  }
+
   .credit-pill{
-    padding:7px 9px;
+    height:36px;
+    min-width:62px;
   }
-  .chat{
-    padding:25px 14px 125px;
+
+  .top-brand-name{
+    font-size:16px;
   }
-  .welcome h2{
-    font-size:26px;
+
+  .chat-scroll{
+    padding:82px 12px 145px;
   }
-  .composer-wrap{
-    padding:12px 10px 12px;
+
+  .welcome{
+    min-height:calc(100dvh - 245px);
   }
-  .plans{
+
+  .welcome h1{
+    font-size:28px;
+  }
+
+  .welcome p{
+    font-size:13px;
+  }
+
+  .suggestions{
     grid-template-columns:1fr;
+    max-width:390px;
   }
-  .plan-card{
-    padding:15px;
+
+  .message-bubble{
+    max-width:94%;
+    font-size:13.5px;
   }
-  .modal-layer{
-    padding:10px;
-    align-items:flex-end;
+
+  .composer-wrap{
+    padding-left:10px;
+    padding-right:10px;
   }
+
+  .composer-note{
+    font-size:8px;
+  }
+
   .modal{
-    max-height:91vh;
-    border-radius:21px 21px 16px 16px;
+    padding:18px;
+    border-radius:20px;
   }
 }
 </style>
 </head>
+
 <body>
-<!-- =========================
-     AUTH
-========================= -->
-<section id="authScreen" class="auth">
-  <div class="auth-box">
-    <div class="aura-mark auth-logo">
-      <div class="ring"></div>
-      <div class="ring2"></div>
-      <div class="core"></div>
+
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-head">
+      <div class="sidebar-brand">
+        <div class="aura-mark"><span>A</span></div>
+        <div class="brand-name">A<span>u</span>ra</div>
+      </div>
+
+      <button class="close-menu" id="closeMenu">×</button>
     </div>
-    <h1>AURA</h1>
-    <div class="tagline">intelligence for your story</div>
-    <div class="auth-card">
-      <div id="loginForm">
-        <div class="field">
-          <input id="loginEmail" type="email" placeholder="Seu e-mail" autocomplete="email">
-        </div>
-        <div class="field">
-          <input id="loginPassword" type="password" placeholder="Sua senha" autocomplete="current-password">
-        </div>
-        <button class="primary-btn" id="loginBtn">Entrar</button>
-        <div class="auth-switch">
-          Ainda não tem conta?
-          <button id="showSignup">Criar conta</button>
-        </div>
-      </div>
-      <div id="signupForm" class="hidden">
-        <div class="field">
-          <input id="signupEmail" type="email" placeholder="Seu e-mail" autocomplete="email">
-        </div>
-        <div class="field">
-          <input id="signupPassword" type="password" placeholder="Crie uma senha" autocomplete="new-password">
-        </div>
-        <button class="primary-btn" id="signupBtn">Criar conta</button>
-        <div class="auth-switch">
-          Já possui uma conta?
-          <button id="showLogin">Entrar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- =========================
-     APP
-========================= -->
-<section id="app" class="app hidden">
-  <main class="main">
-    <!-- CHAT TOPBAR: SOMENTE MENU + AURA + CRÉDITOS -->
-    <header class="topbar">
-      <button class="menu-btn" id="menuBtn" aria-label="Abrir menu">
-        <span class="menu-lines">
-          <span></span>
-          <span></span>
-          <span></span>
-        </span>
-      </button>
-      <div class="brand">
-        <div class="aura-mark">
-          <div class="ring"></div>
-          <div class="ring2"></div>
-          <div class="core"></div>
-        </div>
-        <span class="brand-name">AURA</span>
-      </div>
-      <div class="credit-pill">
-        <span class="credit-dot"></span>
-        <span id="creditCount">20</span>
-        <span>créditos</span>
-      </div>
-    </header>
-    <!-- CHAT -->
-    <section class="chat" id="chat">
-      <div class="chat-inner">
-        <div id="welcome" class="welcome">
-          <div class="aura-mark">
-            <div class="ring"></div>
-            <div class="ring2"></div>
-            <div class="core"></div>
-          </div>
-          <h2>intelligence for your story</h2>
-          <p>Comece uma história.</p>
-        </div>
-        <div id="messages" class="messages"></div>
-      </div>
-    </section>
-    <!-- COMPOSER -->
-    <div class="composer-wrap">
-      <div class="composer">
-        <textarea
-          id="messageInput"
-          rows="1"
-          placeholder="Escreva sua história..."
-          autocomplete="off"
-        ></textarea>
-        <button class="send-btn" id="sendBtn" aria-label="Enviar">
-          <span class="send-arrow"></span>
+
+    <div class="sidebar-body">
+
+      <div class="sidebar-section">
+        <button class="side-item active" id="newChatButton">
+          <span class="side-icon">＋</span>
+          <span>Nova conversa</span>
+        </button>
+
+        <button class="side-item" id="historyButton">
+          <span class="side-icon">◷</span>
+          <span>Histórico</span>
         </button>
       </div>
+
+      <div class="sidebar-section">
+
+        <div class="sidebar-label">Conta</div>
+
+        <button class="side-item" id="creditsButton">
+          <span class="side-icon">✦</span>
+          <span>Créditos</span>
+        </button>
+
+        <button class="side-item" id="plansButton">
+          <span class="side-icon">◆</span>
+          <span>Planos</span>
+        </button>
+
+        <button class="side-item" id="settingsButton">
+          <span class="side-icon">•</span>
+          <span>Configurações</span>
+        </button>
+
+      </div>
+
+      <div class="sidebar-section">
+
+        <div class="sidebar-label">Ajuda</div>
+
+        <button class="side-item" id="supportButton">
+          <span class="side-icon">?</span>
+          <span>Suporte</span>
+        </button>
+
+      </div>
+
+      <div class="sidebar-section" id="historySection">
+
+        <div class="sidebar-label">Conversas recentes</div>
+
+        <div class="history-list" id="historyList">
+          <div class="history-empty">
+            Suas conversas aparecerão aqui.
+          </div>
+        </div>
+
+      </div>
+
     </div>
+
+    <div class="sidebar-bottom">
+
+      <div class="user-card">
+
+        <div class="user-avatar" id="userAvatar">
+          A
+        </div>
+
+        <div class="user-info">
+          <div class="user-email" id="userEmail">
+            Não conectado
+          </div>
+
+          <div class="user-plan" id="userPlan">
+            AURA FREE
+          </div>
+        </div>
+
+        <button class="logout-button" id="logoutButton" title="Sair">
+          ↪
+        </button>
+
+      </div>
+
+    </div>
+
+  </aside>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- CHAT -->
+  <main class="chat-page">
+
+    <header class="topbar">
+
+      <div class="topbar-left">
+
+        <button class="menu-button" id="menuButton" aria-label="Abrir menu">
+          <i></i>
+          <i></i>
+          <i></i>
+        </button>
+
+      </div>
+
+      <div class="top-brand">
+        <div class="aura-mark">
+          <span>A</span>
+        </div>
+        <div class="top-brand-name">A<span>u</span>ra</div>
+      </div>
+
+      <div class="topbar-right">
+
+        <button class="credit-pill" id="creditPill" aria-label="Créditos">
+
+          <span class="credit-symbol">✦</span>
+
+          <span id="creditValue">
+            20
+          </span>
+
+        </button>
+
+      </div>
+
+    </header>
+
+    <section class="chat-scroll" id="chatScroll">
+
+      <div class="chat-inner" id="chatInner">
+
+        <div class="welcome" id="welcome">
+
+          <div class="welcome-aura">
+            <span>A</span>
+          </div>
+
+          <h1>
+            Olá, eu sou a <span>Aura</span>.
+          </h1>
+
+          <p>
+            Sua inteligência artificial para conversar, pesquisar,
+            criar, analisar e ajudar no que você precisar.
+          </p>
+
+          <div class="suggestions">
+
+            <button class="suggestion">
+              Me ajude a criar uma ideia
+            </button>
+
+            <button class="suggestion">
+              Pesquise algo para mim
+            </button>
+
+            <button class="suggestion">
+              Analise um problema
+            </button>
+
+            <button class="suggestion">
+              Explique algo de forma simples
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <div class="composer-wrap">
+
+      <div class="composer">
+
+        <div class="composer-box">
+
+          <textarea
+            id="input"
+            rows="1"
+            placeholder="Pergunte qualquer coisa para a Aura..."
+            autocomplete="off"
+            spellcheck="true"
+          ></textarea>
+
+          <button
+            class="send-button"
+            id="sendButton"
+            aria-label="Enviar"
+          >
+
+            <svg viewBox="0 0 24 24">
+              <path d="M22 2 11 13"></path>
+              <path d="m22 2-7 20-4-9-9-4Z"></path>
+            </svg>
+
+          </button>
+
+        </div>
+
+        <div class="composer-note">
+          A Aura pode cometer erros. Verifique informações importantes.
+        </div>
+
+      </div>
+
+    </div>
+
   </main>
-</section>
-<!-- =========================
-     SIDEBAR OVERLAY
-========================= -->
-<div id="overlay" class="overlay"></div>
-<aside id="sidebar" class="sidebar">
-  <div class="sidebar-head">
-    <div class="sidebar-brand">
-      <div class="aura-mark">
-        <div class="ring"></div>
-        <div class="ring2"></div>
-        <div class="core"></div>
-      </div>
-      <strong>AURA</strong>
+
+</div>
+
+
+<!-- AUTH -->
+
+<div class="auth-screen" id="authScreen">
+
+  <div class="auth-card">
+
+    <div class="auth-logo">
+      <span>A</span>
     </div>
-    <button class="close-sidebar" id="closeSidebar">×</button>
-  </div>
-  <div class="sidebar-body">
-    <div class="section-label">Workspace</div>
-    <button class="nav-item" data-action="new-story">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 5v14M5 12h14"/>
-        </svg>
-      </span>
-      <span class="nav-copy">
-        <span class="nav-title">Nova história</span>
-        <span class="nav-sub">Começar uma nova jornada</span>
-      </span>
-    </button>
-    <button class="nav-item" data-action="history">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21z"/>
-          <path d="M4 5.5v15M8 7h8M8 11h8"/>
-        </svg>
-      </span>
-      <span class="nav-copy">
-        <span class="nav-title">Histórico</span>
-        <span class="nav-sub">Suas histórias salvas</span>
-      </span>
-      <span class="nav-chevron">›</span>
-    </button>
-    <div class="section-label">Aura</div>
-    <button class="nav-item" data-action="plans">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="M7 4h10l2 4-7 12L5 8z"/>
-          <path d="M5 8h14M8 4l4 4 4-4"/>
-        </svg>
-      </span>
-      <span class="nav-copy">
-        <span class="nav-title">Planos</span>
-        <span class="nav-sub">Free · Pro · Ultra</span>
-      </span>
-      <span class="nav-chevron">›</span>
-    </button>
-    <button class="nav-item" data-action="intelligence">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="7"/>
-          <circle cx="12" cy="12" r="2"/>
-          <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
-        </svg>
-      </span>
-      <span class="nav-copy">
-        <span class="nav-title">Inteligência</span>
-        <span class="nav-sub">Memória, pesquisa e contexto</span>
-      </span>
-      <span class="nav-chevron">›</span>
-    </button>
-    <button class="nav-item" data-action="language">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>
-        </svg>
-      </span>
-      <span class="nav-copy">
-        <span class="nav-title">Idioma</span>
-        <span class="nav-sub" id="languageLabel">Português (Brasil)</span>
-      </span>
-      <span class="nav-chevron">›</span>
-    </button>
-    <div class="section-label">Conta</div>
-    <button class="nav-item" data-action="account">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24">
-          <circle cx="12" cy="8" r="3.5"/>
-          <path d="M5 20c.8-3.4 3.1-5.2 7-5.2s6.2 1.8 7 5.2"/>
-        </svg>
-      </span>
-      <span class="nav-copy">
-        <span class="nav-title">Conta</span>
-        <span class="nav-sub">Perfil e segurança</span>
-      </span>
-      <span class="nav-chevron">›</span>
-    </button>
-    <button class="nav-item" data-action="usage">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="M5 19V9M12 19V5M19 19v-7"/>
-        </svg>
-      </span>
-      <span class="nav-copy">
-        <span class="nav-title">Uso e créditos</span>
-        <span class="nav-sub">Saldo e utilização</span>
-      </span>
-      <span class="nav-chevron">›</span>
-    </button>
-    <div class="section-label">Ajuda</div>
-    <button class="nav-item" data-action="support">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="M5 6.5A3.5 3.5 0 0 1 8.5 3h7A3.5 3.5 0 0 1 19 6.5v7a3.5 3.5 0 0 1-3.5 3.5H11l-4.5 4v-4.1A3.5 3.5 0 0 1 5 13.5z"/>
-          <path d="M9 9h6M9 12h4"/>
-        </svg>
-      </span>
-      <span class="nav-copy">
-        <span class="nav-title">Suporte</span>
-        <span class="nav-sub">Ajuda, FAQ e contato</span>
-      </span>
-      <span class="nav-chevron">›</span>
-    </button>
-    <button class="nav-item" data-action="legal">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="M7 3h10v18H7z"/>
-          <path d="M9.5 7h5M9.5 11h5M9.5 15h3"/>
-        </svg>
-      </span>
-      <span class="nav-copy">
-        <span class="nav-title">Segurança e legal</span>
-        <span class="nav-sub">Privacidade e termos</span>
-      </span>
-      <span class="nav-chevron">›</span>
-    </button>
-    <div class="sidebar-profile">
-      <div class="profile-name" id="sidebarName">Usuário</div>
-      <div class="profile-email" id="sidebarEmail"></div>
-      <div class="plan-mini">
-        <span>Plano atual</span>
-        <b id="sidebarPlan">AURA FREE</b>
-      </div>
+
+    <div class="auth-title">
+      Bem-vindo à <span>Aura</span>
     </div>
+
+    <div class="auth-description">
+      Entre na sua conta para continuar suas conversas.
+    </div>
+
+    <form class="auth-form" id="authForm">
+
+      <div class="field">
+        <label for="authEmail">E-mail</label>
+        <input
+          id="authEmail"
+          type="email"
+          placeholder="seu@email.com"
+          autocomplete="email"
+          required
+        >
+      </div>
+
+      <div class="field">
+        <label for="authPassword">Senha</label>
+        <input
+          id="authPassword"
+          type="password"
+          placeholder="Sua senha"
+          autocomplete="current-password"
+          required
+        >
+      </div>
+
+      <div class="auth-error" id="authError"></div>
+
+      <button
+        class="primary-button"
+        id="authSubmit"
+        type="submit"
+      >
+        Entrar
+      </button>
+
+    </form>
+
+    <div class="auth-switch">
+
+      <span id="authSwitchText">
+        Ainda não tem uma conta?
+      </span>
+
+      <button id="authSwitchButton" type="button">
+        Criar conta
+      </button>
+
+    </div>
+
   </div>
-</aside>
-<!-- =========================
-     MODAL ROOT
-========================= -->
-<div id="modalRoot" class="hidden"></div>
-<div id="toast" class="toast"></div>
+
+</div>
+
+
+<!-- CREDITS -->
+
+<div class="modal-overlay" id="creditsModal">
+
+  <div class="modal">
+
+    <div class="modal-head">
+
+      <div class="modal-title">
+        Seus créditos
+      </div>
+
+      <button class="modal-close" data-close="creditsModal">
+        ×
+      </button>
+
+    </div>
+
+    <div class="credit-summary">
+
+      <div class="credit-number" id="modalCreditValue">
+        20
+      </div>
+
+      <div class="credit-caption">
+        créditos disponíveis
+      </div>
+
+      <div class="credit-bar">
+        <span id="creditBar"></span>
+      </div>
+
+    </div>
+
+    <button
+      class="primary-button"
+      id="creditsPlansButton"
+      type="button"
+    >
+      Ver planos
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- PLANS -->
+
+<div class="modal-overlay" id="plansModal">
+
+  <div class="modal">
+
+    <div class="modal-head">
+
+      <div class="modal-title">
+        Planos Aura
+      </div>
+
+      <button class="modal-close" data-close="plansModal">
+        ×
+      </button>
+
+    </div>
+
+    <div class="modal-subtitle">
+      Escolha o plano que combina com o seu uso.
+    </div>
+
+    <div class="plans">
+
+      <div class="plan-card">
+
+        <div class="plan-name">
+          AURA FREE
+        </div>
+
+        <div class="plan-price">
+          Grátis
+        </div>
+
+        <div class="plan-credits">
+          20 créditos
+        </div>
+
+        <div class="plan-description">
+          Para começar a usar a Aura e conhecer os recursos.
+        </div>
+
+        <button
+          class="plan-button"
+          type="button"
+          onclick="selectPlan('free')"
+        >
+          Plano atual
+        </button>
+
+      </div>
+
+
+      <div class="plan-card featured">
+
+        <div class="plan-badge">
+          PRO
+        </div>
+
+        <div class="plan-name">
+          AURA PRO
+        </div>
+
+        <div class="plan-price">
+          R$ 9,99 <small>/mês</small>
+        </div>
+
+        <div class="plan-credits">
+          300 créditos
+        </div>
+
+        <div class="plan-description">
+          Mais créditos para conversar e usar a Aura com frequência.
+        </div>
+
+        <button
+          class="plan-button"
+          type="button"
+          onclick="selectPlan('pro')"
+        >
+          Assinar PRO
+        </button>
+
+      </div>
+
+
+      <div class="plan-card">
+
+        <div class="plan-name">
+          AURA ULTRA
+        </div>
+
+        <div class="plan-price">
+          R$ 24,99 <small>/mês</small>
+        </div>
+
+        <div class="plan-credits">
+          1.000 créditos
+        </div>
+
+        <div class="plan-description">
+          Para quem utiliza a Aura intensamente.
+        </div>
+
+        <button
+          class="plan-button"
+          type="button"
+          onclick="selectPlan('ultra')"
+        >
+          Assinar ULTRA
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- SETTINGS -->
+
+<div class="modal-overlay" id="settingsModal">
+
+  <div class="modal">
+
+    <div class="modal-head">
+
+      <div class="modal-title">
+        Configurações
+      </div>
+
+      <button class="modal-close" data-close="settingsModal">
+        ×
+      </button>
+
+    </div>
+
+    <div class="settings-list">
+
+      <div class="setting-row">
+
+        <div class="setting-info">
+
+          <div class="setting-title">
+            Idioma
+          </div>
+
+          <div class="setting-description">
+            Idioma usado pela Aura.
+          </div>
+
+        </div>
+
+        <select class="setting-select" id="languageSelect">
+
+          <option value="pt-BR">
+            Português
+          </option>
+
+          <option value="en-US">
+            English
+          </option>
+
+          <option value="es-ES">
+            Español
+          </option>
+
+        </select>
+
+      </div>
+
+      <div class="setting-row">
+
+        <div class="setting-info">
+
+          <div class="setting-title">
+            Plano atual
+          </div>
+
+          <div class="setting-description" id="settingsPlan">
+            AURA FREE
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="setting-row">
+
+        <div class="setting-info">
+
+          <div class="setting-title">
+            Créditos
+          </div>
+
+          <div class="setting-description">
+            Saldo disponível na sua conta.
+          </div>
+
+        </div>
+
+        <strong id="settingsCredits">
+          20
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- SUPPORT -->
+
+<div class="modal-overlay" id="supportModal">
+
+  <div class="modal">
+
+    <div class="modal-head">
+
+      <div class="modal-title">
+        Suporte
+      </div>
+
+      <button class="modal-close" data-close="supportModal">
+        ×
+      </button>
+
+    </div>
+
+    <div class="support-box">
+
+      <h3>
+        Precisa de ajuda?
+      </h3>
+
+      <p>
+        Se alguma função da Aura não estiver funcionando,
+        envie uma mensagem descrevendo o problema.
+      </p>
+
+      <button
+        class="support-button"
+        id="supportEmailButton"
+        type="button"
+      >
+        Entrar em contato
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div class="toast" id="toast"></div>
+
+
 <script>
 /* =========================================================
-   AURA CONFIG
+   SUPABASE
 ========================================================= */
-const SUPABASE_URL="https://vqmfsshmjdfjlnmbemxv.supabase.co";
-const SUPABASE_KEY="sb_publishable_nCCjJPHoTODWLHvwTWN_AA_J8JivYaE";
-const supabaseClient=window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-const plans={
-  free:{
-    name:"AURA FREE",
-    price:"Grátis",
-    credits:20,
-    model:"Aura Core",
-    memory:"Memória básica",
-    research:"Pesquisa web limitada",
-    speed:"Velocidade normal",
-    context:"Contexto curto",
-    complexity:"Complexidade essencial"
-  },
-  pro:{
-    name:"AURA PRO",
-    price:"R$ 9,99/mês",
-    credits:300,
-    model:"Aura Advanced",
-    memory:"Memória longa",
-    research:"Pesquisa web completa",
-    speed:"Resposta rápida",
-    context:"Contexto grande",
-    complexity:"Complexidade avançada"
-  },
-  ultra:{
-    name:"AURA ULTRA",
-    price:"R$ 24,99/mês",
-    credits:1000,
-    model:"Aura Ultra",
-    memory:"Memória avançada",
-    research:"Pesquisa profunda",
-    speed:"Processamento prioritário",
-    context:"Contexto muito grande",
-    complexity:"Complexidade máxima"
-  }
-};
-let currentUser=null;
-let conversation=[];
-let currentStoryId=null;
-let currentPlan=localStorage.getItem("aura_plan")||"free";
-let userLanguage=localStorage.getItem("aura_language")||"pt-BR";
-let isSending=false;
-let credits=20;
+
+const SUPABASE_URL =
+  "https://vqmfsshmjdfjlnmbemxv.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_nCCjJPHoTODWLHvwTWN_AA_J8JivYaE";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let currentUser = null;
+
+let conversation = [];
+
+let currentStoryId = null;
+
+let currentPlan =
+  localStorage.getItem("aura_plan") || "free";
+
+let userLanguage =
+  localStorage.getItem("aura_language") || "pt-BR";
+
+let isSending = false;
+
+let credits = 20;
+
+let authMode = "login";
+
+let stories = [];
+
+
 /* =========================================================
    ELEMENTS
 ========================================================= */
-const authScreen=document.getElementById("authScreen");
-const app=document.getElementById("app");
-const loginForm=document.getElementById("loginForm");
-const signupForm=document.getElementById("signupForm");
-const messagesEl=document.getElementById("messages");
-const welcomeEl=document.getElementById("welcome");
-const chatEl=document.getElementById("chat");
-const input=document.getElementById("messageInput");
-const sendBtn=document.getElementById("sendBtn");
-const sidebar=document.getElementById("sidebar");
-const overlay=document.getElementById("overlay");
-const modalRoot=document.getElementById("modalRoot");
-const creditCount=document.getElementById("creditCount");
-const sidebarPlan=document.getElementById("sidebarPlan");
-const sidebarName=document.getElementById("sidebarName");
-const sidebarEmail=document.getElementById("sidebarEmail");
-const toastEl=document.getElementById("toast");
+
+const sidebar =
+  document.getElementById("sidebar");
+
+const sidebarOverlay =
+  document.getElementById("sidebarOverlay");
+
+const menuButton =
+  document.getElementById("menuButton");
+
+const closeMenu =
+  document.getElementById("closeMenu");
+
+const chatScroll =
+  document.getElementById("chatScroll");
+
+const chatInner =
+  document.getElementById("chatInner");
+
+const welcome =
+  document.getElementById("welcome");
+
+const input =
+  document.getElementById("input");
+
+const sendButton =
+  document.getElementById("sendButton");
+
+const creditValue =
+  document.getElementById("creditValue");
+
+const modalCreditValue =
+  document.getElementById("modalCreditValue");
+
+const creditBar =
+  document.getElementById("creditBar");
+
+const userEmail =
+  document.getElementById("userEmail");
+
+const userPlan =
+  document.getElementById("userPlan");
+
+const userAvatar =
+  document.getElementById("userAvatar");
+
+const historyList =
+  document.getElementById("historyList");
+
+const authScreen =
+  document.getElementById("authScreen");
+
+const authForm =
+  document.getElementById("authForm");
+
+const authEmail =
+  document.getElementById("authEmail");
+
+const authPassword =
+  document.getElementById("authPassword");
+
+const authSubmit =
+  document.getElementById("authSubmit");
+
+const authError =
+  document.getElementById("authError");
+
+const authSwitchButton =
+  document.getElementById("authSwitchButton");
+
+const authSwitchText =
+  document.getElementById("authSwitchText");
+
+const languageSelect =
+  document.getElementById("languageSelect");
+
+const settingsPlan =
+  document.getElementById("settingsPlan");
+
+const settingsCredits =
+  document.getElementById("settingsCredits");
+
+
 /* =========================================================
-   UTILS
+   PLANS
 ========================================================= */
-function escapeHtml(value){
-  return String(value??"")
+
+const PLAN_CONFIG = {
+
+  free:{
+    name:"AURA FREE",
+    credits:20,
+    model:"openai/gpt-oss-20b",
+    memory:true,
+    research:true,
+    speed:"normal",
+    context:"normal",
+    complexity:"normal"
+  },
+
+  pro:{
+    name:"AURA PRO",
+    credits:300,
+    model:"openai/gpt-oss-20b",
+    memory:true,
+    research:true,
+    speed:"fast",
+    context:"large",
+    complexity:"high"
+  },
+
+  ultra:{
+    name:"AURA ULTRA",
+    credits:1000,
+    model:"openai/gpt-oss-20b",
+    memory:true,
+    research:true,
+    speed:"fast",
+    context:"maximum",
+    complexity:"maximum"
+  }
+
+};
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function getPlan(){
+
+  return PLAN_CONFIG[currentPlan] ||
+         PLAN_CONFIG.free;
+
+}
+
+
+function toast(message){
+
+  const element =
+    document.getElementById("toast");
+
+  element.textContent = message;
+
+  element.classList.add("show");
+
+  clearTimeout(window.__auraToast);
+
+  window.__auraToast =
+    setTimeout(()=>{
+      element.classList.remove("show");
+    },2800);
+
+}
+
+
+function openSidebar(){
+
+  sidebar.classList.add("open");
+
+  sidebarOverlay.classList.add("open");
+
+}
+
+
+function closeSidebar(){
+
+  sidebar.classList.remove("open");
+
+  sidebarOverlay.classList.remove("open");
+
+}
+
+
+function openModal(id){
+
+  const modal =
+    document.getElementById(id);
+
+  if(modal){
+    modal.classList.add("open");
+  }
+
+}
+
+
+function closeModal(id){
+
+  const modal =
+    document.getElementById(id);
+
+  if(modal){
+    modal.classList.remove("open");
+  }
+
+}
+
+
+function closeAllModals(){
+
+  document
+    .querySelectorAll(".modal-overlay")
+    .forEach(modal=>{
+      modal.classList.remove("open");
+    });
+
+}
+
+
+function updateCreditsUI(){
+
+  const safe =
+    Math.max(0,Number(credits)||0);
+
+  creditValue.textContent = safe;
+
+  modalCreditValue.textContent = safe;
+
+  settingsCredits.textContent = safe;
+
+  const maximum =
+    getPlan().credits || 20;
+
+  const percentage =
+    Math.min(100,(safe/maximum)*100);
+
+  creditBar.style.width =
+    percentage + "%";
+
+}
+
+
+function updateUserUI(){
+
+  if(!currentUser){
+
+    userEmail.textContent =
+      "Não conectado";
+
+    userPlan.textContent =
+      "AURA FREE";
+
+    userAvatar.textContent =
+      "A";
+
+    settingsPlan.textContent =
+      "AURA FREE";
+
+    return;
+
+  }
+
+  const email =
+    currentUser.email || "Usuário";
+
+  userEmail.textContent =
+    email;
+
+  userAvatar.textContent =
+    email.charAt(0).toUpperCase();
+
+  userPlan.textContent =
+    getPlan().name;
+
+  settingsPlan.textContent =
+    getPlan().name;
+
+}
+
+
+function resetChat(){
+
+  conversation = [];
+
+  currentStoryId = null;
+
+  const messages =
+    chatInner.querySelectorAll(".message");
+
+  messages.forEach(message=>{
+    message.remove();
+  });
+
+  welcome.classList.remove("hidden");
+
+  chatScroll.scrollTop = 0;
+
+}
+
+
+/* =========================================================
+   TEXT RENDERING
+========================================================= */
+
+function escapeHTML(text){
+
+  return String(text)
     .replace(/&/g,"&amp;")
     .replace(/</g,"&lt;")
     .replace(/>/g,"&gt;")
     .replace(/"/g,"&quot;")
     .replace(/'/g,"&#039;");
+
 }
-function toast(message){
-  toastEl.textContent=message;
-  toastEl.classList.add("show");
-  clearTimeout(window.__toastTimer);
-  window.__toastTimer=setTimeout(()=>{
-    toastEl.classList.remove("show");
-  },2600);
+
+
+function renderText(text){
+
+  let safe =
+    escapeHTML(text);
+
+  safe =
+    safe.replace(
+      /```([\s\S]*?)```/g,
+      "<pre><code>$1</code></pre>"
+    );
+
+  safe =
+    safe.replace(
+      /\*\*(.*?)\*\*/g,
+      "<strong>$1</strong>"
+    );
+
+  safe =
+    safe.replace(
+      /\n\n+/g,
+      "</p><p>"
+    );
+
+  safe =
+    safe.replace(
+      /\n/g,
+      "<br>"
+    );
+
+  return "<p>" + safe + "</p>";
+
 }
-function getPlan(){
-  return plans[currentPlan]||plans.free;
+
+
+function progressiveText(element,text){
+
+  const words =
+    text.split(/(\s+)/);
+
+  let result = "";
+
+  return new Promise(async resolve=>{
+
+    for(const part of words){
+
+      result += part;
+
+      element.innerHTML =
+        renderText(result);
+
+      scrollChat();
+
+      await new Promise(
+        r=>setTimeout(r,8)
+      );
+
+    }
+
+    resolve();
+
+  });
+
 }
-function updateCreditsUI(){
-  creditCount.textContent=credits;
+
+
+function scrollChat(){
+
+  requestAnimationFrame(()=>{
+    chatScroll.scrollTop =
+      chatScroll.scrollHeight;
+  });
+
 }
-function updateAccountUI(){
-  if(!currentUser) return;
-  sidebarEmail.textContent=currentUser.email||"";
-  sidebarName.textContent=
-    currentUser.user_metadata?.name||
-    currentUser.email?.split("@")[0]||
-    "Usuário";
-  sidebarPlan.textContent=getPlan().name;
-  document.getElementById("languageLabel").textContent=
-    userLanguage==="pt-BR"
-      ? "Português (Brasil)"
-      : userLanguage==="en"
-        ? "English"
-        : "Español";
+
+
+/* =========================================================
+   MESSAGES
+========================================================= */
+
+function addMessage(role,text){
+
+  welcome.classList.add("hidden");
+
+  const wrapper =
+    document.createElement("div");
+
+  wrapper.className =
+    "message " + role;
+
+  const bubble =
+    document.createElement("div");
+
+  bubble.className =
+    "message-bubble";
+
+  const content =
+    document.createElement("div");
+
+  content.className =
+    "message-content";
+
+  content.innerHTML =
+    renderText(text);
+
+  bubble.appendChild(content);
+
+  wrapper.appendChild(bubble);
+
+  chatInner.appendChild(wrapper);
+
+  scrollChat();
+
+  return wrapper;
+
 }
-function closeSidebar(){
-  sidebar.classList.remove("open");
-  overlay.classList.remove("show");
-}
-function openSidebar(){
-  sidebar.classList.add("open");
-  overlay.classList.add("show");
-}
-function closeModal(){
-  modalRoot.innerHTML="";
-  modalRoot.classList.add("hidden");
-}
-function openModal(html){
-  modalRoot.innerHTML=`
-    <div class="modal-layer" id="modalLayer">
-      ${html}
+
+
+function addThinking(){
+
+  welcome.classList.add("hidden");
+
+  const wrapper =
+    document.createElement("div");
+
+  wrapper.className =
+    "message aura";
+
+  wrapper.innerHTML = `
+    <div class="message-bubble">
+      <div class="thinking">
+        <div class="thinking-mark">
+          <span>A</span>
+        </div>
+
+        <div class="thinking-text">
+          Aura está pensando
+        </div>
+
+        <div class="thinking-dots">
+          <i></i>
+          <i></i>
+          <i></i>
+        </div>
+      </div>
     </div>
   `;
-  modalRoot.classList.remove("hidden");
-  document.getElementById("modalLayer")
-    ?.addEventListener("click",e=>{
-      if(e.target.id==="modalLayer") closeModal();
-    });
-  document.querySelectorAll("[data-close-modal]")
-    .forEach(btn=>btn.addEventListener("click",closeModal));
+
+  chatInner.appendChild(wrapper);
+
+  scrollChat();
+
+  return wrapper;
+
 }
-function formatDate(date){
-  try{
-    return new Intl.DateTimeFormat(
-      userLanguage==="pt-BR"?"pt-BR":
-      userLanguage==="es"?"es-ES":"en-US",
-      {
-        day:"2-digit",
-        month:"short",
-        year:"numeric"
-      }
-    ).format(new Date(date));
-  }catch{
-    return "";
-  }
-}
-/* =========================================================
-   AUTH
-========================================================= */
-document.getElementById("showSignup").onclick=()=>{
-  loginForm.classList.add("hidden");
-  signupForm.classList.remove("hidden");
-};
-document.getElementById("showLogin").onclick=()=>{
-  signupForm.classList.add("hidden");
-  loginForm.classList.remove("hidden");
-};
-document.getElementById("loginBtn").onclick=login;
-document.getElementById("signupBtn").onclick=signup;
-async function login(){
-  const email=document.getElementById("loginEmail").value.trim();
-  const password=document.getElementById("loginPassword").value;
-  if(!email||!password){
-    toast("Preencha e-mail e senha.");
-    return;
-  }
-  const btn=document.getElementById("loginBtn");
-  btn.disabled=true;
-  btn.textContent="Entrando...";
-  const {data,error}=await supabaseClient.auth.signInWithPassword({
-    email,
-    password
-  });
-  btn.disabled=false;
-  btn.textContent="Entrar";
-  if(error){
-    toast(error.message||"Não foi possível entrar.");
-    return;
-  }
-  currentUser=data.user;
-  await startApp();
-}
-async function signup(){
-  const email=document.getElementById("signupEmail").value.trim();
-  const password=document.getElementById("signupPassword").value;
-  if(!email||!password){
-    toast("Preencha e-mail e senha.");
-    return;
-  }
-  if(password.length<6){
-    toast("A senha precisa ter pelo menos 6 caracteres.");
-    return;
-  }
-  const btn=document.getElementById("signupBtn");
-  btn.disabled=true;
-  btn.textContent="Criando...";
-  const {data,error}=await supabaseClient.auth.signUp({
-    email,
-    password
-  });
-  btn.disabled=false;
-  btn.textContent="Criar conta";
-  if(error){
-    toast(error.message||"Não foi possível criar a conta.");
-    return;
-  }
-  if(data.user){
-    toast(
-      data.session
-        ? "Conta criada."
-        : "Conta criada. Verifique seu e-mail se necessário."
-    );
-  }
-}
-/* =========================================================
-   SESSION
-========================================================= */
-async function startApp(){
-  if(!currentUser) return;
-  authScreen.classList.add("hidden");
-  app.classList.remove("hidden");
-  updateAccountUI();
-  await loadCredits();
-  await loadStories();
-  if(!conversation.length){
-    showWelcome();
-  }
-  input.focus();
-}
-async function boot(){
-  const {data}=await supabaseClient.auth.getSession();
-  currentUser=data.session?.user||null;
-  if(currentUser){
-    await startApp();
-  }
-}
-supabaseClient.auth.onAuthStateChange(async(_event,session)=>{
-  currentUser=session?.user||null;
-  if(currentUser){
-    await startApp();
-  }
-});
+
+
 /* =========================================================
    CREDITS
 ========================================================= */
+
 async function loadCredits(){
-  if(!currentUser) return;
+
+  if(!currentUser)
+    return;
+
   try{
-    const {data,error}=await supabaseClient
-      .from("credits")
-      .select("balance")
-      .eq("user_id",currentUser.id)
-      .maybeSingle();
-    if(error) throw error;
-    if(!data){
-      const {data:created,error:createError}=await supabaseClient
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
         .from("credits")
+        .select("balance")
+        .eq("user_id",currentUser.id)
+        .maybeSingle();
+
+    if(error)
+      throw error;
+
+    if(!data){
+
+      const {
+        data:created,
+        error:createError
+      } =
+        await supabaseClient
+          .from("credits")
+          .insert({
+            user_id:currentUser.id,
+            balance:20
+          })
+          .select("balance")
+          .single();
+
+      if(createError)
+        throw createError;
+
+      credits =
+        Number(
+          created?.balance ?? 20
+        );
+
+    }else{
+
+      credits =
+        Number(
+          data.balance ?? 0
+        );
+
+    }
+
+    updateCreditsUI();
+
+  }catch(error){
+
+    console.error(
+      "Erro ao carregar créditos:",
+      error
+    );
+
+    updateCreditsUI();
+
+  }
+
+}
+
+
+/* =========================================================
+   STORY
+========================================================= */
+
+async function createStory(title){
+
+  if(!currentUser)
+    return null;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("stories")
         .insert({
           user_id:currentUser.id,
-          balance:20
+          title:title || "Nova conversa",
+          messages:[]
         })
-        .select("balance")
+        .select()
         .single();
-      if(createError) throw createError;
-      credits=Number(created?.balance??20);
-    }else{
-      credits=Number(data.balance??0);
-    }
-    updateCreditsUI();
-  }catch(error){
-    console.error(error);
-    credits=20;
-    updateCreditsUI();
-  }
-}
-async function changeCredits(amount){
-  if(!currentUser) return false;
-  const next=Math.max(0,credits+amount);
-  try{
-    const {error}=await supabaseClient
-      .from("credits")
-      .upsert({
-        user_id:currentUser.id,
-        balance:next
-      },{
-        onConflict:"user_id"
-      });
-    if(error) throw error;
-    credits=next;
-    updateCreditsUI();
-    return true;
-  }catch(error){
-    console.error(error);
-    return false;
-  }
-}
-/* =========================================================
-   STORIES
-========================================================= */
-async function loadStories(){
-  if(!currentUser) return [];
-  const {data,error}=await supabaseClient
-    .from("stories")
-    .select("*")
-    .eq("user_id",currentUser.id)
-    .order("updated_at",{ascending:false});
-  if(error){
-    console.error(error);
-    return [];
-  }
-  return data||[];
-}
-async function createStory(title="Nova história"){
-  const {data,error}=await supabaseClient
-    .from("stories")
-    .insert({
-      user_id:currentUser.id,
-      title,
-      messages:[]
-    })
-    .select()
-    .single();
-  if(error){
-    console.error(error);
-    toast("Não foi possível criar a história.");
-    return null;
-  }
-  return data;
-}
-async function saveStory(){
-  if(!currentUser||!currentStoryId) return;
-  const firstUser=conversation.find(x=>x.role==="user");
-  let title="Nova história";
-  if(firstUser?.content){
-    title=firstUser.content
-      .replace(/\s+/g," ")
-      .trim()
-      .slice(0,55);
-    if(!title) title="Nova história";
-  }
-  const {error}=await supabaseClient
-    .from("stories")
-    .update({
-      title,
-      messages:conversation,
-      updated_at:new Date().toISOString()
-    })
-    .eq("id",currentStoryId)
-    .eq("user_id",currentUser.id);
-  if(error){
-    console.error(error);
-  }
-}
-async function deleteStory(id){
-  if(!currentUser||!id) return;
-  const {error}=await supabaseClient
-    .from("stories")
-    .delete()
-    .eq("id",id)
-    .eq("user_id",currentUser.id);
-  if(error){
-    toast("Não foi possível apagar.");
-    return;
-  }
-  if(currentStoryId===id){
-    currentStoryId=null;
-    conversation=[];
-    messagesEl.innerHTML="";
-    showWelcome();
-  }
-  toast("História apagada.");
-}
-/* =========================================================
-   CHAT STATE
-========================================================= */
-function showWelcome(){
-  welcomeEl.classList.remove("hidden");
-}
-function hideWelcome(){
-  welcomeEl.classList.add("hidden");
-}
-function renderText(text){
-  const safe=escapeHtml(text);
-  return safe
-    .split(/\n{2,}/)
-    .map(part=>`<p>${part.replace(/\n/g,"<br>")}</p>`)
-    .join("");
-}
-function addMessage(role,text,animate=false){
-  hideWelcome();
-  const el=document.createElement("div");
-  el.className=`message ${role}`;
-  if(role==="user"){
-    el.innerHTML=`
-      <div class="bubble">${renderText(text)}</div>
-    `;
-  }else{
-    el.innerHTML=`
-      <div class="aura-mark">
-        <div class="ring"></div>
-        <div class="ring2"></div>
-        <div class="core"></div>
-      </div>
-      <div class="content">
-        ${renderText(text)}
-      </div>
-    `;
-  }
-  messagesEl.appendChild(el);
-  scrollChat();
-  return el;
-}
-function addThinking(){
-  hideWelcome();
-  const el=document.createElement("div");
-  el.className="message aura";
-  el.id="thinkingMessage";
-  el.innerHTML=`
-    <div class="aura-mark thinking">
-      <div class="ring"></div>
-      <div class="ring2"></div>
-      <div class="core"></div>
-    </div>
-    <div class="typing">
-      <span>Aura está pensando</span>
-      <span class="dots">
-        <i></i><i></i><i></i>
-      </span>
-    </div>
-  `;
-  messagesEl.appendChild(el);
-  scrollChat();
-  return el;
-}
-function scrollChat(){
-  requestAnimationFrame(()=>{
-    chatEl.scrollTop=chatEl.scrollHeight;
-  });
-}
-function autoResize(){
-  input.style.height="auto";
-  input.style.height=Math.min(input.scrollHeight,150)+"px";
-}
-input.addEventListener("input",autoResize);
-input.addEventListener("keydown",e=>{
-  if(e.key==="Enter"&&!e.shiftKey){
-    e.preventDefault();
-    sendMessage();
-  }
-  if(e.key==="Escape"){
-    closeSidebar();
-    closeModal();
-  }
-});
-sendBtn.onclick=sendMessage;
-/* =========================================================
-   SEND
-========================================================= */
-  
-async function sendMessage(){
-  if(isSending) return;
 
-  const message=input.value.trim();
-  if(!message) return;
+    if(error)
+      throw error;
+
+    return data;
+
+  }catch(error){
+
+    console.error(
+      "Erro ao criar conversa:",
+      error
+    );
+
+    return null;
+
+  }
+
+}
+
+
+async function saveStory(){
+
+  if(!currentUser ||
+     !currentStoryId)
+    return;
+
+  try{
+
+    await supabaseClient
+      .from("stories")
+      .update({
+        messages:conversation
+      })
+      .eq("id",currentStoryId)
+      .eq("user_id",currentUser.id);
+
+  }catch(error){
+
+    console.error(
+      "Erro ao salvar conversa:",
+      error
+    );
+
+  }
+
+}
+
+
+async function loadStories(){
+
+  if(!currentUser)
+    return;
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("stories")
+        .select("id,title,messages,created_at")
+        .eq("user_id",currentUser.id)
+        .order("created_at",{ascending:false})
+        .limit(30);
+
+    if(error)
+      throw error;
+
+    stories =
+      Array.isArray(data)
+        ? data
+        : [];
+
+    renderHistory();
+
+  }catch(error){
+
+    console.error(
+      "Erro ao carregar histórico:",
+      error
+    );
+
+    stories = [];
+
+    renderHistory();
+
+  }
+
+}
+
+
+function renderHistory(){
+
+  historyList.innerHTML = "";
+
+  if(!stories.length){
+
+    historyList.innerHTML = `
+      <div class="history-empty">
+        Suas conversas aparecerão aqui.
+      </div>
+    `;
+
+    return;
+
+  }
+
+  stories.forEach(story=>{
+
+    const button =
+      document.createElement("button");
+
+    button.className =
+      "history-item";
+
+    const title =
+      story.title ||
+      "Nova conversa";
+
+    const date =
+      story.created_at
+        ? new Date(
+            story.created_at
+          ).toLocaleDateString(
+            "pt-BR"
+          )
+        : "";
+
+    button.innerHTML = `
+      <div class="history-title">
+        ${escapeHTML(title)}
+      </div>
+      <div class="history-date">
+        ${escapeHTML(date)}
+      </div>
+    `;
+
+    button.addEventListener(
+      "click",
+      ()=>{
+        loadStory(story);
+      }
+    );
+
+    historyList.appendChild(button);
+
+  });
+
+}
+
+
+function loadStory(story){
+
+  currentStoryId =
+    story.id;
+
+  conversation =
+    Array.isArray(story.messages)
+      ? story.messages
+      : [];
+
+  const messages =
+    chatInner.querySelectorAll(".message");
+
+  messages.forEach(
+    message=>message.remove()
+  );
+
+  welcome.classList.add("hidden");
+
+  conversation.forEach(message=>{
+
+    if(
+      message &&
+      (message.role==="user" ||
+       message.role==="assistant")
+    ){
+
+      addMessage(
+        message.role==="assistant"
+          ? "aura"
+          : "user",
+        message.content || ""
+      );
+
+    }
+
+  });
+
+  closeSidebar();
+
+}
+
+
+/* =========================================================
+   CHAT
+========================================================= */
+
+async function sendMessage(){
+
+  if(isSending)
+    return;
+
+  const message =
+    input.value.trim();
+
+  if(!message)
+    return;
 
   if(!currentUser){
-    toast("Entre na sua conta primeiro.");
+
+    toast(
+      "Entre na sua conta primeiro."
+    );
+
+    openAuth();
+
     return;
+
   }
 
   if(credits<=0){
-    openPlans();
-    toast("Seus créditos acabaram.");
+
+    openModal("plansModal");
+
+    toast(
+      "Seus créditos acabaram."
+    );
+
     return;
+
   }
 
-  isSending=true;
-  sendBtn.disabled=true;
+  isSending = true;
 
-  input.value="";
+  sendButton.disabled = true;
+
+  input.value = "";
+
   autoResize();
 
   conversation.push({
@@ -1719,840 +2812,959 @@ async function sendMessage(){
     content:message
   });
 
-  addMessage("user",message);
+  addMessage(
+    "user",
+    message
+  );
 
   if(!currentStoryId){
-    const story=await createStory("Nova história");
+
+    const story =
+      await createStory(
+        message.slice(0,60)
+      );
+
     if(story){
-      currentStoryId=story.id;
+
+      currentStoryId =
+        story.id;
+
     }
+
   }
 
-  const thinking=addThinking();
+  const thinking =
+    addThinking();
 
   try{
-    let {data:sessionData}=await supabaseClient.auth.getSession();
-    let session=sessionData?.session;
 
-    if(!session?.access_token){
-      const refreshed=await supabaseClient.auth.refreshSession();
-      session=refreshed.data?.session;
+    let session = null;
+
+    /*
+      Primeiro renovamos a sessão.
+      Isso garante que o Bearer enviado
+      ao backend seja o token atual.
+    */
+
+    const refreshed =
+      await supabaseClient.auth
+        .refreshSession();
+
+    if(refreshed.data?.session){
+
+      session =
+        refreshed.data.session;
+
+    }else{
+
+      const currentSession =
+        await supabaseClient.auth
+          .getSession();
+
+      session =
+        currentSession.data?.session ||
+        null;
+
     }
 
     if(!session?.access_token){
-      throw new Error("Sessão expirada. Entre novamente.");
+
+      throw new Error(
+        "Sessão expirada. Entre novamente."
+      );
+
     }
 
-    const response=await fetch("/api/chat",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "Authorization":`Bearer ${session.access_token}`
-      },
-      body:JSON.stringify({
-        message,
-        history:conversation.slice(0,-1),
-        language:userLanguage,
-        plan:currentPlan,
-        planConfig:{
-          name:getPlan().name,
-          model:getPlan().model,
-          memory:getPlan().memory,
-          research:getPlan().research,
-          speed:getPlan().speed,
-          context:getPlan().context,
-          complexity:getPlan().complexity
+    const response =
+      await fetch(
+        "/api/chat",
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json",
+
+            "Authorization":
+              `Bearer ${session.access_token}`
+          },
+
+          body:JSON.stringify({
+
+            message,
+
+            history:
+              conversation.slice(0,-1),
+
+            language:
+              userLanguage,
+
+            plan:
+              currentPlan,
+
+            planConfig:{
+
+              name:
+                getPlan().name,
+
+              model:
+                getPlan().model,
+
+              memory:
+                getPlan().memory,
+
+              research:
+                getPlan().research,
+
+              speed:
+                getPlan().speed,
+
+              context:
+                getPlan().context,
+
+              complexity:
+                getPlan().complexity
+
+            }
+
+          })
+
         }
-      })
-    });
+      );
 
-    const data=await response.json().catch(()=>({}));
+    const data =
+      await response
+        .json()
+        .catch(
+          ()=>({})
+        );
+
 
     if(!response.ok){
+
       if(response.status===401){
-        toast("Sua sessão expirou. Entre novamente.");
-        await supabaseClient.auth.signOut();
-        return;
+
+        throw new Error(
+          "A autenticação da Aura foi recusada pelo servidor. Tente entrar novamente."
+        );
+
       }
+
 
       if(response.status===402){
-        if(typeof data.credits==="number"){
-          credits=data.credits;
+
+        if(
+          typeof data.credits ===
+          "number"
+        ){
+
+          credits =
+            data.credits;
+
           updateCreditsUI();
+
         }else{
+
           await loadCredits();
+
         }
 
-        openPlans();
-        toast(data.error||"Seus créditos acabaram.");
+        thinking.remove();
+
+        openModal(
+          "plansModal"
+        );
+
+        toast(
+          data.error ||
+          "Seus créditos acabaram."
+        );
+
         return;
+
       }
 
-      throw new Error(data.error||"Erro na API.");
+
+      throw new Error(
+        data.error ||
+        "Erro na API."
+      );
+
     }
 
-    if(typeof data.credits==="number"){
-      credits=data.credits;
+
+    if(
+      typeof data.credits ===
+      "number"
+    ){
+
+      credits =
+        data.credits;
+
       updateCreditsUI();
+
     }else{
+
       await loadCredits();
+
     }
 
-    const reply=String(data.reply||"");
+
+    const reply =
+      String(
+        data.reply || ""
+      );
+
 
     thinking.remove();
 
+
     if(!reply){
-      throw new Error("A Aura não retornou uma resposta.");
+
+      throw new Error(
+        "A Aura não retornou uma resposta."
+      );
+
     }
 
-    const auraMessage=addMessage("aura","");
-    const content=auraMessage.querySelector(".content");
+
+    const auraMessage =
+      addMessage(
+        "aura",
+        ""
+      );
+
+    const content =
+      auraMessage
+        .querySelector(
+          ".message-content"
+        );
+
 
     conversation.push({
+
       role:"assistant",
+
       content:reply
+
     });
 
-    await progressiveText(content,reply);
+
+    await progressiveText(
+      content,
+      reply
+    );
+
+
     await saveStory();
 
-    }catch(error){
-    console.error(error);
+    await loadStories();
+
+
+  }catch(error){
+
+    console.error(
+      "Aura chat error:",
+      error
+    );
 
     thinking.remove();
 
     addMessage(
       "aura",
-      error.message==="Sessão expirada. Entre novamente"
-        ? "Sua sessão expirou. Entre novamente para continuar."
-        : "Não consegui responder agora. Tente novamente em alguns instantes."
+      error.message ||
+      "Não consegui responder agora. Tente novamente em alguns instantes."
     );
+
   }finally{
-    isSending=false;
-    sendBtn.disabled=false;
+
+    isSending = false;
+
+    sendButton.disabled = false;
+
     input.focus();
+
   }
+
 }
-  async function progressiveText(element,text){
-  const words=text.split(/(\s+)/);
-  let result="";
-  for(const part of words){
-    result+=part;
-    element.innerHTML=renderText(result);
-    scrollChat();
-    await new Promise(resolve=>setTimeout(resolve,8));
-  }
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+function autoResize(){
+
+  input.style.height =
+    "auto";
+
+  input.style.height =
+    Math.min(
+      input.scrollHeight,
+      140
+    ) + "px";
+
 }
+
+
 /* =========================================================
-   SIDEBAR
+   AUTH
 ========================================================= */
-document.getElementById("menuBtn").onclick=openSidebar;
-document.getElementById("closeSidebar").onclick=closeSidebar;
-overlay.onclick=closeSidebar;
-document.querySelectorAll(".nav-item").forEach(item=>{
-  item.addEventListener("click",()=>{
-    const action=item.dataset.action;
-    closeSidebar();
-    switch(action){
-      case"new-story":
-        newStory();
-        break;
-      case"history":
-        openHistory();
-        break;
-      case"plans":
-        openPlans();
-        break;
-      case"intelligence":
-        openIntelligence();
-        break;
-      case"language":
-        openLanguage();
-        break;
-      case"account":
-        openAccount();
-        break;
-      case"usage":
-        openUsage();
-        break;
-      case"support":
-        openSupport();
-        break;
-      case"legal":
-        openLegal();
-        break;
-    }
-  });
-});
-/* =========================================================
-   NEW STORY
-========================================================= */
-function newStory(){
-  currentStoryId=null;
-  conversation=[];
-  messagesEl.innerHTML="";
-  showWelcome();
-  input.value="";
-  autoResize();
-  input.focus();
-  toast("Nova história pronta.");
+
+function openAuth(){
+
+  authScreen.classList.add("open");
+
 }
-/* =========================================================
-   HISTORY MODAL
-========================================================= */
-async function openHistory(){
-  const stories=await loadStories();
-  let html=`
-    <div class="modal">
-      <div class="modal-head">
-        <div>
-          <h3>Histórico</h3>
-          <p>Suas histórias continuam salvas na Aura.</p>
-        </div>
-        <button class="modal-close" data-close-modal>×</button>
-      </div>
-      <div class="modal-body">
-        <button class="primary-btn" id="modalNewStory">
-          Nova história
-        </button>
-        <div style="height:14px"></div>
-        <div class="history-list">
-  `;
-  if(!stories.length){
-    html+=`
-      <div class="empty">
-        Você ainda não tem histórias salvas.
-      </div>
-    `;
+
+
+function closeAuth(){
+
+  authScreen.classList.remove("open");
+
+}
+
+
+function updateAuthMode(){
+
+  authError.textContent = "";
+
+  if(authMode==="login"){
+
+    authSubmit.textContent =
+      "Entrar";
+
+    authSwitchText.textContent =
+      "Ainda não tem uma conta?";
+
+    authSwitchButton.textContent =
+      "Criar conta";
+
+    authPassword.autocomplete =
+      "current-password";
+
   }else{
-    stories.forEach(story=>{
-      const count=Array.isArray(story.messages)
-        ? story.messages.length
-        : 0;
-      html+=`
-        <div class="history-item" data-story-id="${escapeHtml(story.id)}">
-          <strong>${escapeHtml(story.title||"Nova história")}</strong>
-          <span>
-            ${count} mensagens · ${formatDate(story.updated_at)}
-          </span>
-          <div style="display:flex;gap:7px;margin-top:10px">
-            <button
-              class="secondary-btn load-story"
-              data-id="${escapeHtml(story.id)}"
-              style="padding:7px 9px;font-size:10px"
-            >
-              Abrir
-            </button>
-            <button
-              class="secondary-btn delete-story"
-              data-id="${escapeHtml(story.id)}"
-              style="padding:7px 9px;font-size:10px;color:#ff7898"
-            >
-              Apagar
-            </button>
-          </div>
-        </div>
-      `;
-    });
+
+    authSubmit.textContent =
+      "Criar conta";
+
+    authSwitchText.textContent =
+      "Já tem uma conta?";
+
+    authSwitchButton.textContent =
+      "Entrar";
+
+    authPassword.autocomplete =
+      "new-password";
+
   }
-  html+=`
-        </div>
-      </div>
-    </div>
-  `;
-  openModal(html);
-  document.getElementById("modalNewStory").onclick=()=>{
-    closeModal();
-    newStory();
-  };
-  document.querySelectorAll(".load-story").forEach(btn=>{
-    btn.onclick=async()=>{
-      await loadStory(btn.dataset.id);
-      closeModal();
-    };
-  });
-  document.querySelectorAll(".delete-story").forEach(btn=>{
-    btn.onclick=async()=>{
-      if(confirm("Apagar esta história?")){
-        await deleteStory(btn.dataset.id);
-        closeModal();
+
+}
+
+
+authSwitchButton.addEventListener(
+  "click",
+  ()=>{
+
+    authMode =
+      authMode==="login"
+        ? "signup"
+        : "login";
+
+    updateAuthMode();
+
+  }
+);
+
+
+authForm.addEventListener(
+  "submit",
+  async event=>{
+
+    event.preventDefault();
+
+    const email =
+      authEmail.value.trim();
+
+    const password =
+      authPassword.value;
+
+    if(!email || !password)
+      return;
+
+    authSubmit.disabled =
+      true;
+
+    authError.textContent =
+      "";
+
+    try{
+
+      if(authMode==="login"){
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient.auth
+            .signInWithPassword({
+              email,
+              password
+            });
+
+        if(error)
+          throw error;
+
+        if(data?.session){
+
+          currentUser =
+            data.user;
+
+          closeAuth();
+
+          await initializeUser();
+
+          toast(
+            "Bem-vindo de volta."
+          );
+
+        }
+
+      }else{
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient.auth
+            .signUp({
+              email,
+              password
+            });
+
+        if(error)
+          throw error;
+
+        if(data?.session){
+
+          currentUser =
+            data.user;
+
+          closeAuth();
+
+          await initializeUser();
+
+          toast(
+            "Conta criada com sucesso."
+          );
+
+        }else{
+
+          authError.textContent =
+            "Conta criada. Verifique seu e-mail para confirmar o acesso.";
+
+        }
+
       }
-    };
-  });
-}
-async function loadStory(id){
-  const {data,error}=await supabaseClient
-    .from("stories")
-    .select("*")
-    .eq("id",id)
-    .eq("user_id",currentUser.id)
-    .single();
-  if(error||!data){
-    toast("Não foi possível abrir a história.");
-    return;
-  }
-  currentStoryId=data.id;
-  conversation=Array.isArray(data.messages)?data.messages:[];
-  messagesEl.innerHTML="";
-  hideWelcome();
-  conversation.forEach(msg=>{
-    if(msg.role==="user"||msg.role==="assistant"){
-      addMessage(
-        msg.role==="assistant"?"aura":"user",
-        msg.content
+
+    }catch(error){
+
+      console.error(
+        "Auth error:",
+        error
       );
+
+      authError.textContent =
+        error.message ||
+        "Não foi possível concluir.";
+
+    }finally{
+
+      authSubmit.disabled =
+        false;
+
     }
-  });
-  scrollChat();
-  input.focus();
+
+  }
+);
+
+
+/* =========================================================
+   USER
+========================================================= */
+
+async function initializeUser(){
+
+  if(!currentUser)
+    return;
+
+  updateUserUI();
+
+  await loadCredits();
+
+  await loadStories();
+
 }
+
+
+async function checkSession(){
+
+  try{
+
+    const {
+      data
+    } =
+      await supabaseClient.auth
+        .getSession();
+
+    if(data?.session){
+
+      currentUser =
+        data.session.user;
+
+      closeAuth();
+
+      await initializeUser();
+
+    }else{
+
+      openAuth();
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "Session error:",
+      error
+    );
+
+    openAuth();
+
+  }
+
+}
+
+
+supabaseClient.auth
+  .onAuthStateChange(
+    async(event,session)=>{
+
+      if(session){
+
+        currentUser =
+          session.user;
+
+        await initializeUser();
+
+      }else{
+
+        currentUser = null;
+
+        updateUserUI();
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+document
+  .getElementById("logoutButton")
+  .addEventListener(
+    "click",
+    async()=>{
+
+      await supabaseClient.auth
+        .signOut();
+
+      currentUser = null;
+
+      conversation = [];
+
+      currentStoryId = null;
+
+      stories = [];
+
+      resetChat();
+
+      closeSidebar();
+
+      openAuth();
+
+      toast(
+        "Você saiu da sua conta."
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+menuButton.addEventListener(
+  "click",
+  openSidebar
+);
+
+closeMenu.addEventListener(
+  "click",
+  closeSidebar
+);
+
+sidebarOverlay.addEventListener(
+  "click",
+  closeSidebar
+);
+
+
+/* =========================================================
+   NEW CHAT
+========================================================= */
+
+document
+  .getElementById("newChatButton")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      resetChat();
+
+      closeSidebar();
+
+      input.focus();
+
+    }
+  );
+
+
+/* =========================================================
+   HISTORY
+========================================================= */
+
+document
+  .getElementById("historyButton")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      document
+        .getElementById(
+          "historySection"
+        )
+        .scrollIntoView({
+          behavior:"smooth"
+        });
+
+    }
+  );
+
+
+/* =========================================================
+   CREDITS
+========================================================= */
+
+document
+  .getElementById("creditPill")
+  .addEventListener(
+    "click",
+    ()=>{
+      openModal("creditsModal");
+    }
+  );
+
+
+document
+  .getElementById("creditsButton")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      closeSidebar();
+
+      openModal(
+        "creditsModal"
+      );
+
+    }
+  );
+
+
+document
+  .getElementById("creditsPlansButton")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      closeModal(
+        "creditsModal"
+      );
+
+      openModal(
+        "plansModal"
+      );
+
+    }
+  );
+
+
 /* =========================================================
    PLANS
 ========================================================= */
-function planFeatures(type){
-  if(type==="free"){
-    return[
-      "20 créditos",
-      "Aura Core",
-      "Memória básica",
-      "Pesquisa web limitada",
-      "Contexto curto",
-      "Velocidade normal",
-      "Histórias persistentes"
-    ];
-  }
-  if(type==="pro"){
-    return[
-      "300 créditos",
-      "Aura Advanced",
-      "Memória longa",
-      "Pesquisa web completa",
-      "Pesquisa + história",
-      "Personagens mais consistentes",
-      "Mundo persistente",
-      "Eventos externos",
-      "Economia da história",
-      "Contexto grande",
-      "Resposta rápida"
-    ];
-  }
-  return[
-    "1.000 créditos",
-    "Aura Ultra",
-    "Memória avançada",
-    "Pesquisa profunda",
-    "Cross-check contextual",
-    "Alta consistência de personagens",
-    "Mundo persistente avançado",
-    "Consequências de longo prazo",
-    "Eventos externos dinâmicos",
-    "Economia avançada",
-    "Processamento prioritário",
-    "Acesso antecipado",
-    "Contexto muito grande",
-    "Complexidade máxima"
-  ];
-}
-function openPlans(){
-  let cards="";
-  Object.entries(plans).forEach(([key,plan])=>{
-    const features=planFeatures(key);
-    cards+=`
-      <div class="plan-card ${currentPlan===key?"selected":""}">
-        <h4>${plan.name}</h4>
-        <div class="plan-price">
-          ${plan.price}
-        </div>
-        <div class="plan-credit">
-          ${plan.credits.toLocaleString("pt-BR")} créditos
-        </div>
-        <ul class="plan-features">
-          ${features.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}
-        </ul>
-        <button
-          class="plan-btn choose-plan"
-          data-plan="${key}"
-        >
-          ${currentPlan===key?"Plano atual":"Selecionar"}
-        </button>
-      </div>
-    `;
-  });
-  openModal(`
-    <div class="modal">
-      <div class="modal-head">
-        <div>
-          <h3>Planos Aura</h3>
-          <p>Escolha como você quer usar sua inteligência.</p>
-        </div>
-        <button class="modal-close" data-close-modal>×</button>
-      </div>
-      <div class="modal-body">
-        <div class="plans">
-          ${cards}
-        </div>
-        <div style="
-          margin-top:16px;
-          color:#65656c;
-          font-size:10px;
-          line-height:1.5;
-          text-align:center;
-        ">
-          Pagamentos reais ainda não estão conectados.
-          Esta área já está preparada para a estrutura de assinatura.
-        </div>
-      </div>
-    </div>
-  `);
-  document.querySelectorAll(".choose-plan").forEach(btn=>{
-    btn.onclick=()=>{
-      const plan=btn.dataset.plan;
-      currentPlan=plan;
-      localStorage.setItem("aura_plan",plan);
-      updateAccountUI();
-      closeModal();
-      toast(`${getPlan().name} selecionado.`);
-    };
-  });
-}
-/* =========================================================
-   INTELLIGENCE
-========================================================= */
-function openIntelligence(){
-  const plan=getPlan();
-  openModal(`
-    <div class="modal">
-      <div class="modal-head">
-        <div>
-          <h3>Inteligência da Aura</h3>
-          <p>Como a Aura trabalha dentro das suas histórias.</p>
-        </div>
-        <button class="modal-close" data-close-modal>×</button>
-      </div>
-      <div class="modal-body">
-        ${settingRow(
-          "core",
-          "Modelo",
-          plan.model,
-          "A inteligência utilizada pela sua experiência atual."
-        )}
-        ${settingRow(
-          "memory",
-          "Memória",
-          plan.memory,
-          "Mantém fatos importantes da história."
-        )}
-        ${settingRow(
-          "research",
-          "Pesquisa web",
-          plan.research,
-          "Consulta informações atuais quando necessário."
-        )}
-        ${settingRow(
-          "context",
-          "Contexto",
-          plan.context,
-          "Quantidade de informação considerada na conversa."
-        )}
-        ${settingRow(
-          "world",
-          "Mundo persistente",
-          currentPlan==="free"?"Ativo":"Avançado",
-          "Personagens, lugares, relações e consequências podem continuar."
-        )}
-        ${settingRow(
-          "events",
-          "Eventos externos",
-          currentPlan==="free"?"Básico":"Ativo",
-          "O mundo pode continuar acontecendo ao redor da história."
-        )}
-        ${settingRow(
-          "economy",
-          "Economia da história",
-          currentPlan==="free"?"Essencial":"Avançada",
-          "Dinheiro, gastos, contratos e recursos podem fazer parte do mundo."
-        )}
-      </div>
-    </div>
-  `);
-}
-function settingRow(icon,title,value,description){
-  return`
-    <div class="setting-row">
-      <div class="setting-icon">
-        <svg viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="7"/>
-          <circle cx="12" cy="12" r="2"/>
-        </svg>
-      </div>
-      <div class="setting-info">
-        <strong>${escapeHtml(title)}</strong>
-        <span>${escapeHtml(description)}</span>
-      </div>
-      <div class="value">${escapeHtml(value)}</div>
-    </div>
-  `;
-}
-/* =========================================================
-   LANGUAGE
-========================================================= */
-function openLanguage(){
-  openModal(`
-    <div class="modal small">
-      <div class="modal-head">
-        <div>
-          <h3>Idioma</h3>
-          <p>Escolha o idioma da experiência.</p>
-        </div>
-        <button class="modal-close" data-close-modal>×</button>
-      </div>
-      <div class="modal-body">
-        ${languageButton("pt-BR","Português (Brasil)")}
-        ${languageButton("en","English")}
-        ${languageButton("es","Español")}
-      </div>
-    </div>
-  `);
-  document.querySelectorAll(".language-choice").forEach(btn=>{
-    btn.onclick=()=>{
-      userLanguage=btn.dataset.lang;
-      localStorage.setItem("aura_language",userLanguage);
-      updateAccountUI();
-      closeModal();
-      toast("Idioma salvo.");
-    };
-  });
-}
-function languageButton(code,label){
-  return`
-    <button
-      class="setting-row language-choice"
-      data-lang="${code}"
-      style="width:100%;background:transparent;color:#fff;text-align:left;border:0"
-    >
-      <div class="setting-icon">
-        <svg viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>
-        </svg>
-      </div>
-      <div class="setting-info">
-        <strong>${label}</strong>
-        <span>${userLanguage===code?"Selecionado":"Selecionar idioma"}</span>
-      </div>
-      <div class="value">${userLanguage===code?"✓":""}</div>
-    </button>
-  `;
-}
-/* =========================================================
-   ACCOUNT
-========================================================= */
-function openAccount(){
-  openModal(`
-    <div class="modal small">
-      <div class="modal-head">
-        <div>
-          <h3>Conta</h3>
-          <p>Gerencie seu acesso à Aura.</p>
-        </div>
-        <button class="modal-close" data-close-modal>×</button>
-      </div>
-      <div class="modal-body">
-        ${settingRow(
-          "user",
-          "Conta",
-          currentUser?.email||"",
-          "E-mail associado à sua conta."
-        )}
-        ${settingRow(
-          "plan",
-          "Plano",
-          getPlan().name,
-          "Seu plano atual."
-        )}
-        <div style="height:12px"></div>
-        <button class="secondary-btn" id="changePasswordBtn" style="width:100%">
-          Alterar senha
-        </button>
-        <div style="height:8px"></div>
-        <button class="danger-btn" id="logoutBtn">
-          Sair de todos os dispositivos
-        </button>
-      </div>
-    </div>
-  `);
-  document.getElementById("changePasswordBtn").onclick=changePassword;
-  document.getElementById("logoutBtn").onclick=logout;
-}
-async function changePassword(){
-  const password=prompt("Digite sua nova senha:");
-  if(!password) return;
-  if(password.length<6){
-    toast("A senha precisa ter pelo menos 6 caracteres.");
+
+document
+  .getElementById("plansButton")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      closeSidebar();
+
+      openModal(
+        "plansModal"
+      );
+
+    }
+  );
+
+
+function selectPlan(plan){
+
+  if(plan==="free"){
+
+    toast(
+      "Você já está no plano gratuito."
+    );
+
     return;
+
   }
-  const {error}=await supabaseClient.auth.updateUser({
-    password
-  });
-  if(error){
-    toast(error.message||"Não foi possível alterar a senha.");
-    return;
-  }
-  toast("Senha alterada.");
+
+  /*
+    A estrutura visual dos planos está pronta.
+    O pagamento deve ser conectado ao
+    seu checkout/Stripe/Mercado Pago quando
+    o endpoint de assinatura estiver definido.
+  */
+
+  toast(
+    "Checkout do plano será conectado nesta área."
+  );
+
 }
-async function logout(){
-  const {error}=await supabaseClient.auth.signOut({
-    scope:"global"
-  });
-  if(error){
-    toast("Não foi possível sair.");
-    return;
-  }
-  closeModal();
-  currentUser=null;
-  currentStoryId=null;
-  conversation=[];
-  app.classList.add("hidden");
-  authScreen.classList.remove("hidden");
-  messagesEl.innerHTML="";
-  document.getElementById("loginEmail").value="";
-  document.getElementById("loginPassword").value="";
-}
+
+
 /* =========================================================
-   USAGE
+   SETTINGS
 ========================================================= */
-function openUsage(){
-  const plan=getPlan();
-  openModal(`
-    <div class="modal small">
-      <div class="modal-head">
-        <div>
-          <h3>Uso e créditos</h3>
-          <p>Resumo da sua conta.</p>
-        </div>
-        <button class="modal-close" data-close-modal>×</button>
-      </div>
-      <div class="modal-body">
-        ${settingRow(
-          "credits",
-          "Saldo",
-          `${credits} créditos`,
-          "Cada mensagem enviada consome um crédito."
-        )}
-        ${settingRow(
-          "plan",
-          "Plano",
-          plan.name,
-          plan.price
-        )}
-        ${settingRow(
-          "model",
-          "Modelo",
-          plan.model,
-          "Configuração associada ao plano."
-        )}
-        <div style="
-          margin-top:18px;
-          padding:13px;
-          background:#101012;
-          border:1px solid var(--line);
-          border-radius:13px;
-          color:#77777e;
-          font-size:10px;
-          line-height:1.5;
-        ">
-          O sistema atual de créditos funciona como estrutura inicial
-          do produto. O processamento de pagamentos ainda não está
-          conectado.
-        </div>
-      </div>
-    </div>
-  `);
-}
+
+document
+  .getElementById("settingsButton")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      closeSidebar();
+
+      openModal(
+        "settingsModal"
+      );
+
+    }
+  );
+
+
+languageSelect.value =
+  userLanguage;
+
+
+languageSelect.addEventListener(
+  "change",
+  ()=>{
+
+    userLanguage =
+      languageSelect.value;
+
+    localStorage.setItem(
+      "aura_language",
+      userLanguage
+    );
+
+    toast(
+      "Idioma atualizado."
+    );
+
+  }
+);
+
+
 /* =========================================================
    SUPPORT
 ========================================================= */
-function openSupport(){
-  openModal(`
-    <div class="modal">
-      <div class="modal-head">
-        <div>
-          <h3>Suporte</h3>
-          <p>Ajuda para usar a Aura.</p>
-        </div>
-        <button class="modal-close" data-close-modal>×</button>
-      </div>
-      <div class="modal-body">
-        <div class="support-card">
-          <strong>Central de ajuda</strong>
-          <p>
-            Encontre informações sobre histórias, memória,
-            créditos e funcionamento da Aura.
-          </p>
-          <button onclick="showSupportMessage('A Central de Ajuda será conectada aqui.')">
-            Abrir
-          </button>
-        </div>
-        <div class="support-card">
-          <strong>FAQ</strong>
-          <p>
-            Respostas para as dúvidas mais comuns sobre a plataforma.
-          </p>
-          <button onclick="openFAQ()">
-            Ver perguntas
-          </button>
-        </div>
-        <div class="support-card">
-          <strong>Contato</strong>
-          <p>
-            Entre em contato com a equipe da Aura.
-          </p>
-          <button onclick="showSupportMessage('O canal de contato será conectado aqui.')">
-            Contatar
-          </button>
-        </div>
-        <div class="support-card">
-          <strong>Reportar problema</strong>
-          <p>
-            Encontrou um erro ou algo funcionando de forma inesperada?
-          </p>
-          <button onclick="showSupportMessage('O formulário de problemas será conectado aqui.')">
-            Reportar
-          </button>
-        </div>
-        <div class="support-card">
-          <strong>Feedback</strong>
-          <p>
-            Envie uma sugestão para melhorar a experiência da Aura.
-          </p>
-          <button onclick="showSupportMessage('O canal de feedback será conectado aqui.')">
-            Enviar
-          </button>
-        </div>
-        <div class="support-card">
-          <strong>Status do serviço</strong>
-          <p>
-            Área reservada para disponibilidade e incidentes da plataforma.
-          </p>
-          <button onclick="showSupportMessage('O status da Aura será conectado aqui.')">
-            Ver status
-          </button>
-        </div>
-      </div>
-    </div>
-  `);
-}
-function showSupportMessage(message){
-  toast(message);
-}
-function openFAQ(){
-  openModal(`
-    <div class="modal">
-      <div class="modal-head">
-        <div>
-          <h3>FAQ</h3>
-          <p>Perguntas frequentes.</p>
-        </div>
-        <button class="modal-close" data-close-modal>×</button>
-      </div>
-      <div class="modal-body">
-        <div class="support-card">
-          <strong>O que é a Aura?</strong>
-          <p>
-            Uma inteligência criada para colaborar com histórias,
-            personagens e mundos persistentes.
-          </p>
-        </div>
-        <div class="support-card">
-          <strong>Como funcionam os créditos?</strong>
-          <p>
-            Cada envio para a Aura consome um crédito.
-            Em caso de erro da API, o crédito é devolvido.
-          </p>
-        </div>
-        <div class="support-card">
-          <strong>As histórias ficam salvas?</strong>
-          <p>
-            Sim. As histórias são armazenadas na conta autenticada
-            e podem ser abertas pelo histórico.
-          </p>
-        </div>
-        <div class="support-card">
-          <strong>A Aura pesquisa na internet?</strong>
-          <p>
-            Quando disponível para o plano e quando necessário,
-            a inteligência pode utilizar pesquisa web através do backend.
-          </p>
-        </div>
-      </div>
-    </div>
-  `);
-}
+
+document
+  .getElementById("supportButton")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      closeSidebar();
+
+      openModal(
+        "supportModal"
+      );
+
+    }
+  );
+
+
+document
+  .getElementById(
+    "supportEmailButton"
+  )
+  .addEventListener(
+    "click",
+    ()=>{
+
+      window.location.href =
+        "mailto:suporte@auraline.com";
+
+    }
+  );
+
+
 /* =========================================================
-   LEGAL / SECURITY
+   MODAL CLOSE
 ========================================================= */
-function openLegal(){
-  openModal(`
-    <div class="modal">
-      <div class="modal-head">
-        <div>
-          <h3>Segurança e legal</h3>
-          <p>Informações importantes sobre sua conta.</p>
-        </div>
-        <button class="modal-close" data-close-modal>×</button>
-      </div>
-      <div class="modal-body">
-        <div class="support-card">
-          <strong>Privacidade</strong>
-          <p>
-            Área destinada à política de privacidade da Aura,
-            incluindo tratamento e armazenamento de dados.
-          </p>
-          <button onclick="showSupportMessage('Política de privacidade será conectada aqui.')">
-            Abrir
-          </button>
-        </div>
-        <div class="support-card">
-          <strong>Termos de uso</strong>
-          <p>
-            Área destinada aos termos que regulam a utilização da plataforma.
-          </p>
-          <button onclick="showSupportMessage('Termos de uso serão conectados aqui.')">
-            Abrir
-          </button>
-        </div>
-        <div class="support-card">
-          <strong>Segurança da conta</strong>
-          <p>
-            Use uma senha forte e não compartilhe suas credenciais.
-            A sessão pode ser encerrada globalmente pela área de conta.
-          </p>
-        </div>
-        <div class="support-card">
-          <strong>Proteção de uso</strong>
-          <p>
-            A plataforma possui estrutura para proteção de API,
-            limitação de uso e controle de requisições.
-          </p>
-        </div>
-      </div>
-    </div>
-  `);
-}
+
+document
+  .querySelectorAll(
+    "[data-close]"
+  )
+  .forEach(button=>{
+
+    button.addEventListener(
+      "click",
+      ()=>{
+
+        closeModal(
+          button.dataset.close
+        );
+
+      }
+    );
+
+  });
+
+
+document
+  .querySelectorAll(
+    ".modal-overlay"
+  )
+  .forEach(overlay=>{
+
+    overlay.addEventListener(
+      "click",
+      event=>{
+
+        if(
+          event.target ===
+          overlay
+        ){
+
+          overlay.classList.remove(
+            "open"
+          );
+
+        }
+
+      }
+    );
+
+  });
+
+
 /* =========================================================
-   KEYBOARD / MODAL
+   SUGGESTIONS
 ========================================================= */
-document.addEventListener("keydown",e=>{
-  if(e.key==="Escape"){
-    closeSidebar();
-    closeModal();
+
+document
+  .querySelectorAll(
+    ".suggestion"
+  )
+  .forEach(button=>{
+
+    button.addEventListener(
+      "click",
+      ()=>{
+
+        input.value =
+          button.textContent.trim();
+
+        autoResize();
+
+        input.focus();
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   SEND
+========================================================= */
+
+sendButton.addEventListener(
+  "click",
+  sendMessage
+);
+
+
+input.addEventListener(
+  "input",
+  autoResize
+);
+
+
+input.addEventListener(
+  "keydown",
+  event=>{
+
+    if(
+      event.key==="Enter" &&
+      !event.shiftKey
+    ){
+
+      event.preventDefault();
+
+      sendMessage();
+
+    }
+
   }
-});
+);
+
+
 /* =========================================================
-   START
+   INIT
 ========================================================= */
-boot();
+
+updateAuthMode();
+
+updateCreditsUI();
+
+updateUserUI();
+
+checkSession();
+
 </script>
+
 </body>
 </html>
