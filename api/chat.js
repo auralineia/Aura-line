@@ -33,10 +33,7 @@ export default async function handler(req, res) {
       }
     ];
 
-    const requestBody = {
-      systemInstruction: {
-        parts: [{
-          text: `
+    const systemPrompt = `
 Você é a Aura, a inteligência artificial da Aura Line.
 
 Sua função é criar e conduzir histórias interativas.
@@ -63,90 +60,138 @@ Escreva em português do Brasil.
 Não diga que a história é uma simulação.
 
 Faça a experiência parecer uma vida narrativa interativa.
-          `
-        }]
+`;
+
+    const requestBody = {
+      systemInstruction: {
+        parts: [{ text: systemPrompt }]
       },
       contents,
       generationConfig: {
-        temperature: 0.9,
         maxOutputTokens: 1200
       }
     };
 
-    const url =
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" +
-      encodeURIComponent(apiKey);
+    const models = [
+      "gemini-3.8-flash",
+      "gemini-3.7-flash"
+    ];
 
-    let data = null;
     let lastError = null;
 
-    // Tenta até 3 vezes caso o Gemini esteja temporariamente indisponível.
-    for (let attempt = 1; attempt <= 3; attempt++) {
+    for (const model of models) {
 
-      try {
+      const url =
+        "https://generativelanguage.googleapis.com/v1beta/models/" +
+        model +
+        ":generateContent?key=" +
+        encodeURIComponent(apiKey);
 
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(requestBody)
-        });
+      for (let attempt = 1; attempt <= 4; attempt++) {
 
-        data = await response.json();
+        try {
 
-        if (response.ok) {
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody)
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+
+            const reply =
+              data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+            if (reply) {
+              return res.status(200).json({
+                reply
+              });
+            }
+
+            lastError = "A IA não retornou texto.";
+
+            break;
+          }
+
+          lastError =
+            data?.error?.message ||
+            "Erro ao consultar a IA.";
+
+          console.error(
+            "Gemini",
+            model,
+            "tentativa",
+            attempt,
+            response.status,
+            lastError
+          );
+
+          /*
+            503 = serviço temporariamente indisponível.
+            429 = limite temporário.
+            
+            Nesses casos esperamos e tentamos novamente.
+          */
+
+          if (
+            (response.status === 503 ||
+             response.status === 429) &&
+            attempt < 4
+          ) {
+
+            const delay =
+              3000 * Math.pow(2, attempt - 1);
+
+            await new Promise(resolve =>
+              setTimeout(resolve, delay)
+            );
+
+            continue;
+          }
+
           break;
-        }
 
-        lastError =
-          data?.error?.message ||
-          "Erro ao consultar a IA";
+        } catch (error) {
 
-        // 503 = serviço temporariamente indisponível.
-        // Espera antes de tentar novamente.
-        if (response.status === 503 && attempt < 3) {
-          await new Promise(resolve =>
-            setTimeout(resolve, 1500 * attempt)
+          lastError = error.message;
+
+          console.error(
+            "Erro de conexão:",
+            error
           );
-          continue;
+
+          if (attempt < 4) {
+
+            const delay =
+              3000 * Math.pow(2, attempt - 1);
+
+            await new Promise(resolve =>
+              setTimeout(resolve, delay)
+            );
+
+          }
         }
-
-        return res.status(response.status).json({
-          error: lastError
-        });
-
-      } catch (error) {
-
-        lastError = error.message;
-
-        if (attempt < 3) {
-          await new Promise(resolve =>
-            setTimeout(resolve, 1500 * attempt)
-          );
-        }
-
       }
+
+      /*
+        Se o 3.8 estiver temporariamente indisponível,
+        tenta automaticamente o 3.7.
+      */
+
+      console.log(
+        "Tentando modelo reserva:",
+        model
+      );
     }
 
-    if (!data) {
-      return res.status(503).json({
-        error: lastError ||
-          "A IA está temporariamente indisponível."
-      });
-    }
-
-    const reply =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (!reply) {
-      return res.status(500).json({
-        error: "A IA não retornou uma resposta."
-      });
-    }
-
-    return res.status(200).json({
-      reply
+    return res.status(503).json({
+      error:
+        "A Aura está temporariamente com alta demanda. Tente novamente em alguns segundos.",
+      details: lastError
     });
 
   } catch (error) {
