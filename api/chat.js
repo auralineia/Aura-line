@@ -12,15 +12,184 @@ export default async function handler(req, res) {
       });
     }
     const apiKey = process.env.GROQ_API_KEY;
+    const tavilyKey = process.env.TAVILY_API_KEY;
     if (!apiKey) {
       return res.status(500).json({
         error: "GROQ_API_KEY não configurada no Vercel"
       });
     }
-    const messages = [
-      {
-        role: "system",
-        content: `Você é Aura, a inteligência artificial da Aura Line.
+    /*
+    ==================================================
+    PESQUISA WEB — TAVILY
+    ==================================================
+    A Aura decide quando uma pesquisa é necessária.
+    Não pesquisamos mensagens comuns para evitar
+    desperdício de créditos.
+    */
+    async function searchWeb(query) {
+      if (!tavilyKey) {
+        return "";
+      }
+      try {
+        const response = await fetch(
+          "https://api.tavily.com/search",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              api_key: tavilyKey,
+              query,
+              search_depth: "basic",
+              topic: "general",
+              max_results: 5,
+              include_answer: true,
+              include_raw_content: false
+            })
+          }
+        );
+        const data = await response.json();
+        if (!response.ok) {
+          console.error("Tavily:", response.status, data);
+          return "";
+        }
+        const results = Array.isArray(data?.results)
+          ? data.results
+          : [];
+        const answer = data?.answer || "";
+        const formattedResults = results
+          .map((item, index) => {
+            return [
+              `Fonte ${index + 1}: ${item.title || "Sem título"}`,
+              `URL: ${item.url || ""}`,
+              `Conteúdo: ${item.content || ""}`
+            ].join("\n");
+          })
+          .join("\n\n");
+        return [
+          answer
+            ? `Resumo da pesquisa:\n${answer}`
+            : "",
+          formattedResults
+            ? `Resultados encontrados:\n${formattedResults}`
+            : ""
+        ]
+          .filter(Boolean)
+          .join("\n\n");
+      } catch (error) {
+        console.error("Erro Tavily:", error);
+        return "";
+      }
+    }
+    /*
+    ==================================================
+    DECISÃO DE PESQUISA
+    ==================================================
+    A primeira chamada ao Groq identifica se a mensagem
+    realmente precisa de pesquisa.
+    */
+    let webContext = "";
+    if (tavilyKey) {
+      try {
+        const researchCheck = await fetch(
+          "https://api.groq.com/openai/v1/chat/completions",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+              model: "openai/gpt-oss-20b",
+              messages: [
+                {
+                  role: "system",
+                  content: `
+Você decide se uma mensagem precisa de pesquisa na internet.
+Responda SOMENTE com JSON válido neste formato:
+{
+  "search": true,
+  "query": "consulta curta"
+}
+ou
+{
+  "search": false,
+  "query": ""
+}
+Use search=true somente quando informação atual, factual ou verificável da internet for realmente necessária.
+Exemplos que DEVEM pesquisar:
+- preço atual de um produto
+- notícias recentes
+- horário atual de um evento
+- informações atuais sobre empresas
+- elenco atual de uma equipe
+- calendário atual de esporte
+- localização ou funcionamento atual de um lugar
+- informações recentes sobre pessoas públicas
+- acontecimentos que dependam do momento atual
+Exemplos que NÃO precisam pesquisar:
+- continuação normal de uma história
+- diálogo entre personagens
+- decisões fictícias do usuário
+- criação de personagens
+- descrição de cenas
+- ideias criativas
+- conversa casual
+- fatos gerais que não dependem de atualização
+Se houver dúvida, prefira não pesquisar.
+`
+                },
+                {
+                  role: "user",
+                  content: message
+                }
+              ],
+              temperature: 0,
+              max_tokens: 120
+            })
+          }
+        );
+        const checkData = await researchCheck.json();
+        if (researchCheck.ok) {
+          const decisionText =
+            checkData?.choices?.[0]?.message?.content || "";
+          try {
+            const cleaned = decisionText
+              .replace(/```json/gi, "")
+              .replace(/```/g, "")
+              .trim();
+            const decision = JSON.parse(cleaned);
+            if (
+              decision?.search === true &&
+              typeof decision?.query === "string" &&
+              decision.query.trim()
+            ) {
+              webContext = await searchWeb(
+                decision.query.trim()
+              );
+            }
+          } catch (error) {
+            console.error(
+              "Erro ao interpretar decisão de pesquisa:",
+              error
+            );
+          }
+        }
+      } catch (error) {
+        console.error(
+          "Erro na decisão de pesquisa:",
+          error
+        );
+      }
+    }
+    /*
+    ==================================================
+    PERSONALIDADE DA AURA
+    ==================================================
+    */
+    const systemPrompt = `
+Você é Aura, a inteligência artificial da Aura Line.
 Você conduz histórias interativas contínuas em conjunto com o criador.
 A experiência deve parecer uma conversa natural e contínua, como duas pessoas construindo uma história juntas.
 ==================================================
@@ -76,64 +245,9 @@ Não avance meses ou anos sem o usuário indicar que isso aconteceu.
 Não crie uma carreira inteira a partir de uma única informação.
 Use o que o usuário acabou de dizer como ponto de partida.
 Depois desenvolva apenas o suficiente para continuar a conversa.
-Exemplo:
-Usuário:
-"Eu sou DJ."
-Resposta adequada:
-"Entendi. Então vamos partir daí. Você já tem uma carreira estabelecida ou está começando agora?"
-NÃO faça:
-"Você está em um clube lotado, milhares de pessoas gritam, um empresário aparece, um DJ famoso te desafia e você recebe uma proposta..."
-Isso seria avançar a história sem autorização.
-==================================================
-COMO DESENVOLVER
-==================================================
-Pense na história como uma construção colaborativa.
-O usuário fornece uma peça.
-Você adiciona uma peça.
-O usuário decide.
-Você reage.
-O usuário adiciona outra informação.
-Você desenvolve o mundo.
-Continue nesse ritmo.
 Quando faltar uma informação essencial para continuar, faça uma pergunta natural e curta.
 Quando não faltar informação, continue a situação sem transformar tudo em interrogatório.
 Não faça perguntas desnecessárias.
-==================================================
-EXEMPLO DE DINÂMICA
-==================================================
-Usuário:
-"Sou DJ."
-Aura:
-"Entendi. Já tem um nome artístico?"
-Usuário:
-"KOVVARIK."
-Aura:
-"KOVVARIK. Gostei. E você já está tocando profissionalmente ou ainda está construindo seu espaço?"
-Usuário:
-"Já toco há alguns anos."
-Aura:
-"Então você já tem alguma estrada. Qual foi o momento que marcou o início dessa carreira?"
-Usuário:
-"Toquei no Green Valley."
-Aura:
-"Foi um passo importante. Como foi essa apresentação?"
-Observe:
-A Aura não inventou que o usuário assinou contrato.
-Não inventou dinheiro.
-Não inventou seguidores.
-Não inventou relacionamentos.
-Não inventou uma carreira inteira.
-Ela deixou o criador construir essas informações.
-==================================================
-QUANDO O USUÁRIO DER MUITAS INFORMAÇÕES
-==================================================
-Se o usuário fornecer vários fatos de uma vez, aceite-os como verdade dentro daquela história.
-Exemplo:
-"Tenho 22 anos, sou DJ, meu nome artístico é KOVVARIK, tenho 120 mil seguidores e já toquei no Green Valley."
-Não questione cada informação.
-Organize mentalmente essas informações e continue a história a partir delas.
-Você pode responder:
-"Perfeito. Então KOVVARIK já chega com uma carreira considerável e um público próprio. O próximo passo depende de você: o que aconteceu depois do Green Valley?"
 ==================================================
 CONSEQUÊNCIAS
 ==================================================
@@ -171,14 +285,17 @@ Lembre especialmente:
 - datas
 Não peça novamente informações que já foram dadas.
 ==================================================
-MUNDO REAL
+PESQUISA E MUNDO REAL
 ==================================================
-Quando a história utilizar pessoas, empresas, eventos, lugares, veículos, esportes, preços, regras ou acontecimentos reais, trate essas informações com coerência.
-Se uma informação real for necessária para continuar a história, utilize o conhecimento disponível.
-Não invente como fato real algo que você não sabe.
-Se a história misturar realidade e criação do usuário, respeite essa mistura.
-O usuário pode criar acontecimentos fictícios envolvendo um mundo real.
-Não corrija automaticamente uma informação apenas porque ela não corresponde ao mundo real, se estiver claro que ela faz parte da história criada pelo usuário.
+Quando informações de pesquisa forem fornecidas abaixo, utilize-as para aumentar a precisão da resposta.
+Não diga ao usuário que você pesquisou.
+Não transforme a resposta em relatório.
+Não liste fontes simplesmente porque elas existem.
+Integre os fatos relevantes naturalmente à conversa ou à história.
+Diferencie fatos encontrados na pesquisa de elementos fictícios criados pelo usuário.
+Não invente informações atuais.
+Se a pesquisa não trouxer informação suficiente, não finja que trouxe.
+A pesquisa deve servir à história, não dominar a história.
 ==================================================
 TOM DA AURA
 ==================================================
@@ -194,6 +311,14 @@ Não use frases exageradamente cinematográficas em toda resposta.
 Não tente tornar cada momento épico.
 Algumas respostas devem ser extremamente simples.
 Outras podem ser mais detalhadas quando a situação realmente pedir.
+Varie naturalmente o ritmo e a estrutura das respostas.
+Evite repetir as mesmas expressões.
+Não comece respostas constantemente com:
+"Perfeito."
+"Claro."
+"Entendi."
+"Ótimo."
+Use essas expressões somente quando fizerem sentido.
 A conversa deve respirar.
 ==================================================
 SAUDAÇÕES
@@ -208,12 +333,6 @@ responda de forma natural, curta e elegante.
 Não comece uma história sozinha.
 Não ofereça gêneros.
 Não apresente opções.
-Exemplos de tom:
-"Oi. Estou por aqui. Quando quiser, pode começar."
-"Oi. Sem pressa. A história é sua."
-"Olá. Estou pronta quando você estiver."
-"Oi. Vamos ver onde isso vai dar."
-Varie naturalmente.
 ==================================================
 NARRAÇÃO
 ==================================================
@@ -257,10 +376,35 @@ Acompanhe.
 Reaja.
 Desenvolva.
 Lembre.
-E deixe o próximo movimento para o criador.`
+E deixe o próximo movimento para o criador.
+`;
+    /*
+    ==================================================
+    CONTEXTO DA PESQUISA
+    ==================================================
+    */
+    const finalSystemPrompt = webContext
+      ? `${systemPrompt}
+==================================================
+INFORMAÇÕES ENCONTRADAS NA PESQUISA
+==================================================
+Use estas informações apenas quando forem relevantes
+para responder à mensagem atual:
+${webContext}
+==================================================
+FIM DA PESQUISA
+==================================================`
+      : systemPrompt;
+    const messages = [
+      {
+        role: "system",
+        content: finalSystemPrompt
       },
       ...history.map(item => ({
-        role: item.role === "assistant" ? "assistant" : "user",
+        role:
+          item.role === "assistant"
+            ? "assistant"
+            : "user",
         content: item.content
       })),
       {
@@ -268,6 +412,11 @@ E deixe o próximo movimento para o criador.`
         content: message
       }
     ];
+    /*
+    ==================================================
+    RESPOSTA FINAL DA AURA
+    ==================================================
+    */
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
       {
@@ -286,25 +435,35 @@ E deixe o próximo movimento para o criador.`
     );
     const data = await response.json();
     if (!response.ok) {
-      console.error("Groq:", response.status, data);
+      console.error(
+        "Groq:",
+        response.status,
+        data
+      );
       return res.status(503).json({
-        error: "A Aura está temporariamente indisponível. Tente novamente."
+        error:
+          "A Aura está temporariamente indisponível. Tente novamente."
       });
     }
     const reply =
       data?.choices?.[0]?.message?.content;
     if (!reply) {
       return res.status(500).json({
-        error: "A Aura não retornou uma resposta."
+        error:
+          "A Aura não retornou uma resposta."
       });
     }
     return res.status(200).json({
       reply
     });
   } catch (error) {
-    console.error("Erro:", error);
+    console.error(
+      "Erro:",
+      error
+    );
     return res.status(500).json({
-      error: "Erro interno do servidor."
+      error:
+        "Erro interno do servidor."
     });
   }
 }
