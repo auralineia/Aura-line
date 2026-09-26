@@ -1191,9 +1191,7 @@
 
 <body>
 
-  <!-- =====================================================
-       AUTH
-  ===================================================== -->
+  <!-- AUTH -->
 
   <div id="authScreen">
 
@@ -1259,9 +1257,7 @@
   </div>
 
 
-  <!-- =====================================================
-       APP
-  ===================================================== -->
+  <!-- APP -->
 
   <main
     id="app"
@@ -1269,16 +1265,12 @@
     style="display:none;"
   >
 
-    <!-- MENU OVERLAY -->
-
     <div
       id="menuOverlay"
       class="menu-overlay"
       onclick="closeMenu()"
     ></div>
 
-
-    <!-- MENU LATERAL -->
 
     <aside
       id="sideMenu"
@@ -1379,8 +1371,6 @@
     </aside>
 
 
-    <!-- TOPBAR -->
-
     <header class="topbar">
 
       <button
@@ -1390,11 +1380,9 @@
       >
 
         <div class="hamburger">
-
           <span></span>
           <span></span>
           <span></span>
-
         </div>
 
       </button>
@@ -1429,8 +1417,6 @@
     </header>
 
 
-    <!-- CHAT -->
-
     <section
       id="chat"
       class="chat"
@@ -1463,8 +1449,6 @@
 
     </section>
 
-
-    <!-- COMPOSER -->
 
     <footer class="composer">
 
@@ -1533,6 +1517,8 @@
 
     let currentUser = null;
 
+    let appInitialized = false;
+
 
     const chat =
       document.getElementById("chat");
@@ -1561,6 +1547,7 @@
 
       const message =
         document.getElementById("authMessage");
+
 
       message.textContent = "";
 
@@ -1673,7 +1660,7 @@
             currentUser =
               data.user;
 
-            showApp();
+            await showApp();
 
           } else {
 
@@ -1704,7 +1691,7 @@
           currentUser =
             data.user;
 
-          showApp();
+          await showApp();
         }
 
 
@@ -1773,6 +1760,14 @@
 
     async function showApp() {
 
+      if (appInitialized && currentUser) {
+        return;
+      }
+
+
+      appInitialized = true;
+
+
       document.getElementById(
         "authScreen"
       ).style.display = "none";
@@ -1796,7 +1791,7 @@
 
       updateAccountUI();
 
-      loadStories();
+      await loadStories();
 
       setTimeout(() => {
 
@@ -1819,7 +1814,7 @@
         currentUser =
           data.session.user;
 
-        showApp();
+        await showApp();
 
       } else {
 
@@ -1831,15 +1826,20 @@
 
 
     supabaseClient.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
 
         if (session) {
 
           currentUser =
             session.user;
 
-          showApp();
+          await showApp();
 
+        } else if (
+          event === "SIGNED_OUT"
+        ) {
+
+          appInitialized = false;
         }
 
       }
@@ -1897,6 +1897,8 @@
 
       stories = [];
 
+      appInitialized = false;
+
       closeMenu();
 
       document.getElementById(
@@ -1925,122 +1927,185 @@
 
 
     /* =====================================================
-       HISTÓRIAS
+       HISTÓRIAS — SUPABASE
     ===================================================== */
 
-    function storageKey() {
+    async function loadStories() {
 
       if (!currentUser) {
-        return null;
-      }
-
-      return (
-        "aura_line_stories_" +
-        currentUser.id
-      );
-    }
-
-
-    function loadStories() {
-
-      const key =
-        storageKey();
-
-
-      if (!key) {
         return;
       }
 
 
       try {
 
-        const saved =
-          localStorage.getItem(
-            key
-          );
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from("stories")
+            .select(
+              "id, title, messages, created_at, updated_at"
+            )
+            .eq(
+              "user_id",
+              currentUser.id
+            )
+            .order(
+              "updated_at",
+              {
+                ascending: false
+              }
+            );
+
+
+        if (error) {
+          throw error;
+        }
 
 
         stories =
-          saved
-            ? JSON.parse(saved)
-            : [];
+          (data || []).map(
+            story => ({
+              id:
+                story.id,
+
+              title:
+                story.title ||
+                "Nova história",
+
+              messages:
+                Array.isArray(
+                  story.messages
+                )
+                  ? story.messages
+                  : [],
+
+              createdAt:
+                story.created_at,
+
+              updatedAt:
+                story.updated_at
+            })
+          );
 
 
-      } catch {
+        renderHistory();
+
+
+      } catch (error) {
+
+        console.error(
+          "Erro ao carregar histórias:",
+          error
+        );
+
 
         stories = [];
+
+        renderHistory();
+
+
+        showToast(
+          "Não foi possível carregar suas histórias."
+        );
       }
-
-
-      renderHistory();
     }
 
 
-    function saveStories() {
+    async function createStory() {
 
-      const key =
-        storageKey();
-
-
-      if (!key) {
-        return;
+      if (!currentUser) {
+        return null;
       }
 
 
-      localStorage.setItem(
-        key,
-        JSON.stringify(stories)
-      );
+      try {
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from("stories")
+            .insert({
+              user_id:
+                currentUser.id,
+
+              title:
+                "Nova história",
+
+              messages:
+                []
+            })
+            .select(
+              "id, title, messages, created_at, updated_at"
+            )
+            .single();
 
 
-      renderHistory();
-    }
+        if (error) {
+          throw error;
+        }
 
 
-    function createStory() {
+        const story = {
 
-      const story = {
+          id:
+            data.id,
 
-        id:
-          "story_" +
-          Date.now() +
-          "_" +
-          Math.random()
-            .toString(36)
-            .slice(2),
+          title:
+            data.title,
 
-        title:
-          "Nova história",
+          messages:
+            data.messages || [],
 
-        messages: [],
+          createdAt:
+            data.created_at,
 
-        createdAt:
-          Date.now(),
-
-        updatedAt:
-          Date.now()
-      };
+          updatedAt:
+            data.updated_at
+        };
 
 
-      stories.unshift(
-        story
-      );
+        stories.unshift(
+          story
+        );
 
 
-      currentStoryId =
-        story.id;
+        currentStoryId =
+          story.id;
 
-      conversation = [];
+        conversation = [];
 
-      saveStories();
+        renderHistory();
 
-      renderCurrentStory();
+        renderCurrentStory();
 
-      closeMenu();
+        closeMenu();
 
-      input.focus();
+        input.focus();
 
-      return story;
+
+        return story;
+
+
+      } catch (error) {
+
+        console.error(
+          "Erro ao criar história:",
+          error
+        );
+
+
+        showToast(
+          "Não foi possível criar a história."
+        );
+
+
+        return null;
+      }
     }
 
 
@@ -2054,9 +2119,12 @@
     }
 
 
-    function saveCurrentConversation() {
+    async function saveCurrentConversation() {
 
-      if (!currentStoryId) {
+      if (
+        !currentStoryId ||
+        !currentUser
+      ) {
         return;
       }
 
@@ -2070,7 +2138,7 @@
       }
 
 
-      story.messages =
+      const messages =
         conversation.map(
           item => ({
             role:
@@ -2082,10 +2150,6 @@
         );
 
 
-      story.updatedAt =
-        Date.now();
-
-
       const firstUser =
         conversation.find(
           item =>
@@ -2093,19 +2157,88 @@
         );
 
 
+      let title =
+        story.title ||
+        "Nova história";
+
+
       if (
         firstUser &&
         firstUser.content
       ) {
 
-        story.title =
+        title =
           createStoryTitle(
             firstUser.content
           );
       }
 
 
-      saveStories();
+      try {
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from("stories")
+            .update({
+              title:
+                title,
+
+              messages:
+                messages,
+
+              updated_at:
+                new Date().toISOString()
+            })
+            .eq(
+              "id",
+              currentStoryId
+            )
+            .eq(
+              "user_id",
+              currentUser.id
+            )
+            .select(
+              "id, title, messages, created_at, updated_at"
+            )
+            .single();
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        story.title =
+          data.title;
+
+        story.messages =
+          data.messages || [];
+
+        story.createdAt =
+          data.created_at;
+
+        story.updatedAt =
+          data.updated_at;
+
+
+        renderHistory();
+
+
+      } catch (error) {
+
+        console.error(
+          "Erro ao salvar história:",
+          error
+        );
+
+
+        showToast(
+          "Não foi possível salvar a história."
+        );
+      }
     }
 
 
@@ -2145,6 +2278,11 @@
         );
 
 
+      if (!list) {
+        return;
+      }
+
+
       if (!stories.length) {
 
         list.innerHTML = `
@@ -2166,8 +2304,12 @@
       const ordered =
         [...stories].sort(
           (a, b) =>
-            b.updatedAt -
-            a.updatedAt
+            new Date(
+              b.updatedAt
+            ) -
+            new Date(
+              a.updatedAt
+            )
         );
 
 
@@ -2228,7 +2370,7 @@
     }
 
 
-    function openStory(id) {
+    async function openStory(id) {
 
       const story =
         stories.find(
@@ -2267,6 +2409,9 @@
       renderHistory();
 
       closeMenu();
+
+      input.placeholder =
+        "Continue sua história...";
 
       input.focus();
     }
@@ -2339,7 +2484,7 @@
     }
 
 
-    function deleteStory(
+    async function deleteStory(
       event,
       id
     ) {
@@ -2347,44 +2492,78 @@
       event.stopPropagation();
 
 
-      const index =
-        stories.findIndex(
-          story =>
-            story.id === id
-        );
-
-
-      if (index === -1) {
+      if (!currentUser) {
         return;
       }
 
 
-      stories.splice(
-        index,
-        1
-      );
+      try {
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("stories")
+            .delete()
+            .eq(
+              "id",
+              id
+            )
+            .eq(
+              "user_id",
+              currentUser.id
+            );
 
 
-      if (
-        currentStoryId ===
-        id
-      ) {
+        if (error) {
+          throw error;
+        }
 
-        currentStoryId =
-          null;
 
-        conversation = [];
+        stories =
+          stories.filter(
+            story =>
+              story.id !== id
+          );
 
-        renderCurrentStory();
+
+        if (
+          currentStoryId ===
+          id
+        ) {
+
+          currentStoryId =
+            null;
+
+          conversation = [];
+
+          input.placeholder =
+            "Comece uma história...";
+
+          renderCurrentStory();
+        }
+
+
+        renderHistory();
+
+
+        showToast(
+          "História apagada."
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Erro ao apagar história:",
+          error
+        );
+
+
+        showToast(
+          "Não foi possível apagar a história."
+        );
       }
-
-
-      saveStories();
-
-
-      showToast(
-        "História apagada."
-      );
     }
 
 
@@ -2446,7 +2625,7 @@
     }
 
 
-    function ensureStory() {
+    async function ensureStory() {
 
       if (currentStoryId) {
 
@@ -2459,7 +2638,7 @@
       }
 
 
-      return createStory();
+      return await createStory();
     }
 
 
@@ -2483,7 +2662,13 @@
       }
 
 
-      ensureStory();
+      const story =
+        await ensureStory();
+
+
+      if (!story) {
+        return;
+      }
 
 
       const currentWelcome =
@@ -2508,7 +2693,7 @@
       });
 
 
-      saveCurrentConversation();
+      await saveCurrentConversation();
 
 
       input.value = "";
@@ -2571,7 +2756,7 @@
         });
 
 
-        saveCurrentConversation();
+        await saveCurrentConversation();
 
 
         setThinking(false);
@@ -2582,7 +2767,7 @@
         );
 
 
-        saveCurrentConversation();
+        await saveCurrentConversation();
 
 
       } catch (error) {
