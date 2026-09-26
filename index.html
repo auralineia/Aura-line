@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURA LINE</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #080808;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+    }
+
+    .app {
+      max-width: 900px;
+      margin: auto;
+      padding: 28px 20px 50px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0 50px;
+    }
+
+    .logo {
+      font-size: 23px;
+      font-weight: 700;
+      letter-spacing: 5px;
+    }
+
+    .status {
+      font-size: 12px;
+      color: #8b8b8b;
+      letter-spacing: 1px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 45px 10px 35px;
+    }
+
+    .aura {
+      font-size: 12px;
+      letter-spacing: 5px;
+      color: #a8a8a8;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: clamp(38px, 10vw, 72px);
+      line-height: 1;
+      letter-spacing: -3px;
+      margin-bottom: 18px;
+    }
+
+    .subtitle {
+      color: #999;
+      font-size: 17px;
+      line-height: 1.5;
+      max-width: 520px;
+      margin: auto;
+    }
+
+    .prompt {
+      margin: 35px auto 45px;
+      max-width: 700px;
+      background: #111;
+      border: 1px solid #292929;
+      border-radius: 22px;
+      padding: 7px;
+      display: flex;
+      align-items: center;
+    }
+
+    .prompt input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+      padding: 18px;
+      font-size: 16px;
+    }
+
+    .prompt button {
+      border: none;
+      background: white;
+      color: black;
+      border-radius: 16px;
+      padding: 15px 20px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .section-title {
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: #888;
+      margin-bottom: 18px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 45px;
+    }
+
+    .card {
+      background: #111;
+      border: 1px solid #242424;
+      border-radius: 18px;
+      padding: 22px;
+      min-height: 125px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: #555;
+    }
+
+    .icon {
+      font-size: 25px;
+      margin-bottom: 18px;
+    }
+
+    .card h3 {
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .card p {
+      color: #777;
+      font-size: 13px;
+    }
+
+    .continue {
+      border-top: 1px solid #222;
+      padding-top: 30px;
+    }
+
+    .story {
+      background: #111;
+      border: 1px solid #242424;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 10px;
+    }
+
+    .story strong {
+      font-size: 15px;
+    }
+
+    .story span {
+      display: block;
+      color: #777;
+      font-size: 13px;
+      margin-top: 7px;
+    }
+
+    footer {
+      text-align: center;
+      color: #444;
+      font-size: 11px;
+      letter-spacing: 2px;
+      margin-top: 60px;
+    }
+
+    @media (max-width: 600px) {
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .prompt {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .prompt button {
+        width: 100%;
+      }
+
+      .hero {
+        padding-top: 25px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="app">
+
+    <header>
+      <div class="logo">AURA LINE</div>
+      <div class="status">AI EXPERIENCE</div>
+    </header>
+
+    <section class="hero">
+
+      <div class="aura">YOUR WORLD • YOUR STORY • YOUR AURA</div>
+
+      <h1>Imagine.<br>Live.</h1>
+
+      <p class="subtitle">
+        Crie histórias, mundos e experiências que continuam
+        mesmo depois que você fecha a tela.
+      </p>
+
+      <div class="prompt">
+        <input
+          id="idea"
+          type="text"
+          placeholder="O que você quer viver hoje?"
+        >
+
+        <button onclick="startStory()">
+          Começar
+        </button>
+      </div>
+
+    </section>
+
+    <div class="section-title">EXPLORE</div>
+
+    <section class="cards">
+
+      <div class="card" onclick="choose('🏎️ Quero viver uma carreira na Fórmula 1')">
+        <div class="icon">🏎️</div>
+        <h3>Motorsport</h3>
+        <p>Construa sua carreira nas pistas.</p>
+      </div>
+
+      <div class="card" onclick="choose('⚽ Quero viver uma carreira no futebol')">
+        <div class="icon">⚽</div>
+        <h3>Futebol</h3>
+        <p>Comece sua própria carreira.</p>
+      </div>
+
+      <div class="card" onclick="choose('🎤 Quero construir uma carreira musical')">
+        <div class="icon">🎤</div>
+        <h3>Música</h3>
+        <p>Do primeiro show ao estrelato.</p>
+      </div>
+
+      <div class="card" onclick="choose('💎 Quero viver uma vida de luxo e negócios')">
+        <div class="icon">💎</div>
+        <h3>Luxury Life</h3>
+        <p>Crie seu próprio império.</p>
+      </div>
+
+      <div class="card" onclick="choose('🎬 Quero viver uma história em Hollywood')">
+        <div class="icon">🎬</div>
+        <h3>Hollywood</h3>
+        <p>Entre para o mundo do cinema.</p>
+      </div>
+
+      <div class="card" onclick="choose('🧙 Quero criar um mundo de fantasia')">
+        <div class="icon">🧙</div>
+        <h3>Fantasia</h3>
+        <p>Crie um universo completamente novo.</p>
+      </div>
+
+    </section>
+
+    <section class="continue">
+
+      <div class="section-title">CONTINUE</div>
+
+      <div class="story">
+        <strong>✨ Suas histórias aparecerão aqui</strong>
+        <span>
+          Quando a memória da AURA LINE estiver conectada,
+          suas histórias poderão continuar de onde pararam.
+        </span>
+      </div>
+
+    </section>
+
+    <footer>
+      AURA LINE © 2026
+    </footer>
+
+  </main>
+
+  <script>
+    function choose(text) {
+      document.getElementById("idea").value = text;
+      document.getElementById("idea").focus();
+    }
+
+    function startStory() {
+      const idea = document.getElementById("idea").value.trim();
+
+      if (!idea) {
+        alert("Conte para a AURA o que você quer viver.");
+        return;
+      }
+
+      alert(
+        "AURA LINE\n\nSua história está sendo preparada...\n\n" +
+        idea
+      );
+    }
+  </script>
+
+</body>
+</html>
