@@ -20,12 +20,83 @@ export default async function handler(req, res) {
     }
     /*
     ==================================================
-    PESQUISA WEB — TAVILY
+    PESQUISA WEB
     ==================================================
-    A Aura decide quando uma pesquisa é necessária.
-    Não pesquisamos mensagens comuns para evitar
-    desperdício de créditos.
     */
+    function needsWebSearch(text) {
+      const normalized = text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+      const currentWords = [
+        "hoje",
+        "agora",
+        "atualmente",
+        "atual",
+        "recentemente",
+        "ultima noticia",
+        "ultimas noticias",
+        "noticia",
+        "noticias",
+        "resultado",
+        "resultados",
+        "quem ganhou",
+        "quem venceu",
+        "quanto custa",
+        "preco atual",
+        "preco",
+        "valor atual",
+        "cotacao",
+        "cotacao atual",
+        "horario",
+        "quando e",
+        "quando sera",
+        "proximo jogo",
+        "proxima corrida",
+        "proxima luta",
+        "proximo evento",
+        "classificacao atual",
+        "ranking atual",
+        "elenco atual",
+        "patrimonio atual",
+        "situacao atual",
+        "2026"
+      ];
+      const realWorldTopics = [
+        "formula 1",
+        "f1",
+        "futebol",
+        "nba",
+        "ufc",
+        "tenis",
+        "corrida",
+        "jogo",
+        "gp ",
+        "grand prix",
+        "empresa",
+        "iphone",
+        "celular",
+        "carro",
+        "aviao",
+        "hotel",
+        "restaurante",
+        "preco",
+        "produto",
+        "elon musk",
+        "donald trump",
+        "presidente",
+        "celebridade",
+        "artista",
+        "evento"
+      ];
+      const hasCurrentWord = currentWords.some(word =>
+        normalized.includes(word)
+      );
+      const hasRealWorldTopic = realWorldTopics.some(word =>
+        normalized.includes(word)
+      );
+      return hasCurrentWord || hasRealWorldTopic;
+    }
     async function searchWeb(query) {
       if (!tavilyKey) {
         return "";
@@ -40,8 +111,8 @@ export default async function handler(req, res) {
             },
             body: JSON.stringify({
               api_key: tavilyKey,
-              query,
-              search_depth: "basic",
+              query: query,
+              search_depth: "advanced",
               topic: "general",
               max_results: 5,
               include_answer: true,
@@ -51,7 +122,11 @@ export default async function handler(req, res) {
         );
         const data = await response.json();
         if (!response.ok) {
-          console.error("Tavily:", response.status, data);
+          console.error(
+            "Tavily:",
+            response.status,
+            data
+          );
           return "";
         }
         const results = Array.isArray(data?.results)
@@ -78,110 +153,24 @@ export default async function handler(req, res) {
           .filter(Boolean)
           .join("\n\n");
       } catch (error) {
-        console.error("Erro Tavily:", error);
+        console.error(
+          "Erro Tavily:",
+          error
+        );
         return "";
       }
     }
     /*
     ==================================================
-    DECISÃO DE PESQUISA
+    VERIFICA SE PRECISA PESQUISAR
     ==================================================
-    A primeira chamada ao Groq identifica se a mensagem
-    realmente precisa de pesquisa.
     */
     let webContext = "";
-    if (tavilyKey) {
-      try {
-        const researchCheck = await fetch(
-          "https://api.groq.com/openai/v1/chat/completions",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${apiKey}`
-            },
-            body: JSON.stringify({
-              model: "openai/gpt-oss-20b",
-              messages: [
-                {
-                  role: "system",
-                  content: `
-Você decide se uma mensagem precisa de pesquisa na internet.
-Responda SOMENTE com JSON válido neste formato:
-{
-  "search": true,
-  "query": "consulta curta"
-}
-ou
-{
-  "search": false,
-  "query": ""
-}
-Use search=true somente quando informação atual, factual ou verificável da internet for realmente necessária.
-Exemplos que DEVEM pesquisar:
-- preço atual de um produto
-- notícias recentes
-- horário atual de um evento
-- informações atuais sobre empresas
-- elenco atual de uma equipe
-- calendário atual de esporte
-- localização ou funcionamento atual de um lugar
-- informações recentes sobre pessoas públicas
-- acontecimentos que dependam do momento atual
-Exemplos que NÃO precisam pesquisar:
-- continuação normal de uma história
-- diálogo entre personagens
-- decisões fictícias do usuário
-- criação de personagens
-- descrição de cenas
-- ideias criativas
-- conversa casual
-- fatos gerais que não dependem de atualização
-Se houver dúvida, prefira não pesquisar.
-`
-                },
-                {
-                  role: "user",
-                  content: message
-                }
-              ],
-              temperature: 0,
-              max_tokens: 120
-            })
-          }
-        );
-        const checkData = await researchCheck.json();
-        if (researchCheck.ok) {
-          const decisionText =
-            checkData?.choices?.[0]?.message?.content || "";
-          try {
-            const cleaned = decisionText
-              .replace(/```json/gi, "")
-              .replace(/```/g, "")
-              .trim();
-            const decision = JSON.parse(cleaned);
-            if (
-              decision?.search === true &&
-              typeof decision?.query === "string" &&
-              decision.query.trim()
-            ) {
-              webContext = await searchWeb(
-                decision.query.trim()
-              );
-            }
-          } catch (error) {
-            console.error(
-              "Erro ao interpretar decisão de pesquisa:",
-              error
-            );
-          }
-        }
-      } catch (error) {
-        console.error(
-          "Erro na decisão de pesquisa:",
-          error
-        );
-      }
+    if (
+      tavilyKey &&
+      needsWebSearch(message)
+    ) {
+      webContext = await searchWeb(message);
     }
     /*
     ==================================================
@@ -249,6 +238,17 @@ Quando faltar uma informação essencial para continuar, faça uma pergunta natu
 Quando não faltar informação, continue a situação sem transformar tudo em interrogatório.
 Não faça perguntas desnecessárias.
 ==================================================
+COMO DESENVOLVER
+==================================================
+Pense na história como uma construção colaborativa.
+O usuário fornece uma peça.
+Você adiciona uma peça.
+O usuário decide.
+Você reage.
+O usuário adiciona outra informação.
+Você desenvolve o mundo.
+Continue nesse ritmo.
+==================================================
 CONSEQUÊNCIAS
 ==================================================
 As decisões do usuário devem ter consequências coerentes.
@@ -287,15 +287,15 @@ Não peça novamente informações que já foram dadas.
 ==================================================
 PESQUISA E MUNDO REAL
 ==================================================
-Quando informações de pesquisa forem fornecidas abaixo, utilize-as para aumentar a precisão da resposta.
+Quando informações de pesquisa forem fornecidas abaixo, utilize-as para aumentar a precisão.
 Não diga ao usuário que você pesquisou.
 Não transforme a resposta em relatório.
 Não liste fontes simplesmente porque elas existem.
-Integre os fatos relevantes naturalmente à conversa ou à história.
-Diferencie fatos encontrados na pesquisa de elementos fictícios criados pelo usuário.
-Não invente informações atuais.
-Se a pesquisa não trouxer informação suficiente, não finja que trouxe.
-A pesquisa deve servir à história, não dominar a história.
+Integre os fatos relevantes naturalmente à conversa.
+Quando a informação pesquisada for atual, trate-a como informação atual apenas se os resultados encontrados sustentarem isso.
+Se os resultados forem insuficientes ou conflitantes, seja transparente.
+Não invente informações.
+A pesquisa deve servir à conversa e à história, não dominar a experiência.
 ==================================================
 TOM DA AURA
 ==================================================
@@ -312,13 +312,13 @@ Não tente tornar cada momento épico.
 Algumas respostas devem ser extremamente simples.
 Outras podem ser mais detalhadas quando a situação realmente pedir.
 Varie naturalmente o ritmo e a estrutura das respostas.
-Evite repetir as mesmas expressões.
-Não comece respostas constantemente com:
+Evite repetir constantemente as mesmas expressões.
+Não comece todas as respostas com:
 "Perfeito."
 "Claro."
 "Entendi."
 "Ótimo."
-Use essas expressões somente quando fizerem sentido.
+Use essas expressões somente quando fizer sentido.
 A conversa deve respirar.
 ==================================================
 SAUDAÇÕES
@@ -380,21 +380,30 @@ E deixe o próximo movimento para o criador.
 `;
     /*
     ==================================================
-    CONTEXTO DA PESQUISA
+    ADICIONA PESQUISA AO CONTEXTO
     ==================================================
     */
     const finalSystemPrompt = webContext
       ? `${systemPrompt}
 ==================================================
-INFORMAÇÕES ENCONTRADAS NA PESQUISA
+PESQUISA WEB
 ==================================================
-Use estas informações apenas quando forem relevantes
-para responder à mensagem atual:
+Os dados abaixo foram encontrados na internet para
+ajudar a responder à mensagem atual.
+Use somente as informações relevantes.
+Não mencione que fez uma pesquisa.
+Não transforme a resposta em relatório.
+Integre os fatos naturalmente.
+------------------------------
 ${webContext}
-==================================================
-FIM DA PESQUISA
-==================================================`
+------------------------------
+`
       : systemPrompt;
+    /*
+    ==================================================
+    HISTÓRICO
+    ==================================================
+    */
     const messages = [
       {
         role: "system",
@@ -414,7 +423,7 @@ FIM DA PESQUISA
     ];
     /*
     ==================================================
-    RESPOSTA FINAL DA AURA
+    GROQ
     ==================================================
     */
     const response = await fetch(
