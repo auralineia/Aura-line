@@ -1816,22 +1816,22 @@ async function sendMessage(){
     await progressiveText(content,reply);
     await saveStory();
 
-  }catch(error){
+    }catch(error){
     console.error(error);
 
     thinking.remove();
 
     addMessage(
       "aura",
-      error.message==="Sessão expirada. Entre novamente."
+      error.message==="Sessão expirada. Entre novamente"
         ? "Sua sessão expirou. Entre novamente para continuar."
         : "Não consegui responder agora. Tente novamente em alguns instantes."
     );
+  }finally{
+    isSending=false;
+    sendBtn.disabled=false;
+    input.focus();
   }
-
-  isSending=false;
-  sendBtn.disabled=false;
-  input.focus();
 }
   async function progressiveText(element,text){
   const words=text.split(/(\s+)/);
