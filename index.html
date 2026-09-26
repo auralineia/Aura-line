@@ -33,7 +33,8 @@
     }
 
     button,
-    input {
+    input,
+    textarea {
       font: inherit;
     }
 
@@ -316,7 +317,8 @@
 
       z-index: -1;
 
-      animation: colorSpin 8s linear infinite;
+      animation:
+        colorSpin 8s linear infinite;
     }
 
     .core {
@@ -333,7 +335,8 @@
         0 0 50px rgba(170,140,255,.9),
         0 0 85px rgba(110,170,255,.5);
 
-      animation: corePulse 3s ease-in-out infinite;
+      animation:
+        corePulse 3s ease-in-out infinite;
     }
 
     /* =========================
@@ -369,7 +372,8 @@
 
       margin-bottom: 18px;
 
-      animation: messageAppear .35s ease;
+      animation:
+        messageAppear .35s ease;
     }
 
     .message.user {
@@ -380,10 +384,18 @@
       justify-content: flex-start;
     }
 
-    .bubble {
+    .message-content {
       max-width: 86%;
+    }
 
-      padding: 14px 16px;
+    .bubble {
+      position: relative;
+
+      overflow: hidden;
+
+      padding:
+        14px
+        16px;
 
       border-radius: 20px;
 
@@ -397,7 +409,8 @@
     }
 
     .message.user .bubble {
-      background: rgba(255,255,255,.10);
+      background:
+        rgba(255,255,255,.10);
 
       border:
         1px solid
@@ -405,7 +418,8 @@
 
       border-bottom-right-radius: 6px;
 
-      color: rgba(255,255,255,.94);
+      color:
+        rgba(255,255,255,.94);
     }
 
     .message.aura .bubble {
@@ -422,7 +436,8 @@
 
       border-bottom-left-radius: 6px;
 
-      color: rgba(255,255,255,.86);
+      color:
+        rgba(255,255,255,.88);
     }
 
     .aura-label {
@@ -430,11 +445,69 @@
 
       letter-spacing: 3px;
 
-      color: rgba(255,255,255,.35);
+      color:
+        rgba(255,255,255,.35);
 
       margin-bottom: 7px;
 
       padding-left: 4px;
+    }
+
+    /* =========================
+       FURTA-COR NEBULA
+    ========================= */
+
+    .nebula {
+      position: absolute;
+
+      width: 150px;
+      height: 80px;
+
+      left: 50%;
+      top: 50%;
+
+      transform:
+        translate(-50%, -50%);
+
+      pointer-events: none;
+
+      border-radius: 50%;
+
+      background:
+        conic-gradient(
+          from 0deg,
+          rgba(255,80,200,.0),
+          rgba(255,80,200,.34),
+          rgba(130,100,255,.38),
+          rgba(70,210,255,.34),
+          rgba(100,255,210,.26),
+          rgba(255,220,100,.28),
+          rgba(255,80,200,.0)
+        );
+
+      filter: blur(22px);
+
+      opacity: 0;
+
+      mix-blend-mode: screen;
+
+      animation:
+        nebulaSpin 3s linear infinite;
+    }
+
+    .message.aura.streaming .nebula {
+      opacity: .72;
+
+      animation:
+        nebulaSpin 3s linear infinite,
+        nebulaBreath 1.5s ease-in-out infinite;
+    }
+
+    .message.aura.finished .nebula {
+      opacity: 0;
+
+      transition:
+        opacity 1.2s ease;
     }
 
     /* =========================
@@ -448,11 +521,16 @@
 
       gap: 9px;
 
-      color: rgba(255,255,255,.42);
+      color:
+        rgba(255,255,255,.42);
 
       font-size: 13px;
 
-      margin: 12px 0 20px 5px;
+      margin:
+        12px
+        0
+        20px
+        5px;
     }
 
     .thinking-core {
@@ -479,7 +557,7 @@
     }
 
     /* =========================
-       INPUT AREA
+       INPUT
     ========================= */
 
     .composer {
@@ -550,7 +628,8 @@
     }
 
     #messageInput::placeholder {
-      color: rgba(255,255,255,.30);
+      color:
+        rgba(255,255,255,.30);
     }
 
     #sendButton {
@@ -577,7 +656,8 @@
     }
 
     #sendButton:active {
-      transform: scale(.94);
+      transform:
+        scale(.94);
     }
 
     #sendButton:disabled {
@@ -670,6 +750,36 @@
       }
     }
 
+    @keyframes nebulaSpin {
+      from {
+        transform:
+          translate(-50%, -50%)
+          rotate(0deg)
+          scale(.9);
+      }
+
+      to {
+        transform:
+          translate(-50%, -50%)
+          rotate(360deg)
+          scale(1.1);
+      }
+    }
+
+    @keyframes nebulaBreath {
+      0%,100% {
+        filter:
+          blur(22px)
+          brightness(.85);
+      }
+
+      50% {
+        filter:
+          blur(30px)
+          brightness(1.35);
+      }
+    }
+
     /* =========================
        MOBILE
     ========================= */
@@ -681,7 +791,7 @@
         padding-right: 14px;
       }
 
-      .bubble {
+      .message-content {
         max-width: 90%;
       }
 
@@ -707,17 +817,18 @@
 
   <main class="app">
 
-    <!-- =====================
-         TOP BAR
-    ====================== -->
+    <!-- TOP BAR -->
 
     <header class="topbar">
 
       <div class="brand">
 
         <div class="mini-core">
+
           <div class="mini-ring"></div>
+
           <div class="mini-dot"></div>
+
         </div>
 
         <div class="brand-name">
@@ -737,9 +848,7 @@
     </header>
 
 
-    <!-- =====================
-         CHAT
-    ====================== -->
+    <!-- CHAT -->
 
     <section
       id="chat"
@@ -772,9 +881,7 @@
     </section>
 
 
-    <!-- =====================
-         COMPOSER
-    ====================== -->
+    <!-- COMPOSER -->
 
     <footer class="composer">
 
@@ -847,8 +954,8 @@
         return;
       }
 
-      if (welcome) {
-        welcome.remove();
+      if (document.getElementById("welcome")) {
+        document.getElementById("welcome").remove();
       }
 
       addMessage(
@@ -870,24 +977,27 @@
       try {
 
         const response =
-          await fetch("/api/chat", {
+          await fetch(
+            "/api/chat",
+            {
+              method: "POST",
 
-            method: "POST",
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
 
-            headers: {
-              "Content-Type": "application/json"
-            },
+              body: JSON.stringify({
 
-            body: JSON.stringify({
+                message:
+                  message,
 
-              message: message,
+                history:
+                  conversation.slice(0, -1)
 
-              history:
-                conversation.slice(0, -1)
-
-            })
-
-          });
+              })
+            }
+          );
 
 
         const data =
@@ -906,9 +1016,11 @@
 
         conversation.push({
 
-          role: "assistant",
+          role:
+            "assistant",
 
-          content: data.reply
+          content:
+            data.reply
 
         });
 
@@ -916,8 +1028,7 @@
         setThinking(false);
 
 
-        addMessage(
-          "aura",
+        streamAuraMessage(
           data.reply
         );
 
@@ -939,7 +1050,7 @@
 
 
     /* =========================
-       ADD MESSAGE
+       NORMAL MESSAGE
     ========================= */
 
     function addMessage(
@@ -952,6 +1063,13 @@
 
       wrapper.className =
         `message ${role}`;
+
+
+      const content =
+        document.createElement("div");
+
+      content.className =
+        "message-content";
 
 
       if (role === "aura") {
@@ -974,16 +1092,13 @@
         bubble.textContent =
           text;
 
+        content.appendChild(
+          label
+        );
 
-        const container =
-          document.createElement("div");
-
-        container.appendChild(label);
-
-        container.appendChild(bubble);
-
-        wrapper.appendChild(container);
-
+        content.appendChild(
+          bubble
+        );
 
       } else {
 
@@ -996,19 +1111,179 @@
         bubble.textContent =
           text;
 
-        wrapper.appendChild(
+        content.appendChild(
           bubble
         );
 
       }
 
 
+      wrapper.appendChild(
+        content
+      );
+
+      chat.appendChild(
+        wrapper
+      );
+
+      scrollToBottom();
+
+    }
+
+
+    /* =========================
+       GRADUAL AURA RESPONSE
+    ========================= */
+
+    function streamAuraMessage(
+      text
+    ) {
+
+      const wrapper =
+        document.createElement("div");
+
+      wrapper.className =
+        "message aura streaming";
+
+
+      const content =
+        document.createElement("div");
+
+      content.className =
+        "message-content";
+
+
+      const label =
+        document.createElement("div");
+
+      label.className =
+        "aura-label";
+
+      label.textContent =
+        "AURA";
+
+
+      const bubble =
+        document.createElement("div");
+
+      bubble.className =
+        "bubble";
+
+
+      const nebula =
+        document.createElement("div");
+
+      nebula.className =
+        "nebula";
+
+
+      const textElement =
+        document.createElement("span");
+
+
+      bubble.appendChild(
+        nebula
+      );
+
+      bubble.appendChild(
+        textElement
+      );
+
+
+      content.appendChild(
+        label
+      );
+
+      content.appendChild(
+        bubble
+      );
+
+      wrapper.appendChild(
+        content
+      );
+
       chat.appendChild(
         wrapper
       );
 
 
-      scrollToBottom();
+      /*
+       * Divide a resposta em palavras.
+       */
+
+      const words =
+        text.split(/(\s+)/);
+
+      let index = 0;
+
+      let currentText = "";
+
+
+      function nextWord() {
+
+        if (index >= words.length) {
+
+          wrapper.classList.remove(
+            "streaming"
+          );
+
+          wrapper.classList.add(
+            "finished"
+          );
+
+          scrollToBottom();
+
+          return;
+        }
+
+
+        currentText +=
+          words[index];
+
+        textElement.textContent =
+          currentText;
+
+        index++;
+
+
+        scrollToBottom();
+
+
+        /*
+         * Velocidade natural.
+         */
+
+        const piece =
+          words[index - 1];
+
+        let delay = 32;
+
+        if (
+          piece.includes(".") ||
+          piece.includes("!") ||
+          piece.includes("?")
+        ) {
+
+          delay = 170;
+
+        } else if (
+          piece.includes(",")
+        ) {
+
+          delay = 80;
+
+        }
+
+
+        setTimeout(
+          nextWord,
+          delay
+        );
+
+      }
+
+
+      nextWord();
 
     }
 
@@ -1080,19 +1355,21 @@
 
     function scrollToBottom() {
 
-      requestAnimationFrame(() => {
+      requestAnimationFrame(
+        () => {
 
-        chat.scrollTo({
+          chat.scrollTo({
 
-          top:
-            chat.scrollHeight,
+            top:
+              chat.scrollHeight,
 
-          behavior:
-            "smooth"
+            behavior:
+              "smooth"
 
-        });
+          });
 
-      });
+        }
+      );
 
     }
 
@@ -1178,6 +1455,7 @@
         </div>
 
       `;
+
 
       input.value = "";
 
