@@ -12,30 +12,69 @@ html,body{width:100%;height:100%;background:#050303;color:#fff;font-family:-appl
 body{overflow:hidden}
 button,input,textarea{font:inherit}
 button{-webkit-tap-highlight-color:transparent}
-#authScreen{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 50% 35%,rgba(112,16,43,.2),transparent 38%),#050303}
+#authScreen{
+  position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+  padding:24px;
+  background:radial-gradient(circle at 50% 35%,rgba(112,16,43,.2),transparent 38%),#050303
+}
 .auth-box{width:100%;max-width:390px;text-align:center}
 .auth-core{width:115px;height:115px;margin:0 auto 30px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center}
-.auth-ring,.ring,.mini-ring,.history-aura-ring{position:absolute;border-radius:50%;border:1px solid rgba(137,28,60,.85);box-shadow:0 0 18px rgba(120,20,52,.35),0 0 45px rgba(85,8,32,.2)}
+.auth-ring,.ring,.mini-ring,.history-aura-ring{
+  position:absolute;border-radius:50%;border:1px solid rgba(137,28,60,.85);
+  box-shadow:0 0 18px rgba(120,20,52,.35),0 0 45px rgba(85,8,32,.2)
+}
 .auth-ring{inset:0;animation:auraPulse 4s ease-in-out infinite}
-.auth-ring:before,.ring:before{content:"";position:absolute;inset:9px;border-radius:50%;border:1px solid rgba(255,255,255,.08)}
-.auth-ring:after,.ring:after{content:"";position:absolute;inset:-10px;border-radius:50%;background:rgba(115,15,43,.18);filter:blur(15px);z-index:-1}
-.auth-core-dot,.core,.mini-dot,.history-aura-dot{border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0%,#d9b8c2 18%,#851b42 52%,#3b071b 100%);box-shadow:0 0 10px rgba(255,255,255,.45),0 0 28px rgba(130,22,58,.75),0 0 55px rgba(95,10,40,.4)}
+.auth-ring:before,.ring:before{
+  content:"";position:absolute;inset:9px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.08)
+}
+.auth-ring:after,.ring:after{
+  content:"";position:absolute;inset:-10px;border-radius:50%;
+  background:rgba(115,15,43,.18);filter:blur(15px);z-index:-1
+}
+.auth-core-dot,.core,.mini-dot,.history-aura-dot{
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff 0%,#d9b8c2 18%,#851b42 52%,#3b071b 100%);
+  box-shadow:0 0 10px rgba(255,255,255,.45),0 0 28px rgba(130,22,58,.75),0 0 55px rgba(95,10,40,.4)
+}
 .auth-core-dot{width:25px;height:25px;animation:corePulse 3s ease-in-out infinite}
 .auth-title{font-size:35px;font-weight:500;letter-spacing:8px;margin-bottom:10px}
 .auth-subtitle{color:rgba(255,255,255,.48);font-size:14px;line-height:1.6;margin-bottom:30px}
 .auth-form{display:flex;flex-direction:column;gap:11px}
-.auth-input{width:100%;height:52px;border:1px solid rgba(255,255,255,.1);border-radius:17px;background:rgba(255,255,255,.045);color:#fff;outline:none;padding:0 16px;font-size:15px;backdrop-filter:blur(15px)}
+.auth-input{
+  width:100%;height:52px;border:1px solid rgba(255,255,255,.1);border-radius:17px;
+  background:rgba(255,255,255,.045);color:#fff;outline:none;padding:0 16px;font-size:15px;
+  backdrop-filter:blur(15px)
+}
 .auth-input:focus{border-color:rgba(143,31,65,.8);box-shadow:0 0 25px rgba(110,15,43,.16)}
 .auth-input::placeholder{color:rgba(255,255,255,.3)}
-.auth-button{width:100%;height:52px;border:0;border-radius:17px;background:#fff;color:#080506;font-size:15px;font-weight:600;cursor:pointer;margin-top:4px}
+.auth-button{
+  width:100%;height:52px;border:0;border-radius:17px;background:#fff;color:#080506;
+  font-size:15px;font-weight:600;cursor:pointer;margin-top:4px
+}
 .auth-button:disabled{opacity:.45}
 .auth-switch{margin-top:20px;border:0;background:none;color:rgba(255,255,255,.55);font-size:13px;cursor:pointer}
 .auth-switch span{color:#fff}
 .auth-error{min-height:18px;margin-top:12px;color:#e79aad;font-size:12px;line-height:1.4}
 .auth-success{color:#b7dfcf}
-.app{width:100%;height:100%;position:relative;overflow:hidden;background:radial-gradient(circle at 50% -10%,rgba(105,12,39,.2),transparent 40%),#050303}
-.topbar{position:absolute;top:0;left:0;right:0;height:82px;z-index:20;display:grid;grid-template-columns:48px 1fr 48px;align-items:center;padding:max(12px,env(safe-area-inset-top)) 14px 12px;background:linear-gradient(to bottom,rgba(5,3,3,.98),rgba(5,3,3,.76),transparent);backdrop-filter:blur(14px)}
-.top-action{width:42px;height:42px;border:1px solid rgba(255,255,255,.07);border-radius:14px;background:rgba(255,255,255,.045);color:rgba(255,255,255,.78);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .18s,background .18s,border-color .18s}
+.app{
+  width:100%;height:100%;position:relative;overflow:hidden;
+  background:radial-gradient(circle at 50% -10%,rgba(105,12,39,.2),transparent 40%),#050303
+}
+.topbar{
+  position:absolute;top:0;left:0;right:0;height:82px;z-index:20;
+  display:grid;grid-template-columns:48px 1fr auto 48px 48px;
+  align-items:center;
+  padding:max(12px,env(safe-area-inset-top)) 14px 12px;
+  background:linear-gradient(to bottom,rgba(5,3,3,.98),rgba(5,3,3,.76),transparent);
+  backdrop-filter:blur(14px)
+}
+.top-action{
+  width:42px;height:42px;border:1px solid rgba(255,255,255,.07);border-radius:14px;
+  background:rgba(255,255,255,.045);color:rgba(255,255,255,.78);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:transform .18s,background .18s,border-color .18s
+}
 .top-action:active{transform:scale(.92)}
 .top-action:hover{background:rgba(126,20,51,.12);border-color:rgba(142,31,63,.25)}
 .hamburger{width:18px;display:flex;flex-direction:column;gap:4px}
@@ -45,50 +84,153 @@ button{-webkit-tap-highlight-color:transparent}
 .brand{display:flex;align-items:center;justify-content:center;gap:9px}
 .mini-core{width:30px;height:30px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center}
 .mini-ring{inset:0;animation:auraPulse 3.5s ease-in-out infinite}
-.mini-ring:after{content:"";position:absolute;inset:-6px;border-radius:50%;background:rgba(125,20,52,.12);filter:blur(8px);z-index:-1}
-.mini-dot{width:7px;height:7px;box-shadow:0 0 8px rgba(255,255,255,.55),0 0 18px rgba(135,25,60,.85)}
+.mini-ring:after{
+  content:"";position:absolute;inset:-6px;border-radius:50%;
+  background:rgba(125,20,52,.12);filter:blur(8px);z-index:-1
+}
+.mini-dot{
+  width:7px;height:7px;
+  box-shadow:0 0 8px rgba(255,255,255,.55),0 0 18px rgba(135,25,60,.85)
+}
 .brand-name{font-size:13px;letter-spacing:4px;font-weight:500}
-.menu-overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .28s}
+/* CRÉDITOS NO TOPO */
+.credit-badge{
+  justify-self:end;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  min-width:48px;
+  height:30px;
+  padding:0 9px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;
+  background:rgba(255,255,255,.045);
+  color:rgba(255,255,255,.78);
+  font-size:11px;
+  font-weight:600;
+  box-shadow:0 0 18px rgba(120,20,52,.08)
+}
+.credit-badge .credit-icon{color:#e7a6b7;font-size:11px}
+.credit-badge.zero{
+  border-color:rgba(180,45,75,.3);
+  color:#f0a7b8
+}
+.menu-overlay{
+  position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.55);
+  backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .28s
+}
 .menu-overlay.open{opacity:1;pointer-events:auto}
-.side-menu{position:fixed;top:0;left:0;bottom:0;width:min(330px,88vw);z-index:110;display:flex;flex-direction:column;background:radial-gradient(circle at 20% 0%,rgba(112,16,43,.15),transparent 35%),rgba(9,5,7,.98);border-right:1px solid rgba(255,255,255,.08);transform:translateX(-105%);transition:transform .34s cubic-bezier(.22,.8,.25,1);box-shadow:20px 0 70px rgba(0,0,0,.5);padding:max(16px,env(safe-area-inset-top)) 14px max(16px,env(safe-area-inset-bottom))}
+.side-menu{
+  position:fixed;top:0;left:0;bottom:0;width:min(330px,88vw);z-index:110;
+  display:flex;flex-direction:column;
+  background:radial-gradient(circle at 20% 0%,rgba(112,16,43,.15),transparent 35%),rgba(9,5,7,.98);
+  border-right:1px solid rgba(255,255,255,.08);
+  transform:translateX(-105%);
+  transition:transform .34s cubic-bezier(.22,.8,.25,1);
+  box-shadow:20px 0 70px rgba(0,0,0,.5);
+  padding:max(16px,env(safe-area-inset-top)) 14px max(16px,env(safe-area-inset-bottom))
+}
 .side-menu.open{transform:translateX(0)}
 .menu-header{display:flex;align-items:center;justify-content:space-between;padding:4px 4px 18px}
 .menu-logo{display:flex;align-items:center;gap:10px}
 .menu-logo .mini-core{width:28px;height:28px}
 .menu-logo-text{font-size:13px;letter-spacing:4px}
-.close-menu{width:38px;height:38px;border:0;border-radius:12px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);font-size:22px;cursor:pointer}
-.new-story-menu{width:100%;height:52px;border-radius:16px;border:1px solid rgba(139,29,60,.3);background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(113,16,43,.15));color:#fff;display:flex;align-items:center;gap:12px;padding:0 15px;cursor:pointer;margin-bottom:18px}
+.close-menu{
+  width:38px;height:38px;border:0;border-radius:12px;
+  background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);font-size:22px;cursor:pointer
+}
+.new-story-menu{
+  width:100%;height:52px;border-radius:16px;border:1px solid rgba(139,29,60,.3);
+  background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(113,16,43,.15));
+  color:#fff;display:flex;align-items:center;gap:12px;padding:0 15px;cursor:pointer;margin-bottom:18px
+}
 .new-story-menu:active{transform:scale(.97)}
 .new-story-icon{font-size:21px;font-weight:300}
 .new-story-text{font-size:14px;font-weight:500}
-.history-title{padding:4px 8px 9px;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.32)}
+.history-title{
+  padding:4px 8px 9px;font-size:10px;letter-spacing:2.5px;
+  text-transform:uppercase;color:rgba(255,255,255,.32)
+}
 .history-list{flex:1;overflow-y:auto;padding:0 0 10px;-webkit-overflow-scrolling:touch}
 .history-list::-webkit-scrollbar{width:3px}
 .history-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:10px}
-.history-empty{padding:24px 10px;color:rgba(255,255,255,.32);font-size:13px;line-height:1.6;text-align:center}
-.history-item{position:relative;display:flex;align-items:center;width:100%;min-height:57px;padding:9px 9px 9px 12px;margin-bottom:5px;border-radius:14px;border:1px solid transparent;background:transparent;color:#fff;cursor:pointer;text-align:left}
-.history-item:hover,.history-item.active{background:rgba(128,20,51,.1);border-color:rgba(139,29,60,.16)}
-.history-aura{width:29px;height:29px;flex-shrink:0;border-radius:50%;position:relative;margin-right:11px;display:flex;align-items:center;justify-content:center}
+.history-empty{
+  padding:24px 10px;color:rgba(255,255,255,.32);
+  font-size:13px;line-height:1.6;text-align:center
+}
+.history-item{
+  position:relative;display:flex;align-items:center;width:100%;min-height:57px;
+  padding:9px 9px 9px 12px;margin-bottom:5px;border-radius:14px;
+  border:1px solid transparent;background:transparent;color:#fff;cursor:pointer;text-align:left
+}
+.history-item:hover,.history-item.active{
+  background:rgba(128,20,51,.1);border-color:rgba(139,29,60,.16)
+}
+.history-aura{
+  width:29px;height:29px;flex-shrink:0;border-radius:50%;position:relative;
+  margin-right:11px;display:flex;align-items:center;justify-content:center
+}
 .history-aura-ring{inset:0}
-.history-aura-dot{width:6px;height:6px;box-shadow:0 0 7px rgba(255,255,255,.5),0 0 15px rgba(130,22,58,.8)}
+.history-aura-dot{
+  width:6px;height:6px;
+  box-shadow:0 0 7px rgba(255,255,255,.5),0 0 15px rgba(130,22,58,.8)
+}
 .history-info{min-width:0;flex:1}
-.history-name{font-size:13px;color:rgba(255,255,255,.88);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px}
+.history-name{
+  font-size:13px;color:rgba(255,255,255,.88);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;margin-bottom:4px
+}
 .history-date{font-size:10px;color:rgba(255,255,255,.28)}
-.delete-history{width:32px;height:32px;flex-shrink:0;border:0;border-radius:10px;background:transparent;color:rgba(255,255,255,.28);cursor:pointer;font-size:15px;opacity:0}
+.delete-history{
+  width:32px;height:32px;flex-shrink:0;border:0;border-radius:10px;
+  background:transparent;color:rgba(255,255,255,.28);cursor:pointer;font-size:15px;opacity:0
+}
 .history-item:hover .delete-history,.history-item.active .delete-history{opacity:1}
 .account-area{border-top:1px solid rgba(255,255,255,.07);padding-top:13px;margin-top:8px}
-.account-card{display:flex;align-items:center;gap:11px;padding:10px;border-radius:14px;background:rgba(255,255,255,.04);margin-bottom:7px}
-.account-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(119,19,49,.3));color:#fff;font-size:14px}
+.account-card{
+  display:flex;align-items:center;gap:11px;padding:10px;border-radius:14px;
+  background:rgba(255,255,255,.04);margin-bottom:7px
+}
+.account-avatar{
+  width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(119,19,49,.3));
+  color:#fff;font-size:14px
+}
 .account-info{min-width:0;flex:1}
 .account-label{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:3px}
-.account-email{font-size:11px;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.settings-button{width:100%;height:43px;border:0;border-radius:13px;background:transparent;color:rgba(255,255,255,.72);text-align:left;padding:0 11px;cursor:pointer;font-size:12px}
-.logout-button{width:100%;height:43px;border:0;border-radius:13px;background:transparent;color:rgba(235,157,174,.75);text-align:left;padding:0 11px;cursor:pointer;font-size:12px}
-.chat{position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:auto;overflow-x:hidden;padding:105px 18px 120px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+.account-email{
+  font-size:11px;color:rgba(255,255,255,.7);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis
+}
+.logout-button{
+  width:100%;height:43px;border:0;border-radius:13px;background:transparent;
+  color:rgba(235,157,174,.75);text-align:left;padding:0 11px;cursor:pointer;font-size:12px
+}
+.settings-button,.credits-button{
+  width:100%;height:43px;border:0;border-radius:13px;
+  background:rgba(255,255,255,.035);color:rgba(255,255,255,.72);
+  text-align:left;padding:0 11px;cursor:pointer;font-size:12px;margin-top:6px
+}
+.settings-button:hover,.credits-button:hover{background:rgba(128,20,51,.1)}
+.chat{
+  position:absolute;top:0;left:0;right:0;bottom:0;
+  overflow-y:auto;overflow-x:hidden;
+  padding:105px 18px 120px;
+  scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch
+}
 .chat::-webkit-scrollbar{width:4px}
 .chat::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:10px}
-.welcome{min-height:calc(100vh - 220px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px 0}
-.aura-core{width:150px;height:150px;margin-bottom:34px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center}
+.welcome{
+  min-height:calc(100vh - 220px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:30px 0
+}
+.aura-core{
+  width:150px;height:150px;margin-bottom:34px;border-radius:50%;
+  position:relative;display:flex;align-items:center;justify-content:center
+}
 .ring{inset:0;border-width:1px;animation:auraPulse 4s ease-in-out infinite}
 .ring:after{background:rgba(119,16,45,.18)}
 .core{width:31px;height:31px;animation:corePulse 3s ease-in-out infinite}
@@ -98,59 +240,191 @@ h1{font-size:38px;font-weight:500;letter-spacing:8px;margin-bottom:14px}
 .message.user{justify-content:flex-end}
 .message.aura{justify-content:flex-start}
 .message-content{max-width:86%}
-.bubble{position:relative;padding:14px 16px;border-radius:20px;font-size:15px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
-.message.user .bubble{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);border-bottom-right-radius:6px;color:rgba(255,255,255,.94)}
-.message.aura .bubble{background:linear-gradient(135deg,rgba(255,255,255,.045),rgba(117,18,48,.07));border:1px solid rgba(255,255,255,.08);border-bottom-left-radius:6px;color:rgba(255,255,255,.9)}
-.aura-label{font-size:10px;letter-spacing:3px;color:rgba(174,66,94,.72);margin-bottom:7px;padding-left:4px}
-.stream-word{display:inline;opacity:0;filter:blur(5px);animation:wordReveal .2s ease forwards}
-.mist{position:absolute;width:120px;height:65px;left:0;top:50%;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(136,25,61,.48),rgba(75,7,29,.22),transparent 70%);filter:blur(20px);opacity:0;transition:left .12s linear,opacity .25s ease}
+.bubble{
+  position:relative;padding:14px 16px;border-radius:20px;font-size:15px;
+  line-height:1.65;white-space:pre-wrap;word-break:break-word
+}
+.message.user .bubble{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);
+  border-bottom-right-radius:6px;color:rgba(255,255,255,.94)
+}
+.message.aura .bubble{
+  background:linear-gradient(135deg,rgba(255,255,255,.045),rgba(117,18,48,.07));
+  border:1px solid rgba(255,255,255,.08);
+  border-bottom-left-radius:6px;color:rgba(255,255,255,.9)
+}
+.aura-label{
+  font-size:10px;letter-spacing:3px;color:rgba(174,66,94,.72);
+  margin-bottom:7px;padding-left:4px
+}
+.stream-word{
+  display:inline;opacity:0;filter:blur(5px);
+  animation:wordReveal .2s ease forwards
+}
+.mist{
+  position:absolute;width:120px;height:65px;left:0;top:50%;
+  transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(136,25,61,.48),rgba(75,7,29,.22),transparent 70%);
+  filter:blur(20px);opacity:0;transition:left .12s linear,opacity .25s ease
+}
 .streaming .mist{opacity:.75;animation:mistPulse 1.2s ease-in-out infinite}
 .finished .mist{opacity:0}
-.thinking{display:flex;align-items:center;gap:9px;color:rgba(255,255,255,.42);font-size:13px;margin:12px 0 20px 5px}
-.thinking-core{width:20px;height:20px;border-radius:50%;border:1px solid rgba(139,29,60,.9);background:radial-gradient(circle,#9b2d52,#3d071b);box-shadow:0 0 15px rgba(125,20,53,.45);animation:thinkingPulse 1s ease-in-out infinite}
-.composer{position:absolute;left:0;right:0;bottom:0;z-index:30;padding:12px 16px max(14px,env(safe-area-inset-bottom));background:linear-gradient(to top,#050303 60%,rgba(5,3,3,.94) 78%,transparent)}
-.composer-inner{display:flex;align-items:flex-end;gap:9px;max-width:700px;margin:0 auto}
-#messageInput{flex:1;min-height:52px;max-height:130px;resize:none;border-radius:20px;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.055);color:#fff;outline:none;padding:15px 17px;font-size:15px;line-height:1.4;backdrop-filter:blur(15px)}
+.thinking{
+  display:flex;align-items:center;gap:9px;color:rgba(255,255,255,.42);
+  font-size:13px;margin:12px 0 20px 5px
+}
+.thinking-core{
+  width:20px;height:20px;border-radius:50%;
+  border:1px solid rgba(139,29,60,.9);
+  background:radial-gradient(circle,#9b2d52,#3d071b);
+  box-shadow:0 0 15px rgba(125,20,53,.45);
+  animation:thinkingPulse 1s ease-in-out infinite
+}
+.composer{
+  position:absolute;left:0;right:0;bottom:0;z-index:30;
+  padding:12px 16px max(14px,env(safe-area-inset-bottom));
+  background:linear-gradient(to top,#050303 60%,rgba(5,3,3,.94) 78%,transparent)
+}
+.composer-inner{
+  display:flex;align-items:flex-end;gap:9px;max-width:700px;margin:0 auto
+}
+#messageInput{
+  flex:1;min-height:52px;max-height:130px;resize:none;
+  border-radius:20px;border:1px solid rgba(255,255,255,.11);
+  background:rgba(255,255,255,.055);color:#fff;outline:none;
+  padding:15px 17px;font-size:15px;line-height:1.4;backdrop-filter:blur(15px)
+}
 #messageInput:focus{border-color:rgba(137,29,60,.6)}
 #messageInput::placeholder{color:rgba(255,255,255,.3)}
-#sendButton{width:52px;height:52px;flex-shrink:0;border:0;border-radius:18px;background:#fff;color:#070506;cursor:pointer;font-size:19px}
+#sendButton{
+  width:52px;height:52px;flex-shrink:0;border:0;border-radius:18px;
+  background:#fff;color:#070506;cursor:pointer;font-size:19px
+}
 #sendButton:active{transform:scale(.94)}
 #sendButton:disabled{opacity:.35;cursor:default}
-.toast{position:fixed;left:50%;bottom:95px;z-index:300;transform:translate(-50%,20px);padding:11px 16px;border-radius:14px;background:rgba(25,8,14,.94);border:1px solid rgba(142,31,63,.3);box-shadow:0 15px 40px rgba(0,0,0,.35);color:rgba(255,255,255,.85);font-size:12px;opacity:0;pointer-events:none;transition:.25s ease;white-space:nowrap;backdrop-filter:blur(15px)}
-.toast.show{opacity:1;transform:translate(-50%,0)}
-.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.68);backdrop-filter:blur(8px);display:none;align-items:flex-end;justify-content:center;padding:16px}
-.modal-overlay.open{display:flex}
-.modal{width:min(520px,100%);max-height:88vh;overflow:auto;border:1px solid rgba(255,255,255,.09);border-radius:24px;background:linear-gradient(145deg,#12080d,#080406);box-shadow:0 25px 80px rgba(0,0,0,.6);padding:20px}
+.toast{
+  position:fixed;left:50%;bottom:95px;z-index:300;
+  transform:translate(-50%,20px);padding:11px 16px;border-radius:14px;
+  background:rgba(25,8,14,.94);border:1px solid rgba(142,31,63,.3);
+  box-shadow:0 15px 40px rgba(0,0,0,.35);color:rgba(255,255,255,.85);
+  font-size:12px;opacity:0;pointer-events:none;transition:.25s ease;
+  white-space:nowrap;backdrop-filter:blur(15px)
+}
+/* MODAIS */
+.modal-layer{
+  position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.66);
+  backdrop-filter:blur(8px);display:none;align-items:flex-end;
+  justify-content:center;padding:18px
+}
+.modal-layer.open{display:flex}
+.modal{
+  width:min(560px,100%);max-height:min(82vh,760px);overflow:auto;
+  border:1px solid rgba(255,255,255,.09);border-radius:25px;
+  background:linear-gradient(145deg,rgba(18,9,13,.98),rgba(7,4,6,.98));
+  box-shadow:0 30px 100px rgba(0,0,0,.65);padding:22px
+}
+.modal::-webkit-scrollbar{width:4px}
+.modal::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:10px}
 .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-.modal-title{font-size:19px;font-weight:500}
-.modal-close{width:36px;height:36px;border:0;border-radius:12px;background:rgba(255,255,255,.06);color:#fff;font-size:21px}
+.modal-title{font-size:18px;font-weight:500}
+.modal-close{
+  width:36px;height:36px;border:0;border-radius:11px;
+  background:rgba(255,255,255,.06);color:#fff;font-size:20px;cursor:pointer
+}
+.modal-subtitle{font-size:12px;color:rgba(255,255,255,.4);line-height:1.5;margin-bottom:17px}
 .setting-section{padding:15px 0;border-top:1px solid rgba(255,255,255,.07)}
-.setting-label{font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.34);text-transform:uppercase;margin-bottom:9px}
-.setting-value{font-size:14px;color:rgba(255,255,255,.82);margin-bottom:12px;word-break:break-word}
-.setting-input,.setting-select{width:100%;height:46px;border:1px solid rgba(255,255,255,.1);border-radius:13px;background:rgba(255,255,255,.045);color:#fff;padding:0 13px;outline:none;margin-bottom:9px}
-.setting-select option{background:#10070b;color:#fff}
-.modal-button{width:100%;height:46px;border:0;border-radius:14px;background:#fff;color:#080506;font-weight:600;margin-top:4px}
-.secondary-button{background:rgba(255,255,255,.07);color:#fff;border:1px solid rgba(255,255,255,.08)}
-.plan-card{padding:15px;border:1px solid rgba(139,29,60,.24);border-radius:16px;background:rgba(255,255,255,.035);margin-bottom:10px}
-.plan-name{font-size:15px;margin-bottom:5px}
-.plan-desc{font-size:12px;line-height:1.5;color:rgba(255,255,255,.48)}
-.credit-pill{display:inline-flex;padding:6px 10px;border-radius:99px;background:rgba(139,29,60,.16);color:#e6a6b8;font-size:11px;margin-top:9px}
-.modal-note{font-size:11px;line-height:1.55;color:rgba(255,255,255,.35);margin-top:10px}
-@media(min-width:601px){.modal-overlay{align-items:center}}
-@keyframes auraPulse{0%,100%{transform:scale(1);filter:brightness(.82)}50%{transform:scale(1.045);filter:brightness(1.18)}}
-@keyframes corePulse{0%,100%{transform:scale(.86);opacity:.86}50%{transform:scale(1.12);opacity:1}}
-@keyframes thinkingPulse{0%,100%{transform:scale(.75);opacity:.45}50%{transform:scale(1.15);opacity:1}}
-@keyframes messageAppear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes wordReveal{from{opacity:0;filter:blur(5px);transform:translateY(3px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
-@keyframes mistPulse{0%,100%{transform:translate(-50%,-50%) scale(.9);filter:blur(20px);opacity:.45}50%{transform:translate(-50%,-50%) scale(1.12);filter:blur(27px);opacity:.85}}
+.setting-section:first-of-type{border-top:0;padding-top:0}
+.setting-label{
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(255,255,255,.3);margin-bottom:9px
+}
+.setting-value{font-size:14px;color:rgba(255,255,255,.82);margin-bottom:9px;word-break:break-word}
+.setting-note{font-size:11px;color:rgba(255,255,255,.34);line-height:1.5}
+.modal-input,.modal-select{
+  width:100%;height:48px;border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;background:rgba(255,255,255,.045);color:#fff;
+  outline:none;padding:0 13px;margin-top:7px
+}
+.modal-select option{background:#10070b;color:#fff}
+.modal-action{
+  width:100%;height:46px;border:0;border-radius:14px;
+  background:#fff;color:#090507;font-size:13px;font-weight:600;
+  cursor:pointer;margin-top:10px
+}
+.modal-action.secondary{
+  background:rgba(255,255,255,.06);color:#fff;
+  border:1px solid rgba(255,255,255,.08)
+}
+.modal-action.danger{
+  background:rgba(125,20,52,.2);color:#f0a7b8;
+  border:1px solid rgba(151,43,74,.28)
+}
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.plan-card{
+  border:1px solid rgba(255,255,255,.08);border-radius:17px;padding:15px;
+  background:rgba(255,255,255,.035);min-height:150px
+}
+.plan-card.active{
+  border-color:rgba(157,44,76,.45);background:rgba(119,18,48,.09)
+}
+.plan-name{font-size:13px;font-weight:600;margin-bottom:8px}
+.plan-price{font-size:19px;margin-bottom:7px}
+.plan-desc{font-size:10px;line-height:1.5;color:rgba(255,255,255,.38)}
+.plan-status{
+  display:inline-block;margin-top:12px;padding:5px 8px;border-radius:9px;
+  background:rgba(255,255,255,.06);font-size:9px;color:rgba(255,255,255,.45)
+}
+.lang-row{display:flex;gap:8px;flex-wrap:wrap}
+.lang-option{
+  border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.04);
+  color:rgba(255,255,255,.7);border-radius:12px;padding:9px 12px;font-size:11px;cursor:pointer
+}
+.lang-option.active{
+  background:rgba(126,20,51,.18);border-color:rgba(157,44,76,.4);color:#fff
+}
+.account-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:560px){
+  .topbar{grid-template-columns:44px 1fr auto 44px 44px;padding-left:10px;padding-right:10px}
+  .top-action{width:40px;height:40px}
+  .credit-badge{min-width:44px;height:28px;padding:0 8px}
+  .plan-grid{grid-template-columns:1fr}
+  .modal{padding:18px;border-radius:22px}
+  .account-actions{grid-template-columns:1fr}
+  .modal-layer{padding:10px}
+  .modal{max-height:88vh}
+}
 @media(max-width:600px){
-.chat{padding-left:14px;padding-right:14px}
-.message-content{max-width:90%}
-h1{font-size:34px}
-.aura-core{width:135px;height:135px}
-.core{width:28px;height:28px}
-.side-menu{width:min(335px,91vw)}
-.delete-history{opacity:.65}
+  .chat{padding-left:14px;padding-right:14px}
+  .message-content{max-width:90%}
+  h1{font-size:34px}
+  .aura-core{width:135px;height:135px}
+  .core{width:28px;height:28px}
+  .side-menu{width:min(335px,91vw)}
+  .delete-history{opacity:.65}
+}
+@keyframes auraPulse{
+  0%,100%{transform:scale(1);filter:brightness(.82)}
+  50%{transform:scale(1.045);filter:brightness(1.18)}
+}
+@keyframes corePulse{
+  0%,100%{transform:scale(.86);opacity:.86}
+  50%{transform:scale(1.12);opacity:1}
+}
+@keyframes thinkingPulse{
+  0%,100%{transform:scale(.75);opacity:.45}
+  50%{transform:scale(1.15);opacity:1}
+}
+@keyframes messageAppear{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes wordReveal{
+  from{opacity:0;filter:blur(5px);transform:translateY(3px)}
+  to{opacity:1;filter:blur(0);transform:translateY(0)}
+}
+@keyframes mistPulse{
+  0%,100%{transform:translate(-50%,-50%) scale(.9);filter:blur(20px);opacity:.45}
+  50%{transform:translate(-50%,-50%) scale(1.12);filter:blur(27px);opacity:.85}
 }
 </style>
 </head>
@@ -169,7 +443,9 @@ h1{font-size:34px}
       <button id="authButton" class="auth-button" onclick="handleAuth()">Entrar</button>
     </div>
     <div id="authMessage" class="auth-error"></div>
-    <button id="authSwitch" class="auth-switch" onclick="toggleAuthMode()">Ainda não tenho uma conta. <span>Criar conta</span></button>
+    <button id="authSwitch" class="auth-switch" onclick="toggleAuthMode()">
+      Ainda não tenho uma conta. <span>Criar conta</span>
+    </button>
   </div>
 </div>
 <main id="app" class="app" style="display:none;">
@@ -183,7 +459,7 @@ h1{font-size:34px}
         </div>
         <div class="menu-logo-text">AURA</div>
       </div>
-      <button class="close-menu" onclick="closeMenu()" aria-label="Fechar menu">×</button>
+      <button class="close-menu" onclick="closeMenu()">×</button>
     </div>
     <button class="new-story-menu" onclick="newStory()">
       <span class="new-story-icon">+</span>
@@ -199,18 +475,21 @@ h1{font-size:34px}
           <div id="accountEmail" class="account-email">—</div>
         </div>
       </div>
-      <button class="settings-button" onclick="openSettings()">⚙&nbsp;&nbsp; Conta e configurações</button>
-      <button class="settings-button" onclick="openPlans()">◈&nbsp;&nbsp; Planos e créditos</button>
-      <button class="settings-button" onclick="openLanguage()">文&nbsp;&nbsp; Idioma</button>
-      <button class="logout-button" onclick="logout()">↪&nbsp;&nbsp; Sair da conta</button>
+      <button class="settings-button" onclick="openAccountModal()">
+        ⚙&nbsp;&nbsp; Configurações da conta
+      </button>
+      <button class="credits-button" onclick="openPlansModal()">
+        ✦&nbsp;&nbsp; Planos e créditos
+      </button>
+      <button class="logout-button" onclick="logout()">
+        ↪&nbsp;&nbsp; Sair da conta
+      </button>
     </div>
   </aside>
   <header class="topbar">
     <button class="top-action" onclick="openMenu()" aria-label="Abrir histórias">
       <div class="hamburger">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </div>
     </button>
     <div class="brand">
@@ -220,6 +499,14 @@ h1{font-size:34px}
       </div>
       <div class="brand-name">AURA</div>
     </div>
+    <!-- CRÉDITOS VISÍVEIS NO CHAT -->
+    <div id="creditBadge" class="credit-badge" title="Créditos">
+      <span class="credit-icon">✦</span>
+      <span id="creditBalance">—</span>
+    </div>
+    <button class="top-action" onclick="openLanguageModal()" aria-label="Idioma">
+      <span id="languageTop">PT</span>
+    </button>
     <button class="top-action" onclick="newStory()" aria-label="Nova história">
       <div class="plus-icon">+</div>
     </button>
@@ -232,139 +519,142 @@ h1{font-size:34px}
       </div>
       <h1>AURA</h1>
       <p class="tagline">
-        intelligence for your story
+        Sua história começa aqui.<br>
+        Crie. Escolha. Viva.
       </p>
     </div>
   </section>
-  <footer class="composer">
+  <div class="composer">
     <div class="composer-inner">
       <textarea
         id="messageInput"
+        placeholder="Comece uma nova história..."
         rows="1"
-        placeholder="Comece uma história..."
-        autocomplete="off"></textarea>
-      <button
-        id="sendButton"
-        onclick="sendMessage()"
-        aria-label="Enviar">↑</button>
+      ></textarea>
+      <button id="sendButton" onclick="sendMessage()" aria-label="Enviar">
+        ↑
+      </button>
     </div>
-  </footer>
+  </div>
 </main>
-<div id="settingsModal" class="modal-overlay" onclick="closeModal(event,'settingsModal')">
-  <div class="modal" onclick="event.stopPropagation()">
+<div id="toast" class="toast"></div>
+<!-- CONTA -->
+<div id="accountModal" class="modal-layer" onclick="closeModalOutside(event,'accountModal')">
+  <div class="modal">
     <div class="modal-head">
-      <div class="modal-title">Conta e configurações</div>
-      <button class="modal-close" onclick="closeModal(null,'settingsModal')">×</button>
+      <div class="modal-title">Configurações da conta</div>
+      <button class="modal-close" onclick="closeModal('accountModal')">×</button>
+    </div>
+    <div class="modal-subtitle">
+      Gerencie seus dados, acesso e preferências da Aura.
     </div>
     <div class="setting-section">
-      <div class="setting-label">E-mail</div>
+      <div class="setting-label">Conta</div>
       <div id="settingsEmail" class="setting-value">—</div>
-      <input
-        id="newEmail"
-        class="setting-input"
-        type="email"
-        placeholder="Novo e-mail">
-      <button
-        class="modal-button secondary-button"
-        onclick="changeEmail()">Alterar e-mail</button>
-    </div>
-    <div class="setting-section">
-      <div class="setting-label">Senha</div>
-      <input
-        id="newPassword"
-        class="setting-input"
-        type="password"
-        placeholder="Nova senha">
-      <button
-        class="modal-button secondary-button"
-        onclick="changePassword()">Alterar senha</button>
+      <div class="setting-note">
+        Seu e-mail atual de acesso.
+      </div>
+      <input id="newEmail" class="modal-input" type="email" placeholder="Novo e-mail">
+      <button class="modal-action" onclick="updateEmail()">
+        Salvar novo e-mail
+      </button>
     </div>
     <div class="setting-section">
       <div class="setting-label">Segurança</div>
-      <button
-        class="modal-button secondary-button"
-        onclick="globalLogout()">Sair de todos os dispositivos</button>
-      <div class="modal-note">
-        A exclusão definitiva da conta exige uma operação segura no servidor e não é executada pelo navegador nesta versão.
+      <input id="newPassword" class="modal-input" type="password" placeholder="Nova senha">
+      <button class="modal-action" onclick="updatePassword()">
+        Salvar nova senha
+      </button>
+      <button class="modal-action secondary" onclick="signOutEverywhere()">
+        Sair de todos os dispositivos
+      </button>
+    </div>
+    <div class="setting-section">
+      <div class="setting-label">Zona de risco</div>
+      <div class="setting-note">
+        Excluir a conta remove o acesso à Aura. A exclusão definitiva precisa ser confirmada pelo servidor.
       </div>
+      <button class="modal-action danger" onclick="deleteAccount()">
+        Excluir minha conta
+      </button>
     </div>
   </div>
 </div>
-<div id="plansModal" class="modal-overlay" onclick="closeModal(event,'plansModal')">
-  <div class="modal" onclick="event.stopPropagation()">
+<!-- PLANOS -->
+<div id="plansModal" class="modal-layer" onclick="closeModalOutside(event,'plansModal')">
+  <div class="modal">
     <div class="modal-head">
       <div class="modal-title">Planos e créditos</div>
-      <button class="modal-close" onclick="closeModal(null,'plansModal')">×</button>
+      <button class="modal-close" onclick="closeModal('plansModal')">×</button>
+    </div>
+    <div class="modal-subtitle">
+      A estrutura comercial está preparada. Pagamentos reais serão ativados quando o provedor de pagamentos estiver conectado.
     </div>
     <div class="setting-section">
-      <div class="setting-label">Seu saldo</div>
-      <div id="creditBalance" class="setting-value">
-        Carregando...
+      <div class="setting-label">Saldo atual</div>
+      <div id="modalCredits" class="setting-value">—</div>
+    </div>
+    <div class="plan-grid">
+      <div class="plan-card active">
+        <div class="plan-name">Gratuito</div>
+        <div class="plan-price">20 créditos</div>
+        <div class="plan-desc">
+          Créditos iniciais para experimentar a Aura.
+        </div>
+        <div class="plan-status">Atual</div>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">Plus</div>
+        <div class="plan-price">Em breve</div>
+        <div class="plan-desc">
+          Mais créditos e maior uso para histórias longas.
+        </div>
+        <div class="plan-status">Em breve</div>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">Em breve</div>
+        <div class="plan-desc">
+          Para uso intenso, projetos extensos e experiências avançadas.
+        </div>
+        <div class="plan-status">Em breve</div>
       </div>
     </div>
-    <div class="plan-card">
-      <div class="plan-name">Free</div>
-      <div class="plan-desc">
-        Acesso à Aura e às suas histórias.
-      </div>
-      <div class="credit-pill">
-        Plano atual
-      </div>
-    </div>
-    <div class="plan-card">
-      <div class="plan-name">Plus</div>
-      <div class="plan-desc">
-        Mais créditos e recursos avançados.
-      </div>
-      <div class="modal-note">
-        Pagamentos reais serão conectados posteriormente.
-      </div>
-    </div>
-    <div class="plan-card">
-      <div class="plan-name">Pro</div>
-      <div class="plan-desc">
-        Mais capacidade para uso intenso e projetos extensos.
-      </div>
-      <div class="modal-note">
-        Pagamentos reais serão conectados posteriormente.
-      </div>
-    </div>
-    <div class="modal-note">
-      Nenhuma cobrança é feita por esta tela.
-    </div>
+    <button class="modal-action secondary" onclick="closeModal('plansModal')">
+      Fechar
+    </button>
   </div>
 </div>
-<div id="languageModal" class="modal-overlay" onclick="closeModal(event,'languageModal')">
-  <div class="modal" onclick="event.stopPropagation()">
+<!-- IDIOMA -->
+<div id="languageModal" class="modal-layer" onclick="closeModalOutside(event,'languageModal')">
+  <div class="modal">
     <div class="modal-head">
       <div class="modal-title">Idioma</div>
-      <button class="modal-close" onclick="closeModal(null,'languageModal')">×</button>
+      <button class="modal-close" onclick="closeModal('languageModal')">×</button>
     </div>
-    <div class="setting-section">
-      <div class="setting-label">Idioma da interface</div>
-      <select
-        id="languageSelect"
-        class="setting-select"
-        onchange="changeLanguage(this.value)">
-        <option value="pt-BR">Português (Brasil)</option>
-        <option value="en">English</option>
-        <option value="es">Español</option>
-      </select>
-      <div class="modal-note">
-        A preferência fica salva neste dispositivo. As histórias já salvas não são traduzidas automaticamente.
-      </div>
+    <div class="modal-subtitle">
+      Escolha o idioma da interface. A história continua sendo escrita livremente.
+    </div>
+    <div class="lang-row">
+      <button class="lang-option" data-lang="pt-BR" onclick="setLanguage('pt-BR');closeModal('languageModal')">
+        Português
+      </button>
+      <button class="lang-option" data-lang="en-US" onclick="setLanguage('en-US');closeModal('languageModal')">
+        English
+      </button>
+      <button class="lang-option" data-lang="es-ES" onclick="setLanguage('es-ES');closeModal('languageModal')">
+        Español
+      </button>
     </div>
   </div>
 </div>
-<div id="toast" class="toast"></div>
 <script>
 const SUPABASE_URL="https://vqmfsshmjdfjlnmbemxv.supabase.co";
 const SUPABASE_KEY="sb_publishable_nCCjJPHoTODWLHvwTWN_AA_J8JivYaE";
-const supabaseClient=
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+const supabaseClient=window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 let authMode="login";
 let conversation=[];
 let isThinking=false;
@@ -372,12 +662,310 @@ let currentStoryId=null;
 let stories=[];
 let currentUser=null;
 let appInitialized=false;
-let auraLanguage=
-  localStorage.getItem("aura_language")||"pt-BR";
-let creditBalance=0;
+let userLanguage=localStorage.getItem("auraLanguage")||"pt-BR";
+let userCredits=20;
 const chat=document.getElementById("chat");
 const input=document.getElementById("messageInput");
 const sendButton=document.getElementById("sendButton");
+function applyLanguage(){
+  document.documentElement.lang=userLanguage;
+  const top=document.getElementById("languageTop");
+  if(top){
+    top.textContent=
+      userLanguage==="en-US"
+        ?"EN"
+        :userLanguage==="es-ES"
+          ?"ES"
+          :"PT";
+  }
+  document.querySelectorAll(".lang-option").forEach(el=>{
+    el.classList.toggle(
+      "active",
+      el.dataset.lang===userLanguage
+    );
+  });
+  if(input){
+    if(conversation.length){
+      input.placeholder=
+        userLanguage==="en-US"
+          ?"Continue your story..."
+          :userLanguage==="es-ES"
+            ?"Continúa tu historia..."
+            :"Continue sua história...";
+    }else{
+      input.placeholder=
+        userLanguage==="en-US"
+          ?"Start a new story..."
+          :userLanguage==="es-ES"
+            ?"Comienza una nueva historia..."
+            :"Comece uma nova história...";
+    }
+  }
+}
+function setLanguage(lang){
+  userLanguage=lang;
+  localStorage.setItem(
+    "auraLanguage",
+    lang
+  );
+  applyLanguage();
+  showToast(
+    lang==="en-US"
+      ?"Language updated."
+      :lang==="es-ES"
+        ?"Idioma actualizado."
+        :"Idioma atualizado."
+  );
+}
+function openModal(id){
+  const element=document.getElementById(id);
+  if(element)element.classList.add("open");
+}
+function closeModal(id){
+  const element=document.getElementById(id);
+  if(element)element.classList.remove("open");
+}
+function closeModalOutside(event,id){
+  if(event.target.id===id){
+    closeModal(id);
+  }
+}
+function openAccountModal(){
+  closeMenu();
+  if(currentUser){
+    document.getElementById("settingsEmail").textContent=
+      currentUser.email||"—";
+    document.getElementById("newEmail").value="";
+  }
+  openModal("accountModal");
+}
+async function updatePassword(){
+  const password=
+    document.getElementById("newPassword").value;
+  if(password.length<6){
+    showToast(
+      userLanguage==="en-US"
+        ?"Use at least 6 characters."
+        :userLanguage==="es-ES"
+          ?"Usa al menos 6 caracteres."
+          :"Use pelo menos 6 caracteres."
+    );
+    return;
+  }
+  const {error}=
+    await supabaseClient.auth.updateUser({
+      password
+    });
+  if(error){
+    console.error(error);
+    showToast(
+      userLanguage==="en-US"
+        ?"Could not update password."
+        :userLanguage==="es-ES"
+          ?"No se pudo actualizar la contraseña."
+          :"Não foi possível atualizar a senha."
+    );
+    return;
+  }
+  document.getElementById("newPassword").value="";
+  showToast(
+    userLanguage==="en-US"
+      ?"Password updated."
+      :userLanguage==="es-ES"
+        ?"Contraseña actualizada."
+        :"Senha atualizada."
+  );
+}
+async function updateEmail(){
+  const email=
+    document.getElementById("newEmail").value.trim();
+  if(!email||!email.includes("@")){
+    showToast(
+      userLanguage==="en-US"
+        ?"Enter a valid email."
+        :userLanguage==="es-ES"
+          ?"Introduce un correo válido."
+          :"Digite um e-mail válido."
+    );
+    return;
+  }
+  const {error}=
+    await supabaseClient.auth.updateUser({
+      email
+    });
+  if(error){
+    console.error(error);
+    showToast(
+      userLanguage==="en-US"
+        ?"Could not update email."
+        :userLanguage==="es-ES"
+          ?"No se pudo actualizar el correo."
+          :"Não foi possível atualizar o e-mail."
+    );
+    return;
+  }
+  document.getElementById("newEmail").value="";
+  showToast(
+    userLanguage==="en-US"
+      ?"Check your new email to confirm."
+      :userLanguage==="es-ES"
+        ?"Revisa tu nuevo correo para confirmar."
+        :"Verifique seu novo e-mail para confirmar."
+  );
+}
+async function signOutEverywhere(){
+  const {error}=
+    await supabaseClient.auth.signOut({
+      scope:"global"
+    });
+  if(error){
+    console.error(error);
+    showToast(
+      userLanguage==="en-US"
+        ?"Could not sign out everywhere."
+        :userLanguage==="es-ES"
+          ?"No se pudo cerrar todas las sesiones."
+          :"Não foi possível encerrar todas as sessões."
+    );
+    return;
+  }
+  showToast(
+    userLanguage==="en-US"
+      ?"All sessions ended."
+      :userLanguage==="es-ES"
+        ?"Todas las sesiones terminaron."
+        :"Todas as sessões foram encerradas."
+  );
+}
+async function deleteAccount(){
+  const confirmText=
+    window.prompt(
+      userLanguage==="en-US"
+        ?"Type DELETE to confirm account deletion."
+        :userLanguage==="es-ES"
+          ?"Escribe ELIMINAR para confirmar."
+          :"Digite EXCLUIR para confirmar a exclusão da conta."
+    );
+  const expected=
+    userLanguage==="en-US"
+      ?"DELETE"
+      :userLanguage==="es-ES"
+        ?"ELIMINAR"
+        :"EXCLUIR";
+  if(confirmText!==expected)return;
+  showToast(
+    userLanguage==="en-US"
+      ?"Account deletion requires server-side confirmation."
+      :userLanguage==="es-ES"
+        ?"La eliminación requiere confirmación del servidor."
+        :"A exclusão precisa de confirmação no servidor."
+  );
+}
+async function loadCredits(){
+  if(!currentUser)return;
+  try{
+    let {
+      data,
+      error
+    }=
+      await supabaseClient
+        .from("credits")
+        .select("balance")
+        .eq("user_id",currentUser.id)
+        .maybeSingle();
+    if(error)throw error;
+    if(!data){
+      const created=
+        await supabaseClient
+          .from("credits")
+          .insert({
+            user_id:currentUser.id,
+            balance:20
+          })
+          .select("balance")
+          .single();
+      if(created.error)throw created.error;
+      data=created.data;
+    }
+    userCredits=
+      Number(data.balance)||0;
+    updateCreditUI();
+  }catch(error){
+    console.error(
+      "Erro ao carregar créditos:",
+      error
+    );
+    updateCreditUI();
+  }
+}
+async function changeCredits(delta){
+  if(!currentUser)return false;
+  if(delta<0&&userCredits<=0){
+    updateCreditUI();
+    return false;
+  }
+  const next=
+    Math.max(
+      0,
+      userCredits+delta
+    );
+  try{
+    const {error}=
+      await supabaseClient
+        .from("credits")
+        .update({
+          balance:next
+        })
+        .eq("user_id",currentUser.id);
+    if(error)throw error;
+    userCredits=next;
+    updateCreditUI();
+    return true;
+  }catch(error){
+    console.error(
+      "Erro ao atualizar créditos:",
+      error
+    );
+    return false;
+  }
+}
+function updateCreditUI(){
+  const balance=
+    document.getElementById("creditBalance");
+  const badge=
+    document.getElementById("creditBadge");
+  if(balance){
+    balance.textContent=
+      String(userCredits);
+  }
+  if(badge){
+    badge.classList.toggle(
+      "zero",
+      Number(userCredits)<=0
+    );
+  }
+  const modalCredits=
+    document.getElementById("modalCredits");
+  if(modalCredits){
+    modalCredits.textContent=
+      userCredits+
+      (
+        userLanguage==="en-US"
+          ?" credits"
+          :userLanguage==="es-ES"
+            ?" créditos"
+            :" créditos"
+      );
+  }
+}
+function openPlansModal(){
+  closeMenu();
+  updateCreditUI();
+  openModal("plansModal");
+}
+function openLanguageModal(){
+  openModal("languageModal");
+}
 function toggleAuthMode(){
   const button=
     document.getElementById("authButton");
@@ -407,11 +995,9 @@ function toggleAuthMode(){
 }
 async function handleAuth(){
   const email=
-    document.getElementById("authEmail")
-      .value.trim();
+    document.getElementById("authEmail").value.trim();
   const password=
-    document.getElementById("authPassword")
-      .value;
+    document.getElementById("authPassword").value;
   const button=
     document.getElementById("authButton");
   const message=
@@ -435,7 +1021,10 @@ async function handleAuth(){
       :"Criando...";
   try{
     if(authMode==="signup"){
-      const {data,error}=
+      const {
+        data,
+        error
+      }=
         await supabaseClient.auth.signUp({
           email,
           password
@@ -451,7 +1040,10 @@ async function handleAuth(){
           "Conta criada. Verifique seu e-mail para confirmar o cadastro.";
       }
     }else{
-      const {data,error}=
+      const {
+        data,
+        error
+      }=
         await supabaseClient.auth.signInWithPassword({
           email,
           password
@@ -486,25 +1078,22 @@ function translateAuthError(error){
   return error;
 }
 async function showApp(){
-  if(appInitialized&&currentUser)
-    return;
+  if(appInitialized&&currentUser)return;
   appInitialized=true;
-  document.getElementById("authScreen")
-    .style.display="none";
-  document.getElementById("app")
-    .style.display="block";
+  document.getElementById("authScreen").style.display="none";
+  document.getElementById("app").style.display="block";
   if(!currentUser){
     const {data}=
       await supabaseClient.auth.getUser();
     currentUser=data.user;
   }
   updateAccountUI();
-  await ensureCredits();
+  await loadCredits();
   await loadStories();
-  setTimeout(
-    ()=>input.focus(),
-    150
-  );
+  applyLanguage();
+  setTimeout(()=>{
+    input.focus();
+  },150);
 }
 async function checkSession(){
   const {data}=
@@ -513,8 +1102,7 @@ async function checkSession(){
     currentUser=data.session.user;
     await showApp();
   }else{
-    document.getElementById("authScreen")
-      .style.display="flex";
+    document.getElementById("authScreen").style.display="flex";
   }
 }
 supabaseClient.auth.onAuthStateChange(
@@ -528,15 +1116,13 @@ supabaseClient.auth.onAuthStateChange(
   }
 );
 function updateAccountUI(){
-  if(!currentUser)
-    return;
+  if(!currentUser)return;
   const email=
     currentUser.email||"Conta Aura";
-  document.getElementById("accountEmail")
-    .textContent=email;
-  document.getElementById("accountAvatar")
-    .textContent=
-      email.charAt(0).toUpperCase();
+  document.getElementById("accountEmail").textContent=
+    email;
+  document.getElementById("accountAvatar").textContent=
+    email.charAt(0).toUpperCase();
 }
 async function logout(){
   await supabaseClient.auth.signOut();
@@ -544,41 +1130,35 @@ async function logout(){
   conversation=[];
   currentStoryId=null;
   stories=[];
+  userCredits=20;
   appInitialized=false;
+  updateCreditUI();
   closeMenu();
-  document.getElementById("app")
-    .style.display="none";
-  document.getElementById("authScreen")
-    .style.display="flex";
-  document.getElementById("authPassword")
-    .value="";
-  document.getElementById("authMessage")
-    .textContent="";
+  document.getElementById("app").style.display="none";
+  document.getElementById("authScreen").style.display="flex";
+  document.getElementById("authPassword").value="";
+  document.getElementById("authMessage").textContent="";
   resetChat();
-  showToast(
-    "Você saiu da conta."
-  );
+  showToast("Você saiu da conta.");
 }
 async function loadStories(){
-  if(!currentUser)
-    return;
+  if(!currentUser)return;
   try{
-    const {data,error}=
+    const {
+      data,
+      error
+    }=
       await supabaseClient
         .from("stories")
         .select(
           "id,title,messages,created_at,updated_at"
         )
-        .eq(
-          "user_id",
-          currentUser.id
-        )
+        .eq("user_id",currentUser.id)
         .order(
           "updated_at",
           {ascending:false}
         );
-    if(error)
-      throw error;
+    if(error)throw error;
     stories=
       (data||[]).map(story=>({
         id:story.id,
@@ -608,35 +1188,30 @@ async function loadStories(){
   }
 }
 async function createStory(){
-  if(!currentUser)
-    return null;
+  if(!currentUser)return null;
   try{
-    const {data,error}=
+    const {
+      data,
+      error
+    }=
       await supabaseClient
         .from("stories")
         .insert({
-          user_id:
-            currentUser.id,
-          title:
-            "Nova história",
-          messages:
-            []
+          user_id:currentUser.id,
+          title:"Nova história",
+          messages:[]
         })
         .select(
           "id,title,messages,created_at,updated_at"
         )
         .single();
-    if(error)
-      throw error;
+    if(error)throw error;
     const story={
       id:data.id,
       title:data.title,
-      messages:
-        data.messages||[],
-      createdAt:
-        data.created_at,
-      updatedAt:
-        data.updated_at
+      messages:data.messages||[],
+      createdAt:data.created_at,
+      updatedAt:data.updated_at
     };
     stories.unshift(story);
     currentStoryId=
@@ -660,20 +1235,14 @@ async function createStory(){
 }
 function getCurrentStory(){
   return stories.find(
-    story=>
-      story.id===currentStoryId
+    story=>story.id===currentStoryId
   );
 }
 async function saveCurrentConversation(){
-  if(
-    !currentStoryId||
-    !currentUser
-  )
-    return;
+  if(!currentStoryId||!currentUser)return;
   const story=
     getCurrentStory();
-  if(!story)
-    return;
+  if(!story)return;
   const messages=
     conversation.map(item=>({
       role:item.role,
@@ -681,23 +1250,21 @@ async function saveCurrentConversation(){
     }));
   const firstUser=
     conversation.find(
-      item=>
-        item.role==="user"
+      item=>item.role==="user"
     );
   let title=
-    story.title||
-    "Nova história";
-  if(
-    firstUser&&
-    firstUser.content
-  ){
+    story.title||"Nova história";
+  if(firstUser&&firstUser.content){
     title=
       createStoryTitle(
         firstUser.content
       );
   }
   try{
-    const {data,error}=
+    const {
+      data,
+      error
+    }=
       await supabaseClient
         .from("stories")
         .update({
@@ -718,16 +1285,11 @@ async function saveCurrentConversation(){
           "id,title,messages,created_at,updated_at"
         )
         .single();
-    if(error)
-      throw error;
-    story.title=
-      data.title;
-    story.messages=
-      data.messages||[];
-    story.createdAt=
-      data.created_at;
-    story.updatedAt=
-      data.updated_at;
+    if(error)throw error;
+    story.title=data.title;
+    story.messages=data.messages||[];
+    story.createdAt=data.created_at;
+    story.updatedAt=data.updated_at;
     renderHistory();
   }catch(error){
     console.error(
@@ -746,33 +1308,26 @@ function createStoryTitle(text){
       .trim();
   if(!title)
     return "Nova história";
-  if(title.length>34){
+  if(title.length>34)
     title=
-      title
-        .substring(0,34)
-        .trim()+"...";
-  }
+      title.substring(0,34).trim()+"...";
   return title;
 }
 function renderHistory(){
   const list=
-    document.getElementById(
-      "historyList"
-    );
-  if(!list)
-    return;
+    document.getElementById("historyList");
+  if(!list)return;
   if(!stories.length){
     list.innerHTML=
       '<div class="history-empty">Suas histórias aparecerão aqui.<br><br>Comece uma nova aventura.</div>';
     return;
   }
   const ordered=
-    [...stories]
-      .sort(
-        (a,b)=>
-          new Date(b.updatedAt)-
-          new Date(a.updatedAt)
-      );
+    [...stories].sort(
+      (a,b)=>
+        new Date(b.updatedAt)-
+        new Date(a.updatedAt)
+    );
   list.innerHTML=
     ordered.map(story=>{
       const active=
@@ -780,9 +1335,7 @@ function renderHistory(){
           ?"active"
           :"";
       return `
-        <div
-          class="history-item ${active}"
-          onclick="openStory('${story.id}')">
+        <div class="history-item ${active}" onclick="openStory('${story.id}')">
           <div class="history-aura">
             <div class="history-aura-ring"></div>
             <div class="history-aura-dot"></div>
@@ -798,7 +1351,10 @@ function renderHistory(){
           <button
             class="delete-history"
             onclick="deleteStory(event,'${story.id}')"
-            aria-label="Apagar história">×</button>
+            aria-label="Apagar história"
+          >
+            ×
+          </button>
         </div>
       `;
     }).join("");
@@ -808,8 +1364,7 @@ async function openStory(id){
     stories.find(
       item=>item.id===id
     );
-  if(!story)
-    return;
+  if(!story)return;
   currentStoryId=
     story.id;
   conversation=
@@ -825,7 +1380,11 @@ async function openStory(id){
   renderHistory();
   closeMenu();
   input.placeholder=
-    "Continue sua história...";
+    userLanguage==="en-US"
+      ?"Continue your story..."
+      :userLanguage==="es-ES"
+        ?"Continúa tu historia..."
+        :"Continue sua história...";
   input.focus();
 }
 function renderCurrentStory(){
@@ -851,23 +1410,15 @@ function renderCurrentStory(){
 }
 async function deleteStory(event,id){
   event.stopPropagation();
-  if(!currentUser)
-    return;
+  if(!currentUser)return;
   try{
     const {error}=
       await supabaseClient
         .from("stories")
         .delete()
-        .eq(
-          "id",
-          id
-        )
-        .eq(
-          "user_id",
-          currentUser.id
-        );
-    if(error)
-      throw error;
+        .eq("id",id)
+        .eq("user_id",currentUser.id);
+    if(error)throw error;
     stories=
       stories.filter(
         story=>story.id!==id
@@ -876,7 +1427,11 @@ async function deleteStory(event,id){
       currentStoryId=null;
       conversation=[];
       input.placeholder=
-        "Comece uma história...";
+        userLanguage==="en-US"
+          ?"Start a new story..."
+          :userLanguage==="es-ES"
+            ?"Comienza una nueva historia..."
+            :"Comece uma nova história...";
       renderCurrentStory();
     }
     renderHistory();
@@ -901,7 +1456,11 @@ function newStory(){
   input.value="";
   resizeInput();
   input.placeholder=
-    "Comece uma nova história...";
+    userLanguage==="en-US"
+      ?"Start a new story..."
+      :userLanguage==="es-ES"
+        ?"Comienza una nueva historia..."
+        :"Comece uma nova história...";
   input.focus();
   showToast(
     "Nova história."
@@ -916,7 +1475,8 @@ function welcomeHTML(){
       </div>
       <h1>AURA</h1>
       <p class="tagline">
-        intelligence for your story
+        Sua história começa aqui.<br>
+        Crie. Escolha. Viva.
       </p>
     </div>
   `;
@@ -925,6 +1485,7 @@ function resetChat(){
   chat.innerHTML=
     welcomeHTML();
   renderHistory();
+  applyLanguage();
 }
 async function ensureStory(){
   if(currentStoryId){
@@ -936,20 +1497,15 @@ async function ensureStory(){
   return await createStory();
 }
 async function sendMessage(){
-  if(isThinking)
-    return;
+  if(isThinking)return;
   const message=
     input.value.trim();
-  if(!message)
-    return;
+  if(!message)return;
   const story=
     await ensureStory();
-  if(!story)
-    return;
+  if(!story)return;
   const currentWelcome=
-    document.getElementById(
-      "welcome"
-    );
+    document.getElementById("welcome");
   if(currentWelcome)
     currentWelcome.remove();
   addUserMessage(message);
@@ -961,8 +1517,13 @@ async function sendMessage(){
   const charged=
     await changeCredits(-1);
   if(!charged){
+    setThinking(false);
     addAuraInstant(
-      "Você não tem créditos disponíveis."
+      userLanguage==="en-US"
+        ?"You have no credits left."
+        :userLanguage==="es-ES"
+          ?"No tienes créditos disponibles."
+          :"Você não tem mais créditos disponíveis."
     );
     return;
   }
@@ -979,22 +1540,36 @@ async function sendMessage(){
             "Content-Type":
               "application/json"
           },
-          body:JSON.stringify({
-            message,
-            history:
-              conversation.slice(0,-1),
-            language:
-              auraLanguage
-          })
+          body:
+            JSON.stringify({
+              message,
+              history:
+                conversation.slice(0,-1),
+              /* IMPORTANTE:
+                 manda o idioma atual para a API */
+              language:userLanguage
+            })
         }
       );
-    const data=
-      await response.json();
-    if(!response.ok)
+    let data;
+    try{
+      data=await response.json();
+    }catch{
+      throw new Error(
+        "A API retornou uma resposta inválida."
+      );
+    }
+    if(!response.ok){
       throw new Error(
         data.error||
-        "Erro ao conversar com a Aura"
+        "Erro ao conversar com a Aura."
       );
+    }
+    if(!data.reply){
+      throw new Error(
+        "A Aura não retornou uma resposta."
+      );
+    }
     conversation.push({
       role:"assistant",
       content:data.reply
@@ -1006,11 +1581,19 @@ async function sendMessage(){
     );
     await saveCurrentConversation();
   }catch(error){
-    console.error(error);
+    console.error(
+      "Erro na conversa:",
+      error
+    );
+    /* devolve o crédito quando a API falha */
     await changeCredits(1);
     setThinking(false);
     addAuraInstant(
-      "Não consegui responder agora. Tente novamente em alguns instantes."
+      userLanguage==="en-US"
+        ?"I could not answer right now. Your credit was restored. Try again in a moment."
+        :userLanguage==="es-ES"
+          ?"No pude responder ahora. Tu crédito fue restaurado. Inténtalo de nuevo."
+          :"Não consegui responder agora. Seu crédito foi devolvido. Tente novamente em alguns instantes."
     );
   }
 }
@@ -1019,21 +1602,15 @@ function addUserMessage(
   shouldScroll=true
 ){
   const wrapper=
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
   wrapper.className=
     "message user";
   const content=
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
   content.className=
     "message-content";
   const bubble=
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
   bubble.className=
     "bubble";
   bubble.textContent=
@@ -1055,29 +1632,21 @@ function addAuraInstant(
   shouldScroll=true
 ){
   const wrapper=
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
   wrapper.className=
     "message aura";
   const content=
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
   content.className=
     "message-content";
   const label=
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
   label.className=
     "aura-label";
   label.textContent=
     "AURA";
   const bubble=
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
   bubble.className=
     "bubble";
   bubble.textContent=
@@ -1101,35 +1670,25 @@ async function streamAura(text){
   isThinking=true;
   sendButton.disabled=true;
   const wrapper=
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
   wrapper.className=
     "message aura streaming";
   const content=
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
   content.className=
     "message-content";
   const label=
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
   label.className=
     "aura-label";
   label.textContent=
     "AURA";
   const bubble=
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
   bubble.className=
     "bubble";
   const mist=
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
   mist.className=
     "mist";
   bubble.appendChild(
@@ -1151,13 +1710,11 @@ async function streamAura(text){
     text.split(/(\s+)/);
   const words=
     parts.filter(
-      part=>
-        part.trim().length>0
+      part=>part.trim().length>0
     );
   let wordNumber=0;
   for(const part of parts){
-    if(!part)
-      continue;
+    if(!part)continue;
     if(part.trim()===""){
       bubble.appendChild(
         document.createTextNode(part)
@@ -1165,9 +1722,7 @@ async function streamAura(text){
       continue;
     }
     const word=
-      document.createElement(
-        "span"
-      );
+      document.createElement("span");
     word.className=
       "stream-word";
     word.textContent=
@@ -1189,15 +1744,14 @@ async function streamAura(text){
       part.endsWith(".")||
       part.endsWith("!")||
       part.endsWith("?")
-    ){
+    )
       delay=360;
-    }else if(
+    else if(
       part.endsWith(",")||
       part.endsWith(";")||
       part.endsWith(":")
-    ){
+    )
       delay=210;
-    }
     scrollToBottom();
     await wait(delay);
   }
@@ -1214,16 +1768,14 @@ async function streamAura(text){
 }
 function wait(ms){
   return new Promise(
-    resolve=>
-      setTimeout(
-        resolve,
-        ms
-      )
+    resolve=>setTimeout(
+      resolve,
+      ms
+    )
   );
 }
 function setThinking(thinking){
-  isThinking=
-    thinking;
+  isThinking=thinking;
   sendButton.disabled=
     thinking;
   const old=
@@ -1283,29 +1835,21 @@ input.addEventListener(
   }
 );
 function openMenu(){
-  document.getElementById(
-    "sideMenu"
-  ).classList.add(
-    "open"
-  );
-  document.getElementById(
-    "menuOverlay"
-  ).classList.add(
-    "open"
-  );
+  document
+    .getElementById("sideMenu")
+    .classList.add("open");
+  document
+    .getElementById("menuOverlay")
+    .classList.add("open");
   renderHistory();
 }
 function closeMenu(){
-  document.getElementById(
-    "sideMenu"
-  ).classList.remove(
-    "open"
-  );
-  document.getElementById(
-    "menuOverlay"
-  ).classList.remove(
-    "open"
-  );
+  document
+    .getElementById("sideMenu")
+    .classList.remove("open");
+  document
+    .getElementById("menuOverlay")
+    .classList.remove("open");
 }
 function formatDate(timestamp){
   const date=
@@ -1316,16 +1860,14 @@ function formatDate(timestamp){
     date.toDateString()===
     now.toDateString();
   if(sameDay){
-    return(
-      "Hoje · "+
+    return "Hoje · "+
       date.toLocaleTimeString(
         "pt-BR",
         {
           hour:"2-digit",
           minute:"2-digit"
         }
-      )
-    );
+      );
   }
   return date.toLocaleDateString(
     "pt-BR",
@@ -1337,26 +1879,11 @@ function formatDate(timestamp){
 }
 function escapeHtml(text){
   return String(text)
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
 function showToast(text){
   const toast=
@@ -1373,345 +1900,14 @@ function showToast(text){
   );
   window.auraToastTimer=
     setTimeout(
-      ()=>
+      ()=>{
         toast.classList.remove(
           "show"
-        ),
+        );
+      },
       1800
     );
 }
-/* =========================
-   CONTA
-========================= */
-function openSettings(){
-  closeMenu();
-  document.getElementById(
-    "settingsEmail"
-  ).textContent=
-    currentUser?.email||"—";
-  document.getElementById(
-    "settingsModal"
-  ).classList.add(
-    "open"
-  );
-}
-async function changePassword(){
-  const value=
-    document.getElementById(
-      "newPassword"
-    ).value;
-  if(value.length<6){
-    showToast(
-      "A senha precisa ter pelo menos 6 caracteres."
-    );
-    return;
-  }
-  try{
-    const {error}=
-      await supabaseClient.auth.updateUser({
-        password:value
-      });
-    if(error)
-      throw error;
-    document.getElementById(
-      "newPassword"
-    ).value="";
-    showToast(
-      "Senha alterada com sucesso."
-    );
-  }catch(error){
-    console.error(error);
-    showToast(
-      translateAuthError(
-        error.message
-      )
-    );
-  }
-}
-async function changeEmail(){
-  const value=
-    document.getElementById(
-      "newEmail"
-    ).value.trim();
-  if(
-    !value||
-    !value.includes("@")
-  ){
-    showToast(
-      "Digite um e-mail válido."
-    );
-    return;
-  }
-  try{
-    const {error}=
-      await supabaseClient.auth.updateUser({
-        email:value
-      });
-    if(error)
-      throw error;
-    document.getElementById(
-      "newEmail"
-    ).value="";
-    showToast(
-      "Verifique o novo e-mail para confirmar a alteração."
-    );
-  }catch(error){
-    console.error(error);
-    showToast(
-      translateAuthError(
-        error.message
-      )
-    );
-  }
-}
-async function globalLogout(){
-  try{
-    await supabaseClient.auth.signOut({
-      scope:"global"
-    });
-  }catch(error){
-    await supabaseClient.auth.signOut();
-  }
-  document.getElementById(
-    "settingsModal"
-  ).classList.remove(
-    "open"
-  );
-  showToast(
-    "Sessões encerradas."
-  );
-}
-function closeModal(event,id){
-  if(
-    !event||
-    event.target===
-    event.currentTarget
-  ){
-    document.getElementById(
-      id
-    ).classList.remove(
-      "open"
-    );
-  }
-}
-/* =========================
-   PAGAMENTOS / CRÉDITOS
-========================= */
-async function ensureCredits(){
-  if(!currentUser)
-    return false;
-  try{
-    let {data,error}=
-      await supabaseClient
-        .from("credits")
-        .select(
-          "id,balance"
-        )
-        .eq(
-          "user_id",
-          currentUser.id
-        )
-        .maybeSingle();
-    if(error)
-      throw error;
-    if(!data){
-      const created=
-        await supabaseClient
-          .from("credits")
-          .insert({
-            user_id:
-              currentUser.id,
-            balance:
-              20
-          })
-          .select(
-            "id,balance"
-          )
-          .single();
-      if(created.error)
-        throw created.error;
-      data=
-        created.data;
-    }
-    creditBalance=
-      Number(
-        data.balance||0
-      );
-    return true;
-  }catch(error){
-    console.error(
-      "Créditos:",
-      error
-    );
-    return false;
-  }
-}
-async function loadCredits(){
-  if(!currentUser)
-    return;
-  const element=
-    document.getElementById(
-      "creditBalance"
-    );
-  try{
-    const {data,error}=
-      await supabaseClient
-        .from("credits")
-        .select(
-          "balance"
-        )
-        .eq(
-          "user_id",
-          currentUser.id
-        )
-        .maybeSingle();
-    if(error)
-      throw error;
-    creditBalance=
-      Number(
-        data?.balance??0
-      );
-    element.textContent=
-      creditBalance+
-      " créditos disponíveis";
-  }catch(error){
-    console.error(
-      error
-    );
-    element.textContent=
-      "Saldo indisponível";
-  }
-}
-async function changeCredits(delta){
-  if(!currentUser)
-    return false;
-  try{
-    const {data,error}=
-      await supabaseClient
-        .from("credits")
-        .select(
-          "id,balance"
-        )
-        .eq(
-          "user_id",
-          currentUser.id
-        )
-        .single();
-    if(error)
-      throw error;
-    const next=
-      Number(data.balance||0)+
-      delta;
-    if(next<0)
-      return false;
-    const updated=
-      await supabaseClient
-        .from("credits")
-        .update({
-          balance:next
-        })
-        .eq(
-          "id",
-          data.id
-        )
-        .eq(
-          "user_id",
-          currentUser.id
-        )
-        .select(
-          "balance"
-        )
-        .single();
-    if(updated.error)
-      throw updated.error;
-    creditBalance=
-      Number(
-        updated.data.balance
-      );
-    return true;
-  }catch(error){
-    console.error(
-      "Créditos:",
-      error
-    );
-    return false;
-  }
-}
-function openPlans(){
-  closeMenu();
-  loadCredits();
-  document.getElementById(
-    "plansModal"
-  ).classList.add(
-    "open"
-  );
-}
-/* =========================
-   INTERNACIONALIZAÇÃO
-========================= */
-function openLanguage(){
-  closeMenu();
-  document.getElementById(
-    "languageSelect"
-  ).value=
-    auraLanguage;
-  document.getElementById(
-    "languageModal"
-  ).classList.add(
-    "open"
-  );
-}
-function changeLanguage(value){
-  auraLanguage=
-    value;
-  localStorage.setItem(
-    "aura_language",
-    value
-  );
-  applyLanguage();
-  showToast(
-    value==="en"
-      ?"Language saved."
-      :value==="es"
-        ?"Idioma guardado."
-        :"Idioma salvo."
-  );
-}
-function applyLanguage(){
-  const en=
-    auraLanguage==="en";
-  const es=
-    auraLanguage==="es";
-  document.documentElement.lang=
-    en
-      ?"en"
-      :es
-        ?"es"
-        :"pt-BR";
-  const placeholder=
-    en
-      ?"Start a story..."
-      :es
-        ?"Comienza una historia..."
-        :"Comece uma história...";
-  input.placeholder=
-    placeholder;
-  const tag=
-    document.querySelector(
-      ".tagline"
-    );
-  if(tag){
-    tag.innerHTML=
-      en
-        ?"intelligence for your story"
-        :es
-          ?"inteligencia para tu historia"
-          :"intelligence for your story";
-  }
-}
-/* =========================
-   INICIALIZAÇÃO
-========================= */
 applyLanguage();
 checkSession();
 </script>
