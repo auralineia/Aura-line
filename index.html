@@ -625,7 +625,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    /* NOVO: CRÉDITOS */
     .account-credits {
       margin-top: 6px;
       font-size: 11px;
@@ -1381,7 +1380,6 @@
     let stories = [];
     let currentUser = null;
     let appInitialized = false;
-    /* NOVO: CRÉDITOS */
     let userCredits = 0;
     const chat =
       document.getElementById("chat");
@@ -1469,7 +1467,8 @@
             throw error;
           }
           if (data.session) {
-            currentUser = data.user;
+            currentUser =
+              data.user;
             await showApp();
           } else {
             message.className =
@@ -1489,7 +1488,8 @@
           if (error) {
             throw error;
           }
-          currentUser = data.user;
+          currentUser =
+            data.user;
           await showApp();
         }
       } catch (error) {
@@ -1614,6 +1614,8 @@
     }
     /* =====================================================
        CRÉDITOS
+       TABELA: credits
+       COLUNAS: user_id / balance
     ===================================================== */
     async function loadCredits() {
       if (!currentUser) {
@@ -1625,8 +1627,8 @@
           error
         } =
           await supabaseClient
-            .from("user_credits")
-            .select("credits")
+            .from("credits")
+            .select("id, user_id, balance")
             .eq(
               "user_id",
               currentUser.id
@@ -1635,11 +1637,40 @@
         if (error) {
           throw error;
         }
-        if (data) {
+        /*
+         * Se o usuário ainda não tiver uma linha
+         * na tabela, criamos automaticamente
+         * com 20 créditos.
+         */
+        if (!data) {
+          const {
+            data: newCredit,
+            error: insertError
+          } =
+            await supabaseClient
+              .from("credits")
+              .insert({
+                user_id:
+                  currentUser.id,
+                balance:
+                  20
+              })
+              .select(
+                "id, user_id, balance"
+              )
+              .single();
+          if (insertError) {
+            throw insertError;
+          }
           userCredits =
-            Number(data.credits) || 0;
+            Number(
+              newCredit.balance
+            ) || 20;
         } else {
-          userCredits = 0;
+          userCredits =
+            Number(
+              data.balance
+            ) || 0;
         }
         updateCreditsUI();
         updateSendButton();
@@ -1650,6 +1681,7 @@
         );
         userCredits = 0;
         updateCreditsUI();
+        updateSendButton();
         showToast(
           "Não foi possível carregar seus créditos."
         );
@@ -1681,23 +1713,28 @@
           error
         } =
           await supabaseClient
-            .from("user_credits")
+            .from("credits")
             .update({
-              credits:
+              balance:
                 newCredits
             })
             .eq(
               "user_id",
               currentUser.id
             )
-            .select("credits")
+            .select(
+              "balance"
+            )
             .single();
         if (error) {
           throw error;
         }
         userCredits =
-          Number(data.credits) || 0;
+          Number(
+            data.balance
+          ) || 0;
         updateCreditsUI();
+        updateSendButton();
         return true;
       } catch (error) {
         console.error(
@@ -1705,6 +1742,47 @@
           error
         );
         return false;
+      }
+    }
+    async function restoreCredit() {
+      if (!currentUser) {
+        return;
+      }
+      try {
+        const newCredits =
+          userCredits + 1;
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from("credits")
+            .update({
+              balance:
+                newCredits
+            })
+            .eq(
+              "user_id",
+              currentUser.id
+            )
+            .select(
+              "balance"
+            )
+            .single();
+        if (error) {
+          throw error;
+        }
+        userCredits =
+          Number(
+            data.balance
+          ) || newCredits;
+        updateCreditsUI();
+        updateSendButton();
+      } catch (error) {
+        console.error(
+          "Erro ao devolver crédito:",
+          error
+        );
       }
     }
     function updateSendButton() {
@@ -2238,8 +2316,7 @@
         return;
       }
       /*
-       * Consumimos o crédito antes de enviar
-       * para evitar respostas sem cobrança.
+       * Consome 1 crédito antes do envio.
        */
       const creditConsumed =
         await consumeCredit();
@@ -2252,10 +2329,6 @@
       const story =
         await ensureStory();
       if (!story) {
-        /*
-         * Se não conseguirmos criar a história,
-         * devolvemos o crédito.
-         */
         await restoreCredit();
         return;
       }
@@ -2316,52 +2389,21 @@
         await streamAura(
           data.reply
         );
-        await saveCurrentConversation();
       } catch (error) {
         console.error(error);
         setThinking(false);
+        /*
+         * Devolve o crédito quando a API falhar.
+         */
+        await restoreCredit();
         addAuraInstant(
           "Não consegui responder agora. Tente novamente em alguns instantes."
         );
       }
     }
-    async function restoreCredit() {
-      if (!currentUser) {
-        return;
-      }
-      try {
-        const newCredits =
-          userCredits + 1;
-        const {
-          data,
-          error
-        } =
-          await supabaseClient
-            .from("user_credits")
-            .update({
-              credits:
-                newCredits
-            })
-            .eq(
-              "user_id",
-              currentUser.id
-            )
-            .select("credits")
-            .single();
-        if (error) {
-          throw error;
-        }
-        userCredits =
-          Number(data.credits) || newCredits;
-        updateCreditsUI();
-        updateSendButton();
-      } catch (error) {
-        console.error(
-          "Erro ao devolver crédito:",
-          error
-        );
-      }
-    }
+    /* =====================================================
+       AURA MESSAGE
+    ===================================================== */
     function addUserMessage(
       text,
       shouldScroll = true
@@ -2583,6 +2625,16 @@
             ms
           )
       );
+    }
+    function scrollToBottom() {
+      requestAnimationFrame(() => {
+        chat.scrollTo({
+          top:
+            chat.scrollHeight,
+          behavior:
+            "smooth"
+        });
+      });
     }
     /* =====================================================
        THINKING
