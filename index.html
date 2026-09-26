@@ -1,4889 +1,1719 @@
-<!--
-  AURA LINE
-  Atualização:
-  - Sistema de idioma: PT-BR / EN / ES
-  - Área de suporte ao cliente
-  - Configurações da Aura
-  - Mantidos: Supabase, autenticação, histórias, créditos,
-    chat, streaming e integração com /api/chat
--->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#050507">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Aura Line">
-  <title>Aura Line</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      background: #050507;
-      color: #f8f5f7;
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "SF Pro Display",
-        "Helvetica Neue",
-        Arial,
-        sans-serif;
-    }
-    body {
-      overflow: hidden;
-    }
-    button,
-    input,
-    textarea,
-    select {
-      font: inherit;
-    }
-    button {
-      -webkit-tap-highlight-color: transparent;
-    }
-    /* =====================================================
-       AUTH
-    ===================================================== */
-    #authScreen {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      background:
-        radial-gradient(
-          circle at 50% 38%,
-          rgba(255, 78, 166, 0.09),
-          transparent 32%
-        ),
-        #050507;
-    }
-    .auth-box {
-      width: 100%;
-      max-width: 390px;
-      text-align: center;
-    }
-    .auth-core {
-      width: 124px;
-      height: 124px;
-      margin: 0 auto 34px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .auth-ring {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      border: 1px solid rgba(255, 105, 184, .68);
-      box-shadow:
-        0 0 18px rgba(255, 68, 157, .15),
-        0 0 48px rgba(255, 68, 157, .07),
-        inset 0 0 28px rgba(255, 68, 157, .04);
-      animation:
-        auraPulse 6s ease-in-out infinite,
-        pinkGlow 7s ease-in-out infinite;
-    }
-    .auth-ring::before {
-      content: "";
-      position: absolute;
-      inset: 10px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,.10);
-    }
-    .auth-ring::after {
-      content: "";
-      position: absolute;
-      inset: 21px;
-      border-radius: 50%;
-      border: 1px solid rgba(255, 130, 195, .14);
-    }
-    .auth-core-dot {
-      width: 25px;
-      height: 25px;
-      border-radius: 50%;
-      background:
-        radial-gradient(
-          circle at 35% 30%,
-          #fff,
-          #ffd7e9 24%,
-          #ff91c5 54%,
-          #ff5da9 100%
-        );
-      box-shadow:
-        0 0 12px rgba(255, 205, 228, .9),
-        0 0 30px rgba(255, 91, 169, .42),
-        0 0 60px rgba(255, 60, 153, .16);
-      animation: corePulse 5s ease-in-out infinite;
-    }
-    .auth-title {
-      font-size: 35px;
-      font-weight: 500;
-      letter-spacing: 9px;
-      margin-left: 9px;
-      margin-bottom: 12px;
-    }
-    .auth-subtitle {
-      color: rgba(255,255,255,.46);
-      font-size: 13px;
-      line-height: 1.7;
-      margin-bottom: 30px;
-    }
-    .auth-form {
-      display: flex;
-      flex-direction: column;
-      gap: 11px;
-    }
-    .auth-input {
-      width: 100%;
-      height: 52px;
-      border: 1px solid rgba(255,255,255,.085);
-      border-radius: 16px;
-      background: rgba(255,255,255,.045);
-      color: white;
-      outline: none;
-      padding: 0 16px;
-      font-size: 15px;
-      backdrop-filter: blur(18px);
-    }
-    .auth-input:focus {
-      border-color: rgba(255, 108, 183, .45);
-      box-shadow: 0 0 24px rgba(255, 68, 157, .07);
-    }
-    .auth-input::placeholder {
-      color: rgba(255,255,255,.27);
-    }
-    .auth-button {
-      width: 100%;
-      height: 52px;
-      border: none;
-      border-radius: 16px;
-      background: #ff9dca;
-      color: #080609;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 5px;
-      box-shadow: 0 10px 30px rgba(255, 68, 157, .11);
-    }
-    .auth-button:disabled {
-      opacity: .45;
-    }
-    .auth-switch {
-      margin-top: 20px;
-      border: none;
-      background: none;
-      color: rgba(255,255,255,.48);
-      font-size: 13px;
-      cursor: pointer;
-    }
-    .auth-switch span {
-      color: #ff9dca;
-    }
-    .auth-error {
-      min-height: 18px;
-      margin-top: 12px;
-      color: #ff9ebc;
-      font-size: 12px;
-      line-height: 1.4;
-    }
-    .auth-success {
-      color: #ffb5d6;
-    }
-    /* =====================================================
-       APP
-    ===================================================== */
-    .app {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      overflow: hidden;
-      background:
-        radial-gradient(
-          circle at 50% -12%,
-          rgba(255, 68, 157, .065),
-          transparent 38%
-        ),
-        #050507;
-    }
-    /* =====================================================
-       TOPBAR
-    ===================================================== */
-    .topbar {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 82px;
-      z-index: 20;
-      display: grid;
-      grid-template-columns: 48px 1fr auto;
-      align-items: center;
-      gap: 10px;
-      padding:
-        max(12px, env(safe-area-inset-top))
-        14px
-        12px;
-      background:
-        linear-gradient(
-          to bottom,
-          rgba(5,5,7,.98),
-          rgba(5,5,7,.78),
-          transparent
-        );
-      backdrop-filter: blur(15px);
-    }
-    .top-action {
-      width: 42px;
-      height: 42px;
-      border: 1px solid rgba(255,255,255,.065);
-      border-radius: 14px;
-      background: rgba(255,255,255,.035);
-      color: rgba(255,255,255,.72);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-    .hamburger {
-      width: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .hamburger span {
-      display: block;
-      height: 1.5px;
-      width: 100%;
-      background: rgba(255,255,255,.72);
-      border-radius: 10px;
-    }
-    .hamburger span:nth-child(2) {
-      width: 72%;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-    }
-    .mini-core {
-      width: 29px;
-      height: 29px;
-      border-radius: 50%;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .mini-ring {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      border: 1px solid rgba(255, 105, 184, .68);
-      box-shadow:
-        0 0 11px rgba(255, 68, 157, .15),
-        inset 0 0 10px rgba(255, 68, 157, .04);
-      animation:
-        miniPulse 5s ease-in-out infinite,
-        pinkGlow 7s ease-in-out infinite;
-    }
-    .mini-ring::before {
-      content: "";
-      position: absolute;
-      inset: 5px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,.10);
-    }
-    .mini-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background:
-        radial-gradient(
-          circle at 35% 30%,
-          #fff,
-          #ffb7d6 45%,
-          #ff6caf
-        );
-      box-shadow:
-        0 0 8px rgba(255,188,217,.75),
-        0 0 18px rgba(255,68,157,.35);
-    }
-    .brand-name {
-      font-size: 12px;
-      letter-spacing: 4px;
-      font-weight: 500;
-    }
-    .credits-pill {
-      min-width: 70px;
-      height: 38px;
-      padding: 0 12px;
-      border-radius: 13px;
-      border: 1px solid rgba(255,105,184,.12);
-      background: rgba(255,68,157,.045);
-      color: #ffb0d2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    /* =====================================================
-       SIDE MENU
-    ===================================================== */
-    .menu-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      background: rgba(0,0,0,.55);
-      backdrop-filter: blur(4px);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .28s ease;
-    }
-    .menu-overlay.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .side-menu {
-      position: fixed;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      width: min(350px, 91vw);
-      z-index: 110;
-      display: flex;
-      flex-direction: column;
-      background:
-        radial-gradient(
-          circle at 10% 0%,
-          rgba(255, 68, 157, .065),
-          transparent 30%
-        ),
-        rgba(7,7,9,.985);
-      border-right: 1px solid rgba(255,255,255,.065);
-      transform: translateX(-105%);
-      transition:
-        transform .36s cubic-bezier(.22,.8,.25,1);
-      box-shadow: 20px 0 70px rgba(0,0,0,.5);
-      padding:
-        max(16px, env(safe-area-inset-top))
-        14px
-        max(16px, env(safe-area-inset-bottom));
-    }
-    .side-menu.open {
-      transform: translateX(0);
-    }
-    .menu-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 4px 4px 22px;
-    }
-    .menu-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .menu-logo .mini-core {
-      width: 27px;
-      height: 27px;
-    }
-    .menu-logo-text {
-      font-size: 12px;
-      letter-spacing: 4px;
-    }
-    .close-menu {
-      width: 38px;
-      height: 38px;
-      border: 1px solid rgba(255,255,255,.045);
-      border-radius: 12px;
-      background: rgba(255,255,255,.035);
-      color: rgba(255,255,255,.62);
-      font-size: 22px;
-      cursor: pointer;
-    }
-    .new-story-menu {
-      width: 100%;
-      height: 52px;
-      border-radius: 15px;
-      border: 1px solid rgba(255, 105, 184, .12);
-      background:
-        linear-gradient(
-          135deg,
-          rgba(255,255,255,.055),
-          rgba(255,68,157,.055)
-        );
-      color: rgba(255,255,255,.91);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 0 15px;
-      cursor: pointer;
-      margin-bottom: 12px;
-    }
-    .new-story-icon {
-      font-size: 21px;
-      color: #ff9dca;
-    }
-    .new-story-text {
-      font-size: 14px;
-      font-weight: 500;
-    }
-    .menu-shortcuts {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 7px;
-      margin-bottom: 14px;
-    }
-    .menu-shortcut {
-      height: 42px;
-      border: 1px solid rgba(255,255,255,.055);
-      border-radius: 12px;
-      background: rgba(255,255,255,.025);
-      color: rgba(255,255,255,.60);
-      cursor: pointer;
-      font-size: 11px;
-    }
-    .history-heading {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 4px 8px 9px;
-    }
-    .history-title {
-      font-size: 9px;
-      letter-spacing: 2.8px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.27);
-    }
-    .history-count {
-      color: rgba(255,157,202,.55);
-      font-size: 10px;
-    }
-    .history-search {
-      width: 100%;
-      height: 40px;
-      border: 1px solid rgba(255,255,255,.055);
-      border-radius: 12px;
-      background: rgba(255,255,255,.028);
-      color: white;
-      outline: none;
-      padding: 0 12px;
-      font-size: 12px;
-      margin-bottom: 9px;
-    }
-    .history-search::placeholder {
-      color: rgba(255,255,255,.23);
-    }
-    .history-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 0 0 10px;
-      -webkit-overflow-scrolling: touch;
-    }
-    .history-empty {
-      padding: 30px 12px;
-      color: rgba(255,255,255,.28);
-      font-size: 13px;
-      line-height: 1.7;
-      text-align: center;
-    }
-    .history-item {
-      position: relative;
-      display: flex;
-      align-items: center;
-      width: 100%;
-      min-height: 57px;
-      padding: 9px 6px 9px 10px;
-      margin-bottom: 4px;
-      border-radius: 13px;
-      border: 1px solid transparent;
-      background: transparent;
-      color: white;
-      cursor: pointer;
-      text-align: left;
-    }
-    .history-item:hover,
-    .history-item.active {
-      background: rgba(255,255,255,.045);
-      border-color: rgba(255,105,184,.10);
-    }
-    .history-aura {
-      width: 28px;
-      height: 28px;
-      flex-shrink: 0;
-      border-radius: 50%;
-      position: relative;
-      margin-right: 11px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .history-aura-ring {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      border: 1px solid rgba(255,105,184,.55);
-    }
-    .history-aura-ring::before {
-      content: "";
-      position: absolute;
-      inset: 5px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,.08);
-    }
-    .history-aura-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: #ff9dca;
-      box-shadow: 0 0 8px rgba(255,157,202,.72);
-    }
-    .history-info {
-      min-width: 0;
-      flex: 1;
-    }
-    .history-name {
-      font-size: 13px;
-      color: rgba(255,255,255,.86);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-bottom: 4px;
-    }
-    .history-date {
-      font-size: 10px;
-      color: rgba(255,255,255,.25);
-    }
-    .history-actions {
-      display: flex;
-      gap: 2px;
-      flex-shrink: 0;
-    }
-    .history-action {
-      width: 31px;
-      height: 31px;
-      border: none;
-      border-radius: 9px;
-      background: transparent;
-      color: rgba(255,255,255,.22);
-      cursor: pointer;
-      font-size: 13px;
-    }
-    .account-area {
-      border-top: 1px solid rgba(255,255,255,.055);
-      padding-top: 14px;
-      margin-top: 8px;
-    }
-    .account-card {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      padding: 10px;
-      border-radius: 13px;
-      background: rgba(255,255,255,.03);
-      margin-bottom: 7px;
-    }
-    .account-avatar {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background:
-        linear-gradient(
-          135deg,
-          rgba(255,255,255,.10),
-          rgba(255,68,157,.13)
-        );
-      color: white;
-      font-size: 14px;
-    }
-    .account-info {
-      min-width: 0;
-      flex: 1;
-    }
-    .account-label {
-      font-size: 9px;
-      letter-spacing: 1.5px;
-      color: rgba(255,255,255,.25);
-      margin-bottom: 3px;
-    }
-    .account-email {
-      font-size: 11px;
-      color: rgba(255,255,255,.63);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .account-credits {
-      margin-top: 6px;
-      font-size: 11px;
-      color: #ff9dca;
-      font-weight: 500;
-    }
-    .menu-extra {
-      display: grid;
-      gap: 6px;
-      margin-top: 8px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(255,255,255,.045);
-    }
-    .menu-extra-button {
-      width: 100%;
-      height: 43px;
-      border: 1px solid transparent;
-      border-radius: 12px;
-      background: transparent;
-      color: rgba(255,255,255,.55);
-      text-align: left;
-      padding: 0 11px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-    .menu-extra-button:hover {
-      background: rgba(255,68,157,.045);
-      color: #ffb3d3;
-    }
-    .logout-button {
-      width: 100%;
-      height: 43px;
-      border: none;
-      border-radius: 13px;
-      background: transparent;
-      color: rgba(255,150,192,.65);
-      text-align: left;
-      padding: 0 11px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-    /* =====================================================
-       CHAT
-    ===================================================== */
-    .chat {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      overflow-y: auto;
-      overflow-x: hidden;
-      padding: 105px 18px 120px;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-    }
-    .welcome {
-      min-height: calc(100vh - 220px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 30px 0 70px;
-    }
-    .aura-core {
-      width: 154px;
-      height: 154px;
-      margin-bottom: 30px;
-      border-radius: 50%;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .ring {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      border: 1px solid rgba(255,105,184,.68);
-      box-shadow:
-        0 0 18px rgba(255,68,157,.15),
-        0 0 44px rgba(255,68,157,.07),
-        inset 0 0 32px rgba(255,68,157,.035);
-      animation:
-        auraPulse 6s ease-in-out infinite,
-        pinkGlow 7s ease-in-out infinite;
-    }
-    .ring::before {
-      content: "";
-      position: absolute;
-      inset: 10px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,.12);
-    }
-    .ring::after {
-      content: "";
-      position: absolute;
-      inset: -13px;
-      border-radius: 50%;
-      background:
-        radial-gradient(
-          circle,
-          transparent 43%,
-          rgba(255,68,157,.12) 57%,
-          transparent 73%
-        );
-      filter: blur(11px);
-      opacity: .58;
-      z-index: -1;
-      animation: coreHalo 6s ease-in-out infinite;
-    }
-    .core {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background:
-        radial-gradient(
-          circle at 35% 30%,
-          #ffffff 0%,
-          #ffe9f2 20%,
-          #ffc0db 43%,
-          #ff8abb 67%,
-          #ff5da7 100%
-        );
-      box-shadow:
-        0 0 12px rgba(255,236,245,.95),
-        0 0 28px rgba(255,147,194,.60),
-        0 0 54px rgba(255,68,157,.25),
-        0 0 90px rgba(255,68,157,.09);
-      animation: corePulse 5s ease-in-out infinite;
-    }
-    h1 {
-      font-size: 38px;
-      font-weight: 500;
-      letter-spacing: 9px;
-      margin-left: 9px;
-      margin-bottom: 12px;
-    }
-    .tagline {
-      color: rgba(255,255,255,.48);
-      font-size: 13px;
-      letter-spacing: .4px;
-      line-height: 1.7;
-      margin-bottom: 22px;
-    }
-    .welcome-actions {
-      width: min(680px, 100%);
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 9px;
-      margin-top: 8px;
-    }
-    .welcome-card {
-      min-height: 82px;
-      padding: 14px;
-      border: 1px solid rgba(255,255,255,.055);
-      border-radius: 16px;
-      background:
-        linear-gradient(
-          135deg,
-          rgba(255,255,255,.035),
-          rgba(255,68,157,.018)
-        );
-      color: rgba(255,255,255,.78);
-      cursor: pointer;
-      text-align: left;
-    }
-    .welcome-card-icon {
-      color: #ff9dca;
-      font-size: 17px;
-      margin-bottom: 8px;
-    }
-    .welcome-card-title {
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .welcome-card-description {
-      color: rgba(255,255,255,.30);
-      font-size: 10px;
-      line-height: 1.4;
-    }
-    .welcome-credit-line {
-      margin-top: 17px;
-      color: rgba(255,255,255,.26);
-      font-size: 10px;
-    }
-    .welcome-credit-line strong {
-      color: rgba(255,157,202,.75);
-      font-weight: 500;
-    }
-    /* =====================================================
-       MESSAGES
-    ===================================================== */
-    .message {
-      display: flex;
-      margin-bottom: 25px;
-      animation: messageAppear .4s ease;
-    }
-    .message.user {
-      justify-content: flex-end;
-    }
-    .message.aura {
-      justify-content: flex-start;
-    }
-    .message-content {
-      max-width: 82%;
-    }
-    .bubble {
-      position: relative;
-      padding: 13px 15px;
-      border-radius: 17px;
-      font-size: 15px;
-      line-height: 1.72;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-    .message.user .bubble {
-      background: rgba(255,255,255,.055);
-      border: 1px solid rgba(255,255,255,.065);
-      border-bottom-right-radius: 5px;
-      color: rgba(255,255,255,.88);
-    }
-    .message.aura .bubble {
-      background:
-        linear-gradient(
-          135deg,
-          rgba(255,255,255,.025),
-          rgba(255,68,157,.018)
-        );
-      border: 1px solid rgba(255,255,255,.055);
-      border-bottom-left-radius: 5px;
-      color: rgba(255,255,255,.86);
-    }
-    .aura-label {
-      font-size: 9px;
-      letter-spacing: 3px;
-      color: rgba(255,157,202,.58);
-      margin-bottom: 8px;
-      padding-left: 3px;
-    }
-    /* =====================================================
-       THINKING
-    ===================================================== */
-    .thinking {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      color: rgba(255,255,255,.35);
-      font-size: 12px;
-      margin: 12px 0 22px 4px;
-    }
-    .thinking-core {
-      width: 19px;
-      height: 19px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,105,184,.65);
-      background:
-        radial-gradient(
-          circle,
-          #fff 0%,
-          #ffb9d8 22%,
-          #ff72b0 42%,
-          rgba(255,68,157,.12) 68%,
-          transparent 72%
-        );
-      box-shadow: 0 0 11px rgba(255,68,157,.32);
-      animation:
-        thinkingPulse 1.8s ease-in-out infinite,
-        pinkGlow 3s ease-in-out infinite;
-    }
-    /* =====================================================
-       COMPOSER
-    ===================================================== */
-    .composer {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 30;
-      padding:
-        12px
-        16px
-        max(14px, env(safe-area-inset-bottom));
-      background:
-        linear-gradient(
-          to top,
-          #050507 58%,
-          rgba(5,5,7,.95) 78%,
-          transparent
-        );
-    }
-    .composer-inner {
-      display: flex;
-      align-items: flex-end;
-      gap: 9px;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-    #messageInput {
-      flex: 1;
-      min-height: 52px;
-      max-height: 130px;
-      resize: none;
-      border-radius: 19px;
-      border: 1px solid rgba(255,255,255,.085);
-      background: rgba(255,255,255,.045);
-      color: white;
-      outline: none;
-      padding: 15px 17px;
-      font-size: 15px;
-      line-height: 1.4;
-      backdrop-filter: blur(18px);
-    }
-    #messageInput::placeholder {
-      color: rgba(255,255,255,.27);
-    }
-    #sendButton {
-      width: 52px;
-      height: 52px;
-      flex-shrink: 0;
-      border: none;
-      border-radius: 18px;
-      background: #ff9dca;
-      color: #070609;
-      cursor: pointer;
-      font-size: 19px;
-    }
-    #sendButton:disabled {
-      opacity: .32;
-      cursor: default;
-    }
-    /* =====================================================
-       MODALS
-    ===================================================== */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 500;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: rgba(0,0,0,.66);
-      backdrop-filter: blur(10px);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .25s ease;
-    }
-    .modal-backdrop.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .app-modal {
-      width: min(520px, 100%);
-      max-height: 88vh;
-      overflow-y: auto;
-      border: 1px solid rgba(255,255,255,.075);
-      border-radius: 24px;
-      background:
-        radial-gradient(
-          circle at 50% 0%,
-          rgba(255,68,157,.08),
-          transparent 42%
-        ),
-        rgba(10,10,13,.97);
-      box-shadow: 0 30px 100px rgba(0,0,0,.55);
-      padding: 22px;
-      transform: translateY(12px) scale(.98);
-      transition: transform .25s ease;
-    }
-    .modal-backdrop.open .app-modal {
-      transform: translateY(0) scale(1);
-    }
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-    .modal-title {
-      font-size: 18px;
-      font-weight: 500;
-    }
-    .modal-subtitle {
-      margin-top: 5px;
-      color: rgba(255,255,255,.35);
-      font-size: 11px;
-    }
-    .modal-close {
-      width: 36px;
-      height: 36px;
-      border: 1px solid rgba(255,255,255,.055);
-      border-radius: 11px;
-      background: rgba(255,255,255,.035);
-      color: rgba(255,255,255,.60);
-      cursor: pointer;
-      font-size: 19px;
-    }
-    /* =====================================================
-       SETTINGS
-    ===================================================== */
-    .settings-section {
-      margin-bottom: 20px;
-    }
-    .settings-label {
-      font-size: 9px;
-      letter-spacing: 2px;
-      color: rgba(255,255,255,.28);
-      text-transform: uppercase;
-      margin-bottom: 9px;
-    }
-    .settings-card {
-      border: 1px solid rgba(255,255,255,.055);
-      border-radius: 16px;
-      background: rgba(255,255,255,.025);
-      overflow: hidden;
-    }
-    .settings-row {
-      min-height: 58px;
-      padding: 11px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      border-bottom: 1px solid rgba(255,255,255,.045);
-    }
-    .settings-row:last-child {
-      border-bottom: none;
-    }
-    .settings-row-title {
-      font-size: 13px;
-      color: rgba(255,255,255,.82);
-    }
-    .settings-row-description {
-      margin-top: 3px;
-      color: rgba(255,255,255,.27);
-      font-size: 10px;
-      line-height: 1.4;
-    }
-    .language-select {
-      min-width: 125px;
-      height: 38px;
-      padding: 0 10px;
-      border-radius: 11px;
-      border: 1px solid rgba(255,105,184,.12);
-      background: rgba(255,68,157,.045);
-      color: #ffb2d3;
-      outline: none;
-    }
-    .toggle {
-      width: 46px;
-      height: 27px;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,.08);
-      background: rgba(255,255,255,.07);
-      position: relative;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-    .toggle::after {
-      content: "";
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 19px;
-      height: 19px;
-      border-radius: 50%;
-      background: rgba(255,255,255,.60);
-      transition: .2s ease;
-    }
-    .toggle.active {
-      background: rgba(255,68,157,.28);
-      border-color: rgba(255,105,184,.25);
-    }
-    .toggle.active::after {
-      left: 22px;
-      background: #ff9dca;
-    }
-    /* =====================================================
-       SUPPORT
-    ===================================================== */
-    .support-intro {
-      padding: 15px;
-      border-radius: 16px;
-      background: rgba(255,68,157,.045);
-      border: 1px solid rgba(255,105,184,.10);
-      color: rgba(255,255,255,.52);
-      font-size: 12px;
-      line-height: 1.6;
-      margin-bottom: 15px;
-    }
-    .support-options {
-      display: grid;
-      gap: 8px;
-    }
-    .support-option {
-      width: 100%;
-      padding: 15px;
-      border-radius: 15px;
-      border: 1px solid rgba(255,255,255,.055);
-      background: rgba(255,255,255,.025);
-      color: white;
-      text-align: left;
-      cursor: pointer;
-    }
-    .support-option-title {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .support-option-description {
-      color: rgba(255,255,255,.28);
-      font-size: 10px;
-      line-height: 1.45;
-    }
-    .support-form {
-      display: grid;
-      gap: 9px;
-      margin-top: 14px;
-    }
-    .support-input,
-    .support-textarea {
-      width: 100%;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.07);
-      background: rgba(255,255,255,.035);
-      color: white;
-      outline: none;
-      padding: 13px;
-      font-size: 13px;
-    }
-    .support-textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
-    .support-send {
-      height: 48px;
-      border: none;
-      border-radius: 14px;
-      background: #ff9dca;
-      color: #080609;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    /* =====================================================
-       CREDITS
-    ===================================================== */
-    .credit-balance {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 17px;
-      border: 1px solid rgba(255,105,184,.12);
-      border-radius: 17px;
-      background: rgba(255,68,157,.045);
-      margin-bottom: 18px;
-    }
-    .credit-balance-label {
-      color: rgba(255,255,255,.36);
-      font-size: 10px;
-      letter-spacing: 1.7px;
-      text-transform: uppercase;
-    }
-    .credit-balance-value {
-      margin-top: 5px;
-      font-size: 25px;
-      font-weight: 500;
-      color: #ffb2d3;
-    }
-    .credit-status {
-      color: rgba(255,255,255,.36);
-      font-size: 10px;
-    }
-    .plans-title {
-      font-size: 10px;
-      letter-spacing: 2px;
-      color: rgba(255,255,255,.28);
-      text-transform: uppercase;
-      margin-bottom: 9px;
-    }
-    .plan-list {
-      display: grid;
-      gap: 8px;
-    }
-    .plan-card {
-      width: 100%;
-      text-align: left;
-      padding: 15px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.055);
-      background: rgba(255,255,255,.025);
-      color: white;
-      cursor: pointer;
-    }
-    .plan-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .plan-name {
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .plan-price {
-      color: #ffb1d1;
-      font-size: 12px;
-    }
-    .plan-description {
-      color: rgba(255,255,255,.30);
-      font-size: 10px;
-      margin-top: 6px;
-      line-height: 1.5;
-    }
-    .plan-badge {
-      color: #ff9dca;
-      font-size: 8px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-    .modal-note {
-      margin-top: 16px;
-      padding: 12px;
-      border-radius: 13px;
-      background: rgba(255,255,255,.025);
-      color: rgba(255,255,255,.25);
-      font-size: 10px;
-      line-height: 1.6;
-      text-align: center;
-    }
-    /* =====================================================
-       TOAST
-    ===================================================== */
-    .toast {
-      position: fixed;
-      left: 50%;
-      bottom: 95px;
-      z-index: 700;
-      transform: translate(-50%, 20px);
-      padding: 11px 16px;
-      border-radius: 13px;
-      background: rgba(20,20,24,.94);
-      border: 1px solid rgba(255,105,184,.12);
-      box-shadow: 0 15px 40px rgba(0,0,0,.35);
-      color: rgba(255,255,255,.82);
-      font-size: 12px;
-      opacity: 0;
-      pointer-events: none;
-      transition: .25s ease;
-      white-space: nowrap;
-      backdrop-filter: blur(18px);
-    }
-    .toast.show {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
-    /* =====================================================
-       ANIMAÇÕES
-    ===================================================== */
-    @keyframes auraPulse {
-      0%,100% {
-        transform: scale(1);
-        filter: brightness(.92);
-      }
-      50% {
-        transform: scale(1.018);
-        filter: brightness(1.08);
-      }
-    }
-    @keyframes pinkGlow {
-      0%,100% {
-        box-shadow:
-          0 0 12px rgba(255,68,157,.12),
-          0 0 30px rgba(255,68,157,.045);
-      }
-      50% {
-        box-shadow:
-          0 0 18px rgba(255,68,157,.22),
-          0 0 42px rgba(255,68,157,.09);
-      }
-    }
-    @keyframes corePulse {
-      0%,100% {
-        transform: scale(.88);
-        opacity: .88;
-      }
-      50% {
-        transform: scale(1.08);
-        opacity: 1;
-      }
-    }
-    @keyframes miniPulse {
-      0%,100% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.045);
-      }
-    }
-    @keyframes thinkingPulse {
-      0%,100% {
-        transform: scale(.78);
-        opacity: .45;
-      }
-      50% {
-        transform: scale(1.12);
-        opacity: 1;
-      }
-    }
-    @keyframes coreHalo {
-      0%,100% {
-        transform: scale(.92);
-        opacity: .35;
-      }
-      50% {
-        transform: scale(1.08);
-        opacity: .68;
-      }
-    }
-    @keyframes messageAppear {
-      from {
-        opacity: 0;
-        transform: translateY(7px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    /* =====================================================
-       MOBILE
-    ===================================================== */
-    @media (max-width: 600px) {
-      .chat {
-        padding-left: 14px;
-        padding-right: 14px;
-      }
-      .message-content {
-        max-width: 90%;
-      }
-      h1 {
-        font-size: 34px;
-      }
-      .aura-core {
-        width: 138px;
-        height: 138px;
-        margin-bottom: 25px;
-      }
-      .core {
-        width: 28px;
-        height: 28px;
-      }
-      .welcome {
-        padding-top: 20px;
-      }
-      .welcome-actions {
-        grid-template-columns: 1fr;
-        width: min(340px, 100%);
-      }
-      .welcome-card {
-        min-height: 67px;
-      }
-      .side-menu {
-        width: min(350px, 91vw);
-      }
-      .brand-name {
-        font-size: 11px;
-        letter-spacing: 3px;
-      }
-      .app-modal {
-        border-radius: 21px;
-        padding: 18px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#050303">
+<title>Aura Line</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;background:#050303;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif}
+body{overflow:hidden}
+button,input,textarea{font:inherit}
+button{-webkit-tap-highlight-color:transparent}
+#authScreen{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 50% 35%,rgba(112,16,43,.2),transparent 38%),#050303}
+.auth-box{width:100%;max-width:390px;text-align:center}
+.auth-core{width:115px;height:115px;margin:0 auto 30px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center}
+.auth-ring,.ring,.mini-ring,.history-aura-ring{position:absolute;border-radius:50%;border:1px solid rgba(137,28,60,.85);box-shadow:0 0 18px rgba(120,20,52,.35),0 0 45px rgba(85,8,32,.2)}
+.auth-ring{inset:0;animation:auraPulse 4s ease-in-out infinite}
+.auth-ring:before,.ring:before{content:"";position:absolute;inset:9px;border-radius:50%;border:1px solid rgba(255,255,255,.08)}
+.auth-ring:after,.ring:after{content:"";position:absolute;inset:-10px;border-radius:50%;background:rgba(115,15,43,.18);filter:blur(15px);z-index:-1}
+.auth-core-dot,.core,.mini-dot,.history-aura-dot{border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0%,#d9b8c2 18%,#851b42 52%,#3b071b 100%);box-shadow:0 0 10px rgba(255,255,255,.45),0 0 28px rgba(130,22,58,.75),0 0 55px rgba(95,10,40,.4)}
+.auth-core-dot{width:25px;height:25px;animation:corePulse 3s ease-in-out infinite}
+.auth-title{font-size:35px;font-weight:500;letter-spacing:8px;margin-bottom:10px}
+.auth-subtitle{color:rgba(255,255,255,.48);font-size:14px;line-height:1.6;margin-bottom:30px}
+.auth-form{display:flex;flex-direction:column;gap:11px}
+.auth-input{width:100%;height:52px;border:1px solid rgba(255,255,255,.1);border-radius:17px;background:rgba(255,255,255,.045);color:#fff;outline:none;padding:0 16px;font-size:15px;backdrop-filter:blur(15px)}
+.auth-input:focus{border-color:rgba(143,31,65,.8);box-shadow:0 0 25px rgba(110,15,43,.16)}
+.auth-input::placeholder{color:rgba(255,255,255,.3)}
+.auth-button{width:100%;height:52px;border:0;border-radius:17px;background:#fff;color:#080506;font-size:15px;font-weight:600;cursor:pointer;margin-top:4px}
+.auth-button:disabled{opacity:.45}
+.auth-switch{margin-top:20px;border:0;background:none;color:rgba(255,255,255,.55);font-size:13px;cursor:pointer}
+.auth-switch span{color:#fff}
+.auth-error{min-height:18px;margin-top:12px;color:#e79aad;font-size:12px;line-height:1.4}
+.auth-success{color:#b7dfcf}
+.app{width:100%;height:100%;position:relative;overflow:hidden;background:radial-gradient(circle at 50% -10%,rgba(105,12,39,.2),transparent 40%),#050303}
+.topbar{position:absolute;top:0;left:0;right:0;height:82px;z-index:20;display:grid;grid-template-columns:48px 1fr 48px;align-items:center;padding:max(12px,env(safe-area-inset-top)) 14px 12px;background:linear-gradient(to bottom,rgba(5,3,3,.98),rgba(5,3,3,.76),transparent);backdrop-filter:blur(14px)}
+.top-action{width:42px;height:42px;border:1px solid rgba(255,255,255,.07);border-radius:14px;background:rgba(255,255,255,.045);color:rgba(255,255,255,.78);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .18s,background .18s,border-color .18s}
+.top-action:active{transform:scale(.92)}
+.top-action:hover{background:rgba(126,20,51,.12);border-color:rgba(142,31,63,.25)}
+.hamburger{width:18px;display:flex;flex-direction:column;gap:4px}
+.hamburger span{display:block;height:1.5px;width:100%;background:rgba(255,255,255,.78);border-radius:10px}
+.hamburger span:nth-child(2){width:75%}
+.plus-icon{font-size:24px;font-weight:300;line-height:1}
+.brand{display:flex;align-items:center;justify-content:center;gap:9px}
+.mini-core{width:30px;height:30px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center}
+.mini-ring{inset:0;animation:auraPulse 3.5s ease-in-out infinite}
+.mini-ring:after{content:"";position:absolute;inset:-6px;border-radius:50%;background:rgba(125,20,52,.12);filter:blur(8px);z-index:-1}
+.mini-dot{width:7px;height:7px;box-shadow:0 0 8px rgba(255,255,255,.55),0 0 18px rgba(135,25,60,.85)}
+.brand-name{font-size:13px;letter-spacing:4px;font-weight:500}
+.menu-overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .28s}
+.menu-overlay.open{opacity:1;pointer-events:auto}
+.side-menu{position:fixed;top:0;left:0;bottom:0;width:min(330px,88vw);z-index:110;display:flex;flex-direction:column;background:radial-gradient(circle at 20% 0%,rgba(112,16,43,.15),transparent 35%),rgba(9,5,7,.98);border-right:1px solid rgba(255,255,255,.08);transform:translateX(-105%);transition:transform .34s cubic-bezier(.22,.8,.25,1);box-shadow:20px 0 70px rgba(0,0,0,.5);padding:max(16px,env(safe-area-inset-top)) 14px max(16px,env(safe-area-inset-bottom))}
+.side-menu.open{transform:translateX(0)}
+.menu-header{display:flex;align-items:center;justify-content:space-between;padding:4px 4px 18px}
+.menu-logo{display:flex;align-items:center;gap:10px}
+.menu-logo .mini-core{width:28px;height:28px}
+.menu-logo-text{font-size:13px;letter-spacing:4px}
+.close-menu{width:38px;height:38px;border:0;border-radius:12px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);font-size:22px;cursor:pointer}
+.new-story-menu{width:100%;height:52px;border-radius:16px;border:1px solid rgba(139,29,60,.3);background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(113,16,43,.15));color:#fff;display:flex;align-items:center;gap:12px;padding:0 15px;cursor:pointer;margin-bottom:18px}
+.new-story-menu:active{transform:scale(.97)}
+.new-story-icon{font-size:21px;font-weight:300}
+.new-story-text{font-size:14px;font-weight:500}
+.history-title{padding:4px 8px 9px;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.32)}
+.history-list{flex:1;overflow-y:auto;padding:0 0 10px;-webkit-overflow-scrolling:touch}
+.history-list::-webkit-scrollbar{width:3px}
+.history-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:10px}
+.history-empty{padding:24px 10px;color:rgba(255,255,255,.32);font-size:13px;line-height:1.6;text-align:center}
+.history-item{position:relative;display:flex;align-items:center;width:100%;min-height:57px;padding:9px 9px 9px 12px;margin-bottom:5px;border-radius:14px;border:1px solid transparent;background:transparent;color:#fff;cursor:pointer;text-align:left}
+.history-item:hover,.history-item.active{background:rgba(128,20,51,.1);border-color:rgba(139,29,60,.16)}
+.history-aura{width:29px;height:29px;flex-shrink:0;border-radius:50%;position:relative;margin-right:11px;display:flex;align-items:center;justify-content:center}
+.history-aura-ring{inset:0}
+.history-aura-dot{width:6px;height:6px;box-shadow:0 0 7px rgba(255,255,255,.5),0 0 15px rgba(130,22,58,.8)}
+.history-info{min-width:0;flex:1}
+.history-name{font-size:13px;color:rgba(255,255,255,.88);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px}
+.history-date{font-size:10px;color:rgba(255,255,255,.28)}
+.delete-history{width:32px;height:32px;flex-shrink:0;border:0;border-radius:10px;background:transparent;color:rgba(255,255,255,.28);cursor:pointer;font-size:15px;opacity:0}
+.history-item:hover .delete-history,.history-item.active .delete-history{opacity:1}
+.account-area{border-top:1px solid rgba(255,255,255,.07);padding-top:13px;margin-top:8px}
+.account-card{display:flex;align-items:center;gap:11px;padding:10px;border-radius:14px;background:rgba(255,255,255,.04);margin-bottom:7px}
+.account-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(119,19,49,.3));color:#fff;font-size:14px}
+.account-info{min-width:0;flex:1}
+.account-label{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:3px}
+.account-email{font-size:11px;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.settings-button{width:100%;height:43px;border:0;border-radius:13px;background:transparent;color:rgba(255,255,255,.72);text-align:left;padding:0 11px;cursor:pointer;font-size:12px}
+.logout-button{width:100%;height:43px;border:0;border-radius:13px;background:transparent;color:rgba(235,157,174,.75);text-align:left;padding:0 11px;cursor:pointer;font-size:12px}
+.chat{position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:auto;overflow-x:hidden;padding:105px 18px 120px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+.chat::-webkit-scrollbar{width:4px}
+.chat::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:10px}
+.welcome{min-height:calc(100vh - 220px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px 0}
+.aura-core{width:150px;height:150px;margin-bottom:34px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center}
+.ring{inset:0;border-width:1px;animation:auraPulse 4s ease-in-out infinite}
+.ring:after{background:rgba(119,16,45,.18)}
+.core{width:31px;height:31px;animation:corePulse 3s ease-in-out infinite}
+h1{font-size:38px;font-weight:500;letter-spacing:8px;margin-bottom:14px}
+.tagline{color:rgba(255,255,255,.62);font-size:15px;line-height:1.65;margin-bottom:30px}
+.message{display:flex;margin-bottom:18px;animation:messageAppear .35s ease}
+.message.user{justify-content:flex-end}
+.message.aura{justify-content:flex-start}
+.message-content{max-width:86%}
+.bubble{position:relative;padding:14px 16px;border-radius:20px;font-size:15px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
+.message.user .bubble{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);border-bottom-right-radius:6px;color:rgba(255,255,255,.94)}
+.message.aura .bubble{background:linear-gradient(135deg,rgba(255,255,255,.045),rgba(117,18,48,.07));border:1px solid rgba(255,255,255,.08);border-bottom-left-radius:6px;color:rgba(255,255,255,.9)}
+.aura-label{font-size:10px;letter-spacing:3px;color:rgba(174,66,94,.72);margin-bottom:7px;padding-left:4px}
+.stream-word{display:inline;opacity:0;filter:blur(5px);animation:wordReveal .2s ease forwards}
+.mist{position:absolute;width:120px;height:65px;left:0;top:50%;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(136,25,61,.48),rgba(75,7,29,.22),transparent 70%);filter:blur(20px);opacity:0;transition:left .12s linear,opacity .25s ease}
+.streaming .mist{opacity:.75;animation:mistPulse 1.2s ease-in-out infinite}
+.finished .mist{opacity:0}
+.thinking{display:flex;align-items:center;gap:9px;color:rgba(255,255,255,.42);font-size:13px;margin:12px 0 20px 5px}
+.thinking-core{width:20px;height:20px;border-radius:50%;border:1px solid rgba(139,29,60,.9);background:radial-gradient(circle,#9b2d52,#3d071b);box-shadow:0 0 15px rgba(125,20,53,.45);animation:thinkingPulse 1s ease-in-out infinite}
+.composer{position:absolute;left:0;right:0;bottom:0;z-index:30;padding:12px 16px max(14px,env(safe-area-inset-bottom));background:linear-gradient(to top,#050303 60%,rgba(5,3,3,.94) 78%,transparent)}
+.composer-inner{display:flex;align-items:flex-end;gap:9px;max-width:700px;margin:0 auto}
+#messageInput{flex:1;min-height:52px;max-height:130px;resize:none;border-radius:20px;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.055);color:#fff;outline:none;padding:15px 17px;font-size:15px;line-height:1.4;backdrop-filter:blur(15px)}
+#messageInput:focus{border-color:rgba(137,29,60,.6)}
+#messageInput::placeholder{color:rgba(255,255,255,.3)}
+#sendButton{width:52px;height:52px;flex-shrink:0;border:0;border-radius:18px;background:#fff;color:#070506;cursor:pointer;font-size:19px}
+#sendButton:active{transform:scale(.94)}
+#sendButton:disabled{opacity:.35;cursor:default}
+.toast{position:fixed;left:50%;bottom:95px;z-index:300;transform:translate(-50%,20px);padding:11px 16px;border-radius:14px;background:rgba(25,8,14,.94);border:1px solid rgba(142,31,63,.3);box-shadow:0 15px 40px rgba(0,0,0,.35);color:rgba(255,255,255,.85);font-size:12px;opacity:0;pointer-events:none;transition:.25s ease;white-space:nowrap;backdrop-filter:blur(15px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.68);backdrop-filter:blur(8px);display:none;align-items:flex-end;justify-content:center;padding:16px}
+.modal-overlay.open{display:flex}
+.modal{width:min(520px,100%);max-height:88vh;overflow:auto;border:1px solid rgba(255,255,255,.09);border-radius:24px;background:linear-gradient(145deg,#12080d,#080406);box-shadow:0 25px 80px rgba(0,0,0,.6);padding:20px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.modal-title{font-size:19px;font-weight:500}
+.modal-close{width:36px;height:36px;border:0;border-radius:12px;background:rgba(255,255,255,.06);color:#fff;font-size:21px}
+.setting-section{padding:15px 0;border-top:1px solid rgba(255,255,255,.07)}
+.setting-label{font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.34);text-transform:uppercase;margin-bottom:9px}
+.setting-value{font-size:14px;color:rgba(255,255,255,.82);margin-bottom:12px;word-break:break-word}
+.setting-input,.setting-select{width:100%;height:46px;border:1px solid rgba(255,255,255,.1);border-radius:13px;background:rgba(255,255,255,.045);color:#fff;padding:0 13px;outline:none;margin-bottom:9px}
+.setting-select option{background:#10070b;color:#fff}
+.modal-button{width:100%;height:46px;border:0;border-radius:14px;background:#fff;color:#080506;font-weight:600;margin-top:4px}
+.secondary-button{background:rgba(255,255,255,.07);color:#fff;border:1px solid rgba(255,255,255,.08)}
+.plan-card{padding:15px;border:1px solid rgba(139,29,60,.24);border-radius:16px;background:rgba(255,255,255,.035);margin-bottom:10px}
+.plan-name{font-size:15px;margin-bottom:5px}
+.plan-desc{font-size:12px;line-height:1.5;color:rgba(255,255,255,.48)}
+.credit-pill{display:inline-flex;padding:6px 10px;border-radius:99px;background:rgba(139,29,60,.16);color:#e6a6b8;font-size:11px;margin-top:9px}
+.modal-note{font-size:11px;line-height:1.55;color:rgba(255,255,255,.35);margin-top:10px}
+@media(min-width:601px){.modal-overlay{align-items:center}}
+@keyframes auraPulse{0%,100%{transform:scale(1);filter:brightness(.82)}50%{transform:scale(1.045);filter:brightness(1.18)}}
+@keyframes corePulse{0%,100%{transform:scale(.86);opacity:.86}50%{transform:scale(1.12);opacity:1}}
+@keyframes thinkingPulse{0%,100%{transform:scale(.75);opacity:.45}50%{transform:scale(1.15);opacity:1}}
+@keyframes messageAppear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes wordReveal{from{opacity:0;filter:blur(5px);transform:translateY(3px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
+@keyframes mistPulse{0%,100%{transform:translate(-50%,-50%) scale(.9);filter:blur(20px);opacity:.45}50%{transform:translate(-50%,-50%) scale(1.12);filter:blur(27px);opacity:.85}}
+@media(max-width:600px){
+.chat{padding-left:14px;padding-right:14px}
+.message-content{max-width:90%}
+h1{font-size:34px}
+.aura-core{width:135px;height:135px}
+.core{width:28px;height:28px}
+.side-menu{width:min(335px,91vw)}
+.delete-history{opacity:.65}
+}
+</style>
 </head>
 <body>
-  <!-- =====================================================
-       AUTH
-  ===================================================== -->
-  <div id="authScreen">
-    <div class="auth-box">
-      <div class="auth-core">
-        <div class="auth-ring"></div>
-        <div class="auth-core-dot"></div>
-      </div>
-      <div class="auth-title">
-        AURA
-      </div>
-      <div
-        id="authSubtitle"
-        class="auth-subtitle"
-      >
-        intelligence for your story
-      </div>
-      <div class="auth-form">
-        <input
-          id="authEmail"
-          class="auth-input"
-          type="email"
-          placeholder="Seu e-mail"
-          autocomplete="email"
-        >
-        <input
-          id="authPassword"
-          class="auth-input"
-          type="password"
-          placeholder="Sua senha"
-          autocomplete="current-password"
-        >
-        <button
-          id="authButton"
-          class="auth-button"
-          onclick="handleAuth()"
-        >
-          Entrar
-        </button>
-      </div>
-      <div
-        id="authMessage"
-        class="auth-error"
-      ></div>
-      <button
-        id="authSwitch"
-        class="auth-switch"
-        onclick="toggleAuthMode()"
-      >
-        Ainda não tenho uma conta.
-        <span>Criar conta</span>
-      </button>
+<div id="authScreen">
+  <div class="auth-box">
+    <div class="auth-core">
+      <div class="auth-ring"></div>
+      <div class="auth-core-dot"></div>
     </div>
+    <div class="auth-title">AURA</div>
+    <div class="auth-subtitle">Entre para continuar suas histórias.</div>
+    <div class="auth-form">
+      <input id="authEmail" class="auth-input" type="email" placeholder="Seu e-mail" autocomplete="email">
+      <input id="authPassword" class="auth-input" type="password" placeholder="Sua senha" autocomplete="current-password">
+      <button id="authButton" class="auth-button" onclick="handleAuth()">Entrar</button>
+    </div>
+    <div id="authMessage" class="auth-error"></div>
+    <button id="authSwitch" class="auth-switch" onclick="toggleAuthMode()">Ainda não tenho uma conta. <span>Criar conta</span></button>
   </div>
-  <!-- =====================================================
-       APP
-  ===================================================== -->
-  <main
-    id="app"
-    class="app"
-    style="display:none;"
-  >
-    <div
-      id="menuOverlay"
-      class="menu-overlay"
-      onclick="closeMenu()"
-    ></div>
-    <!-- ===================================================
-         SIDE MENU
-    =================================================== -->
-    <aside
-      id="sideMenu"
-      class="side-menu"
-    >
-      <div class="menu-header">
-        <div class="menu-logo">
-          <div class="mini-core">
-            <div class="mini-ring"></div>
-            <div class="mini-dot"></div>
-          </div>
-          <div class="menu-logo-text">
-            AURA
-          </div>
-        </div>
-        <button
-          class="close-menu"
-          onclick="closeMenu()"
-        >
-          ×
-        </button>
-      </div>
-      <button
-        class="new-story-menu"
-        onclick="newStory()"
-      >
-        <span class="new-story-icon">+</span>
-        <span
-          id="newStoryText"
-          class="new-story-text"
-        >
-          Nova história
-        </span>
-      </button>
-      <div class="menu-shortcuts">
-        <button
-          id="creditsShortcut"
-          class="menu-shortcut"
-          onclick="openCreditsModal(); closeMenu();"
-        >
-          ✦&nbsp; Créditos
-        </button>
-        <button
-          id="searchShortcut"
-          class="menu-shortcut"
-          onclick="focusHistorySearch()"
-        >
-          ⌕&nbsp; Buscar
-        </button>
-      </div>
-      <div class="history-heading">
-        <div
-          id="historyTitle"
-          class="history-title"
-        >
-          Suas histórias
-        </div>
-        <div
-          id="historyCount"
-          class="history-count"
-        >
-          0
-        </div>
-      </div>
-      <input
-        id="historySearch"
-        class="history-search"
-        type="search"
-        placeholder="Buscar uma história..."
-        autocomplete="off"
-      >
-      <div
-        id="historyList"
-        class="history-list"
-      ></div>
-      <div class="account-area">
-        <div class="account-card">
-          <div
-            id="accountAvatar"
-            class="account-avatar"
-          >
-            A
-          </div>
-          <div class="account-info">
-            <div
-              id="accountLabel"
-              class="account-label"
-            >
-              CONTA
-            </div>
-            <div
-              id="accountEmail"
-              class="account-email"
-            >
-              —
-            </div>
-            <div
-              id="accountCredits"
-              class="account-credits"
-            >
-              Créditos: —
-            </div>
-          </div>
-        </div>
-        <div class="menu-extra">
-          <button
-            id="languageMenuButton"
-            class="menu-extra-button"
-            onclick="openSettingsModal(); closeMenu();"
-          >
-            ◌&nbsp;&nbsp; Idioma
-          </button>
-          <button
-            id="supportMenuButton"
-            class="menu-extra-button"
-            onclick="openSupportModal(); closeMenu();"
-          >
-            ?&nbsp;&nbsp; Suporte
-          </button>
-          <button
-            id="settingsMenuButton"
-            class="menu-extra-button"
-            onclick="openSettingsModal(); closeMenu();"
-          >
-            ⚙&nbsp;&nbsp; Configurações
-          </button>
-        </div>
-        <button
-          id="logoutButton"
-          class="logout-button"
-          onclick="logout()"
-        >
-          ↪&nbsp;&nbsp; Sair da conta
-        </button>
-      </div>
-    </aside>
-    <!-- ===================================================
-         TOPBAR
-    =================================================== -->
-    <header class="topbar">
-      <button
-        class="top-action"
-        onclick="openMenu()"
-        aria-label="Abrir menu"
-      >
-        <div class="hamburger">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </button>
-      <div class="brand">
+</div>
+<main id="app" class="app" style="display:none;">
+  <div id="menuOverlay" class="menu-overlay" onclick="closeMenu()"></div>
+  <aside id="sideMenu" class="side-menu">
+    <div class="menu-header">
+      <div class="menu-logo">
         <div class="mini-core">
           <div class="mini-ring"></div>
           <div class="mini-dot"></div>
         </div>
-        <div class="brand-name">
-          AURA
+        <div class="menu-logo-text">AURA</div>
+      </div>
+      <button class="close-menu" onclick="closeMenu()" aria-label="Fechar menu">×</button>
+    </div>
+    <button class="new-story-menu" onclick="newStory()">
+      <span class="new-story-icon">+</span>
+      <span class="new-story-text">Nova história</span>
+    </button>
+    <div class="history-title">Suas histórias</div>
+    <div id="historyList" class="history-list"></div>
+    <div class="account-area">
+      <div class="account-card">
+        <div id="accountAvatar" class="account-avatar">A</div>
+        <div class="account-info">
+          <div class="account-label">CONTA</div>
+          <div id="accountEmail" class="account-email">—</div>
         </div>
       </div>
+      <button class="settings-button" onclick="openSettings()">⚙&nbsp;&nbsp; Conta e configurações</button>
+      <button class="settings-button" onclick="openPlans()">◈&nbsp;&nbsp; Planos e créditos</button>
+      <button class="settings-button" onclick="openLanguage()">文&nbsp;&nbsp; Idioma</button>
+      <button class="logout-button" onclick="logout()">↪&nbsp;&nbsp; Sair da conta</button>
+    </div>
+  </aside>
+  <header class="topbar">
+    <button class="top-action" onclick="openMenu()" aria-label="Abrir histórias">
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </button>
+    <div class="brand">
+      <div class="mini-core">
+        <div class="mini-ring"></div>
+        <div class="mini-dot"></div>
+      </div>
+      <div class="brand-name">AURA</div>
+    </div>
+    <button class="top-action" onclick="newStory()" aria-label="Nova história">
+      <div class="plus-icon">+</div>
+    </button>
+  </header>
+  <section id="chat" class="chat">
+    <div id="welcome" class="welcome">
+      <div class="aura-core">
+        <div class="ring"></div>
+        <div class="core"></div>
+      </div>
+      <h1>AURA</h1>
+      <p class="tagline">
+        intelligence for your story
+      </p>
+    </div>
+  </section>
+  <footer class="composer">
+    <div class="composer-inner">
+      <textarea
+        id="messageInput"
+        rows="1"
+        placeholder="Comece uma história..."
+        autocomplete="off"></textarea>
       <button
-        id="topCredits"
-        class="credits-pill"
-        onclick="openCreditsModal()"
-      >
-        ✦
-        <span id="topCreditsValue">
-          0
-        </span>
-      </button>
-    </header>
-    <!-- ===================================================
-         CHAT
-    =================================================== -->
-    <section
-      id="chat"
-      class="chat"
-    >
-      <div
-        id="welcome"
-        class="welcome"
-      >
-        <div class="aura-core">
-          <div class="ring"></div>
-          <div class="core"></div>
-        </div>
-        <h1>AURA</h1>
-        <p
-          id="tagline"
-          class="tagline"
-        >
-          intelligence for your story
-        </p>
-        <div class="welcome-actions">
-          <button
-            class="welcome-card"
-            onclick="newStory()"
-          >
-            <div class="welcome-card-icon">+</div>
-            <div
-              id="newStoryTitle"
-              class="welcome-card-title"
-            >
-              Nova história
-            </div>
-            <div
-              id="newStoryDescription"
-              class="welcome-card-description"
-            >
-              Comece um novo universo.
-            </div>
-          </button>
-          <button
-            class="welcome-card"
-            onclick="openMenu()"
-          >
-            <div class="welcome-card-icon">◌</div>
-            <div
-              id="myStoriesTitle"
-              class="welcome-card-title"
-            >
-              Minhas histórias
-            </div>
-            <div
-              id="myStoriesDescription"
-              class="welcome-card-description"
-            >
-              Continue algo que já começou.
-            </div>
-          </button>
-          <button
-            class="welcome-card"
-            onclick="openCreditsModal()"
-          >
-            <div class="welcome-card-icon">✦</div>
-            <div
-              id="creditsTitle"
-              class="welcome-card-title"
-            >
-              Seus créditos
-            </div>
-            <div
-              id="creditsDescription"
-              class="welcome-card-description"
-            >
-              Veja seu saldo e seus planos.
-            </div>
-          </button>
-        </div>
-        <div
-          id="welcomeCreditLine"
-          class="welcome-credit-line"
-        >
-          Você tem
-          <strong>0 créditos</strong>
-          disponíveis.
-        </div>
-      </div>
-    </section>
-    <!-- ===================================================
-         COMPOSER
-    =================================================== -->
-    <footer class="composer">
-      <div class="composer-inner">
-        <textarea
-          id="messageInput"
-          rows="1"
-          placeholder="Comece uma história..."
-          autocomplete="off"
-        ></textarea>
-        <button
-          id="sendButton"
-          onclick="sendMessage()"
-          aria-label="Enviar"
-        >
-          ↑
-        </button>
-      </div>
-    </footer>
-  </main>
-  <!-- =====================================================
-       CREDIT MODAL
-  ===================================================== -->
-  <div
-    id="creditModalBackdrop"
-    class="modal-backdrop"
-    onclick="closeModal(event, 'creditModalBackdrop')"
-  >
-    <div
-      class="app-modal"
-      onclick="event.stopPropagation()"
-    >
-      <div class="modal-header">
-        <div>
-          <div
-            id="creditModalTitle"
-            class="modal-title"
-          >
-            Aura Line
-          </div>
-          <div
-            id="creditModalSubtitle"
-            class="modal-subtitle"
-          >
-            Créditos e planos
-          </div>
-        </div>
-        <button
-          class="modal-close"
-          onclick="closeCreditsModal()"
-        >
-          ×
-        </button>
-      </div>
-      <div class="credit-balance">
-        <div>
-          <div
-            id="creditBalanceLabel"
-            class="credit-balance-label"
-          >
-            Saldo disponível
-          </div>
-          <div
-            id="modalCreditValue"
-            class="credit-balance-value"
-          >
-            0
-          </div>
-        </div>
-        <div
-          id="modalCreditStatus"
-          class="credit-status"
-        >
-          créditos
-        </div>
-      </div>
-      <div
-        id="plansTitle"
-        class="plans-title"
-      >
-        Estrutura de planos
-      </div>
-      <div class="plan-list">
-        <button
-          class="plan-card"
-          onclick="showComingSoon('O plano gratuito já está ativo na sua conta.')"
-        >
-          <div class="plan-top">
-            <div
-              id="freePlanName"
-              class="plan-name"
-            >
-              Gratuito
-            </div>
-            <div
-              id="freePlanBadge"
-              class="plan-badge"
-            >
-              Atual
-            </div>
-          </div>
-          <div
-            id="freePlanDescription"
-            class="plan-description"
-          >
-            Acesso à Aura com seus créditos disponíveis.
-          </div>
-        </button>
-        <button
-          class="plan-card"
-          onclick="showComingSoon('Os planos pagos serão liberados na próxima etapa.')"
-        >
-          <div class="plan-top">
-            <div
-              id="plusPlanName"
-              class="plan-name"
-            >
-              Plus
-            </div>
-            <div class="plan-price">
-              Em breve
-            </div>
-          </div>
-          <div
-            id="plusPlanDescription"
-            class="plan-description"
-          >
-            Mais créditos, maior uso e recursos adicionais.
-          </div>
-        </button>
-        <button
-          class="plan-card"
-          onclick="showComingSoon('O plano Pro será conectado ao sistema de pagamentos.')"
-        >
-          <div class="plan-top">
-            <div
-              id="proPlanName"
-              class="plan-name"
-            >
-              Pro
-            </div>
-            <div class="plan-price">
-              Em breve
-            </div>
-          </div>
-          <div
-            id="proPlanDescription"
-            class="plan-description"
-          >
-            Estrutura preparada para uma experiência avançada.
-          </div>
-        </button>
-      </div>
-      <div
-        id="modalNote"
-        class="modal-note"
-      >
-        Os pagamentos reais serão conectados posteriormente.
-        Por enquanto, esta área prepara a experiência de monetização.
+        id="sendButton"
+        onclick="sendMessage()"
+        aria-label="Enviar">↑</button>
+    </div>
+  </footer>
+</main>
+<div id="settingsModal" class="modal-overlay" onclick="closeModal(event,'settingsModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div class="modal-title">Conta e configurações</div>
+      <button class="modal-close" onclick="closeModal(null,'settingsModal')">×</button>
+    </div>
+    <div class="setting-section">
+      <div class="setting-label">E-mail</div>
+      <div id="settingsEmail" class="setting-value">—</div>
+      <input
+        id="newEmail"
+        class="setting-input"
+        type="email"
+        placeholder="Novo e-mail">
+      <button
+        class="modal-button secondary-button"
+        onclick="changeEmail()">Alterar e-mail</button>
+    </div>
+    <div class="setting-section">
+      <div class="setting-label">Senha</div>
+      <input
+        id="newPassword"
+        class="setting-input"
+        type="password"
+        placeholder="Nova senha">
+      <button
+        class="modal-button secondary-button"
+        onclick="changePassword()">Alterar senha</button>
+    </div>
+    <div class="setting-section">
+      <div class="setting-label">Segurança</div>
+      <button
+        class="modal-button secondary-button"
+        onclick="globalLogout()">Sair de todos os dispositivos</button>
+      <div class="modal-note">
+        A exclusão definitiva da conta exige uma operação segura no servidor e não é executada pelo navegador nesta versão.
       </div>
     </div>
   </div>
-  <!-- =====================================================
-       SETTINGS MODAL
-  ===================================================== -->
-  <div
-    id="settingsModalBackdrop"
-    class="modal-backdrop"
-    onclick="closeModal(event, 'settingsModalBackdrop')"
-  >
-    <div
-      class="app-modal"
-      onclick="event.stopPropagation()"
-    >
-      <div class="modal-header">
-        <div>
-          <div
-            id="settingsTitle"
-            class="modal-title"
-          >
-            Configurações
-          </div>
-          <div
-            id="settingsSubtitle"
-            class="modal-subtitle"
-          >
-            Personalize sua experiência.
-          </div>
-        </div>
-        <button
-          class="modal-close"
-          onclick="closeSettingsModal()"
-        >
-          ×
-        </button>
+</div>
+<div id="plansModal" class="modal-overlay" onclick="closeModal(event,'plansModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div class="modal-title">Planos e créditos</div>
+      <button class="modal-close" onclick="closeModal(null,'plansModal')">×</button>
+    </div>
+    <div class="setting-section">
+      <div class="setting-label">Seu saldo</div>
+      <div id="creditBalance" class="setting-value">
+        Carregando...
       </div>
-      <div class="settings-section">
-        <div
-          id="languageLabel"
-          class="settings-label"
-        >
-          Idioma
-        </div>
-        <div class="settings-card">
-          <div class="settings-row">
-            <div>
-              <div
-                id="languageTitle"
-                class="settings-row-title"
-              >
-                Idioma da interface
-              </div>
-              <div
-                id="languageDescription"
-                class="settings-row-description"
-              >
-                Escolha como a Aura Line será exibida.
-              </div>
-            </div>
-            <select
-              id="languageSelect"
-              class="language-select"
-              onchange="changeLanguage(this.value)"
-            >
-              <option value="pt-BR">
-                Português
-              </option>
-              <option value="en">
-                English
-              </option>
-              <option value="es">
-                Español
-              </option>
-            </select>
-          </div>
-        </div>
+    </div>
+    <div class="plan-card">
+      <div class="plan-name">Free</div>
+      <div class="plan-desc">
+        Acesso à Aura e às suas histórias.
       </div>
-      <div class="settings-section">
-        <div
-          id="experienceLabel"
-          class="settings-label"
-        >
-          Experiência
-        </div>
-        <div class="settings-card">
-          <div class="settings-row">
-            <div>
-              <div
-                id="streamingTitle"
-                class="settings-row-title"
-              >
-                Resposta animada
-              </div>
-              <div
-                id="streamingDescription"
-                class="settings-row-description"
-              >
-                Exibe a resposta da Aura gradualmente.
-              </div>
-            </div>
-            <button
-              id="streamingToggle"
-              class="toggle active"
-              onclick="togglePreference('streaming')"
-              aria-label="Resposta animada"
-            ></button>
-          </div>
-        </div>
+      <div class="credit-pill">
+        Plano atual
+      </div>
+    </div>
+    <div class="plan-card">
+      <div class="plan-name">Plus</div>
+      <div class="plan-desc">
+        Mais créditos e recursos avançados.
+      </div>
+      <div class="modal-note">
+        Pagamentos reais serão conectados posteriormente.
+      </div>
+    </div>
+    <div class="plan-card">
+      <div class="plan-name">Pro</div>
+      <div class="plan-desc">
+        Mais capacidade para uso intenso e projetos extensos.
+      </div>
+      <div class="modal-note">
+        Pagamentos reais serão conectados posteriormente.
+      </div>
+    </div>
+    <div class="modal-note">
+      Nenhuma cobrança é feita por esta tela.
+    </div>
+  </div>
+</div>
+<div id="languageModal" class="modal-overlay" onclick="closeModal(event,'languageModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div class="modal-title">Idioma</div>
+      <button class="modal-close" onclick="closeModal(null,'languageModal')">×</button>
+    </div>
+    <div class="setting-section">
+      <div class="setting-label">Idioma da interface</div>
+      <select
+        id="languageSelect"
+        class="setting-select"
+        onchange="changeLanguage(this.value)">
+        <option value="pt-BR">Português (Brasil)</option>
+        <option value="en">English</option>
+        <option value="es">Español</option>
+      </select>
+      <div class="modal-note">
+        A preferência fica salva neste dispositivo. As histórias já salvas não são traduzidas automaticamente.
       </div>
     </div>
   </div>
-  <!-- =====================================================
-       SUPPORT MODAL
-  ===================================================== -->
-  <div
-    id="supportModalBackdrop"
-    class="modal-backdrop"
-    onclick="closeModal(event, 'supportModalBackdrop')"
-  >
-    <div
-      class="app-modal"
-      onclick="event.stopPropagation()"
-    >
-      <div class="modal-header">
-        <div>
-          <div
-            id="supportTitle"
-            class="modal-title"
-          >
-            Suporte
-          </div>
-          <div
-            id="supportSubtitle"
-            class="modal-subtitle"
-          >
-            Estamos aqui para ajudar.
-          </div>
-        </div>
-        <button
-          class="modal-close"
-          onclick="closeSupportModal()"
-        >
-          ×
-        </button>
-      </div>
-      <div
-        id="supportIntro"
-        class="support-intro"
-      >
-        Encontrou um problema, tem uma dúvida ou quer enviar uma sugestão?
-        Use este espaço para falar com a equipe da Aura Line.
-      </div>
-      <div class="support-options">
-        <button
-          class="support-option"
-          onclick="selectSupportType('Problema técnico')"
-        >
-          <div
-            id="technicalSupportTitle"
-            class="support-option-title"
-          >
-            Problema técnico
-          </div>
-          <div
-            id="technicalSupportDescription"
-            class="support-option-description"
-          >
-            Algo não está funcionando como deveria.
-          </div>
-        </button>
-        <button
-          class="support-option"
-          onclick="selectSupportType('Sugestão')"
-        >
-          <div
-            id="suggestionSupportTitle"
-            class="support-option-title"
-          >
-            Sugestão
-          </div>
-          <div
-            id="suggestionSupportDescription"
-            class="support-option-description"
-          >
-            Envie uma ideia para melhorar a Aura Line.
-          </div>
-        </button>
-        <button
-          class="support-option"
-          onclick="selectSupportType('Conta ou créditos')"
-        >
-          <div
-            id="accountSupportTitle"
-            class="support-option-title"
-          >
-            Conta ou créditos
-          </div>
-          <div
-            id="accountSupportDescription"
-            class="support-option-description"
-          >
-            Problemas relacionados à sua conta ou créditos.
-          </div>
-        </button>
-      </div>
-      <div class="support-form">
-        <input
-          id="supportSubject"
-          class="support-input"
-          type="text"
-          placeholder="Assunto"
-        >
-        <textarea
-          id="supportMessage"
-          class="support-textarea"
-          placeholder="Descreva o que aconteceu..."
-        ></textarea>
-        <button
-          id="supportSendButton"
-          class="support-send"
-          onclick="sendSupportRequest()"
-        >
-          Enviar mensagem
-        </button>
-      </div>
-    </div>
-  </div>
-  <!-- =====================================================
-       TOAST
-  ===================================================== -->
-  <div
-    id="toast"
-    class="toast"
-  ></div>
-  <script>
-    /* =====================================================
-       SUPABASE
-    ===================================================== */
-    const SUPABASE_URL =
-      "https://vqmfsshmjdfjlnmbemxv.supabase.co";
-    const SUPABASE_KEY =
-      "sb_publishable_nCCjJPHoTODWLHvwTWN_AA_J8JivYaE";
-    const supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-      );
-    /* =====================================================
-       STATE
-    ===================================================== */
-    let authMode = "login";
-    let conversation = [];
-    let isThinking = false;
-    let currentStoryId = null;
-    let stories = [];
-    let currentUser = null;
-    let appInitialized = false;
-    let userCredits = 0;
-    let historySearchTerm = "";
-    let currentLanguage =
-      localStorage.getItem("aura_language") ||
-      "pt-BR";
-    let preferences = {
-      streaming:
-        localStorage.getItem("aura_streaming") !== "false"
-    };
-    let selectedSupportType = "";
-    const chat =
-      document.getElementById("chat");
-    const input =
-      document.getElementById("messageInput");
-    const sendButton =
-      document.getElementById("sendButton");
-    /* =====================================================
-       TRANSLATIONS
-    ===================================================== */
-    const translations = {
-      "pt-BR": {
-        authSubtitle:
-          "intelligence for your story",
-        login:
-          "Entrar",
-        signup:
-          "Criar conta",
-        email:
-          "Seu e-mail",
-        password:
-          "Sua senha",
-        authSwitchLogin:
-          'Ainda não tenho uma conta. <span>Criar conta</span>',
-        authSwitchSignup:
-          'Já tenho uma conta. <span>Entrar</span>',
-        newStory:
-          "Nova história",
-        credits:
-          "Créditos",
-        search:
-          "Buscar",
-        stories:
-          "Suas histórias",
-        searchHistory:
-          "Buscar uma história...",
-        account:
-          "CONTA",
-        language:
-          "Idioma",
-        support:
-          "Suporte",
-        settings:
-          "Configurações",
-        logout:
-          "↪  Sair da conta",
-        tagline:
-          "intelligence for your story",
-        newStoryDescription:
-          "Comece um novo universo.",
-        myStories:
-          "Minhas histórias",
-        myStoriesDescription:
-          "Continue algo que já começou.",
-        creditsTitle:
-          "Seus créditos",
-        creditsDescription:
-          "Veja seu saldo e seus planos.",
-        startStory:
-          "Comece uma história...",
-        continueStory:
-          "Continue sua história...",
-        newStoryPlaceholder:
-          "Comece uma nova história...",
-        creditAvailable:
-          "créditos disponíveis",
-        creditAvailableOne:
-          "crédito disponível",
-        noCredits:
-          "Você está sem créditos. <strong>Veja as opções disponíveis.</strong>",
-        yourCredits:
-          "Você tem",
-        available:
-          "disponíveis.",
-        thinking:
-          "A Aura está pensando...",
-        creditsModalSubtitle:
-          "Créditos e planos",
-        balance:
-          "Saldo disponível",
-        plans:
-          "Estrutura de planos",
-        free:
-          "Gratuito",
-        current:
-          "Atual",
-        freeDescription:
-          "Acesso à Aura com seus créditos disponíveis.",
-        plusDescription:
-          "Mais créditos, maior uso e recursos adicionais.",
-        proDescription:
-          "Estrutura preparada para uma experiência avançada.",
-        comingSoonPayments:
-          "Os planos pagos serão liberados na próxima etapa.",
-        freeActive:
-          "O plano gratuito já está ativo na sua conta.",
-        proSoon:
-          "O plano Pro será conectado ao sistema de pagamentos.",
-        modalNote:
-          "Os pagamentos reais serão conectados posteriormente. Por enquanto, esta área prepara a experiência de monetização.",
-        settingsSubtitle:
-          "Personalize sua experiência.",
-        interfaceLanguage:
-          "Idioma da interface",
-        languageDescription:
-          "Escolha como a Aura Line será exibida.",
-        experience:
-          "Experiência",
-        animatedResponse:
-          "Resposta animada",
-        animatedResponseDescription:
-          "Exibe a resposta da Aura gradualmente.",
-        supportSubtitle:
-          "Estamos aqui para ajudar.",
-        supportIntro:
-          "Encontrou um problema, tem uma dúvida ou quer enviar uma sugestão? Use este espaço para falar com a equipe da Aura Line.",
-        technical:
-          "Problema técnico",
-        technicalDescription:
-          "Algo não está funcionando como deveria.",
-        suggestion:
-          "Sugestão",
-        suggestionDescription:
-          "Envie uma ideia para melhorar a Aura Line.",
-        accountSupport:
-          "Conta ou créditos",
-        accountSupportDescription:
-          "Problemas relacionados à sua conta ou créditos.",
-        subject:
-          "Assunto",
-        supportMessage:
-          "Descreva o que aconteceu...",
-        sendMessage:
-          "Enviar mensagem",
-        supportSent:
-          "Sua mensagem foi preparada. A equipe poderá receber seu contato na próxima etapa.",
-        historyEmpty:
-          "Suas histórias aparecerão aqui.<br><br>Comece uma nova aventura.",
-        historyNotFound:
-          "Nenhuma história encontrada.",
-        newStoryToast:
-          "Nova história.",
-        deleted:
-          "História apagada.",
-        renamed:
-          "História renomeada.",
-        noCreditsToast:
-          "Você não possui mais créditos.",
-        creditError:
-          "Não foi possível usar seu crédito.",
-        responseError:
-          "Não consegui responder agora. O crédito foi devolvido. Tente novamente em alguns instantes."
-      },
-      "en": {
-        authSubtitle:
-          "intelligence for your story",
-        login:
-          "Sign in",
-        signup:
-          "Create account",
-        email:
-          "Your email",
-        password:
-          "Your password",
-        authSwitchLogin:
-          'I don’t have an account. <span>Create one</span>',
-        authSwitchSignup:
-          'I already have an account. <span>Sign in</span>',
-        newStory:
-          "New story",
-        credits:
-          "Credits",
-        search:
-          "Search",
-        stories:
-          "Your stories",
-        searchHistory:
-          "Search a story...",
-        account:
-          "ACCOUNT",
-        language:
-          "Language",
-        support:
-          "Support",
-        settings:
-          "Settings",
-        logout:
-          "↪  Sign out",
-        tagline:
-          "intelligence for your story",
-        newStoryDescription:
-          "Start a new universe.",
-        myStories:
-          "My stories",
-        myStoriesDescription:
-          "Continue something you already started.",
-        creditsTitle:
-          "Your credits",
-        creditsDescription:
-          "View your balance and plans.",
-        startStory:
-          "Start a story...",
-        continueStory:
-          "Continue your story...",
-        newStoryPlaceholder:
-          "Start a new story...",
-        creditAvailable:
-          "credits available",
-        creditAvailableOne:
-          "credit available",
-        noCredits:
-          "You are out of credits. <strong>View available options.</strong>",
-        yourCredits:
-          "You have",
-        available:
-          "available.",
-        thinking:
-          "Aura is thinking...",
-        creditsModalSubtitle:
-          "Credits and plans",
-        balance:
-          "Available balance",
-        plans:
-          "Plan structure",
-        free:
-          "Free",
-        current:
-          "Current",
-        freeDescription:
-          "Access Aura with your available credits.",
-        plusDescription:
-          "More credits, higher usage and additional features.",
-        proDescription:
-          "Structure prepared for an advanced experience.",
-        comingSoonPayments:
-          "Paid plans will be released in the next stage.",
-        freeActive:
-          "The free plan is already active on your account.",
-        proSoon:
-          "The Pro plan will be connected to payments.",
-        modalNote:
-          "Real payments will be connected later. For now, this area prepares the monetization experience.",
-        settingsSubtitle:
-          "Customize your experience.",
-        interfaceLanguage:
-          "Interface language",
-        languageDescription:
-          "Choose how Aura Line is displayed.",
-        experience:
-          "Experience",
-        animatedResponse:
-          "Animated response",
-        animatedResponseDescription:
-          "Displays Aura's response gradually.",
-        supportSubtitle:
-          "We're here to help.",
-        supportIntro:
-          "Found a problem, have a question or want to send a suggestion? Use this space to contact the Aura Line team.",
-        technical:
-          "Technical issue",
-        technicalDescription:
-          "Something isn't working as expected.",
-        suggestion:
-          "Suggestion",
-        suggestionDescription:
-          "Send an idea to improve Aura Line.",
-        accountSupport:
-          "Account or credits",
-        accountSupportDescription:
-          "Problems related to your account or credits.",
-        subject:
-          "Subject",
-        supportMessage:
-          "Describe what happened...",
-        sendMessage:
-          "Send message",
-        supportSent:
-          "Your message has been prepared. Team contact will be connected in the next stage.",
-        historyEmpty:
-          "Your stories will appear here.<br><br>Start a new adventure.",
-        historyNotFound:
-          "No stories found.",
-        newStoryToast:
-          "New story.",
-        deleted:
-          "Story deleted.",
-        renamed:
-          "Story renamed.",
-        noCreditsToast:
-          "You don't have any credits left.",
-        creditError:
-          "Could not use your credit.",
-        responseError:
-          "I couldn't respond right now. Your credit was returned. Try again shortly."
-      },
-      "es": {
-        authSubtitle:
-          "intelligence for your story",
-        login:
-          "Entrar",
-        signup:
-          "Crear cuenta",
-        email:
-          "Tu correo",
-        password:
-          "Tu contraseña",
-        authSwitchLogin:
-          'Aún no tengo una cuenta. <span>Crear cuenta</span>',
-        authSwitchSignup:
-          'Ya tengo una cuenta. <span>Entrar</span>',
-        newStory:
-          "Nueva historia",
-        credits:
-          "Créditos",
-        search:
-          "Buscar",
-        stories:
-          "Tus historias",
-        searchHistory:
-          "Buscar una historia...",
-        account:
-          "CUENTA",
-        language:
-          "Idioma",
-        support:
-          "Soporte",
-        settings:
-          "Configuración",
-        logout:
-          "↪  Cerrar sesión",
-        tagline:
-          "intelligence for your story",
-        newStoryDescription:
-          "Comienza un nuevo universo.",
-        myStories:
-          "Mis historias",
-        myStoriesDescription:
-          "Continúa algo que ya comenzaste.",
-        creditsTitle:
-          "Tus créditos",
-        creditsDescription:
-          "Consulta tu saldo y tus planes.",
-        startStory:
-          "Comienza una historia...",
-        continueStory:
-          "Continúa tu historia...",
-        newStoryPlaceholder:
-          "Comienza una nueva historia...",
-        creditAvailable:
-          "créditos disponibles",
-        creditAvailableOne:
-          "crédito disponible",
-        noCredits:
-          "Te has quedado sin créditos. <strong>Consulta las opciones disponibles.</strong>",
-        yourCredits:
-          "Tienes",
-        available:
-          "disponibles.",
-        thinking:
-          "Aura está pensando...",
-        creditsModalSubtitle:
-          "Créditos y planes",
-        balance:
-          "Saldo disponible",
-        plans:
-          "Estructura de planes",
-        free:
-          "Gratuito",
-        current:
-          "Actual",
-        freeDescription:
-          "Acceso a Aura con tus créditos disponibles.",
-        plusDescription:
-          "Más créditos, mayor uso y funciones adicionales.",
-        proDescription:
-          "Estructura preparada para una experiencia avanzada.",
-        comingSoonPayments:
-          "Los planes pagos estarán disponibles en la próxima etapa.",
-        freeActive:
-          "El plan gratuito ya está activo en tu cuenta.",
-        proSoon:
-          "El plan Pro se conectará a los pagos.",
-        modalNote:
-          "Los pagos reales se conectarán posteriormente. Por ahora, esta área prepara la experiencia de monetización.",
-        settingsSubtitle:
-          "Personaliza tu experiencia.",
-        interfaceLanguage:
-          "Idioma de la interfaz",
-        languageDescription:
-          "Elige cómo se muestra Aura Line.",
-        experience:
-          "Experiencia",
-        animatedResponse:
-          "Respuesta animada",
-        animatedResponseDescription:
-          "Muestra la respuesta de Aura gradualmente.",
-        supportSubtitle:
-          "Estamos aquí para ayudarte.",
-        supportIntro:
-          "¿Encontraste un problema, tienes una duda o quieres enviar una sugerencia? Usa este espacio para contactar al equipo de Aura Line.",
-        technical:
-          "Problema técnico",
-        technicalDescription:
-          "Algo no funciona como debería.",
-        suggestion:
-          "Sugerencia",
-        suggestionDescription:
-          "Envía una idea para mejorar Aura Line.",
-        accountSupport:
-          "Cuenta o créditos",
-        accountSupportDescription:
-          "Problemas relacionados con tu cuenta o créditos.",
-        subject:
-          "Asunto",
-        supportMessage:
-          "Describe lo que ocurrió...",
-        sendMessage:
-          "Enviar mensaje",
-        supportSent:
-          "Tu mensaje ha sido preparado. El contacto con el equipo se conectará en la próxima etapa.",
-        historyEmpty:
-          "Tus historias aparecerán aquí.<br><br>Comienza una nueva aventura.",
-        historyNotFound:
-          "No se encontraron historias.",
-        newStoryToast:
-          "Nueva historia.",
-        deleted:
-          "Historia eliminada.",
-        renamed:
-          "Historia renombrada.",
-        noCreditsToast:
-          "No tienes más créditos.",
-        creditError:
-          "No fue posible utilizar tu crédito.",
-        responseError:
-          "No pude responder ahora. El crédito fue devuelto. Inténtalo nuevamente en unos instantes."
-      }
-    };
-    function t(key) {
-      return (
-        translations[currentLanguage]?.[key] ||
-        translations["pt-BR"][key] ||
-        key
-      );
-    }
-    /* =====================================================
-       LANGUAGE
-    ===================================================== */
-    function applyLanguage() {
-      document.documentElement.lang =
-        currentLanguage;
-      document.title =
-        "Aura Line";
-      const setText =
-        (id, key) => {
-          const element =
-            document.getElementById(id);
-          if (element) {
-            element.innerHTML =
-              t(key);
-          }
-        };
-      const setPlaceholder =
-        (id, key) => {
-          const element =
-            document.getElementById(id);
-          if (element) {
-            element.placeholder =
-              t(key);
-          }
-        };
-      document.getElementById(
-        "authSubtitle"
-      ).textContent =
-        t("authSubtitle");
-      document.getElementById(
-        "authButton"
-      ).textContent =
-        authMode === "login"
-          ? t("login")
-          : t("signup");
-      document.getElementById(
-        "authSwitch"
-      ).innerHTML =
-        authMode === "login"
-          ? t("authSwitchLogin")
-          : t("authSwitchSignup");
-      setPlaceholder(
-        "authEmail",
-        "email"
-      );
-      setPlaceholder(
-        "authPassword",
-        "password"
-      );
-      setText(
-        "newStoryText",
-        "newStory"
-      );
-      setText(
-        "creditsShortcut",
-        "credits"
-      );
-      setText(
-        "searchShortcut",
-        "search"
-      );
-      setText(
-        "historyTitle",
-        "stories"
-      );
-      setPlaceholder(
-        "historySearch",
-        "searchHistory"
-      );
-      setText(
-        "accountLabel",
-        "account"
-      );
-      setText(
-        "languageMenuButton",
-        "language"
-      );
-      setText(
-        "supportMenuButton",
-        "support"
-      );
-      setText(
-        "settingsMenuButton",
-        "settings"
-      );
-      setText(
-        "logoutButton",
-        "logout"
-      );
-      setText(
-        "tagline",
-        "tagline"
-      );
-      setText(
-        "newStoryTitle",
-        "newStory"
-      );
-      setText(
-        "newStoryDescription",
-        "newStoryDescription"
-      );
-      setText(
-        "myStoriesTitle",
-        "myStories"
-      );
-      setText(
-        "myStoriesDescription",
-        "myStoriesDescription"
-      );
-      setText(
-        "creditsTitle",
-        "creditsTitle"
-      );
-      setText(
-        "creditsDescription",
-        "creditsDescription"
-      );
-      if (!currentStoryId) {
-        setPlaceholder(
-          "messageInput",
-          "startStory"
-        );
-      } else {
-        setPlaceholder(
-          "messageInput",
-          "continueStory"
-        );
-      }
-      setText(
-        "creditModalSubtitle",
-        "creditsModalSubtitle"
-      );
-      setText(
-        "creditBalanceLabel",
-        "balance"
-      );
-      setText(
-        "plansTitle",
-        "plans"
-      );
-      setText(
-        "freePlanName",
-        "free"
-      );
-      setText(
-        "freePlanBadge",
-        "current"
-      );
-      setText(
-        "freePlanDescription",
-        "freeDescription"
-      );
-      setText(
-        "plusPlanDescription",
-        "plusDescription"
-      );
-      setText(
-        "proPlanDescription",
-        "proDescription"
-      );
-      setText(
-        "modalNote",
-        "modalNote"
-      );
-      setText(
-        "settingsTitle",
-        "settings"
-      );
-      setText(
-        "settingsSubtitle",
-        "settingsSubtitle"
-      );
-      setText(
-        "languageLabel",
-        "language"
-      );
-      setText(
-        "languageTitle",
-        "interfaceLanguage"
-      );
-      setText(
-        "languageDescription",
-        "languageDescription"
-      );
-      setText(
-        "experienceLabel",
-        "experience"
-      );
-      setText(
-        "streamingTitle",
-        "animatedResponse"
-      );
-      setText(
-        "streamingDescription",
-        "animatedResponseDescription"
-      );
-      setText(
-        "supportTitle",
-        "support"
-      );
-      setText(
-        "supportSubtitle",
-        "supportSubtitle"
-      );
-      setText(
-        "supportIntro",
-        "supportIntro"
-      );
-      setText(
-        "technicalSupportTitle",
-        "technical"
-      );
-      setText(
-        "technicalSupportDescription",
-        "technicalDescription"
-      );
-      setText(
-        "suggestionSupportTitle",
-        "suggestion"
-      );
-      setText(
-        "suggestionSupportDescription",
-        "suggestionDescription"
-      );
-      setText(
-        "accountSupportTitle",
-        "accountSupport"
-      );
-      setText(
-        "accountSupportDescription",
-        "accountSupportDescription"
-      );
-      setPlaceholder(
-        "supportSubject",
-        "subject"
-      );
-      setPlaceholder(
-        "supportMessage",
-        "supportMessage"
-      );
-      setText(
-        "supportSendButton",
-        "sendMessage"
-      );
-      const select =
-        document.getElementById(
-          "languageSelect"
-        );
-      if (select) {
-        select.value =
-          currentLanguage;
-      }
-      updateCreditsUI();
-      updateWelcome();
-      renderHistory();
-    }
-    function changeLanguage(
-      language
-    ) {
-      if (
-        !translations[language]
-      ) {
-        return;
-      }
-      currentLanguage =
-        language;
-      localStorage.setItem(
-        "aura_language",
-        language
-      );
-      applyLanguage();
-      showToast(
-        language === "pt-BR"
-          ? "Idioma atualizado."
-          : language === "en"
-            ? "Language updated."
-            : "Idioma actualizado."
-      );
-    }
-    /* =====================================================
-       AUTH MODE
-    ===================================================== */
-    function toggleAuthMode() {
-      const button =
-        document.getElementById(
-          "authButton"
-        );
-      const switchButton =
-        document.getElementById(
-          "authSwitch"
-        );
-      const message =
-        document.getElementById(
-          "authMessage"
-        );
-      message.textContent = "";
-      message.className =
-        "auth-error";
-      if (
-        authMode === "login"
-      ) {
-        authMode = "signup";
-        button.textContent =
-          t("signup");
-        switchButton.innerHTML =
-          t("authSwitchSignup");
-      } else {
-        authMode = "login";
-        button.textContent =
-          t("login");
-        switchButton.innerHTML =
-          t("authSwitchLogin");
-      }
-    }
-    /* =====================================================
-       AUTH
-    ===================================================== */
-    async function handleAuth() {
-      const email =
-        document
-          .getElementById(
-            "authEmail"
-          )
-          .value
-          .trim();
-      const password =
-        document
-          .getElementById(
-            "authPassword"
-          )
-          .value;
-      const button =
-        document.getElementById(
-          "authButton"
-        );
-      const message =
-        document.getElementById(
-          "authMessage"
-        );
-      message.textContent = "";
-      message.className =
-        "auth-error";
-      if (
-        !email ||
-        !password
-      ) {
-        message.textContent =
-          currentLanguage === "en"
-            ? "Enter your email and password."
-            : currentLanguage === "es"
-              ? "Introduce tu correo y contraseña."
-              : "Preencha seu e-mail e sua senha.";
-        return;
-      }
-      if (
-        password.length < 6
-      ) {
-        message.textContent =
-          currentLanguage === "en"
-            ? "Password must contain at least 6 characters."
-            : currentLanguage === "es"
-              ? "La contraseña debe tener al menos 6 caracteres."
-              : "A senha precisa ter pelo menos 6 caracteres.";
-        return;
-      }
-      button.disabled = true;
-      button.textContent =
-        authMode === "login"
-          ? t("login") + "..."
-          : t("signup") + "...";
-      try {
-        if (
-          authMode === "signup"
-        ) {
-          const {
-            data,
-            error
-          } =
-            await supabaseClient.auth.signUp({
-              email,
-              password
-            });
-          if (error) {
-            throw error;
-          }
-          if (data.session) {
-            currentUser =
-              data.user;
-            await showApp();
-          } else {
-            message.className =
-              "auth-error auth-success";
-            message.textContent =
-              currentLanguage === "en"
-                ? "Account created. Check your email to confirm."
-                : currentLanguage === "es"
-                  ? "Cuenta creada. Revisa tu correo para confirmar."
-                  : "Conta criada. Verifique seu e-mail para confirmar o cadastro.";
-          }
-        } else {
-          const {
-            data,
-            error
-          } =
-            await supabaseClient.auth.signInWithPassword({
-              email,
-              password
-            });
-          if (error) {
-            throw error;
-          }
-          currentUser =
-            data.user;
-          await showApp();
-        }
-      } catch (error) {
-        console.error(error);
-        message.textContent =
-          translateAuthError(
-            error.message
-          );
-      } finally {
-        button.disabled = false;
-        button.textContent =
-          authMode === "login"
-            ? t("login")
-            : t("signup");
-      }
-    }
-    function translateAuthError(
-      error
-    ) {
-      if (!error) {
-        return currentLanguage === "en"
-          ? "Unable to continue."
-          : currentLanguage === "es"
-            ? "No fue posible continuar."
-            : "Não foi possível continuar.";
-      }
-      const text =
-        error.toLowerCase();
-      if (
-        text.includes(
-          "invalid login credentials"
-        )
-      ) {
-        return currentLanguage === "en"
-          ? "Incorrect email or password."
-          : currentLanguage === "es"
-            ? "Correo o contraseña incorrectos."
-            : "E-mail ou senha incorretos.";
-      }
-      if (
-        text.includes(
-          "user already registered"
-        )
-      ) {
-        return currentLanguage === "en"
-          ? "This email already has an account."
-          : currentLanguage === "es"
-            ? "Este correo ya tiene una cuenta."
-            : "Esse e-mail já possui uma conta.";
-      }
-      return error;
-    }
-    /* =====================================================
-       APP
-    ===================================================== */
-    async function showApp() {
-      if (
-        appInitialized &&
-        currentUser
-      ) {
-        return;
-      }
-      appInitialized = true;
-      document.getElementById(
-        "authScreen"
-      ).style.display = "none";
-      document.getElementById(
-        "app"
-      ).style.display = "block";
-      if (!currentUser) {
-        const {
-          data
-        } =
-          await supabaseClient.auth.getUser();
-        currentUser =
-          data.user;
-      }
-      updateAccountUI();
-      await loadCredits();
-      await loadStories();
-      updateWelcome();
-      applyLanguage();
-      setTimeout(
-        () => {
-          input.focus();
-        },
-        150
-      );
-    }
-    async function checkSession() {
-      const {
-        data
-      } =
-        await supabaseClient.auth.getSession();
-      if (data.session) {
-        currentUser =
-          data.session.user;
-        await showApp();
-      } else {
-        document.getElementById(
-          "authScreen"
-        ).style.display =
-          "flex";
-        applyLanguage();
-      }
-    }
-    supabaseClient.auth.onAuthStateChange(
-      async (
-        event,
-        session
-      ) => {
-        if (session) {
-          currentUser =
-            session.user;
-          await showApp();
-        } else if (
-          event === "SIGNED_OUT"
-        ) {
-          appInitialized =
-            false;
-        }
-      }
-    );
-    function updateAccountUI() {
-      if (!currentUser) {
-        return;
-      }
-      const email =
-        currentUser.email ||
-        "Aura Account";
-      document.getElementById(
-        "accountEmail"
-      ).textContent =
-        email;
-      document.getElementById(
-        "accountAvatar"
-      ).textContent =
-        email
-          .charAt(0)
-          .toUpperCase();
-      updateCreditsUI();
-    }
-    /* =====================================================
-       CREDITS
-    ===================================================== */
-    async function loadCredits() {
-      if (!currentUser) {
-        return;
-      }
-      try {
-        const {
-          data,
-          error
-        } =
-          await supabaseClient
-            .from("credits")
-            .select(
-              "id, user_id, balance"
-            )
-            .eq(
-              "user_id",
-              currentUser.id
-            )
-            .maybeSingle();
-        if (error) {
-          throw error;
-        }
-        if (!data) {
-          const {
-            data: newCredit,
-            error: insertError
-          } =
-            await supabaseClient
-              .from("credits")
-              .insert({
-                user_id:
-                  currentUser.id,
-                balance:
-                  20
-              })
-              .select(
-                "id, user_id, balance"
-              )
-              .single();
-          if (insertError) {
-            throw insertError;
-          }
-          userCredits =
-            Number(
-              newCredit.balance
-            ) || 20;
-        } else {
-          userCredits =
-            Number(
-              data.balance
-            ) || 0;
-        }
-        updateCreditsUI();
-        updateSendButton();
-        updateWelcome();
-      } catch (error) {
-        console.error(
-          "Erro ao carregar créditos:",
-          error
-        );
-        userCredits = 0;
-        updateCreditsUI();
-        updateSendButton();
-        updateWelcome();
-        showToast(
-          currentLanguage === "en"
-            ? "Could not load credits."
-            : currentLanguage === "es"
-              ? "No fue posible cargar los créditos."
-              : "Não foi possível carregar seus créditos."
-        );
-      }
-    }
-    function updateCreditsUI() {
-      const accountElement =
-        document.getElementById(
-          "accountCredits"
-        );
-      if (accountElement) {
-        accountElement.textContent =
-          `${userCredits} ${
-            userCredits === 1
-              ? t("creditAvailableOne")
-              : t("creditAvailable")
-          }`;
-      }
-      const topValue =
-        document.getElementById(
-          "topCreditsValue"
-        );
-      if (topValue) {
-        topValue.textContent =
-          userCredits;
-      }
-      const modalValue =
-        document.getElementById(
-          "modalCreditValue"
-        );
-      if (modalValue) {
-        modalValue.textContent =
-          userCredits;
-      }
-      const modalStatus =
-        document.getElementById(
-          "modalCreditStatus"
-        );
-      if (modalStatus) {
-        modalStatus.textContent =
-          userCredits === 1
-            ? t("creditAvailableOne")
-            : t("creditAvailable");
-      }
-      updateWelcome();
-    }
-    async function consumeCredit() {
-      if (
-        !currentUser ||
-        userCredits <= 0
-      ) {
-        return false;
-      }
-      const newCredits =
-        userCredits - 1;
-      try {
-        const {
-          data,
-          error
-        } =
-          await supabaseClient
-            .from("credits")
-            .update({
-              balance:
-                newCredits
-            })
-            .eq(
-              "user_id",
-              currentUser.id
-            )
-            .select(
-              "balance"
-            )
-            .single();
-        if (error) {
-          throw error;
-        }
-        userCredits =
-          Number(
-            data.balance
-          ) || 0;
-        updateCreditsUI();
-        updateSendButton();
-        return true;
-      } catch (error) {
-        console.error(
-          "Erro ao consumir crédito:",
-          error
-        );
-        return false;
-      }
-    }
-    async function restoreCredit() {
-      if (!currentUser) {
-        return;
-      }
-      try {
-        const newCredits =
-          userCredits + 1;
-        const {
-          data,
-          error
-        } =
-          await supabaseClient
-            .from("credits")
-            .update({
-              balance:
-                newCredits
-            })
-            .eq(
-              "user_id",
-              currentUser.id
-            )
-            .select(
-              "balance"
-            )
-            .single();
-        if (error) {
-          throw error;
-        }
-        userCredits =
-          Number(
-            data.balance
-          ) || newCredits;
-        updateCreditsUI();
-        updateSendButton();
-      } catch (error) {
-        console.error(
-          "Erro ao devolver crédito:",
-          error
-        );
-      }
-    }
-    function updateSendButton() {
-      if (!sendButton) {
-        return;
-      }
-      if (isThinking) {
-        sendButton.disabled =
-          true;
-        return;
-      }
-      sendButton.disabled =
-        userCredits <= 0;
-    }
-    function updateWelcome() {
-      const line =
-        document.getElementById(
-          "welcomeCreditLine"
-        );
-      if (!line) {
-        return;
-      }
-      if (
-        userCredits === 0
-      ) {
-        line.innerHTML =
-          t("noCredits");
-      } else {
-        const label =
-          userCredits === 1
-            ? t("creditAvailableOne")
-            : t("creditAvailable");
-        line.innerHTML =
-          `${t("yourCredits")} <strong>${userCredits} ${label}</strong> ${t("available")}`;
-      }
-    }
-    /* =====================================================
-       MODALS
-    ===================================================== */
-    function openCreditsModal() {
-      updateCreditsUI();
-      document
-        .getElementById(
-          "creditModalBackdrop"
-        )
-        .classList.add(
-          "open"
-        );
-    }
-    function closeCreditsModal() {
-      document
-        .getElementById(
-          "creditModalBackdrop"
-        )
-        .classList.remove(
-          "open"
-        );
-    }
-    function openSettingsModal() {
-      document
-        .getElementById(
-          "settingsModalBackdrop"
-        )
-        .classList.add(
-          "open"
-        );
-    }
-    function closeSettingsModal() {
-      document
-        .getElementById(
-          "settingsModalBackdrop"
-        )
-        .classList.remove(
-          "open"
-        );
-    }
-    function openSupportModal() {
-      document
-        .getElementById(
-          "supportModalBackdrop"
-        )
-        .classList.add(
-          "open"
-        );
-    }
-    function closeSupportModal() {
-      document
-        .getElementById(
-          "supportModalBackdrop"
-        )
-        .classList.remove(
-          "open"
-        );
-    }
-    function closeModal(
-      event,
-      id
-    ) {
-      if (
-        event.target !==
-        event.currentTarget
-      ) {
-        return;
-      }
-      document
-        .getElementById(id)
-        .classList.remove(
-          "open"
-        );
-    }
-    function showComingSoon(
-      text
-    ) {
-      showToast(text);
-    }
-    /* =====================================================
-       SETTINGS
-    ===================================================== */
-    function togglePreference(
-      name
-    ) {
-      if (
-        name === "streaming"
-      ) {
-        preferences.streaming =
-          !preferences.streaming;
-        localStorage.setItem(
-          "aura_streaming",
-          preferences.streaming
-            ? "true"
-            : "false"
-        );
-        document
-          .getElementById(
-            "streamingToggle"
-          )
-          .classList.toggle(
-            "active",
-            preferences.streaming
-          );
-        showToast(
-          currentLanguage === "en"
-            ? "Preference updated."
-            : currentLanguage === "es"
-              ? "Preferencia actualizada."
-              : "Preferência atualizada."
-        );
-      }
-    }
-    /* =====================================================
-       SUPPORT
-    ===================================================== */
-    function selectSupportType(
-      type
-    ) {
-      selectedSupportType =
-        type;
-      const subject =
-        document.getElementById(
-          "supportSubject"
-        );
-      if (
-        subject &&
-        !subject.value
-      ) {
-        subject.value =
-          type;
-      }
-      document.getElementById(
-        "supportMessage"
-      ).focus();
-    }
-    function sendSupportRequest() {
-      const subject =
-        document
-          .getElementById(
-            "supportSubject"
-          )
-          .value
-          .trim();
-      const message =
-        document
-          .getElementById(
-            "supportMessage"
-          )
-          .value
-          .trim();
-      if (
-        !subject ||
-        !message
-      ) {
-        showToast(
-          currentLanguage === "en"
-            ? "Fill in the subject and message."
-            : currentLanguage === "es"
-              ? "Completa el asunto y el mensaje."
-              : "Preencha o assunto e a mensagem."
-        );
-        return;
-      }
-      /*
-       * Nesta etapa o formulário já existe.
-       * O envio real para o sistema de suporte
-       * será conectado posteriormente.
-       */
-      console.log(
-        "Aura Support:",
-        {
-          user:
-            currentUser?.email ||
-            null,
-          type:
-            selectedSupportType,
-          subject,
-          message,
-          language:
-            currentLanguage
-        }
-      );
-      document.getElementById(
-        "supportSubject"
-      ).value = "";
-      document.getElementById(
-        "supportMessage"
-      ).value = "";
-      selectedSupportType =
-        "";
-      closeSupportModal();
-      showToast(
-        t("supportSent")
-      );
-    }
-    /* =====================================================
-       LOGOUT
-    ===================================================== */
-    async function logout() {
-      await supabaseClient.auth.signOut();
-      currentUser = null;
-      conversation = [];
-      currentStoryId = null;
-      stories = [];
-      userCredits = 0;
-      appInitialized = false;
-      closeMenu();
-      closeCreditsModal();
-      closeSettingsModal();
-      closeSupportModal();
-      document.getElementById(
-        "app"
-      ).style.display = "none";
-      document.getElementById(
-        "authScreen"
-      ).style.display = "flex";
-      document.getElementById(
-        "authPassword"
-      ).value = "";
-      document.getElementById(
-        "authMessage"
-      ).textContent = "";
-      resetChat();
-      showToast(
-        currentLanguage === "en"
-          ? "You signed out."
-          : currentLanguage === "es"
-            ? "Has cerrado sesión."
-            : "Você saiu da conta."
-      );
-    }
-    /* =====================================================
-       STORIES
-    ===================================================== */
-    async function loadStories() {
-      if (!currentUser) {
-        return;
-      }
-      try {
-        const {
-          data,
-          error
-        } =
-          await supabaseClient
-            .from("stories")
-            .select(
-              "id, title, messages, created_at, updated_at"
-            )
-            .eq(
-              "user_id",
-              currentUser.id
-            )
-            .order(
-              "updated_at",
-              {
-                ascending:
-                  false
-              }
-            );
-        if (error) {
-          throw error;
-        }
-        stories =
-          (data || []).map(
-            story => ({
-              id:
-                story.id,
-              title:
-                story.title ||
-                t("newStory"),
-              messages:
-                Array.isArray(
-                  story.messages
-                )
-                  ? story.messages
-                  : [],
-              createdAt:
-                story.created_at,
-              updatedAt:
-                story.updated_at
-            })
-          );
-        renderHistory();
-      } catch (error) {
-        console.error(
-          "Erro ao carregar histórias:",
-          error
-        );
-        stories = [];
-        renderHistory();
-      }
-    }
-    async function createStory() {
-      if (!currentUser) {
-        return null;
-      }
-      try {
-        const {
-          data,
-          error
-        } =
-          await supabaseClient
-            .from("stories")
-            .insert({
-              user_id:
-                currentUser.id,
-              title:
-                t("newStory"),
-              messages:
-                []
-            })
-            .select(
-              "id, title, messages, created_at, updated_at"
-            )
-            .single();
-        if (error) {
-          throw error;
-        }
-        const story = {
-          id:
-            data.id,
-          title:
-            data.title,
-          messages:
-            data.messages ||
-            [],
-          createdAt:
-            data.created_at,
-          updatedAt:
-            data.updated_at
-        };
-        stories.unshift(
-          story
-        );
-        currentStoryId =
-          story.id;
-        conversation = [];
-        renderHistory();
-        renderCurrentStory();
-        closeMenu();
-        input.focus();
-        return story;
-      } catch (error) {
-        console.error(
-          "Erro ao criar história:",
-          error
-        );
-        showToast(
-          currentLanguage === "en"
-            ? "Could not create the story."
-            : currentLanguage === "es"
-              ? "No fue posible crear la historia."
-              : "Não foi possível criar a história."
-        );
-        return null;
-      }
-    }
-    function getCurrentStory() {
-      return stories.find(
-        story =>
-          story.id ===
-          currentStoryId
-      );
-    }
-    async function saveCurrentConversation() {
-      if (
-        !currentStoryId ||
-        !currentUser
-      ) {
-        return;
-      }
-      const story =
-        getCurrentStory();
-      if (!story) {
-        return;
-      }
-      const messages =
-        conversation.map(
-          item => ({
-            role:
-              item.role,
-            content:
-              item.content
-          })
-        );
-      const firstUser =
-        conversation.find(
-          item =>
-            item.role ===
-            "user"
-        );
-      let title =
-        story.title ||
-        t("newStory");
-      if (
-        firstUser &&
-        firstUser.content
-      ) {
-        title =
-          createStoryTitle(
-            firstUser.content
-          );
-      }
-      try {
-        const {
-          data,
-          error
-        } =
-          await supabaseClient
-            .from("stories")
-            .update({
-              title,
-              messages,
-              updated_at:
-                new Date().toISOString()
-            })
-            .eq(
-              "id",
-              currentStoryId
-            )
-            .eq(
-              "user_id",
-              currentUser.id
-            )
-            .select(
-              "id, title, messages, created_at, updated_at"
-            )
-            .single();
-        if (error) {
-          throw error;
-        }
-        story.title =
-          data.title;
-        story.messages =
-          data.messages ||
-          [];
-        story.createdAt =
-          data.created_at;
-        story.updatedAt =
-          data.updated_at;
-        renderHistory();
-      } catch (error) {
-        console.error(
-          "Erro ao salvar história:",
-          error
-        );
-      }
-    }
-    function createStoryTitle(
-      text
-    ) {
-      let title =
-        text
-          .replace(
-            /\s+/g,
-            " "
-          )
-          .trim();
-      if (!title) {
-        return t("newStory");
-      }
-      if (
-        title.length > 34
-      ) {
-        title =
-          title
-            .substring(
-              0,
-              34
-            )
-            .trim() +
-          "...";
-      }
-      return title;
-    }
-    async function renameStory(
-      event,
-      id
-    ) {
-      event.stopPropagation();
-      const story =
-        stories.find(
-          item =>
-            item.id === id
-        );
-      if (!story) {
-        return;
-      }
-      const newTitle =
-        window.prompt(
-          currentLanguage === "en"
-            ? "New story name:"
-            : currentLanguage === "es"
-              ? "Nuevo nombre de la historia:"
-              : "Novo nome da história:",
-          story.title
-        );
-      if (
-        newTitle === null
-      ) {
-        return;
-      }
-      const title =
-        newTitle
-          .replace(
-            /\s+/g,
-            " "
-          )
-          .trim();
-      if (!title) {
-        return;
-      }
-      try {
-        const {
-          data,
-          error
-        } =
-          await supabaseClient
-            .from("stories")
-            .update({
-              title,
-              updated_at:
-                new Date().toISOString()
-            })
-            .eq(
-              "id",
-              id
-            )
-            .eq(
-              "user_id",
-              currentUser.id
-            )
-            .select(
-              "id, title, messages, created_at, updated_at"
-            )
-            .single();
-        if (error) {
-          throw error;
-        }
-        story.title =
-          data.title;
-        story.updatedAt =
-          data.updated_at;
-        renderHistory();
-        showToast(
-          t("renamed")
-        );
-      } catch (error) {
-        console.error(
-          "Erro ao renomear:",
-          error
-        );
-      }
-    }
-    /* =====================================================
-       HISTORY
-    ===================================================== */
-    function renderHistory() {
-      const list =
-        document.getElementById(
-          "historyList"
-        );
-      const count =
-        document.getElementById(
-          "historyCount"
-        );
-      if (!list) {
-        return;
-      }
-      const term =
-        historySearchTerm
-          .toLowerCase()
-          .trim();
-      const filtered =
-        stories.filter(
-          story =>
-            !term ||
-            String(
-              story.title
-            )
-              .toLowerCase()
-              .includes(term)
-        );
-      if (count) {
-        count.textContent =
-          stories.length;
-      }
-      if (!stories.length) {
-        list.innerHTML = `
-          <div class="history-empty">
-            ${t("historyEmpty")}
-          </div>
-        `;
-        return;
-      }
-      if (!filtered.length) {
-        list.innerHTML = `
-          <div class="history-empty">
-            ${t("historyNotFound")}
-          </div>
-        `;
-        return;
-      }
-      const ordered =
-        [...filtered].sort(
-          (a,b) =>
-            new Date(
-              b.updatedAt
-            ) -
-            new Date(
-              a.updatedAt
-            )
-        );
-      list.innerHTML =
-        ordered
-          .map(
-            story => {
-              const active =
-                story.id ===
-                currentStoryId
-                  ? "active"
-                  : "";
-              return `
-                <div
-                  class="history-item ${active}"
-                  onclick="openStory('${story.id}')"
-                >
-                  <div class="history-aura">
-                    <div class="history-aura-ring"></div>
-                    <div class="history-aura-dot"></div>
-                  </div>
-                  <div class="history-info">
-                    <div class="history-name">
-                      ${escapeHtml(story.title)}
-                    </div>
-                    <div class="history-date">
-                      ${formatDate(story.updatedAt)}
-                    </div>
-                  </div>
-                  <div class="history-actions">
-                    <button
-                      class="history-action"
-                      onclick="renameStory(event, '${story.id}')"
-                    >
-                      ✎
-                    </button>
-                    <button
-                      class="history-action"
-                      onclick="deleteStory(event, '${story.id}')"
-                    >
-                      ×
-                    </button>
-                  </div>
-                </div>
-              `;
-            }
-          )
-          .join("");
-    }
-    function focusHistorySearch() {
-      openMenu();
-      setTimeout(
-        () => {
-          document
-            .getElementById(
-              "historySearch"
-            )
-            .focus();
-        },
-        120
-      );
-    }
-    async function openStory(
-      id
-    ) {
-      const story =
-        stories.find(
-          item =>
-            item.id === id
-        );
-      if (!story) {
-        return;
-      }
-      currentStoryId =
-        story.id;
-      conversation =
-        Array.isArray(
-          story.messages
-        )
-          ? story.messages.map(
-              item => ({
-                role:
-                  item.role,
-                content:
-                  item.content
-              })
-            )
-          : [];
-      renderCurrentStory();
-      renderHistory();
-      closeMenu();
-      input.placeholder =
-        t("continueStory");
-      input.focus();
-    }
-    async function deleteStory(
-      event,
-      id
-    ) {
-      event.stopPropagation();
-      if (!currentUser) {
-        return;
-      }
-      const confirmed =
-        window.confirm(
-          currentLanguage === "en"
-            ? "Delete this story? This cannot be undone."
-            : currentLanguage === "es"
-              ? "¿Eliminar esta historia? Esta acción no se puede deshacer."
-              : "Excluir esta história? Essa ação não pode ser desfeita."
-        );
-      if (!confirmed) {
-        return;
-      }
-      try {
-        const {
-          error
-        } =
-          await supabaseClient
-            .from("stories")
-            .delete()
-            .eq(
-              "id",
-              id
-            )
-            .eq(
-              "user_id",
-              currentUser.id
-            );
-        if (error) {
-          throw error;
-        }
-        stories =
-          stories.filter(
-            story =>
-              story.id !== id
-          );
-        if (
-          currentStoryId ===
-          id
-        ) {
-          currentStoryId =
-            null;
-          conversation = [];
-          input.placeholder =
-            t("startStory");
-          renderCurrentStory();
-        }
-        renderHistory();
-        showToast(
-          t("deleted")
-        );
-      } catch (error) {
-        console.error(
-          "Erro ao apagar história:",
-          error
-        );
-      }
-    }
-    function newStory() {
-      conversation = [];
-      currentStoryId = null;
-      resetChat();
-      closeMenu();
-      input.value = "";
-      resizeInput();
-      input.placeholder =
-        t("newStoryPlaceholder");
-      input.focus();
-      showToast(
-        t("newStoryToast")
-      );
-    }
-    function resetChat() {
-      chat.innerHTML = `
-        <div id="welcome" class="welcome">
-          <div class="aura-core">
-            <div class="ring"></div>
-            <div class="core"></div>
-          </div>
-          <h1>AURA</h1>
-          <p
-            id="tagline"
-            class="tagline"
-          >
-            ${t("tagline")}
-          </p>
-          <div class="welcome-actions">
-            <button
-              class="welcome-card"
-              onclick="newStory()"
-            >
-              <div class="welcome-card-icon">+</div>
-              <div
-                id="newStoryTitle"
-                class="welcome-card-title"
-              >
-                ${t("newStory")}
-              </div>
-              <div
-                id="newStoryDescription"
-                class="welcome-card-description"
-              >
-                ${t("newStoryDescription")}
-              </div>
-            </button>
-            <button
-              class="welcome-card"
-              onclick="openMenu()"
-            >
-              <div class="welcome-card-icon">◌</div>
-              <div
-                id="myStoriesTitle"
-                class="welcome-card-title"
-              >
-                ${t("myStories")}
-              </div>
-              <div
-                id="myStoriesDescription"
-                class="welcome-card-description"
-              >
-                ${t("myStoriesDescription")}
-              </div>
-            </button>
-            <button
-              class="welcome-card"
-              onclick="openCreditsModal()"
-            >
-              <div class="welcome-card-icon">✦</div>
-              <div
-                id="creditsTitle"
-                class="welcome-card-title"
-              >
-                ${t("creditsTitle")}
-              </div>
-              <div
-                id="creditsDescription"
-                class="welcome-card-description"
-              >
-                ${t("creditsDescription")}
-              </div>
-            </button>
-          </div>
-          <div
-            id="welcomeCreditLine"
-            class="welcome-credit-line"
-          >
-          </div>
-        </div>
-      `;
-      renderHistory();
-      updateWelcome();
-    }
-    async function ensureStory() {
-      if (currentStoryId) {
-        const existing =
-          getCurrentStory();
-        if (existing) {
-          return existing;
-        }
-      }
-      return await createStory();
-    }
-    /* =====================================================
-       CHAT
-    ===================================================== */
-    async function sendMessage() {
-      if (isThinking) {
-        return;
-      }
-      if (
-        userCredits <= 0
-      ) {
-        openCreditsModal();
-        showToast(
-          t("noCreditsToast")
-        );
-        return;
-      }
-      const message =
-        input.value
-          .trim();
-      if (!message) {
-        return;
-      }
-      const creditConsumed =
-        await consumeCredit();
-      if (!creditConsumed) {
-        showToast(
-          t("creditError")
-        );
-        return;
-      }
-      const story =
-        await ensureStory();
-      if (!story) {
-        await restoreCredit();
-        return;
-      }
-      const currentWelcome =
-        document.getElementById(
-          "welcome"
-        );
-      if (currentWelcome) {
-        currentWelcome.remove();
-      }
-      addUserMessage(
-        message
-      );
-      conversation.push({
-        role:
-          "user",
-        content:
-          message
-      });
-      await saveCurrentConversation();
-      input.value = "";
-      resizeInput();
-      setThinking(true);
-      try {
-        const response =
-          await fetch(
-            "/api/chat",
-            {
-              method:
-                "POST",
-              headers: {
-                "Content-Type":
-                  "application/json"
-              },
-              body:
-                JSON.stringify({
-                  message:
-                    message,
-                  history:
-                    conversation.slice(
-                      0,
-                      -1
-                    ),
-                  language:
-                    currentLanguage
-                })
-            }
-          );
-        const data =
-          await response.json();
-        if (!response.ok) {
-          throw new Error(
-            data.error ||
-            "Chat error"
-          );
-        }
-        if (!data.reply) {
-          throw new Error(
-            "No response"
-          );
-        }
-        conversation.push({
-          role:
-            "assistant",
-          content:
-            data.reply
+</div>
+<div id="toast" class="toast"></div>
+<script>
+const SUPABASE_URL="https://vqmfsshmjdfjlnmbemxv.supabase.co";
+const SUPABASE_KEY="sb_publishable_nCCjJPHoTODWLHvwTWN_AA_J8JivYaE";
+const supabaseClient=
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+let authMode="login";
+let conversation=[];
+let isThinking=false;
+let currentStoryId=null;
+let stories=[];
+let currentUser=null;
+let appInitialized=false;
+let auraLanguage=
+  localStorage.getItem("aura_language")||"pt-BR";
+let creditBalance=0;
+const chat=document.getElementById("chat");
+const input=document.getElementById("messageInput");
+const sendButton=document.getElementById("sendButton");
+function toggleAuthMode(){
+  const button=
+    document.getElementById("authButton");
+  const switchButton=
+    document.getElementById("authSwitch");
+  const subtitle=
+    document.querySelector(".auth-subtitle");
+  const message=
+    document.getElementById("authMessage");
+  message.textContent="";
+  message.className="auth-error";
+  if(authMode==="login"){
+    authMode="signup";
+    button.textContent="Criar conta";
+    subtitle.textContent=
+      "Crie sua conta e comece sua história.";
+    switchButton.innerHTML=
+      'Já tenho uma conta. <span>Entrar</span>';
+  }else{
+    authMode="login";
+    button.textContent="Entrar";
+    subtitle.textContent=
+      "Entre para continuar suas histórias.";
+    switchButton.innerHTML=
+      'Ainda não tenho uma conta. <span>Criar conta</span>';
+  }
+}
+async function handleAuth(){
+  const email=
+    document.getElementById("authEmail")
+      .value.trim();
+  const password=
+    document.getElementById("authPassword")
+      .value;
+  const button=
+    document.getElementById("authButton");
+  const message=
+    document.getElementById("authMessage");
+  message.textContent="";
+  message.className="auth-error";
+  if(!email||!password){
+    message.textContent=
+      "Preencha seu e-mail e sua senha.";
+    return;
+  }
+  if(password.length<6){
+    message.textContent=
+      "A senha precisa ter pelo menos 6 caracteres.";
+    return;
+  }
+  button.disabled=true;
+  button.textContent=
+    authMode==="login"
+      ?"Entrando..."
+      :"Criando...";
+  try{
+    if(authMode==="signup"){
+      const {data,error}=
+        await supabaseClient.auth.signUp({
+          email,
+          password
         });
-        await saveCurrentConversation();
-        setThinking(false);
-        if (
-          preferences.streaming
-        ) {
-          await streamAura(
-            data.reply
-          );
-        } else {
-          addAuraInstant(
-            data.reply
-          );
-          isThinking =
-            false;
-          updateSendButton();
-        }
-      } catch (error) {
-        console.error(error);
-        setThinking(false);
-        await restoreCredit();
-        addAuraInstant(
-          t("responseError")
-        );
+      if(error)throw error;
+      if(data.session){
+        currentUser=data.user;
+        await showApp();
+      }else{
+        message.className=
+          "auth-error auth-success";
+        message.textContent=
+          "Conta criada. Verifique seu e-mail para confirmar o cadastro.";
       }
+    }else{
+      const {data,error}=
+        await supabaseClient.auth.signInWithPassword({
+          email,
+          password
+        });
+      if(error)throw error;
+      currentUser=data.user;
+      await showApp();
     }
-    /* =====================================================
-       MESSAGES
-    ===================================================== */
-    function addUserMessage(
-      text,
-      shouldScroll = true
-    ) {
-      const wrapper =
-        document.createElement(
-          "div"
-        );
-      wrapper.className =
-        "message user";
-      const content =
-        document.createElement(
-          "div"
-        );
-      content.className =
-        "message-content";
-      const bubble =
-        document.createElement(
-          "div"
-        );
-      bubble.className =
-        "bubble";
-      bubble.textContent =
-        text;
-      content.appendChild(
-        bubble
-      );
-      wrapper.appendChild(
-        content
-      );
-      chat.appendChild(
-        wrapper
-      );
-      if (
-        shouldScroll
-      ) {
-        scrollToBottom();
-      }
+  }catch(error){
+    console.error(error);
+    message.textContent=
+      translateAuthError(error.message);
+  }finally{
+    button.disabled=false;
+    button.textContent=
+      authMode==="login"
+        ?"Entrar"
+        :"Criar conta";
+  }
+}
+function translateAuthError(error){
+  if(!error)
+    return "Não foi possível continuar.";
+  const text=
+    error.toLowerCase();
+  if(text.includes("invalid login credentials"))
+    return "E-mail ou senha incorretos.";
+  if(text.includes("user already registered"))
+    return "Esse e-mail já possui uma conta.";
+  if(text.includes("password"))
+    return "Verifique sua senha.";
+  return error;
+}
+async function showApp(){
+  if(appInitialized&&currentUser)
+    return;
+  appInitialized=true;
+  document.getElementById("authScreen")
+    .style.display="none";
+  document.getElementById("app")
+    .style.display="block";
+  if(!currentUser){
+    const {data}=
+      await supabaseClient.auth.getUser();
+    currentUser=data.user;
+  }
+  updateAccountUI();
+  await ensureCredits();
+  await loadStories();
+  setTimeout(
+    ()=>input.focus(),
+    150
+  );
+}
+async function checkSession(){
+  const {data}=
+    await supabaseClient.auth.getSession();
+  if(data.session){
+    currentUser=data.session.user;
+    await showApp();
+  }else{
+    document.getElementById("authScreen")
+      .style.display="flex";
+  }
+}
+supabaseClient.auth.onAuthStateChange(
+  async(event,session)=>{
+    if(session){
+      currentUser=session.user;
+      await showApp();
+    }else if(event==="SIGNED_OUT"){
+      appInitialized=false;
     }
-    function addAuraInstant(
-      text,
-      shouldScroll = true
-    ) {
-      const wrapper =
-        document.createElement(
-          "div"
+  }
+);
+function updateAccountUI(){
+  if(!currentUser)
+    return;
+  const email=
+    currentUser.email||"Conta Aura";
+  document.getElementById("accountEmail")
+    .textContent=email;
+  document.getElementById("accountAvatar")
+    .textContent=
+      email.charAt(0).toUpperCase();
+}
+async function logout(){
+  await supabaseClient.auth.signOut();
+  currentUser=null;
+  conversation=[];
+  currentStoryId=null;
+  stories=[];
+  appInitialized=false;
+  closeMenu();
+  document.getElementById("app")
+    .style.display="none";
+  document.getElementById("authScreen")
+    .style.display="flex";
+  document.getElementById("authPassword")
+    .value="";
+  document.getElementById("authMessage")
+    .textContent="";
+  resetChat();
+  showToast(
+    "Você saiu da conta."
+  );
+}
+async function loadStories(){
+  if(!currentUser)
+    return;
+  try{
+    const {data,error}=
+      await supabaseClient
+        .from("stories")
+        .select(
+          "id,title,messages,created_at,updated_at"
+        )
+        .eq(
+          "user_id",
+          currentUser.id
+        )
+        .order(
+          "updated_at",
+          {ascending:false}
         );
-      wrapper.className =
-        "message aura";
-      const content =
-        document.createElement(
-          "div"
-        );
-      content.className =
-        "message-content";
-      const label =
-        document.createElement(
-          "div"
-        );
-      label.className =
-        "aura-label";
-      label.textContent =
-        "AURA";
-      const bubble =
-        document.createElement(
-          "div"
-        );
-      bubble.className =
-        "bubble";
-      bubble.textContent =
-        text;
-      content.appendChild(
-        label
+    if(error)
+      throw error;
+    stories=
+      (data||[]).map(story=>({
+        id:story.id,
+        title:
+          story.title||
+          "Nova história",
+        messages:
+          Array.isArray(story.messages)
+            ?story.messages
+            :[],
+        createdAt:
+          story.created_at,
+        updatedAt:
+          story.updated_at
+      }));
+    renderHistory();
+  }catch(error){
+    console.error(
+      "Erro ao carregar histórias:",
+      error
+    );
+    stories=[];
+    renderHistory();
+    showToast(
+      "Não foi possível carregar suas histórias."
+    );
+  }
+}
+async function createStory(){
+  if(!currentUser)
+    return null;
+  try{
+    const {data,error}=
+      await supabaseClient
+        .from("stories")
+        .insert({
+          user_id:
+            currentUser.id,
+          title:
+            "Nova história",
+          messages:
+            []
+        })
+        .select(
+          "id,title,messages,created_at,updated_at"
+        )
+        .single();
+    if(error)
+      throw error;
+    const story={
+      id:data.id,
+      title:data.title,
+      messages:
+        data.messages||[],
+      createdAt:
+        data.created_at,
+      updatedAt:
+        data.updated_at
+    };
+    stories.unshift(story);
+    currentStoryId=
+      story.id;
+    conversation=[];
+    renderHistory();
+    renderCurrentStory();
+    closeMenu();
+    input.focus();
+    return story;
+  }catch(error){
+    console.error(
+      "Erro ao criar história:",
+      error
+    );
+    showToast(
+      "Não foi possível criar a história."
+    );
+    return null;
+  }
+}
+function getCurrentStory(){
+  return stories.find(
+    story=>
+      story.id===currentStoryId
+  );
+}
+async function saveCurrentConversation(){
+  if(
+    !currentStoryId||
+    !currentUser
+  )
+    return;
+  const story=
+    getCurrentStory();
+  if(!story)
+    return;
+  const messages=
+    conversation.map(item=>({
+      role:item.role,
+      content:item.content
+    }));
+  const firstUser=
+    conversation.find(
+      item=>
+        item.role==="user"
+    );
+  let title=
+    story.title||
+    "Nova história";
+  if(
+    firstUser&&
+    firstUser.content
+  ){
+    title=
+      createStoryTitle(
+        firstUser.content
       );
-      content.appendChild(
-        bubble
+  }
+  try{
+    const {data,error}=
+      await supabaseClient
+        .from("stories")
+        .update({
+          title,
+          messages,
+          updated_at:
+            new Date().toISOString()
+        })
+        .eq(
+          "id",
+          currentStoryId
+        )
+        .eq(
+          "user_id",
+          currentUser.id
+        )
+        .select(
+          "id,title,messages,created_at,updated_at"
+        )
+        .single();
+    if(error)
+      throw error;
+    story.title=
+      data.title;
+    story.messages=
+      data.messages||[];
+    story.createdAt=
+      data.created_at;
+    story.updatedAt=
+      data.updated_at;
+    renderHistory();
+  }catch(error){
+    console.error(
+      "Erro ao salvar história:",
+      error
+    );
+    showToast(
+      "Não foi possível salvar a história."
+    );
+  }
+}
+function createStoryTitle(text){
+  let title=
+    text
+      .replace(/\s+/g," ")
+      .trim();
+  if(!title)
+    return "Nova história";
+  if(title.length>34){
+    title=
+      title
+        .substring(0,34)
+        .trim()+"...";
+  }
+  return title;
+}
+function renderHistory(){
+  const list=
+    document.getElementById(
+      "historyList"
+    );
+  if(!list)
+    return;
+  if(!stories.length){
+    list.innerHTML=
+      '<div class="history-empty">Suas histórias aparecerão aqui.<br><br>Comece uma nova aventura.</div>';
+    return;
+  }
+  const ordered=
+    [...stories]
+      .sort(
+        (a,b)=>
+          new Date(b.updatedAt)-
+          new Date(a.updatedAt)
       );
-      wrapper.appendChild(
-        content
-      );
-      chat.appendChild(
-        wrapper
-      );
-      if (
-        shouldScroll
-      ) {
-        scrollToBottom();
-      }
-    }
-    /* =====================================================
-       STREAMING
-    ===================================================== */
-    async function streamAura(
-      text
-    ) {
-      isThinking = true;
-      updateSendButton();
-      const wrapper =
-        document.createElement(
-          "div"
-        );
-      wrapper.className =
-        "message aura";
-      const content =
-        document.createElement(
-          "div"
-        );
-      content.className =
-        "message-content";
-      const label =
-        document.createElement(
-          "div"
-        );
-      label.className =
-        "aura-label";
-      label.textContent =
-        "AURA";
-      const bubble =
-        document.createElement(
-          "div"
-        );
-      bubble.className =
-        "bubble";
-      content.appendChild(
-        label
-      );
-      content.appendChild(
-        bubble
-      );
-      wrapper.appendChild(
-        content
-      );
-      chat.appendChild(
-        wrapper
-      );
-      const parts =
-        text.split(
-          /(\s+)/
-        );
-      for (
-        const part of parts
-      ) {
-        if (!part) {
-          continue;
-        }
-        if (
-          part.trim() === ""
-        ) {
-          bubble.appendChild(
-            document.createTextNode(
-              part
-            )
-          );
-          continue;
-        }
-        const word =
-          document.createElement(
-            "span"
-          );
-        word.textContent =
-          part;
-        word.style.opacity =
-          "0";
-        word.style.filter =
-          "blur(4px)";
-        word.style.transition =
-          ".2s ease";
-        bubble.appendChild(
-          word
-        );
-        requestAnimationFrame(
-          () => {
-            word.style.opacity =
-              "1";
-            word.style.filter =
-              "blur(0)";
-          }
-        );
-        let delay =
-          80;
-        if (
-          part.endsWith(".") ||
-          part.endsWith("!") ||
-          part.endsWith("?")
-        ) {
-          delay = 280;
-        }
-        await wait(delay);
-        scrollToBottom();
-      }
-      await wait(350);
-      isThinking = false;
-      updateSendButton();
-      scrollToBottom();
-    }
-    function wait(
-      ms
-    ) {
-      return new Promise(
-        resolve =>
-          setTimeout(
-            resolve,
-            ms
-          )
-      );
-    }
-    function scrollToBottom() {
-      requestAnimationFrame(
-        () => {
-          chat.scrollTo({
-            top:
-              chat.scrollHeight,
-            behavior:
-              "smooth"
-          });
-        }
-      );
-    }
-    /* =====================================================
-       THINKING
-    ===================================================== */
-    function setThinking(
-      thinking
-    ) {
-      isThinking =
-        thinking;
-      const old =
-        document.getElementById(
-          "thinking"
-        );
-      if (old) {
-        old.remove();
-      }
-      if (!thinking) {
-        updateSendButton();
-        return;
-      }
-      sendButton.disabled =
-        true;
-      const element =
-        document.createElement(
-          "div"
-        );
-      element.id =
-        "thinking";
-      element.className =
-        "thinking";
-      element.innerHTML = `
-        <div class="thinking-core"></div>
-        <span>
-          ${t("thinking")}
-        </span>
+  list.innerHTML=
+    ordered.map(story=>{
+      const active=
+        story.id===currentStoryId
+          ?"active"
+          :"";
+      return `
+        <div
+          class="history-item ${active}"
+          onclick="openStory('${story.id}')">
+          <div class="history-aura">
+            <div class="history-aura-ring"></div>
+            <div class="history-aura-dot"></div>
+          </div>
+          <div class="history-info">
+            <div class="history-name">
+              ${escapeHtml(story.title)}
+            </div>
+            <div class="history-date">
+              ${formatDate(story.updatedAt)}
+            </div>
+          </div>
+          <button
+            class="delete-history"
+            onclick="deleteStory(event,'${story.id}')"
+            aria-label="Apagar história">×</button>
+        </div>
       `;
-      chat.appendChild(
-        element
+    }).join("");
+}
+async function openStory(id){
+  const story=
+    stories.find(
+      item=>item.id===id
+    );
+  if(!story)
+    return;
+  currentStoryId=
+    story.id;
+  conversation=
+    Array.isArray(story.messages)
+      ?story.messages.map(
+          item=>({
+            role:item.role,
+            content:item.content
+          })
+        )
+      :[];
+  renderCurrentStory();
+  renderHistory();
+  closeMenu();
+  input.placeholder=
+    "Continue sua história...";
+  input.focus();
+}
+function renderCurrentStory(){
+  chat.innerHTML="";
+  if(!conversation.length){
+    chat.innerHTML=
+      welcomeHTML();
+    return;
+  }
+  conversation.forEach(item=>{
+    if(item.role==="user")
+      addUserMessage(
+        item.content,
+        false
       );
-      scrollToBottom();
+    else
+      addAuraInstant(
+        item.content,
+        false
+      );
+  });
+  scrollToBottom();
+}
+async function deleteStory(event,id){
+  event.stopPropagation();
+  if(!currentUser)
+    return;
+  try{
+    const {error}=
+      await supabaseClient
+        .from("stories")
+        .delete()
+        .eq(
+          "id",
+          id
+        )
+        .eq(
+          "user_id",
+          currentUser.id
+        );
+    if(error)
+      throw error;
+    stories=
+      stories.filter(
+        story=>story.id!==id
+      );
+    if(currentStoryId===id){
+      currentStoryId=null;
+      conversation=[];
+      input.placeholder=
+        "Comece uma história...";
+      renderCurrentStory();
     }
-    /* =====================================================
-       CURRENT STORY RENDER
-    ===================================================== */
-    function renderCurrentStory() {
-      chat.innerHTML = "";
-      if (
-        !conversation.length
-      ) {
-        resetChat();
-        return;
-      }
-      conversation.forEach(
-        item => {
-          if (
-            item.role ===
-            "user"
-          ) {
-            addUserMessage(
-              item.content,
-              false
-            );
-          } else {
-            addAuraInstant(
-              item.content,
-              false
-            );
-          }
+    renderHistory();
+    showToast(
+      "História apagada."
+    );
+  }catch(error){
+    console.error(
+      "Erro ao apagar história:",
+      error
+    );
+    showToast(
+      "Não foi possível apagar a história."
+    );
+  }
+}
+function newStory(){
+  conversation=[];
+  currentStoryId=null;
+  resetChat();
+  closeMenu();
+  input.value="";
+  resizeInput();
+  input.placeholder=
+    "Comece uma nova história...";
+  input.focus();
+  showToast(
+    "Nova história."
+  );
+}
+function welcomeHTML(){
+  return `
+    <div id="welcome" class="welcome">
+      <div class="aura-core">
+        <div class="ring"></div>
+        <div class="core"></div>
+      </div>
+      <h1>AURA</h1>
+      <p class="tagline">
+        intelligence for your story
+      </p>
+    </div>
+  `;
+}
+function resetChat(){
+  chat.innerHTML=
+    welcomeHTML();
+  renderHistory();
+}
+async function ensureStory(){
+  if(currentStoryId){
+    const existing=
+      getCurrentStory();
+    if(existing)
+      return existing;
+  }
+  return await createStory();
+}
+async function sendMessage(){
+  if(isThinking)
+    return;
+  const message=
+    input.value.trim();
+  if(!message)
+    return;
+  const story=
+    await ensureStory();
+  if(!story)
+    return;
+  const currentWelcome=
+    document.getElementById(
+      "welcome"
+    );
+  if(currentWelcome)
+    currentWelcome.remove();
+  addUserMessage(message);
+  conversation.push({
+    role:"user",
+    content:message
+  });
+  await saveCurrentConversation();
+  const charged=
+    await changeCredits(-1);
+  if(!charged){
+    addAuraInstant(
+      "Você não tem créditos disponíveis."
+    );
+    return;
+  }
+  input.value="";
+  resizeInput();
+  setThinking(true);
+  try{
+    const response=
+      await fetch(
+        "/api/chat",
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+          body:JSON.stringify({
+            message,
+            history:
+              conversation.slice(0,-1),
+            language:
+              auraLanguage
+          })
         }
       );
-      scrollToBottom();
-    }
-    /* =====================================================
-       INPUT
-    ===================================================== */
-    input.addEventListener(
-      "input",
-      resizeInput
+    const data=
+      await response.json();
+    if(!response.ok)
+      throw new Error(
+        data.error||
+        "Erro ao conversar com a Aura"
+      );
+    conversation.push({
+      role:"assistant",
+      content:data.reply
+    });
+    await saveCurrentConversation();
+    setThinking(false);
+    await streamAura(
+      data.reply
     );
-    function resizeInput() {
-      input.style.height =
-        "auto";
-      input.style.height =
-        Math.min(
-          input.scrollHeight,
-          130
-        ) + "px";
-    }
-    input.addEventListener(
-      "keydown",
-      function(event) {
-        if (
-          event.key ===
-            "Enter" &&
-          !event.shiftKey
-        ) {
-          event.preventDefault();
-          sendMessage();
-        }
-      }
+    await saveCurrentConversation();
+  }catch(error){
+    console.error(error);
+    await changeCredits(1);
+    setThinking(false);
+    addAuraInstant(
+      "Não consegui responder agora. Tente novamente em alguns instantes."
     );
-    /* =====================================================
-       HISTORY SEARCH
-    ===================================================== */
-    document
-      .getElementById(
-        "historySearch"
+  }
+}
+function addUserMessage(
+  text,
+  shouldScroll=true
+){
+  const wrapper=
+    document.createElement(
+      "div"
+    );
+  wrapper.className=
+    "message user";
+  const content=
+    document.createElement(
+      "div"
+    );
+  content.className=
+    "message-content";
+  const bubble=
+    document.createElement(
+      "div"
+    );
+  bubble.className=
+    "bubble";
+  bubble.textContent=
+    text;
+  content.appendChild(
+    bubble
+  );
+  wrapper.appendChild(
+    content
+  );
+  chat.appendChild(
+    wrapper
+  );
+  if(shouldScroll)
+    scrollToBottom();
+}
+function addAuraInstant(
+  text,
+  shouldScroll=true
+){
+  const wrapper=
+    document.createElement(
+      "div"
+    );
+  wrapper.className=
+    "message aura";
+  const content=
+    document.createElement(
+      "div"
+    );
+  content.className=
+    "message-content";
+  const label=
+    document.createElement(
+      "div"
+    );
+  label.className=
+    "aura-label";
+  label.textContent=
+    "AURA";
+  const bubble=
+    document.createElement(
+      "div"
+    );
+  bubble.className=
+    "bubble";
+  bubble.textContent=
+    text;
+  content.appendChild(
+    label
+  );
+  content.appendChild(
+    bubble
+  );
+  wrapper.appendChild(
+    content
+  );
+  chat.appendChild(
+    wrapper
+  );
+  if(shouldScroll)
+    scrollToBottom();
+}
+async function streamAura(text){
+  isThinking=true;
+  sendButton.disabled=true;
+  const wrapper=
+    document.createElement(
+      "div"
+    );
+  wrapper.className=
+    "message aura streaming";
+  const content=
+    document.createElement(
+      "div"
+    );
+  content.className=
+    "message-content";
+  const label=
+    document.createElement(
+      "div"
+    );
+  label.className=
+    "aura-label";
+  label.textContent=
+    "AURA";
+  const bubble=
+    document.createElement(
+      "div"
+    );
+  bubble.className=
+    "bubble";
+  const mist=
+    document.createElement(
+      "div"
+    );
+  mist.className=
+    "mist";
+  bubble.appendChild(
+    mist
+  );
+  content.appendChild(
+    label
+  );
+  content.appendChild(
+    bubble
+  );
+  wrapper.appendChild(
+    content
+  );
+  chat.appendChild(
+    wrapper
+  );
+  const parts=
+    text.split(/(\s+)/);
+  const words=
+    parts.filter(
+      part=>
+        part.trim().length>0
+    );
+  let wordNumber=0;
+  for(const part of parts){
+    if(!part)
+      continue;
+    if(part.trim()===""){
+      bubble.appendChild(
+        document.createTextNode(part)
+      );
+      continue;
+    }
+    const word=
+      document.createElement(
+        "span"
+      );
+    word.className=
+      "stream-word";
+    word.textContent=
+      part;
+    bubble.appendChild(
+      word
+    );
+    wordNumber++;
+    const progress=
+      wordNumber/
+      words.length;
+    mist.style.left=
+      `${Math.min(
+        8+progress*84,
+        92
+      )}%`;
+    let delay=105;
+    if(
+      part.endsWith(".")||
+      part.endsWith("!")||
+      part.endsWith("?")
+    ){
+      delay=360;
+    }else if(
+      part.endsWith(",")||
+      part.endsWith(";")||
+      part.endsWith(":")
+    ){
+      delay=210;
+    }
+    scrollToBottom();
+    await wait(delay);
+  }
+  wrapper.classList.remove(
+    "streaming"
+  );
+  wrapper.classList.add(
+    "finished"
+  );
+  await wait(700);
+  isThinking=false;
+  sendButton.disabled=false;
+  scrollToBottom();
+}
+function wait(ms){
+  return new Promise(
+    resolve=>
+      setTimeout(
+        resolve,
+        ms
       )
-      .addEventListener(
-        "input",
-        function() {
-          historySearchTerm =
-            this.value;
-          renderHistory();
-        }
-      );
-    /* =====================================================
-       MENU
-    ===================================================== */
-    function openMenu() {
-      document
-        .getElementById(
-          "sideMenu"
-        )
-        .classList.add(
-          "open"
-        );
-      document
-        .getElementById(
-          "menuOverlay"
-        )
-        .classList.add(
-          "open"
-        );
-      renderHistory();
-      updateCreditsUI();
+  );
+}
+function setThinking(thinking){
+  isThinking=
+    thinking;
+  sendButton.disabled=
+    thinking;
+  const old=
+    document.getElementById(
+      "thinking"
+    );
+  if(old)
+    old.remove();
+  if(!thinking)
+    return;
+  const element=
+    document.createElement(
+      "div"
+    );
+  element.id=
+    "thinking";
+  element.className=
+    "thinking";
+  element.innerHTML=
+    '<div class="thinking-core"></div><span>A Aura está pensando...</span>';
+  chat.appendChild(
+    element
+  );
+  scrollToBottom();
+}
+function scrollToBottom(){
+  requestAnimationFrame(
+    ()=>{
+      chat.scrollTop=
+        chat.scrollHeight;
     }
-    function closeMenu() {
-      document
-        .getElementById(
-          "sideMenu"
-        )
-        .classList.remove(
-          "open"
-        );
-      document
-        .getElementById(
-          "menuOverlay"
-        )
-        .classList.remove(
-          "open"
-        );
+  );
+}
+input.addEventListener(
+  "input",
+  resizeInput
+);
+function resizeInput(){
+  input.style.height=
+    "auto";
+  input.style.height=
+    Math.min(
+      input.scrollHeight,
+      130
+    )+"px";
+}
+input.addEventListener(
+  "keydown",
+  function(event){
+    if(
+      event.key==="Enter"&&
+      !event.shiftKey
+    ){
+      event.preventDefault();
+      sendMessage();
     }
-    /* =====================================================
-       HELPERS
-    ===================================================== */
-    function formatDate(
-      timestamp
-    ) {
-      const date =
-        new Date(
-          timestamp
-        );
-      const now =
-        new Date();
-      const sameDay =
-        date.toDateString() ===
-        now.toDateString();
-      if (
-        sameDay
-      ) {
-        return (
-          "Hoje · " +
-          date.toLocaleTimeString(
-            "pt-BR",
-            {
-              hour:
-                "2-digit",
-              minute:
-                "2-digit"
-            }
-          )
-        );
-      }
-      return date.toLocaleDateString(
+  }
+);
+function openMenu(){
+  document.getElementById(
+    "sideMenu"
+  ).classList.add(
+    "open"
+  );
+  document.getElementById(
+    "menuOverlay"
+  ).classList.add(
+    "open"
+  );
+  renderHistory();
+}
+function closeMenu(){
+  document.getElementById(
+    "sideMenu"
+  ).classList.remove(
+    "open"
+  );
+  document.getElementById(
+    "menuOverlay"
+  ).classList.remove(
+    "open"
+  );
+}
+function formatDate(timestamp){
+  const date=
+    new Date(timestamp);
+  const now=
+    new Date();
+  const sameDay=
+    date.toDateString()===
+    now.toDateString();
+  if(sameDay){
+    return(
+      "Hoje · "+
+      date.toLocaleTimeString(
         "pt-BR",
         {
-          day:
-            "2-digit",
-          month:
-            "short"
+          hour:"2-digit",
+          minute:"2-digit"
         }
-      );
-    }
-    function escapeHtml(
-      text
-    ) {
-      return String(
-        text
       )
-        .replace(
-          /&/g,
-          "&amp;"
-        )
-        .replace(
-          /</g,
-          "&lt;"
-        )
-        .replace(
-          />/g,
-          "&gt;"
-        )
-        .replace(
-          /"/g,
-          "&quot;"
-        )
-        .replace(
-          /'/g,
-          "&#039;"
-        );
+    );
+  }
+  return date.toLocaleDateString(
+    "pt-BR",
+    {
+      day:"2-digit",
+      month:"short"
     }
-    function showToast(
-      text
-    ) {
-      const toast =
-        document.getElementById(
-          "toast"
-        );
-      toast.innerHTML =
-        text;
-      toast.classList.add(
-        "show"
-      );
-      clearTimeout(
-        window.auraToastTimer
-      );
-      window.auraToastTimer =
-        setTimeout(
-          () => {
-            toast.classList.remove(
-              "show"
-            );
-          },
-          2600
-        );
-    }
-    /* =====================================================
-       INITIALIZE
-    ===================================================== */
-    document
-      .getElementById(
-        "streamingToggle"
+  );
+}
+function escapeHtml(text){
+  return String(text)
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+}
+function showToast(text){
+  const toast=
+    document.getElementById(
+      "toast"
+    );
+  toast.textContent=
+    text;
+  toast.classList.add(
+    "show"
+  );
+  clearTimeout(
+    window.auraToastTimer
+  );
+  window.auraToastTimer=
+    setTimeout(
+      ()=>
+        toast.classList.remove(
+          "show"
+        ),
+      1800
+    );
+}
+/* =========================
+   CONTA
+========================= */
+function openSettings(){
+  closeMenu();
+  document.getElementById(
+    "settingsEmail"
+  ).textContent=
+    currentUser?.email||"—";
+  document.getElementById(
+    "settingsModal"
+  ).classList.add(
+    "open"
+  );
+}
+async function changePassword(){
+  const value=
+    document.getElementById(
+      "newPassword"
+    ).value;
+  if(value.length<6){
+    showToast(
+      "A senha precisa ter pelo menos 6 caracteres."
+    );
+    return;
+  }
+  try{
+    const {error}=
+      await supabaseClient.auth.updateUser({
+        password:value
+      });
+    if(error)
+      throw error;
+    document.getElementById(
+      "newPassword"
+    ).value="";
+    showToast(
+      "Senha alterada com sucesso."
+    );
+  }catch(error){
+    console.error(error);
+    showToast(
+      translateAuthError(
+        error.message
       )
-      .classList.toggle(
-        "active",
-        preferences.streaming
+    );
+  }
+}
+async function changeEmail(){
+  const value=
+    document.getElementById(
+      "newEmail"
+    ).value.trim();
+  if(
+    !value||
+    !value.includes("@")
+  ){
+    showToast(
+      "Digite um e-mail válido."
+    );
+    return;
+  }
+  try{
+    const {error}=
+      await supabaseClient.auth.updateUser({
+        email:value
+      });
+    if(error)
+      throw error;
+    document.getElementById(
+      "newEmail"
+    ).value="";
+    showToast(
+      "Verifique o novo e-mail para confirmar a alteração."
+    );
+  }catch(error){
+    console.error(error);
+    showToast(
+      translateAuthError(
+        error.message
+      )
+    );
+  }
+}
+async function globalLogout(){
+  try{
+    await supabaseClient.auth.signOut({
+      scope:"global"
+    });
+  }catch(error){
+    await supabaseClient.auth.signOut();
+  }
+  document.getElementById(
+    "settingsModal"
+  ).classList.remove(
+    "open"
+  );
+  showToast(
+    "Sessões encerradas."
+  );
+}
+function closeModal(event,id){
+  if(
+    !event||
+    event.target===
+    event.currentTarget
+  ){
+    document.getElementById(
+      id
+    ).classList.remove(
+      "open"
+    );
+  }
+}
+/* =========================
+   PAGAMENTOS / CRÉDITOS
+========================= */
+async function ensureCredits(){
+  if(!currentUser)
+    return false;
+  try{
+    let {data,error}=
+      await supabaseClient
+        .from("credits")
+        .select(
+          "id,balance"
+        )
+        .eq(
+          "user_id",
+          currentUser.id
+        )
+        .maybeSingle();
+    if(error)
+      throw error;
+    if(!data){
+      const created=
+        await supabaseClient
+          .from("credits")
+          .insert({
+            user_id:
+              currentUser.id,
+            balance:
+              20
+          })
+          .select(
+            "id,balance"
+          )
+          .single();
+      if(created.error)
+        throw created.error;
+      data=
+        created.data;
+    }
+    creditBalance=
+      Number(
+        data.balance||0
       );
-    applyLanguage();
-    checkSession();
-  </script>
+    return true;
+  }catch(error){
+    console.error(
+      "Créditos:",
+      error
+    );
+    return false;
+  }
+}
+async function loadCredits(){
+  if(!currentUser)
+    return;
+  const element=
+    document.getElementById(
+      "creditBalance"
+    );
+  try{
+    const {data,error}=
+      await supabaseClient
+        .from("credits")
+        .select(
+          "balance"
+        )
+        .eq(
+          "user_id",
+          currentUser.id
+        )
+        .maybeSingle();
+    if(error)
+      throw error;
+    creditBalance=
+      Number(
+        data?.balance??0
+      );
+    element.textContent=
+      creditBalance+
+      " créditos disponíveis";
+  }catch(error){
+    console.error(
+      error
+    );
+    element.textContent=
+      "Saldo indisponível";
+  }
+}
+async function changeCredits(delta){
+  if(!currentUser)
+    return false;
+  try{
+    const {data,error}=
+      await supabaseClient
+        .from("credits")
+        .select(
+          "id,balance"
+        )
+        .eq(
+          "user_id",
+          currentUser.id
+        )
+        .single();
+    if(error)
+      throw error;
+    const next=
+      Number(data.balance||0)+
+      delta;
+    if(next<0)
+      return false;
+    const updated=
+      await supabaseClient
+        .from("credits")
+        .update({
+          balance:next
+        })
+        .eq(
+          "id",
+          data.id
+        )
+        .eq(
+          "user_id",
+          currentUser.id
+        )
+        .select(
+          "balance"
+        )
+        .single();
+    if(updated.error)
+      throw updated.error;
+    creditBalance=
+      Number(
+        updated.data.balance
+      );
+    return true;
+  }catch(error){
+    console.error(
+      "Créditos:",
+      error
+    );
+    return false;
+  }
+}
+function openPlans(){
+  closeMenu();
+  loadCredits();
+  document.getElementById(
+    "plansModal"
+  ).classList.add(
+    "open"
+  );
+}
+/* =========================
+   INTERNACIONALIZAÇÃO
+========================= */
+function openLanguage(){
+  closeMenu();
+  document.getElementById(
+    "languageSelect"
+  ).value=
+    auraLanguage;
+  document.getElementById(
+    "languageModal"
+  ).classList.add(
+    "open"
+  );
+}
+function changeLanguage(value){
+  auraLanguage=
+    value;
+  localStorage.setItem(
+    "aura_language",
+    value
+  );
+  applyLanguage();
+  showToast(
+    value==="en"
+      ?"Language saved."
+      :value==="es"
+        ?"Idioma guardado."
+        :"Idioma salvo."
+  );
+}
+function applyLanguage(){
+  const en=
+    auraLanguage==="en";
+  const es=
+    auraLanguage==="es";
+  document.documentElement.lang=
+    en
+      ?"en"
+      :es
+        ?"es"
+        :"pt-BR";
+  const placeholder=
+    en
+      ?"Start a story..."
+      :es
+        ?"Comienza una historia..."
+        :"Comece uma história...";
+  input.placeholder=
+    placeholder;
+  const tag=
+    document.querySelector(
+      ".tagline"
+    );
+  if(tag){
+    tag.innerHTML=
+      en
+        ?"intelligence for your story"
+        :es
+          ?"inteligencia para tu historia"
+          :"intelligence for your story";
+  }
+}
+/* =========================
+   INICIALIZAÇÃO
+========================= */
+applyLanguage();
+checkSession();
+</script>
 </body>
 </html>
