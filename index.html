@@ -6,6 +6,9 @@
   <meta name="theme-color" content="#050507">
   <title>Aura Line</title>
 
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -35,6 +38,211 @@
       font: inherit;
     }
 
+    /* =========================
+       LOGIN
+    ========================= */
+
+    #authScreen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 24px;
+
+      background:
+        radial-gradient(
+          circle at 50% 35%,
+          rgba(130, 100, 255, 0.18),
+          transparent 35%
+        ),
+        #050507;
+    }
+
+    .auth-box {
+      width: 100%;
+      max-width: 390px;
+      text-align: center;
+    }
+
+    .auth-core {
+      width: 115px;
+      height: 115px;
+
+      margin: 0 auto 30px;
+
+      border-radius: 50%;
+      position: relative;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .auth-ring {
+      position: absolute;
+      inset: 0;
+
+      border-radius: 50%;
+      border: 2px solid transparent;
+
+      background:
+        linear-gradient(#050507,#050507) padding-box,
+        conic-gradient(
+          from 0deg,
+          #ff79d1,
+          #a887ff,
+          #66d8ff,
+          #73ffd1,
+          #ffe27a,
+          #ff8ac8,
+          #a887ff,
+          #ff79d1
+        ) border-box;
+
+      animation:
+        colorSpin 6s linear infinite,
+        auraPulse 4s ease-in-out infinite;
+
+      box-shadow:
+        0 0 20px rgba(255,120,210,.25),
+        0 0 45px rgba(130,100,255,.20),
+        0 0 75px rgba(90,210,255,.12);
+    }
+
+    .auth-core-dot {
+      width: 27px;
+      height: 27px;
+
+      border-radius: 50%;
+      background: white;
+
+      box-shadow:
+        0 0 12px white,
+        0 0 30px rgba(255,255,255,.95),
+        0 0 60px rgba(170,140,255,.9);
+    }
+
+    .auth-title {
+      font-size: 35px;
+      font-weight: 500;
+      letter-spacing: 8px;
+      margin-bottom: 10px;
+    }
+
+    .auth-subtitle {
+      color: rgba(255,255,255,.48);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .auth-input {
+      width: 100%;
+      height: 52px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.10);
+
+      border-radius: 17px;
+
+      background:
+        rgba(255,255,255,.06);
+
+      color: white;
+
+      outline: none;
+
+      padding:
+        0
+        16px;
+
+      font-size: 15px;
+
+      backdrop-filter: blur(15px);
+    }
+
+    .auth-input:focus {
+      border-color:
+        rgba(170,140,255,.55);
+
+      box-shadow:
+        0 0 25px
+        rgba(130,100,255,.10);
+    }
+
+    .auth-input::placeholder {
+      color: rgba(255,255,255,.30);
+    }
+
+    .auth-button {
+      width: 100%;
+      height: 52px;
+
+      border: none;
+      border-radius: 17px;
+
+      background: white;
+      color: #07070a;
+
+      font-size: 15px;
+      font-weight: 600;
+
+      cursor: pointer;
+
+      margin-top: 4px;
+    }
+
+    .auth-button:disabled {
+      opacity: .45;
+    }
+
+    .auth-switch {
+      margin-top: 20px;
+
+      border: none;
+      background: none;
+
+      color: rgba(255,255,255,.55);
+
+      font-size: 13px;
+
+      cursor: pointer;
+    }
+
+    .auth-switch span {
+      color: white;
+    }
+
+    .auth-error {
+      min-height: 18px;
+
+      margin-top: 12px;
+
+      color: #ff9dba;
+
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .auth-success {
+      color: #9fffd2;
+    }
+
+    /* =========================
+       APP
+    ========================= */
+
     .app {
       width: 100%;
       height: 100%;
@@ -49,8 +257,6 @@
         ),
         #050507;
     }
-
-    /* TOP */
 
     .topbar {
       position: absolute;
@@ -151,8 +357,6 @@
       font-size: 19px;
     }
 
-    /* CHAT */
-
     .chat {
       position: absolute;
       top: 0;
@@ -180,8 +384,6 @@
       background: rgba(255,255,255,.12);
       border-radius: 10px;
     }
-
-    /* WELCOME */
 
     .welcome {
       min-height: calc(100vh - 220px);
@@ -303,8 +505,6 @@
       margin-bottom: 30px;
     }
 
-    /* MENSAGENS */
-
     .message {
       display: flex;
       margin-bottom: 18px;
@@ -376,8 +576,6 @@
       padding-left: 4px;
     }
 
-    /* PALAVRAS */
-
     .stream-word {
       display: inline;
       opacity: 0;
@@ -386,8 +584,6 @@
       animation:
         wordReveal .20s ease forwards;
     }
-
-    /* NÉVOA */
 
     .mist {
       position: absolute;
@@ -440,8 +636,6 @@
       opacity: 0;
     }
 
-    /* THINKING */
-
     .thinking {
       display: flex;
       align-items: center;
@@ -478,8 +672,6 @@
         colorSpin 1.5s linear infinite,
         thinkingPulse 1s ease-in-out infinite;
     }
-
-    /* COMPOSER */
 
     .composer {
       position: absolute;
@@ -575,8 +767,6 @@
       opacity: .35;
       cursor: default;
     }
-
-    /* ANIMAÇÕES */
 
     @keyframes colorSpin {
       from {
@@ -716,7 +906,83 @@
 
 <body>
 
-  <main class="app">
+  <!-- =========================
+       TELA DE LOGIN
+  ========================== -->
+
+  <div id="authScreen">
+
+    <div class="auth-box">
+
+      <div class="auth-core">
+        <div class="auth-ring"></div>
+        <div class="auth-core-dot"></div>
+      </div>
+
+      <div class="auth-title">
+        AURA
+      </div>
+
+      <div class="auth-subtitle">
+        Entre para continuar suas histórias.
+      </div>
+
+      <div class="auth-form">
+
+        <input
+          id="authEmail"
+          class="auth-input"
+          type="email"
+          placeholder="Seu e-mail"
+          autocomplete="email"
+        >
+
+        <input
+          id="authPassword"
+          class="auth-input"
+          type="password"
+          placeholder="Sua senha"
+          autocomplete="current-password"
+        >
+
+        <button
+          id="authButton"
+          class="auth-button"
+          onclick="handleAuth()"
+        >
+          Entrar
+        </button>
+
+      </div>
+
+      <div
+        id="authMessage"
+        class="auth-error"
+      ></div>
+
+      <button
+        id="authSwitch"
+        class="auth-switch"
+        onclick="toggleAuthMode()"
+      >
+        Ainda não tenho uma conta.
+        <span>Criar conta</span>
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       APP
+  ========================== -->
+
+  <main
+    id="app"
+    class="app"
+    style="display:none;"
+  >
 
     <header class="topbar">
 
@@ -803,6 +1069,291 @@
 
   <script>
 
+    /* =====================================================
+       SUPABASE
+       COLOQUE AQUI SEUS DADOS PÚBLICOS
+    ===================================================== */
+
+    const SUPABASE_URL =
+      "COLE_SEU_PROJECT_URL_AQUI";
+
+    const SUPABASE_KEY =
+      "COLE_SUA_CHAVE_PUBLICA_AQUI";
+
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    /* =====================================================
+       AUTENTICAÇÃO
+    ===================================================== */
+
+    let authMode = "login";
+
+
+    function toggleAuthMode() {
+
+      const button =
+        document.getElementById("authButton");
+
+      const switchButton =
+        document.getElementById("authSwitch");
+
+      const subtitle =
+        document.querySelector(".auth-subtitle");
+
+      const message =
+        document.getElementById("authMessage");
+
+      message.textContent = "";
+      message.className = "auth-error";
+
+
+      if (authMode === "login") {
+
+        authMode = "signup";
+
+        button.textContent =
+          "Criar conta";
+
+        subtitle.textContent =
+          "Crie sua conta e comece sua história.";
+
+        switchButton.innerHTML =
+          'Já tenho uma conta. <span>Entrar</span>';
+
+      } else {
+
+        authMode = "login";
+
+        button.textContent =
+          "Entrar";
+
+        subtitle.textContent =
+          "Entre para continuar suas histórias.";
+
+        switchButton.innerHTML =
+          'Ainda não tenho uma conta. <span>Criar conta</span>';
+
+      }
+    }
+
+
+    async function handleAuth() {
+
+      const email =
+        document
+          .getElementById("authEmail")
+          .value
+          .trim();
+
+      const password =
+        document
+          .getElementById("authPassword")
+          .value;
+
+      const button =
+        document.getElementById("authButton");
+
+      const message =
+        document.getElementById("authMessage");
+
+
+      message.textContent = "";
+      message.className = "auth-error";
+
+
+      if (!email || !password) {
+
+        message.textContent =
+          "Preencha seu e-mail e sua senha.";
+
+        return;
+      }
+
+
+      if (password.length < 6) {
+
+        message.textContent =
+          "A senha precisa ter pelo menos 6 caracteres.";
+
+        return;
+      }
+
+
+      button.disabled = true;
+
+      button.textContent =
+        authMode === "login"
+          ? "Entrando..."
+          : "Criando...";
+
+
+      try {
+
+        if (authMode === "signup") {
+
+          const {
+            data,
+            error
+          } =
+            await supabaseClient.auth.signUp({
+              email,
+              password
+            });
+
+
+          if (error) {
+            throw error;
+          }
+
+
+          if (data.session) {
+
+            showApp();
+
+          } else {
+
+            message.className =
+              "auth-error auth-success";
+
+            message.textContent =
+              "Conta criada. Verifique seu e-mail para confirmar o cadastro.";
+
+          }
+
+        } else {
+
+          const {
+            error
+          } =
+            await supabaseClient.auth.signInWithPassword({
+              email,
+              password
+            });
+
+
+          if (error) {
+            throw error;
+          }
+
+
+          showApp();
+        }
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+          translateAuthError(
+            error.message
+          );
+
+      } finally {
+
+        button.disabled = false;
+
+        button.textContent =
+          authMode === "login"
+            ? "Entrar"
+            : "Criar conta";
+      }
+    }
+
+
+    function translateAuthError(error) {
+
+      if (!error) {
+        return "Não foi possível continuar.";
+      }
+
+      if (
+        error.toLowerCase().includes(
+          "invalid login credentials"
+        )
+      ) {
+        return "E-mail ou senha incorretos.";
+      }
+
+      if (
+        error.toLowerCase().includes(
+          "user already registered"
+        )
+      ) {
+        return "Esse e-mail já possui uma conta.";
+      }
+
+      if (
+        error.toLowerCase().includes(
+          "password"
+        )
+      ) {
+        return "Verifique sua senha.";
+      }
+
+      return error;
+    }
+
+
+    function showApp() {
+
+      document.getElementById(
+        "authScreen"
+      ).style.display = "none";
+
+      document.getElementById(
+        "app"
+      ).style.display = "block";
+
+      setTimeout(() => {
+        input.focus();
+      }, 100);
+    }
+
+
+    async function checkSession() {
+
+      const {
+        data
+      } =
+        await supabaseClient.auth.getSession();
+
+
+      if (data.session) {
+
+        showApp();
+
+      } else {
+
+        document.getElementById(
+          "authScreen"
+        ).style.display = "flex";
+
+      }
+    }
+
+
+    supabaseClient.auth.onAuthStateChange(
+      (event, session) => {
+
+        if (session) {
+          showApp();
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       CHAT
+    ===================================================== */
+
     let conversation = [];
 
     let isThinking = false;
@@ -816,8 +1367,6 @@
     const sendButton =
       document.getElementById("sendButton");
 
-
-    /* ENVIA */
 
     async function sendMessage() {
 
@@ -852,6 +1401,7 @@
 
       setThinking(true);
 
+
       try {
 
         const response =
@@ -877,24 +1427,33 @@
             }
           );
 
+
         const data =
           await response.json();
 
+
         if (!response.ok) {
+
           throw new Error(
             data.error ||
             "Erro ao conversar com a Aura"
           );
+
         }
+
 
         conversation.push({
           role: "assistant",
           content: data.reply
         });
 
+
         setThinking(false);
 
-        await streamAura(data.reply);
+        await streamAura(
+          data.reply
+        );
+
 
       } catch (error) {
 
@@ -909,8 +1468,6 @@
     }
 
 
-    /* USUÁRIO */
-
     function addUserMessage(text) {
 
       const wrapper =
@@ -919,11 +1476,13 @@
       wrapper.className =
         "message user";
 
+
       const content =
         document.createElement("div");
 
       content.className =
         "message-content";
+
 
       const bubble =
         document.createElement("div");
@@ -934,17 +1493,22 @@
       bubble.textContent =
         text;
 
-      content.appendChild(bubble);
 
-      wrapper.appendChild(content);
+      content.appendChild(
+        bubble
+      );
 
-      chat.appendChild(wrapper);
+      wrapper.appendChild(
+        content
+      );
+
+      chat.appendChild(
+        wrapper
+      );
 
       scrollToBottom();
     }
 
-
-    /* RESPOSTA NORMAL DE ERRO */
 
     function addAuraInstant(text) {
 
@@ -954,11 +1518,13 @@
       wrapper.className =
         "message aura";
 
+
       const content =
         document.createElement("div");
 
       content.className =
         "message-content";
+
 
       const label =
         document.createElement("div");
@@ -968,6 +1534,7 @@
 
       label.textContent =
         "AURA";
+
 
       const bubble =
         document.createElement("div");
@@ -978,23 +1545,34 @@
       bubble.textContent =
         text;
 
-      content.appendChild(label);
-      content.appendChild(bubble);
 
-      wrapper.appendChild(content);
+      content.appendChild(
+        label
+      );
 
-      chat.appendChild(wrapper);
+      content.appendChild(
+        bubble
+      );
+
+      wrapper.appendChild(
+        content
+      );
+
+      chat.appendChild(
+        wrapper
+      );
 
       scrollToBottom();
     }
 
 
-    /* AURA PALAVRA POR PALAVRA */
-
     async function streamAura(text) {
 
       isThinking = true;
-      sendButton.disabled = true;
+
+      sendButton.disabled =
+        true;
+
 
       const wrapper =
         document.createElement("div");
@@ -1002,11 +1580,13 @@
       wrapper.className =
         "message aura streaming";
 
+
       const content =
         document.createElement("div");
 
       content.className =
         "message-content";
+
 
       const label =
         document.createElement("div");
@@ -1017,11 +1597,13 @@
       label.textContent =
         "AURA";
 
+
       const bubble =
         document.createElement("div");
 
       bubble.className =
         "bubble";
+
 
       const mist =
         document.createElement("div");
@@ -1029,22 +1611,31 @@
       mist.className =
         "mist";
 
-      bubble.appendChild(mist);
 
-      content.appendChild(label);
-      content.appendChild(bubble);
+      bubble.appendChild(
+        mist
+      );
 
-      wrapper.appendChild(content);
+      content.appendChild(
+        label
+      );
 
-      chat.appendChild(wrapper);
+      content.appendChild(
+        bubble
+      );
 
-      /*
-       * Cada palavra vira um elemento
-       * separado.
-       */
+      wrapper.appendChild(
+        content
+      );
+
+      chat.appendChild(
+        wrapper
+      );
+
 
       const parts =
         text.split(/(\s+)/);
+
 
       const words =
         parts.filter(
@@ -1052,29 +1643,40 @@
             part.trim().length > 0
         );
 
+
       let wordNumber = 0;
 
 
-      for (const part of parts) {
+      for (
+        const part of parts
+      ) {
 
         if (!part) {
           continue;
         }
 
 
-        if (part.trim() === "") {
+        if (
+          part.trim() === ""
+        ) {
 
           const space =
-            document.createTextNode(part);
+            document.createTextNode(
+              part
+            );
 
-          bubble.appendChild(space);
+          bubble.appendChild(
+            space
+          );
 
           continue;
         }
 
 
         const word =
-          document.createElement("span");
+          document.createElement(
+            "span"
+          );
 
         word.className =
           "stream-word";
@@ -1082,18 +1684,19 @@
         word.textContent =
           part;
 
-        bubble.appendChild(word);
 
+        bubble.appendChild(
+          word
+        );
 
-        /*
-         * A névoa acompanha
-         * aproximadamente o avanço.
-         */
 
         wordNumber++;
 
+
         const progress =
-          wordNumber / words.length;
+          wordNumber /
+          words.length;
+
 
         mist.style.left =
           `${Math.min(
@@ -1102,15 +1705,8 @@
           )}%`;
 
 
-        /*
-         * FORÇA uma pausa real.
-         *
-         * Não é 30ms.
-         * A resposta fica perceptivelmente
-         * sendo construída.
-         */
-
         let delay = 105;
+
 
         if (
           part.endsWith(".") ||
@@ -1127,7 +1723,6 @@
         ) {
 
           delay = 210;
-
         }
 
 
@@ -1145,11 +1740,14 @@
         "finished"
       );
 
+
       await wait(700);
+
 
       isThinking = false;
 
-      sendButton.disabled = false;
+      sendButton.disabled =
+        false;
 
       scrollToBottom();
     }
@@ -1159,14 +1757,17 @@
 
       return new Promise(
         resolve =>
-          setTimeout(resolve, ms)
+          setTimeout(
+            resolve,
+            ms
+          )
       );
     }
 
 
-    /* THINKING */
-
-    function setThinking(thinking) {
+    function setThinking(
+      thinking
+    ) {
 
       isThinking =
         thinking;
@@ -1174,27 +1775,34 @@
       sendButton.disabled =
         thinking;
 
+
       const old =
         document.getElementById(
           "thinking"
         );
 
+
       if (old) {
         old.remove();
       }
+
 
       if (!thinking) {
         return;
       }
 
+
       const element =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       element.id =
         "thinking";
 
       element.className =
         "thinking";
+
 
       element.innerHTML = `
 
@@ -1206,31 +1814,33 @@
 
       `;
 
-      chat.appendChild(element);
+
+      chat.appendChild(
+        element
+      );
 
       scrollToBottom();
     }
 
 
-    /* SCROLL */
-
     function scrollToBottom() {
 
-      requestAnimationFrame(() => {
+      requestAnimationFrame(
+        () => {
 
-        chat.scrollTop =
-          chat.scrollHeight;
+          chat.scrollTop =
+            chat.scrollHeight;
 
-      });
+        }
+      );
     }
 
-
-    /* TEXTAREA */
 
     input.addEventListener(
       "input",
       resizeInput
     );
+
 
     function resizeInput() {
 
@@ -1244,8 +1854,6 @@
         ) + "px";
     }
 
-
-    /* ENTER */
 
     input.addEventListener(
       "keydown",
@@ -1264,11 +1872,10 @@
     );
 
 
-    /* NOVA HISTÓRIA */
-
     function newStory() {
 
       conversation = [];
+
 
       chat.innerHTML = `
 
@@ -1297,6 +1904,7 @@
 
       `;
 
+
       input.value = "";
 
       resizeInput();
@@ -1308,7 +1916,11 @@
     }
 
 
-    input.focus();
+    /* =====================================================
+       INICIALIZAÇÃO
+    ===================================================== */
+
+    checkSession();
 
   </script>
 
