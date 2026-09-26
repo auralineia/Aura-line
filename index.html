@@ -1,3 +1,12 @@
+<!--
+  AURA LINE
+  Atualização:
+  - Sistema de idioma: PT-BR / EN / ES
+  - Área de suporte ao cliente
+  - Configurações da Aura
+  - Mantidos: Supabase, autenticação, histórias, créditos,
+    chat, streaming e integração com /api/chat
+-->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -34,7 +43,8 @@
     }
     button,
     input,
-    textarea {
+    textarea,
+    select {
       font: inherit;
     }
     button {
@@ -147,16 +157,10 @@
       padding: 0 16px;
       font-size: 15px;
       backdrop-filter: blur(18px);
-      transition:
-        border-color .25s ease,
-        background .25s ease,
-        box-shadow .25s ease;
     }
     .auth-input:focus {
       border-color: rgba(255, 108, 183, .45);
-      background: rgba(255,255,255,.055);
-      box-shadow:
-        0 0 24px rgba(255, 68, 157, .07);
+      box-shadow: 0 0 24px rgba(255, 68, 157, .07);
     }
     .auth-input::placeholder {
       color: rgba(255,255,255,.27);
@@ -172,15 +176,7 @@
       font-weight: 600;
       cursor: pointer;
       margin-top: 5px;
-      box-shadow:
-        0 10px 30px rgba(255, 68, 157, .11);
-      transition:
-        transform .2s ease,
-        box-shadow .2s ease,
-        opacity .2s ease;
-    }
-    .auth-button:active {
-      transform: scale(.985);
+      box-shadow: 0 10px 30px rgba(255, 68, 157, .11);
     }
     .auth-button:disabled {
       opacity: .45;
@@ -260,17 +256,6 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition:
-        transform .18s ease,
-        background .18s ease,
-        border-color .18s ease;
-    }
-    .top-action:active {
-      transform: scale(.92);
-    }
-    .top-action:hover {
-      background: rgba(255,255,255,.055);
-      border-color: rgba(255, 105, 184, .14);
     }
     .hamburger {
       width: 18px;
@@ -357,21 +342,6 @@
       font-size: 11px;
       font-weight: 600;
       cursor: pointer;
-      transition: .2s ease;
-    }
-    .credits-pill:hover {
-      background: rgba(255,68,157,.075);
-      border-color: rgba(255,105,184,.20);
-    }
-    .credits-pill.low {
-      color: #ffd1e3;
-      border-color: rgba(255,157,202,.28);
-      background: rgba(255,105,184,.09);
-    }
-    .credits-pill.empty {
-      color: #fff;
-      border-color: rgba(255,157,202,.35);
-      background: rgba(255,68,157,.13);
     }
     /* =====================================================
        SIDE MENU
@@ -410,8 +380,7 @@
       transform: translateX(-105%);
       transition:
         transform .36s cubic-bezier(.22,.8,.25,1);
-      box-shadow:
-        20px 0 70px rgba(0,0,0,.5);
+      box-shadow: 20px 0 70px rgba(0,0,0,.5);
       padding:
         max(16px, env(safe-area-inset-top))
         14px
@@ -467,18 +436,9 @@
       padding: 0 15px;
       cursor: pointer;
       margin-bottom: 12px;
-      transition: .18s ease;
-    }
-    .new-story-menu:active {
-      transform: scale(.97);
-    }
-    .new-story-menu:hover {
-      border-color: rgba(255,105,184,.20);
-      background: rgba(255,68,157,.06);
     }
     .new-story-icon {
       font-size: 21px;
-      font-weight: 300;
       color: #ff9dca;
     }
     .new-story-text {
@@ -489,7 +449,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 7px;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
     .menu-shortcut {
       height: 42px;
@@ -499,12 +459,6 @@
       color: rgba(255,255,255,.60);
       cursor: pointer;
       font-size: 11px;
-      transition: .18s ease;
-    }
-    .menu-shortcut:hover {
-      background: rgba(255,68,157,.045);
-      border-color: rgba(255,105,184,.12);
-      color: #ffb3d3;
     }
     .history-heading {
       display: flex;
@@ -534,9 +488,6 @@
       font-size: 12px;
       margin-bottom: 9px;
     }
-    .history-search:focus {
-      border-color: rgba(255,105,184,.22);
-    }
     .history-search::placeholder {
       color: rgba(255,255,255,.23);
     }
@@ -545,13 +496,6 @@
       overflow-y: auto;
       padding: 0 0 10px;
       -webkit-overflow-scrolling: touch;
-    }
-    .history-list::-webkit-scrollbar {
-      width: 3px;
-    }
-    .history-list::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,.08);
-      border-radius: 10px;
     }
     .history-empty {
       padding: 30px 12px;
@@ -574,15 +518,11 @@
       color: white;
       cursor: pointer;
       text-align: left;
-      transition:
-        background .2s ease,
-        border .2s ease;
     }
     .history-item:hover,
     .history-item.active {
       background: rgba(255,255,255,.045);
-      border-color:
-        rgba(255,105,184,.10);
+      border-color: rgba(255,105,184,.10);
     }
     .history-aura {
       width: 28px;
@@ -600,9 +540,6 @@
       inset: 0;
       border-radius: 50%;
       border: 1px solid rgba(255,105,184,.55);
-      box-shadow:
-        0 0 9px rgba(255,68,157,.10);
-      animation: pinkGlow 7s ease-in-out infinite;
     }
     .history-aura-ring::before {
       content: "";
@@ -616,8 +553,7 @@
       height: 5px;
       border-radius: 50%;
       background: #ff9dca;
-      box-shadow:
-        0 0 8px rgba(255,157,202,.72);
+      box-shadow: 0 0 8px rgba(255,157,202,.72);
     }
     .history-info {
       min-width: 0;
@@ -649,15 +585,6 @@
       color: rgba(255,255,255,.22);
       cursor: pointer;
       font-size: 13px;
-      transition: .18s ease;
-    }
-    .history-action:hover {
-      background: rgba(255,255,255,.055);
-      color: #ffb1d1;
-    }
-    .history-action.delete:hover {
-      color: #ff8fb9;
-      background: rgba(255,68,157,.08);
     }
     .account-area {
       border-top: 1px solid rgba(255,255,255,.055);
@@ -710,8 +637,30 @@
       margin-top: 6px;
       font-size: 11px;
       color: #ff9dca;
-      letter-spacing: .2px;
       font-weight: 500;
+    }
+    .menu-extra {
+      display: grid;
+      gap: 6px;
+      margin-top: 8px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,.045);
+    }
+    .menu-extra-button {
+      width: 100%;
+      height: 43px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      background: transparent;
+      color: rgba(255,255,255,.55);
+      text-align: left;
+      padding: 0 11px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .menu-extra-button:hover {
+      background: rgba(255,68,157,.045);
+      color: #ffb3d3;
     }
     .logout-button {
       width: 100%;
@@ -724,9 +673,6 @@
       padding: 0 11px;
       cursor: pointer;
       font-size: 12px;
-    }
-    .logout-button:active {
-      background: rgba(255,68,157,.07);
     }
     /* =====================================================
        CHAT
@@ -743,16 +689,6 @@
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
     }
-    .chat::-webkit-scrollbar {
-      width: 4px;
-    }
-    .chat::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,.09);
-      border-radius: 10px;
-    }
-    /* =====================================================
-       WELCOME / HOME
-    ===================================================== */
     .welcome {
       min-height: calc(100vh - 220px);
       display: flex;
@@ -791,8 +727,6 @@
       inset: 10px;
       border-radius: 50%;
       border: 1px solid rgba(255,255,255,.12);
-      box-shadow:
-        inset 0 0 22px rgba(255,255,255,.025);
     }
     .ring::after {
       content: "";
@@ -809,8 +743,7 @@
       filter: blur(11px);
       opacity: .58;
       z-index: -1;
-      animation:
-        coreHalo 6s ease-in-out infinite;
+      animation: coreHalo 6s ease-in-out infinite;
     }
     .core {
       width: 30px;
@@ -867,23 +800,6 @@
       color: rgba(255,255,255,.78);
       cursor: pointer;
       text-align: left;
-      transition:
-        transform .2s ease,
-        border-color .2s ease,
-        background .2s ease;
-    }
-    .welcome-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(255,105,184,.16);
-      background:
-        linear-gradient(
-          135deg,
-          rgba(255,255,255,.045),
-          rgba(255,68,157,.035)
-        );
-    }
-    .welcome-card:active {
-      transform: scale(.98);
     }
     .welcome-card-icon {
       color: #ff9dca;
@@ -915,8 +831,7 @@
     .message {
       display: flex;
       margin-bottom: 25px;
-      animation:
-        messageAppear .4s ease;
+      animation: messageAppear .4s ease;
     }
     .message.user {
       justify-content: flex-end;
@@ -960,46 +875,6 @@
       margin-bottom: 8px;
       padding-left: 3px;
     }
-    .stream-word {
-      display: inline;
-      opacity: 0;
-      filter: blur(5px);
-      animation:
-        wordReveal .20s ease forwards;
-    }
-    .mist {
-      position: absolute;
-      width: 115px;
-      height: 60px;
-      left: 0;
-      top: 50%;
-      transform:
-        translate(-50%, -50%);
-      border-radius: 50%;
-      pointer-events: none;
-      background:
-        radial-gradient(
-          ellipse,
-          rgba(255,153,202,.32),
-          rgba(255,68,157,.11) 40%,
-          transparent 72%
-        );
-      filter: blur(22px);
-      opacity: 0;
-      mix-blend-mode: screen;
-      transition:
-        left .12s linear,
-        opacity .25s ease;
-    }
-    .streaming .mist {
-      opacity: .55;
-      animation:
-        mistRotate 3.5s linear infinite,
-        mistPulse 1.7s ease-in-out infinite;
-    }
-    .finished .mist {
-      opacity: 0;
-    }
     /* =====================================================
        THINKING
     ===================================================== */
@@ -1025,8 +900,7 @@
           rgba(255,68,157,.12) 68%,
           transparent 72%
         );
-      box-shadow:
-        0 0 11px rgba(255,68,157,.32);
+      box-shadow: 0 0 11px rgba(255,68,157,.32);
       animation:
         thinkingPulse 1.8s ease-in-out infinite,
         pinkGlow 3s ease-in-out infinite;
@@ -1073,20 +947,9 @@
       font-size: 15px;
       line-height: 1.4;
       backdrop-filter: blur(18px);
-      transition:
-        border-color .25s ease,
-        box-shadow .25s ease;
-    }
-    #messageInput:focus {
-      border-color: rgba(255,105,184,.35);
-      box-shadow:
-        0 0 25px rgba(255,68,157,.055);
     }
     #messageInput::placeholder {
       color: rgba(255,255,255,.27);
-    }
-    #messageInput:disabled {
-      opacity: .55;
     }
     #sendButton {
       width: 52px;
@@ -1098,22 +961,13 @@
       color: #070609;
       cursor: pointer;
       font-size: 19px;
-      box-shadow:
-        0 8px 25px rgba(255,68,157,.11);
-      transition:
-        transform .18s,
-        opacity .18s,
-        box-shadow .18s;
-    }
-    #sendButton:active {
-      transform: scale(.94);
     }
     #sendButton:disabled {
       opacity: .32;
       cursor: default;
     }
     /* =====================================================
-       CREDIT MODAL
+       MODALS
     ===================================================== */
     .modal-backdrop {
       position: fixed;
@@ -1133,9 +987,9 @@
       opacity: 1;
       pointer-events: auto;
     }
-    .credit-modal {
+    .app-modal {
       width: min(520px, 100%);
-      max-height: min(720px, 88vh);
+      max-height: 88vh;
       overflow-y: auto;
       border: 1px solid rgba(255,255,255,.075);
       border-radius: 24px;
@@ -1146,13 +1000,12 @@
           transparent 42%
         ),
         rgba(10,10,13,.97);
-      box-shadow:
-        0 30px 100px rgba(0,0,0,.55);
+      box-shadow: 0 30px 100px rgba(0,0,0,.55);
       padding: 22px;
       transform: translateY(12px) scale(.98);
       transition: transform .25s ease;
     }
-    .modal-backdrop.open .credit-modal {
+    .modal-backdrop.open .app-modal {
       transform: translateY(0) scale(1);
     }
     .modal-header {
@@ -1180,6 +1033,155 @@
       cursor: pointer;
       font-size: 19px;
     }
+    /* =====================================================
+       SETTINGS
+    ===================================================== */
+    .settings-section {
+      margin-bottom: 20px;
+    }
+    .settings-label {
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,.28);
+      text-transform: uppercase;
+      margin-bottom: 9px;
+    }
+    .settings-card {
+      border: 1px solid rgba(255,255,255,.055);
+      border-radius: 16px;
+      background: rgba(255,255,255,.025);
+      overflow: hidden;
+    }
+    .settings-row {
+      min-height: 58px;
+      padding: 11px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      border-bottom: 1px solid rgba(255,255,255,.045);
+    }
+    .settings-row:last-child {
+      border-bottom: none;
+    }
+    .settings-row-title {
+      font-size: 13px;
+      color: rgba(255,255,255,.82);
+    }
+    .settings-row-description {
+      margin-top: 3px;
+      color: rgba(255,255,255,.27);
+      font-size: 10px;
+      line-height: 1.4;
+    }
+    .language-select {
+      min-width: 125px;
+      height: 38px;
+      padding: 0 10px;
+      border-radius: 11px;
+      border: 1px solid rgba(255,105,184,.12);
+      background: rgba(255,68,157,.045);
+      color: #ffb2d3;
+      outline: none;
+    }
+    .toggle {
+      width: 46px;
+      height: 27px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.07);
+      position: relative;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .toggle::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 19px;
+      height: 19px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.60);
+      transition: .2s ease;
+    }
+    .toggle.active {
+      background: rgba(255,68,157,.28);
+      border-color: rgba(255,105,184,.25);
+    }
+    .toggle.active::after {
+      left: 22px;
+      background: #ff9dca;
+    }
+    /* =====================================================
+       SUPPORT
+    ===================================================== */
+    .support-intro {
+      padding: 15px;
+      border-radius: 16px;
+      background: rgba(255,68,157,.045);
+      border: 1px solid rgba(255,105,184,.10);
+      color: rgba(255,255,255,.52);
+      font-size: 12px;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+    .support-options {
+      display: grid;
+      gap: 8px;
+    }
+    .support-option {
+      width: 100%;
+      padding: 15px;
+      border-radius: 15px;
+      border: 1px solid rgba(255,255,255,.055);
+      background: rgba(255,255,255,.025);
+      color: white;
+      text-align: left;
+      cursor: pointer;
+    }
+    .support-option-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .support-option-description {
+      color: rgba(255,255,255,.28);
+      font-size: 10px;
+      line-height: 1.45;
+    }
+    .support-form {
+      display: grid;
+      gap: 9px;
+      margin-top: 14px;
+    }
+    .support-input,
+    .support-textarea {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.07);
+      background: rgba(255,255,255,.035);
+      color: white;
+      outline: none;
+      padding: 13px;
+      font-size: 13px;
+    }
+    .support-textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    .support-send {
+      height: 48px;
+      border: none;
+      border-radius: 14px;
+      background: #ff9dca;
+      color: #080609;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    /* =====================================================
+       CREDITS
+    ===================================================== */
     .credit-balance {
       display: flex;
       align-items: center;
@@ -1226,15 +1228,6 @@
       background: rgba(255,255,255,.025);
       color: white;
       cursor: pointer;
-      transition: .2s ease;
-    }
-    .plan-card:hover {
-      border-color: rgba(255,105,184,.16);
-      background: rgba(255,68,157,.035);
-    }
-    .plan-card.current {
-      border-color: rgba(255,105,184,.20);
-      background: rgba(255,68,157,.05);
     }
     .plan-top {
       display: flex;
@@ -1279,14 +1272,12 @@
       left: 50%;
       bottom: 95px;
       z-index: 700;
-      transform:
-        translate(-50%, 20px);
+      transform: translate(-50%, 20px);
       padding: 11px 16px;
       border-radius: 13px;
       background: rgba(20,20,24,.94);
       border: 1px solid rgba(255,105,184,.12);
-      box-shadow:
-        0 15px 40px rgba(0,0,0,.35);
+      box-shadow: 0 15px 40px rgba(0,0,0,.35);
       color: rgba(255,255,255,.82);
       font-size: 12px;
       opacity: 0;
@@ -1297,8 +1288,7 @@
     }
     .toast.show {
       opacity: 1;
-      transform:
-        translate(-50%, 0);
+      transform: translate(-50%, 0);
     }
     /* =====================================================
        ANIMAÇÕES
@@ -1373,40 +1363,6 @@
         transform: translateY(0);
       }
     }
-    @keyframes wordReveal {
-      from {
-        opacity: 0;
-        filter: blur(5px);
-        transform: translateY(3px);
-      }
-      to {
-        opacity: 1;
-        filter: blur(0);
-        transform: translateY(0);
-      }
-    }
-    @keyframes mistRotate {
-      from {
-        transform:
-          translate(-50%, -50%)
-          rotate(0deg)
-          scale(.92);
-      }
-      to {
-        transform:
-          translate(-50%, -50%)
-          rotate(360deg)
-          scale(1.08);
-      }
-    }
-    @keyframes mistPulse {
-      0%,100% {
-        filter: blur(22px) brightness(.8);
-      }
-      50% {
-        filter: blur(28px) brightness(1.15);
-      }
-    }
     /* =====================================================
        MOBILE
     ===================================================== */
@@ -1443,19 +1399,11 @@
       .side-menu {
         width: min(350px, 91vw);
       }
-      .history-action {
-        opacity: .75;
-      }
-      .credits-pill {
-        min-width: 62px;
-        padding: 0 9px;
-        font-size: 10px;
-      }
       .brand-name {
         font-size: 11px;
         letter-spacing: 3px;
       }
-      .credit-modal {
+      .app-modal {
         border-radius: 21px;
         padding: 18px;
       }
@@ -1475,7 +1423,10 @@
       <div class="auth-title">
         AURA
       </div>
-      <div class="auth-subtitle">
+      <div
+        id="authSubtitle"
+        class="auth-subtitle"
+      >
         intelligence for your story
       </div>
       <div class="auth-form">
@@ -1548,7 +1499,6 @@
         <button
           class="close-menu"
           onclick="closeMenu()"
-          aria-label="Fechar menu"
         >
           ×
         </button>
@@ -1557,21 +1507,24 @@
         class="new-story-menu"
         onclick="newStory()"
       >
-        <span class="new-story-icon">
-          +
-        </span>
-        <span class="new-story-text">
+        <span class="new-story-icon">+</span>
+        <span
+          id="newStoryText"
+          class="new-story-text"
+        >
           Nova história
         </span>
       </button>
       <div class="menu-shortcuts">
         <button
+          id="creditsShortcut"
           class="menu-shortcut"
           onclick="openCreditsModal(); closeMenu();"
         >
           ✦&nbsp; Créditos
         </button>
         <button
+          id="searchShortcut"
           class="menu-shortcut"
           onclick="focusHistorySearch()"
         >
@@ -1579,7 +1532,10 @@
         </button>
       </div>
       <div class="history-heading">
-        <div class="history-title">
+        <div
+          id="historyTitle"
+          class="history-title"
+        >
           Suas histórias
         </div>
         <div
@@ -1609,7 +1565,10 @@
             A
           </div>
           <div class="account-info">
-            <div class="account-label">
+            <div
+              id="accountLabel"
+              class="account-label"
+            >
               CONTA
             </div>
             <div
@@ -1626,7 +1585,31 @@
             </div>
           </div>
         </div>
+        <div class="menu-extra">
+          <button
+            id="languageMenuButton"
+            class="menu-extra-button"
+            onclick="openSettingsModal(); closeMenu();"
+          >
+            ◌&nbsp;&nbsp; Idioma
+          </button>
+          <button
+            id="supportMenuButton"
+            class="menu-extra-button"
+            onclick="openSupportModal(); closeMenu();"
+          >
+            ?&nbsp;&nbsp; Suporte
+          </button>
+          <button
+            id="settingsMenuButton"
+            class="menu-extra-button"
+            onclick="openSettingsModal(); closeMenu();"
+          >
+            ⚙&nbsp;&nbsp; Configurações
+          </button>
+        </div>
         <button
+          id="logoutButton"
           class="logout-button"
           onclick="logout()"
         >
@@ -1662,7 +1645,6 @@
         id="topCredits"
         class="credits-pill"
         onclick="openCreditsModal()"
-        aria-label="Ver créditos"
       >
         ✦
         <span id="topCreditsValue">
@@ -1685,10 +1667,11 @@
           <div class="ring"></div>
           <div class="core"></div>
         </div>
-        <h1>
-          AURA
-        </h1>
-        <p class="tagline">
+        <h1>AURA</h1>
+        <p
+          id="tagline"
+          class="tagline"
+        >
           intelligence for your story
         </p>
         <div class="welcome-actions">
@@ -1696,13 +1679,17 @@
             class="welcome-card"
             onclick="newStory()"
           >
-            <div class="welcome-card-icon">
-              +
-            </div>
-            <div class="welcome-card-title">
+            <div class="welcome-card-icon">+</div>
+            <div
+              id="newStoryTitle"
+              class="welcome-card-title"
+            >
               Nova história
             </div>
-            <div class="welcome-card-description">
+            <div
+              id="newStoryDescription"
+              class="welcome-card-description"
+            >
               Comece um novo universo.
             </div>
           </button>
@@ -1710,13 +1697,17 @@
             class="welcome-card"
             onclick="openMenu()"
           >
-            <div class="welcome-card-icon">
-              ◌
-            </div>
-            <div class="welcome-card-title">
+            <div class="welcome-card-icon">◌</div>
+            <div
+              id="myStoriesTitle"
+              class="welcome-card-title"
+            >
               Minhas histórias
             </div>
-            <div class="welcome-card-description">
+            <div
+              id="myStoriesDescription"
+              class="welcome-card-description"
+            >
               Continue algo que já começou.
             </div>
           </button>
@@ -1724,13 +1715,17 @@
             class="welcome-card"
             onclick="openCreditsModal()"
           >
-            <div class="welcome-card-icon">
-              ✦
-            </div>
-            <div class="welcome-card-title">
+            <div class="welcome-card-icon">✦</div>
+            <div
+              id="creditsTitle"
+              class="welcome-card-title"
+            >
               Seus créditos
             </div>
-            <div class="welcome-card-description">
+            <div
+              id="creditsDescription"
+              class="welcome-card-description"
+            >
               Veja seu saldo e seus planos.
             </div>
           </button>
@@ -1772,18 +1767,24 @@
   <div
     id="creditModalBackdrop"
     class="modal-backdrop"
-    onclick="closeCreditsModal(event)"
+    onclick="closeModal(event, 'creditModalBackdrop')"
   >
     <div
-      class="credit-modal"
+      class="app-modal"
       onclick="event.stopPropagation()"
     >
       <div class="modal-header">
         <div>
-          <div class="modal-title">
+          <div
+            id="creditModalTitle"
+            class="modal-title"
+          >
             Aura Line
           </div>
-          <div class="modal-subtitle">
+          <div
+            id="creditModalSubtitle"
+            class="modal-subtitle"
+          >
             Créditos e planos
           </div>
         </div>
@@ -1796,7 +1797,10 @@
       </div>
       <div class="credit-balance">
         <div>
-          <div class="credit-balance-label">
+          <div
+            id="creditBalanceLabel"
+            class="credit-balance-label"
+          >
             Saldo disponível
           </div>
           <div
@@ -1813,23 +1817,35 @@
           créditos
         </div>
       </div>
-      <div class="plans-title">
+      <div
+        id="plansTitle"
+        class="plans-title"
+      >
         Estrutura de planos
       </div>
       <div class="plan-list">
         <button
-          class="plan-card current"
+          class="plan-card"
           onclick="showComingSoon('O plano gratuito já está ativo na sua conta.')"
         >
           <div class="plan-top">
-            <div class="plan-name">
+            <div
+              id="freePlanName"
+              class="plan-name"
+            >
               Gratuito
             </div>
-            <div class="plan-badge">
+            <div
+              id="freePlanBadge"
+              class="plan-badge"
+            >
               Atual
             </div>
           </div>
-          <div class="plan-description">
+          <div
+            id="freePlanDescription"
+            class="plan-description"
+          >
             Acesso à Aura com seus créditos disponíveis.
           </div>
         </button>
@@ -1838,14 +1854,20 @@
           onclick="showComingSoon('Os planos pagos serão liberados na próxima etapa.')"
         >
           <div class="plan-top">
-            <div class="plan-name">
+            <div
+              id="plusPlanName"
+              class="plan-name"
+            >
               Plus
             </div>
             <div class="plan-price">
               Em breve
             </div>
           </div>
-          <div class="plan-description">
+          <div
+            id="plusPlanDescription"
+            class="plan-description"
+          >
             Mais créditos, maior uso e recursos adicionais.
           </div>
         </button>
@@ -1854,21 +1876,255 @@
           onclick="showComingSoon('O plano Pro será conectado ao sistema de pagamentos.')"
         >
           <div class="plan-top">
-            <div class="plan-name">
+            <div
+              id="proPlanName"
+              class="plan-name"
+            >
               Pro
             </div>
             <div class="plan-price">
               Em breve
             </div>
           </div>
-          <div class="plan-description">
+          <div
+            id="proPlanDescription"
+            class="plan-description"
+          >
             Estrutura preparada para uma experiência avançada.
           </div>
         </button>
       </div>
-      <div class="modal-note">
+      <div
+        id="modalNote"
+        class="modal-note"
+      >
         Os pagamentos reais serão conectados posteriormente.
         Por enquanto, esta área prepara a experiência de monetização.
+      </div>
+    </div>
+  </div>
+  <!-- =====================================================
+       SETTINGS MODAL
+  ===================================================== -->
+  <div
+    id="settingsModalBackdrop"
+    class="modal-backdrop"
+    onclick="closeModal(event, 'settingsModalBackdrop')"
+  >
+    <div
+      class="app-modal"
+      onclick="event.stopPropagation()"
+    >
+      <div class="modal-header">
+        <div>
+          <div
+            id="settingsTitle"
+            class="modal-title"
+          >
+            Configurações
+          </div>
+          <div
+            id="settingsSubtitle"
+            class="modal-subtitle"
+          >
+            Personalize sua experiência.
+          </div>
+        </div>
+        <button
+          class="modal-close"
+          onclick="closeSettingsModal()"
+        >
+          ×
+        </button>
+      </div>
+      <div class="settings-section">
+        <div
+          id="languageLabel"
+          class="settings-label"
+        >
+          Idioma
+        </div>
+        <div class="settings-card">
+          <div class="settings-row">
+            <div>
+              <div
+                id="languageTitle"
+                class="settings-row-title"
+              >
+                Idioma da interface
+              </div>
+              <div
+                id="languageDescription"
+                class="settings-row-description"
+              >
+                Escolha como a Aura Line será exibida.
+              </div>
+            </div>
+            <select
+              id="languageSelect"
+              class="language-select"
+              onchange="changeLanguage(this.value)"
+            >
+              <option value="pt-BR">
+                Português
+              </option>
+              <option value="en">
+                English
+              </option>
+              <option value="es">
+                Español
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <div
+          id="experienceLabel"
+          class="settings-label"
+        >
+          Experiência
+        </div>
+        <div class="settings-card">
+          <div class="settings-row">
+            <div>
+              <div
+                id="streamingTitle"
+                class="settings-row-title"
+              >
+                Resposta animada
+              </div>
+              <div
+                id="streamingDescription"
+                class="settings-row-description"
+              >
+                Exibe a resposta da Aura gradualmente.
+              </div>
+            </div>
+            <button
+              id="streamingToggle"
+              class="toggle active"
+              onclick="togglePreference('streaming')"
+              aria-label="Resposta animada"
+            ></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- =====================================================
+       SUPPORT MODAL
+  ===================================================== -->
+  <div
+    id="supportModalBackdrop"
+    class="modal-backdrop"
+    onclick="closeModal(event, 'supportModalBackdrop')"
+  >
+    <div
+      class="app-modal"
+      onclick="event.stopPropagation()"
+    >
+      <div class="modal-header">
+        <div>
+          <div
+            id="supportTitle"
+            class="modal-title"
+          >
+            Suporte
+          </div>
+          <div
+            id="supportSubtitle"
+            class="modal-subtitle"
+          >
+            Estamos aqui para ajudar.
+          </div>
+        </div>
+        <button
+          class="modal-close"
+          onclick="closeSupportModal()"
+        >
+          ×
+        </button>
+      </div>
+      <div
+        id="supportIntro"
+        class="support-intro"
+      >
+        Encontrou um problema, tem uma dúvida ou quer enviar uma sugestão?
+        Use este espaço para falar com a equipe da Aura Line.
+      </div>
+      <div class="support-options">
+        <button
+          class="support-option"
+          onclick="selectSupportType('Problema técnico')"
+        >
+          <div
+            id="technicalSupportTitle"
+            class="support-option-title"
+          >
+            Problema técnico
+          </div>
+          <div
+            id="technicalSupportDescription"
+            class="support-option-description"
+          >
+            Algo não está funcionando como deveria.
+          </div>
+        </button>
+        <button
+          class="support-option"
+          onclick="selectSupportType('Sugestão')"
+        >
+          <div
+            id="suggestionSupportTitle"
+            class="support-option-title"
+          >
+            Sugestão
+          </div>
+          <div
+            id="suggestionSupportDescription"
+            class="support-option-description"
+          >
+            Envie uma ideia para melhorar a Aura Line.
+          </div>
+        </button>
+        <button
+          class="support-option"
+          onclick="selectSupportType('Conta ou créditos')"
+        >
+          <div
+            id="accountSupportTitle"
+            class="support-option-title"
+          >
+            Conta ou créditos
+          </div>
+          <div
+            id="accountSupportDescription"
+            class="support-option-description"
+          >
+            Problemas relacionados à sua conta ou créditos.
+          </div>
+        </button>
+      </div>
+      <div class="support-form">
+        <input
+          id="supportSubject"
+          class="support-input"
+          type="text"
+          placeholder="Assunto"
+        >
+        <textarea
+          id="supportMessage"
+          class="support-textarea"
+          placeholder="Descreva o que aconteceu..."
+        ></textarea>
+        <button
+          id="supportSendButton"
+          class="support-send"
+          onclick="sendSupportRequest()"
+        >
+          Enviar mensagem
+        </button>
       </div>
     </div>
   </div>
@@ -1904,6 +2160,14 @@
     let appInitialized = false;
     let userCredits = 0;
     let historySearchTerm = "";
+    let currentLanguage =
+      localStorage.getItem("aura_language") ||
+      "pt-BR";
+    let preferences = {
+      streaming:
+        localStorage.getItem("aura_streaming") !== "false"
+    };
+    let selectedSupportType = "";
     const chat =
       document.getElementById("chat");
     const input =
@@ -1911,36 +2175,756 @@
     const sendButton =
       document.getElementById("sendButton");
     /* =====================================================
+       TRANSLATIONS
+    ===================================================== */
+    const translations = {
+      "pt-BR": {
+        authSubtitle:
+          "intelligence for your story",
+        login:
+          "Entrar",
+        signup:
+          "Criar conta",
+        email:
+          "Seu e-mail",
+        password:
+          "Sua senha",
+        authSwitchLogin:
+          'Ainda não tenho uma conta. <span>Criar conta</span>',
+        authSwitchSignup:
+          'Já tenho uma conta. <span>Entrar</span>',
+        newStory:
+          "Nova história",
+        credits:
+          "Créditos",
+        search:
+          "Buscar",
+        stories:
+          "Suas histórias",
+        searchHistory:
+          "Buscar uma história...",
+        account:
+          "CONTA",
+        language:
+          "Idioma",
+        support:
+          "Suporte",
+        settings:
+          "Configurações",
+        logout:
+          "↪  Sair da conta",
+        tagline:
+          "intelligence for your story",
+        newStoryDescription:
+          "Comece um novo universo.",
+        myStories:
+          "Minhas histórias",
+        myStoriesDescription:
+          "Continue algo que já começou.",
+        creditsTitle:
+          "Seus créditos",
+        creditsDescription:
+          "Veja seu saldo e seus planos.",
+        startStory:
+          "Comece uma história...",
+        continueStory:
+          "Continue sua história...",
+        newStoryPlaceholder:
+          "Comece uma nova história...",
+        creditAvailable:
+          "créditos disponíveis",
+        creditAvailableOne:
+          "crédito disponível",
+        noCredits:
+          "Você está sem créditos. <strong>Veja as opções disponíveis.</strong>",
+        yourCredits:
+          "Você tem",
+        available:
+          "disponíveis.",
+        thinking:
+          "A Aura está pensando...",
+        creditsModalSubtitle:
+          "Créditos e planos",
+        balance:
+          "Saldo disponível",
+        plans:
+          "Estrutura de planos",
+        free:
+          "Gratuito",
+        current:
+          "Atual",
+        freeDescription:
+          "Acesso à Aura com seus créditos disponíveis.",
+        plusDescription:
+          "Mais créditos, maior uso e recursos adicionais.",
+        proDescription:
+          "Estrutura preparada para uma experiência avançada.",
+        comingSoonPayments:
+          "Os planos pagos serão liberados na próxima etapa.",
+        freeActive:
+          "O plano gratuito já está ativo na sua conta.",
+        proSoon:
+          "O plano Pro será conectado ao sistema de pagamentos.",
+        modalNote:
+          "Os pagamentos reais serão conectados posteriormente. Por enquanto, esta área prepara a experiência de monetização.",
+        settingsSubtitle:
+          "Personalize sua experiência.",
+        interfaceLanguage:
+          "Idioma da interface",
+        languageDescription:
+          "Escolha como a Aura Line será exibida.",
+        experience:
+          "Experiência",
+        animatedResponse:
+          "Resposta animada",
+        animatedResponseDescription:
+          "Exibe a resposta da Aura gradualmente.",
+        supportSubtitle:
+          "Estamos aqui para ajudar.",
+        supportIntro:
+          "Encontrou um problema, tem uma dúvida ou quer enviar uma sugestão? Use este espaço para falar com a equipe da Aura Line.",
+        technical:
+          "Problema técnico",
+        technicalDescription:
+          "Algo não está funcionando como deveria.",
+        suggestion:
+          "Sugestão",
+        suggestionDescription:
+          "Envie uma ideia para melhorar a Aura Line.",
+        accountSupport:
+          "Conta ou créditos",
+        accountSupportDescription:
+          "Problemas relacionados à sua conta ou créditos.",
+        subject:
+          "Assunto",
+        supportMessage:
+          "Descreva o que aconteceu...",
+        sendMessage:
+          "Enviar mensagem",
+        supportSent:
+          "Sua mensagem foi preparada. A equipe poderá receber seu contato na próxima etapa.",
+        historyEmpty:
+          "Suas histórias aparecerão aqui.<br><br>Comece uma nova aventura.",
+        historyNotFound:
+          "Nenhuma história encontrada.",
+        newStoryToast:
+          "Nova história.",
+        deleted:
+          "História apagada.",
+        renamed:
+          "História renomeada.",
+        noCreditsToast:
+          "Você não possui mais créditos.",
+        creditError:
+          "Não foi possível usar seu crédito.",
+        responseError:
+          "Não consegui responder agora. O crédito foi devolvido. Tente novamente em alguns instantes."
+      },
+      "en": {
+        authSubtitle:
+          "intelligence for your story",
+        login:
+          "Sign in",
+        signup:
+          "Create account",
+        email:
+          "Your email",
+        password:
+          "Your password",
+        authSwitchLogin:
+          'I don’t have an account. <span>Create one</span>',
+        authSwitchSignup:
+          'I already have an account. <span>Sign in</span>',
+        newStory:
+          "New story",
+        credits:
+          "Credits",
+        search:
+          "Search",
+        stories:
+          "Your stories",
+        searchHistory:
+          "Search a story...",
+        account:
+          "ACCOUNT",
+        language:
+          "Language",
+        support:
+          "Support",
+        settings:
+          "Settings",
+        logout:
+          "↪  Sign out",
+        tagline:
+          "intelligence for your story",
+        newStoryDescription:
+          "Start a new universe.",
+        myStories:
+          "My stories",
+        myStoriesDescription:
+          "Continue something you already started.",
+        creditsTitle:
+          "Your credits",
+        creditsDescription:
+          "View your balance and plans.",
+        startStory:
+          "Start a story...",
+        continueStory:
+          "Continue your story...",
+        newStoryPlaceholder:
+          "Start a new story...",
+        creditAvailable:
+          "credits available",
+        creditAvailableOne:
+          "credit available",
+        noCredits:
+          "You are out of credits. <strong>View available options.</strong>",
+        yourCredits:
+          "You have",
+        available:
+          "available.",
+        thinking:
+          "Aura is thinking...",
+        creditsModalSubtitle:
+          "Credits and plans",
+        balance:
+          "Available balance",
+        plans:
+          "Plan structure",
+        free:
+          "Free",
+        current:
+          "Current",
+        freeDescription:
+          "Access Aura with your available credits.",
+        plusDescription:
+          "More credits, higher usage and additional features.",
+        proDescription:
+          "Structure prepared for an advanced experience.",
+        comingSoonPayments:
+          "Paid plans will be released in the next stage.",
+        freeActive:
+          "The free plan is already active on your account.",
+        proSoon:
+          "The Pro plan will be connected to payments.",
+        modalNote:
+          "Real payments will be connected later. For now, this area prepares the monetization experience.",
+        settingsSubtitle:
+          "Customize your experience.",
+        interfaceLanguage:
+          "Interface language",
+        languageDescription:
+          "Choose how Aura Line is displayed.",
+        experience:
+          "Experience",
+        animatedResponse:
+          "Animated response",
+        animatedResponseDescription:
+          "Displays Aura's response gradually.",
+        supportSubtitle:
+          "We're here to help.",
+        supportIntro:
+          "Found a problem, have a question or want to send a suggestion? Use this space to contact the Aura Line team.",
+        technical:
+          "Technical issue",
+        technicalDescription:
+          "Something isn't working as expected.",
+        suggestion:
+          "Suggestion",
+        suggestionDescription:
+          "Send an idea to improve Aura Line.",
+        accountSupport:
+          "Account or credits",
+        accountSupportDescription:
+          "Problems related to your account or credits.",
+        subject:
+          "Subject",
+        supportMessage:
+          "Describe what happened...",
+        sendMessage:
+          "Send message",
+        supportSent:
+          "Your message has been prepared. Team contact will be connected in the next stage.",
+        historyEmpty:
+          "Your stories will appear here.<br><br>Start a new adventure.",
+        historyNotFound:
+          "No stories found.",
+        newStoryToast:
+          "New story.",
+        deleted:
+          "Story deleted.",
+        renamed:
+          "Story renamed.",
+        noCreditsToast:
+          "You don't have any credits left.",
+        creditError:
+          "Could not use your credit.",
+        responseError:
+          "I couldn't respond right now. Your credit was returned. Try again shortly."
+      },
+      "es": {
+        authSubtitle:
+          "intelligence for your story",
+        login:
+          "Entrar",
+        signup:
+          "Crear cuenta",
+        email:
+          "Tu correo",
+        password:
+          "Tu contraseña",
+        authSwitchLogin:
+          'Aún no tengo una cuenta. <span>Crear cuenta</span>',
+        authSwitchSignup:
+          'Ya tengo una cuenta. <span>Entrar</span>',
+        newStory:
+          "Nueva historia",
+        credits:
+          "Créditos",
+        search:
+          "Buscar",
+        stories:
+          "Tus historias",
+        searchHistory:
+          "Buscar una historia...",
+        account:
+          "CUENTA",
+        language:
+          "Idioma",
+        support:
+          "Soporte",
+        settings:
+          "Configuración",
+        logout:
+          "↪  Cerrar sesión",
+        tagline:
+          "intelligence for your story",
+        newStoryDescription:
+          "Comienza un nuevo universo.",
+        myStories:
+          "Mis historias",
+        myStoriesDescription:
+          "Continúa algo que ya comenzaste.",
+        creditsTitle:
+          "Tus créditos",
+        creditsDescription:
+          "Consulta tu saldo y tus planes.",
+        startStory:
+          "Comienza una historia...",
+        continueStory:
+          "Continúa tu historia...",
+        newStoryPlaceholder:
+          "Comienza una nueva historia...",
+        creditAvailable:
+          "créditos disponibles",
+        creditAvailableOne:
+          "crédito disponible",
+        noCredits:
+          "Te has quedado sin créditos. <strong>Consulta las opciones disponibles.</strong>",
+        yourCredits:
+          "Tienes",
+        available:
+          "disponibles.",
+        thinking:
+          "Aura está pensando...",
+        creditsModalSubtitle:
+          "Créditos y planes",
+        balance:
+          "Saldo disponible",
+        plans:
+          "Estructura de planes",
+        free:
+          "Gratuito",
+        current:
+          "Actual",
+        freeDescription:
+          "Acceso a Aura con tus créditos disponibles.",
+        plusDescription:
+          "Más créditos, mayor uso y funciones adicionales.",
+        proDescription:
+          "Estructura preparada para una experiencia avanzada.",
+        comingSoonPayments:
+          "Los planes pagos estarán disponibles en la próxima etapa.",
+        freeActive:
+          "El plan gratuito ya está activo en tu cuenta.",
+        proSoon:
+          "El plan Pro se conectará a los pagos.",
+        modalNote:
+          "Los pagos reales se conectarán posteriormente. Por ahora, esta área prepara la experiencia de monetización.",
+        settingsSubtitle:
+          "Personaliza tu experiencia.",
+        interfaceLanguage:
+          "Idioma de la interfaz",
+        languageDescription:
+          "Elige cómo se muestra Aura Line.",
+        experience:
+          "Experiencia",
+        animatedResponse:
+          "Respuesta animada",
+        animatedResponseDescription:
+          "Muestra la respuesta de Aura gradualmente.",
+        supportSubtitle:
+          "Estamos aquí para ayudarte.",
+        supportIntro:
+          "¿Encontraste un problema, tienes una duda o quieres enviar una sugerencia? Usa este espacio para contactar al equipo de Aura Line.",
+        technical:
+          "Problema técnico",
+        technicalDescription:
+          "Algo no funciona como debería.",
+        suggestion:
+          "Sugerencia",
+        suggestionDescription:
+          "Envía una idea para mejorar Aura Line.",
+        accountSupport:
+          "Cuenta o créditos",
+        accountSupportDescription:
+          "Problemas relacionados con tu cuenta o créditos.",
+        subject:
+          "Asunto",
+        supportMessage:
+          "Describe lo que ocurrió...",
+        sendMessage:
+          "Enviar mensaje",
+        supportSent:
+          "Tu mensaje ha sido preparado. El contacto con el equipo se conectará en la próxima etapa.",
+        historyEmpty:
+          "Tus historias aparecerán aquí.<br><br>Comienza una nueva aventura.",
+        historyNotFound:
+          "No se encontraron historias.",
+        newStoryToast:
+          "Nueva historia.",
+        deleted:
+          "Historia eliminada.",
+        renamed:
+          "Historia renombrada.",
+        noCreditsToast:
+          "No tienes más créditos.",
+        creditError:
+          "No fue posible utilizar tu crédito.",
+        responseError:
+          "No pude responder ahora. El crédito fue devuelto. Inténtalo nuevamente en unos instantes."
+      }
+    };
+    function t(key) {
+      return (
+        translations[currentLanguage]?.[key] ||
+        translations["pt-BR"][key] ||
+        key
+      );
+    }
+    /* =====================================================
+       LANGUAGE
+    ===================================================== */
+    function applyLanguage() {
+      document.documentElement.lang =
+        currentLanguage;
+      document.title =
+        "Aura Line";
+      const setText =
+        (id, key) => {
+          const element =
+            document.getElementById(id);
+          if (element) {
+            element.innerHTML =
+              t(key);
+          }
+        };
+      const setPlaceholder =
+        (id, key) => {
+          const element =
+            document.getElementById(id);
+          if (element) {
+            element.placeholder =
+              t(key);
+          }
+        };
+      document.getElementById(
+        "authSubtitle"
+      ).textContent =
+        t("authSubtitle");
+      document.getElementById(
+        "authButton"
+      ).textContent =
+        authMode === "login"
+          ? t("login")
+          : t("signup");
+      document.getElementById(
+        "authSwitch"
+      ).innerHTML =
+        authMode === "login"
+          ? t("authSwitchLogin")
+          : t("authSwitchSignup");
+      setPlaceholder(
+        "authEmail",
+        "email"
+      );
+      setPlaceholder(
+        "authPassword",
+        "password"
+      );
+      setText(
+        "newStoryText",
+        "newStory"
+      );
+      setText(
+        "creditsShortcut",
+        "credits"
+      );
+      setText(
+        "searchShortcut",
+        "search"
+      );
+      setText(
+        "historyTitle",
+        "stories"
+      );
+      setPlaceholder(
+        "historySearch",
+        "searchHistory"
+      );
+      setText(
+        "accountLabel",
+        "account"
+      );
+      setText(
+        "languageMenuButton",
+        "language"
+      );
+      setText(
+        "supportMenuButton",
+        "support"
+      );
+      setText(
+        "settingsMenuButton",
+        "settings"
+      );
+      setText(
+        "logoutButton",
+        "logout"
+      );
+      setText(
+        "tagline",
+        "tagline"
+      );
+      setText(
+        "newStoryTitle",
+        "newStory"
+      );
+      setText(
+        "newStoryDescription",
+        "newStoryDescription"
+      );
+      setText(
+        "myStoriesTitle",
+        "myStories"
+      );
+      setText(
+        "myStoriesDescription",
+        "myStoriesDescription"
+      );
+      setText(
+        "creditsTitle",
+        "creditsTitle"
+      );
+      setText(
+        "creditsDescription",
+        "creditsDescription"
+      );
+      if (!currentStoryId) {
+        setPlaceholder(
+          "messageInput",
+          "startStory"
+        );
+      } else {
+        setPlaceholder(
+          "messageInput",
+          "continueStory"
+        );
+      }
+      setText(
+        "creditModalSubtitle",
+        "creditsModalSubtitle"
+      );
+      setText(
+        "creditBalanceLabel",
+        "balance"
+      );
+      setText(
+        "plansTitle",
+        "plans"
+      );
+      setText(
+        "freePlanName",
+        "free"
+      );
+      setText(
+        "freePlanBadge",
+        "current"
+      );
+      setText(
+        "freePlanDescription",
+        "freeDescription"
+      );
+      setText(
+        "plusPlanDescription",
+        "plusDescription"
+      );
+      setText(
+        "proPlanDescription",
+        "proDescription"
+      );
+      setText(
+        "modalNote",
+        "modalNote"
+      );
+      setText(
+        "settingsTitle",
+        "settings"
+      );
+      setText(
+        "settingsSubtitle",
+        "settingsSubtitle"
+      );
+      setText(
+        "languageLabel",
+        "language"
+      );
+      setText(
+        "languageTitle",
+        "interfaceLanguage"
+      );
+      setText(
+        "languageDescription",
+        "languageDescription"
+      );
+      setText(
+        "experienceLabel",
+        "experience"
+      );
+      setText(
+        "streamingTitle",
+        "animatedResponse"
+      );
+      setText(
+        "streamingDescription",
+        "animatedResponseDescription"
+      );
+      setText(
+        "supportTitle",
+        "support"
+      );
+      setText(
+        "supportSubtitle",
+        "supportSubtitle"
+      );
+      setText(
+        "supportIntro",
+        "supportIntro"
+      );
+      setText(
+        "technicalSupportTitle",
+        "technical"
+      );
+      setText(
+        "technicalSupportDescription",
+        "technicalDescription"
+      );
+      setText(
+        "suggestionSupportTitle",
+        "suggestion"
+      );
+      setText(
+        "suggestionSupportDescription",
+        "suggestionDescription"
+      );
+      setText(
+        "accountSupportTitle",
+        "accountSupport"
+      );
+      setText(
+        "accountSupportDescription",
+        "accountSupportDescription"
+      );
+      setPlaceholder(
+        "supportSubject",
+        "subject"
+      );
+      setPlaceholder(
+        "supportMessage",
+        "supportMessage"
+      );
+      setText(
+        "supportSendButton",
+        "sendMessage"
+      );
+      const select =
+        document.getElementById(
+          "languageSelect"
+        );
+      if (select) {
+        select.value =
+          currentLanguage;
+      }
+      updateCreditsUI();
+      updateWelcome();
+      renderHistory();
+    }
+    function changeLanguage(
+      language
+    ) {
+      if (
+        !translations[language]
+      ) {
+        return;
+      }
+      currentLanguage =
+        language;
+      localStorage.setItem(
+        "aura_language",
+        language
+      );
+      applyLanguage();
+      showToast(
+        language === "pt-BR"
+          ? "Idioma atualizado."
+          : language === "en"
+            ? "Language updated."
+            : "Idioma actualizado."
+      );
+    }
+    /* =====================================================
        AUTH MODE
     ===================================================== */
     function toggleAuthMode() {
       const button =
-        document.getElementById("authButton");
+        document.getElementById(
+          "authButton"
+        );
       const switchButton =
-        document.getElementById("authSwitch");
-      const subtitle =
-        document.querySelector(".auth-subtitle");
+        document.getElementById(
+          "authSwitch"
+        );
       const message =
-        document.getElementById("authMessage");
+        document.getElementById(
+          "authMessage"
+        );
       message.textContent = "";
       message.className =
         "auth-error";
-      if (authMode === "login") {
+      if (
+        authMode === "login"
+      ) {
         authMode = "signup";
         button.textContent =
-          "Criar conta";
-        subtitle.textContent =
-          "Crie sua conta e comece sua história.";
+          t("signup");
         switchButton.innerHTML =
-          'Já tenho uma conta. <span>Entrar</span>';
+          t("authSwitchSignup");
       } else {
         authMode = "login";
         button.textContent =
-          "Entrar";
-        subtitle.textContent =
-          "intelligence for your story";
+          t("login");
         switchButton.innerHTML =
-          'Ainda não tenho uma conta. <span>Criar conta</span>';
+          t("authSwitchLogin");
       }
     }
     /* =====================================================
@@ -1949,37 +2933,60 @@
     async function handleAuth() {
       const email =
         document
-          .getElementById("authEmail")
+          .getElementById(
+            "authEmail"
+          )
           .value
           .trim();
       const password =
         document
-          .getElementById("authPassword")
+          .getElementById(
+            "authPassword"
+          )
           .value;
       const button =
-        document.getElementById("authButton");
+        document.getElementById(
+          "authButton"
+        );
       const message =
-        document.getElementById("authMessage");
+        document.getElementById(
+          "authMessage"
+        );
       message.textContent = "";
       message.className =
         "auth-error";
-      if (!email || !password) {
+      if (
+        !email ||
+        !password
+      ) {
         message.textContent =
-          "Preencha seu e-mail e sua senha.";
+          currentLanguage === "en"
+            ? "Enter your email and password."
+            : currentLanguage === "es"
+              ? "Introduce tu correo y contraseña."
+              : "Preencha seu e-mail e sua senha.";
         return;
       }
-      if (password.length < 6) {
+      if (
+        password.length < 6
+      ) {
         message.textContent =
-          "A senha precisa ter pelo menos 6 caracteres.";
+          currentLanguage === "en"
+            ? "Password must contain at least 6 characters."
+            : currentLanguage === "es"
+              ? "La contraseña debe tener al menos 6 caracteres."
+              : "A senha precisa ter pelo menos 6 caracteres.";
         return;
       }
       button.disabled = true;
       button.textContent =
         authMode === "login"
-          ? "Entrando..."
-          : "Criando...";
+          ? t("login") + "..."
+          : t("signup") + "...";
       try {
-        if (authMode === "signup") {
+        if (
+          authMode === "signup"
+        ) {
           const {
             data,
             error
@@ -1999,7 +3006,11 @@
             message.className =
               "auth-error auth-success";
             message.textContent =
-              "Conta criada. Verifique seu e-mail para confirmar o cadastro.";
+              currentLanguage === "en"
+                ? "Account created. Check your email to confirm."
+                : currentLanguage === "es"
+                  ? "Cuenta creada. Revisa tu correo para confirmar."
+                  : "Conta criada. Verifique seu e-mail para confirmar o cadastro.";
           }
         } else {
           const {
@@ -2027,13 +3038,19 @@
         button.disabled = false;
         button.textContent =
           authMode === "login"
-            ? "Entrar"
-            : "Criar conta";
+            ? t("login")
+            : t("signup");
       }
     }
-    function translateAuthError(error) {
+    function translateAuthError(
+      error
+    ) {
       if (!error) {
-        return "Não foi possível continuar.";
+        return currentLanguage === "en"
+          ? "Unable to continue."
+          : currentLanguage === "es"
+            ? "No fue posible continuar."
+            : "Não foi possível continuar.";
       }
       const text =
         error.toLowerCase();
@@ -2042,19 +3059,22 @@
           "invalid login credentials"
         )
       ) {
-        return "E-mail ou senha incorretos.";
+        return currentLanguage === "en"
+          ? "Incorrect email or password."
+          : currentLanguage === "es"
+            ? "Correo o contraseña incorrectos."
+            : "E-mail ou senha incorretos.";
       }
       if (
         text.includes(
           "user already registered"
         )
       ) {
-        return "Esse e-mail já possui uma conta.";
-      }
-      if (
-        text.includes("password")
-      ) {
-        return "Verifique sua senha.";
+        return currentLanguage === "en"
+          ? "This email already has an account."
+          : currentLanguage === "es"
+            ? "Este correo ya tiene una cuenta."
+            : "Esse e-mail já possui uma conta.";
       }
       return error;
     }
@@ -2076,7 +3096,9 @@
         "app"
       ).style.display = "block";
       if (!currentUser) {
-        const { data } =
+        const {
+          data
+        } =
           await supabaseClient.auth.getUser();
         currentUser =
           data.user;
@@ -2085,12 +3107,18 @@
       await loadCredits();
       await loadStories();
       updateWelcome();
-      setTimeout(() => {
-        input.focus();
-      }, 150);
+      applyLanguage();
+      setTimeout(
+        () => {
+          input.focus();
+        },
+        150
+      );
     }
     async function checkSession() {
-      const { data } =
+      const {
+        data
+      } =
         await supabaseClient.auth.getSession();
       if (data.session) {
         currentUser =
@@ -2099,11 +3127,16 @@
       } else {
         document.getElementById(
           "authScreen"
-        ).style.display = "flex";
+        ).style.display =
+          "flex";
+        applyLanguage();
       }
     }
     supabaseClient.auth.onAuthStateChange(
-      async (event, session) => {
+      async (
+        event,
+        session
+      ) => {
         if (session) {
           currentUser =
             session.user;
@@ -2111,7 +3144,8 @@
         } else if (
           event === "SIGNED_OUT"
         ) {
-          appInitialized = false;
+          appInitialized =
+            false;
         }
       }
     );
@@ -2121,27 +3155,21 @@
       }
       const email =
         currentUser.email ||
-        "Conta Aura";
-      const emailElement =
-        document.getElementById(
-          "accountEmail"
-        );
-      const avatar =
-        document.getElementById(
-          "accountAvatar"
-        );
-      emailElement.textContent =
+        "Aura Account";
+      document.getElementById(
+        "accountEmail"
+      ).textContent =
         email;
-      avatar.textContent =
+      document.getElementById(
+        "accountAvatar"
+      ).textContent =
         email
           .charAt(0)
           .toUpperCase();
       updateCreditsUI();
     }
     /* =====================================================
-       CRÉDITOS
-       TABELA: credits
-       COLUNAS: id / user_id / balance
+       CREDITS
     ===================================================== */
     async function loadCredits() {
       if (!currentUser) {
@@ -2208,7 +3236,11 @@
         updateSendButton();
         updateWelcome();
         showToast(
-          "Não foi possível carregar seus créditos."
+          currentLanguage === "en"
+            ? "Could not load credits."
+            : currentLanguage === "es"
+              ? "No fue posible cargar los créditos."
+              : "Não foi possível carregar seus créditos."
         );
       }
     }
@@ -2219,7 +3251,11 @@
         );
       if (accountElement) {
         accountElement.textContent =
-          `Créditos: ${userCredits}`;
+          `${userCredits} ${
+            userCredits === 1
+              ? t("creditAvailableOne")
+              : t("creditAvailable")
+          }`;
       }
       const topValue =
         document.getElementById(
@@ -2228,27 +3264,6 @@
       if (topValue) {
         topValue.textContent =
           userCredits;
-      }
-      const topCredits =
-        document.getElementById(
-          "topCredits"
-        );
-      if (topCredits) {
-        topCredits.classList.remove(
-          "low",
-          "empty"
-        );
-        if (userCredits <= 0) {
-          topCredits.classList.add(
-            "empty"
-          );
-        } else if (
-          userCredits <= 5
-        ) {
-          topCredits.classList.add(
-            "low"
-          );
-        }
       }
       const modalValue =
         document.getElementById(
@@ -2263,21 +3278,18 @@
           "modalCreditStatus"
         );
       if (modalStatus) {
-        if (userCredits === 1) {
-          modalStatus.textContent =
-            "crédito disponível";
-        } else {
-          modalStatus.textContent =
-            "créditos disponíveis";
-        }
+        modalStatus.textContent =
+          userCredits === 1
+            ? t("creditAvailableOne")
+            : t("creditAvailable");
       }
       updateWelcome();
     }
     async function consumeCredit() {
-      if (!currentUser) {
-        return false;
-      }
-      if (userCredits <= 0) {
+      if (
+        !currentUser ||
+        userCredits <= 0
+      ) {
         return false;
       }
       const newCredits =
@@ -2380,20 +3392,22 @@
       if (!line) {
         return;
       }
-      if (userCredits === 0) {
+      if (
+        userCredits === 0
+      ) {
         line.innerHTML =
-          'Você está sem créditos. <strong>Veja as opções disponíveis.</strong>';
+          t("noCredits");
       } else {
         const label =
           userCredits === 1
-            ? "crédito"
-            : "créditos";
+            ? t("creditAvailableOne")
+            : t("creditAvailable");
         line.innerHTML =
-          `Você tem <strong>${userCredits} ${label}</strong> disponíveis.`;
+          `${t("yourCredits")} <strong>${userCredits} ${label}</strong> ${t("available")}`;
       }
     }
     /* =====================================================
-       CREDIT MODAL
+       MODALS
     ===================================================== */
     function openCreditsModal() {
       updateCreditsUI();
@@ -2405,16 +3419,7 @@
           "open"
         );
     }
-    function closeCreditsModal(
-      event
-    ) {
-      if (
-        event &&
-        event.target !==
-          event.currentTarget
-      ) {
-        return;
-      }
+    function closeCreditsModal() {
       document
         .getElementById(
           "creditModalBackdrop"
@@ -2423,10 +3428,179 @@
           "open"
         );
     }
+    function openSettingsModal() {
+      document
+        .getElementById(
+          "settingsModalBackdrop"
+        )
+        .classList.add(
+          "open"
+        );
+    }
+    function closeSettingsModal() {
+      document
+        .getElementById(
+          "settingsModalBackdrop"
+        )
+        .classList.remove(
+          "open"
+        );
+    }
+    function openSupportModal() {
+      document
+        .getElementById(
+          "supportModalBackdrop"
+        )
+        .classList.add(
+          "open"
+        );
+    }
+    function closeSupportModal() {
+      document
+        .getElementById(
+          "supportModalBackdrop"
+        )
+        .classList.remove(
+          "open"
+        );
+    }
+    function closeModal(
+      event,
+      id
+    ) {
+      if (
+        event.target !==
+        event.currentTarget
+      ) {
+        return;
+      }
+      document
+        .getElementById(id)
+        .classList.remove(
+          "open"
+        );
+    }
     function showComingSoon(
       text
     ) {
       showToast(text);
+    }
+    /* =====================================================
+       SETTINGS
+    ===================================================== */
+    function togglePreference(
+      name
+    ) {
+      if (
+        name === "streaming"
+      ) {
+        preferences.streaming =
+          !preferences.streaming;
+        localStorage.setItem(
+          "aura_streaming",
+          preferences.streaming
+            ? "true"
+            : "false"
+        );
+        document
+          .getElementById(
+            "streamingToggle"
+          )
+          .classList.toggle(
+            "active",
+            preferences.streaming
+          );
+        showToast(
+          currentLanguage === "en"
+            ? "Preference updated."
+            : currentLanguage === "es"
+              ? "Preferencia actualizada."
+              : "Preferência atualizada."
+        );
+      }
+    }
+    /* =====================================================
+       SUPPORT
+    ===================================================== */
+    function selectSupportType(
+      type
+    ) {
+      selectedSupportType =
+        type;
+      const subject =
+        document.getElementById(
+          "supportSubject"
+        );
+      if (
+        subject &&
+        !subject.value
+      ) {
+        subject.value =
+          type;
+      }
+      document.getElementById(
+        "supportMessage"
+      ).focus();
+    }
+    function sendSupportRequest() {
+      const subject =
+        document
+          .getElementById(
+            "supportSubject"
+          )
+          .value
+          .trim();
+      const message =
+        document
+          .getElementById(
+            "supportMessage"
+          )
+          .value
+          .trim();
+      if (
+        !subject ||
+        !message
+      ) {
+        showToast(
+          currentLanguage === "en"
+            ? "Fill in the subject and message."
+            : currentLanguage === "es"
+              ? "Completa el asunto y el mensaje."
+              : "Preencha o assunto e a mensagem."
+        );
+        return;
+      }
+      /*
+       * Nesta etapa o formulário já existe.
+       * O envio real para o sistema de suporte
+       * será conectado posteriormente.
+       */
+      console.log(
+        "Aura Support:",
+        {
+          user:
+            currentUser?.email ||
+            null,
+          type:
+            selectedSupportType,
+          subject,
+          message,
+          language:
+            currentLanguage
+        }
+      );
+      document.getElementById(
+        "supportSubject"
+      ).value = "";
+      document.getElementById(
+        "supportMessage"
+      ).value = "";
+      selectedSupportType =
+        "";
+      closeSupportModal();
+      showToast(
+        t("supportSent")
+      );
     }
     /* =====================================================
        LOGOUT
@@ -2441,6 +3615,8 @@
       appInitialized = false;
       closeMenu();
       closeCreditsModal();
+      closeSettingsModal();
+      closeSupportModal();
       document.getElementById(
         "app"
       ).style.display = "none";
@@ -2455,7 +3631,11 @@
       ).textContent = "";
       resetChat();
       showToast(
-        "Você saiu da conta."
+        currentLanguage === "en"
+          ? "You signed out."
+          : currentLanguage === "es"
+            ? "Has cerrado sesión."
+            : "Você saiu da conta."
       );
     }
     /* =====================================================
@@ -2482,7 +3662,8 @@
             .order(
               "updated_at",
               {
-                ascending: false
+                ascending:
+                  false
               }
             );
         if (error) {
@@ -2495,7 +3676,7 @@
                 story.id,
               title:
                 story.title ||
-                "Nova história",
+                t("newStory"),
               messages:
                 Array.isArray(
                   story.messages
@@ -2516,9 +3697,6 @@
         );
         stories = [];
         renderHistory();
-        showToast(
-          "Não foi possível carregar suas histórias."
-        );
       }
     }
     async function createStory() {
@@ -2536,7 +3714,7 @@
               user_id:
                 currentUser.id,
               title:
-                "Nova história",
+                t("newStory"),
               messages:
                 []
             })
@@ -2553,7 +3731,8 @@
           title:
             data.title,
           messages:
-            data.messages || [],
+            data.messages ||
+            [],
           createdAt:
             data.created_at,
           updatedAt:
@@ -2576,7 +3755,11 @@
           error
         );
         showToast(
-          "Não foi possível criar a história."
+          currentLanguage === "en"
+            ? "Could not create the story."
+            : currentLanguage === "es"
+              ? "No fue posible crear la historia."
+              : "Não foi possível criar a história."
         );
         return null;
       }
@@ -2612,11 +3795,12 @@
       const firstUser =
         conversation.find(
           item =>
-            item.role === "user"
+            item.role ===
+            "user"
         );
       let title =
         story.title ||
-        "Nova história";
+        t("newStory");
       if (
         firstUser &&
         firstUser.content
@@ -2634,10 +3818,8 @@
           await supabaseClient
             .from("stories")
             .update({
-              title:
-                title,
-              messages:
-                messages,
+              title,
+              messages,
               updated_at:
                 new Date().toISOString()
             })
@@ -2659,7 +3841,8 @@
         story.title =
           data.title;
         story.messages =
-          data.messages || [];
+          data.messages ||
+          [];
         story.createdAt =
           data.created_at;
         story.updatedAt =
@@ -2670,9 +3853,6 @@
           "Erro ao salvar história:",
           error
         );
-        showToast(
-          "Não foi possível salvar a história."
-        );
       }
     }
     function createStoryTitle(
@@ -2680,12 +3860,17 @@
     ) {
       let title =
         text
-          .replace(/\s+/g, " ")
+          .replace(
+            /\s+/g,
+            " "
+          )
           .trim();
       if (!title) {
-        return "Nova história";
+        return t("newStory");
       }
-      if (title.length > 34) {
+      if (
+        title.length > 34
+      ) {
         title =
           title
             .substring(
@@ -2712,7 +3897,11 @@
       }
       const newTitle =
         window.prompt(
-          "Novo nome da história:",
+          currentLanguage === "en"
+            ? "New story name:"
+            : currentLanguage === "es"
+              ? "Nuevo nombre de la historia:"
+              : "Novo nome da história:",
           story.title
         );
       if (
@@ -2722,12 +3911,12 @@
       }
       const title =
         newTitle
-          .replace(/\s+/g, " ")
+          .replace(
+            /\s+/g,
+            " "
+          )
           .trim();
       if (!title) {
-        showToast(
-          "Digite um nome válido."
-        );
         return;
       }
       try {
@@ -2738,8 +3927,7 @@
           await supabaseClient
             .from("stories")
             .update({
-              title:
-                title,
+              title,
               updated_at:
                 new Date().toISOString()
             })
@@ -2764,15 +3952,12 @@
           data.updated_at;
         renderHistory();
         showToast(
-          "História renomeada."
+          t("renamed")
         );
       } catch (error) {
         console.error(
           "Erro ao renomear:",
           error
-        );
-        showToast(
-          "Não foi possível renomear a história."
         );
       }
     }
@@ -2812,9 +3997,7 @@
       if (!stories.length) {
         list.innerHTML = `
           <div class="history-empty">
-            Suas histórias aparecerão aqui.
-            <br><br>
-            Comece uma nova aventura.
+            ${t("historyEmpty")}
           </div>
         `;
         return;
@@ -2822,14 +4005,14 @@
       if (!filtered.length) {
         list.innerHTML = `
           <div class="history-empty">
-            Nenhuma história encontrada.
+            ${t("historyNotFound")}
           </div>
         `;
         return;
       }
       const ordered =
         [...filtered].sort(
-          (a, b) =>
+          (a,b) =>
             new Date(
               b.updatedAt
             ) -
@@ -2838,61 +4021,63 @@
             )
         );
       list.innerHTML =
-        ordered.map(
-          story => {
-            const active =
-              story.id ===
-              currentStoryId
-                ? "active"
-                : "";
-            return `
-              <div
-                class="history-item ${active}"
-                onclick="openStory('${story.id}')"
-              >
-                <div class="history-aura">
-                  <div class="history-aura-ring"></div>
-                  <div class="history-aura-dot"></div>
-                </div>
-                <div class="history-info">
-                  <div class="history-name">
-                    ${escapeHtml(story.title)}
+        ordered
+          .map(
+            story => {
+              const active =
+                story.id ===
+                currentStoryId
+                  ? "active"
+                  : "";
+              return `
+                <div
+                  class="history-item ${active}"
+                  onclick="openStory('${story.id}')"
+                >
+                  <div class="history-aura">
+                    <div class="history-aura-ring"></div>
+                    <div class="history-aura-dot"></div>
                   </div>
-                  <div class="history-date">
-                    ${formatDate(story.updatedAt)}
+                  <div class="history-info">
+                    <div class="history-name">
+                      ${escapeHtml(story.title)}
+                    </div>
+                    <div class="history-date">
+                      ${formatDate(story.updatedAt)}
+                    </div>
+                  </div>
+                  <div class="history-actions">
+                    <button
+                      class="history-action"
+                      onclick="renameStory(event, '${story.id}')"
+                    >
+                      ✎
+                    </button>
+                    <button
+                      class="history-action"
+                      onclick="deleteStory(event, '${story.id}')"
+                    >
+                      ×
+                    </button>
                   </div>
                 </div>
-                <div class="history-actions">
-                  <button
-                    class="history-action"
-                    onclick="renameStory(event, '${story.id}')"
-                    aria-label="Renomear história"
-                  >
-                    ✎
-                  </button>
-                  <button
-                    class="history-action delete"
-                    onclick="deleteStory(event, '${story.id}')"
-                    aria-label="Apagar história"
-                  >
-                    ×
-                  </button>
-                </div>
-              </div>
-            `;
-          }
-        )
-        .join("");
+              `;
+            }
+          )
+          .join("");
     }
     function focusHistorySearch() {
-      const search =
-        document.getElementById(
-          "historySearch"
-        );
       openMenu();
-      setTimeout(() => {
-        search.focus();
-      }, 120);
+      setTimeout(
+        () => {
+          document
+            .getElementById(
+              "historySearch"
+            )
+            .focus();
+        },
+        120
+      );
     }
     async function openStory(
       id
@@ -2924,93 +4109,8 @@
       renderHistory();
       closeMenu();
       input.placeholder =
-        "Continue sua história...";
+        t("continueStory");
       input.focus();
-    }
-    function renderCurrentStory() {
-      chat.innerHTML = "";
-      if (!conversation.length) {
-        chat.innerHTML = `
-          <div
-            id="welcome"
-            class="welcome"
-          >
-            <div class="aura-core">
-              <div class="ring"></div>
-              <div class="core"></div>
-            </div>
-            <h1>AURA</h1>
-            <p class="tagline">
-              intelligence for your story
-            </p>
-            <div class="welcome-actions">
-              <button
-                class="welcome-card"
-                onclick="newStory()"
-              >
-                <div class="welcome-card-icon">+</div>
-                <div class="welcome-card-title">
-                  Nova história
-                </div>
-                <div class="welcome-card-description">
-                  Comece um novo universo.
-                </div>
-              </button>
-              <button
-                class="welcome-card"
-                onclick="openMenu()"
-              >
-                <div class="welcome-card-icon">◌</div>
-                <div class="welcome-card-title">
-                  Minhas histórias
-                </div>
-                <div class="welcome-card-description">
-                  Continue algo que já começou.
-                </div>
-              </button>
-              <button
-                class="welcome-card"
-                onclick="openCreditsModal()"
-              >
-                <div class="welcome-card-icon">✦</div>
-                <div class="welcome-card-title">
-                  Seus créditos
-                </div>
-                <div class="welcome-card-description">
-                  Veja seu saldo e seus planos.
-                </div>
-              </button>
-            </div>
-            <div
-              id="welcomeCreditLine"
-              class="welcome-credit-line"
-            >
-              Você tem
-              <strong>${userCredits} créditos</strong>
-              disponíveis.
-            </div>
-          </div>
-        `;
-        return;
-      }
-      conversation.forEach(
-        item => {
-          if (
-            item.role === "user"
-          ) {
-            addUserMessage(
-              item.content,
-              false
-            );
-          } else {
-            addAuraInstant(
-              item.content,
-              false
-            );
-          }
-        }
-      );
-      scrollToBottom();
     }
     async function deleteStory(
       event,
@@ -3022,7 +4122,11 @@
       }
       const confirmed =
         window.confirm(
-          "Excluir esta história? Essa ação não pode ser desfeita."
+          currentLanguage === "en"
+            ? "Delete this story? This cannot be undone."
+            : currentLanguage === "es"
+              ? "¿Eliminar esta historia? Esta acción no se puede deshacer."
+              : "Excluir esta história? Essa ação não pode ser desfeita."
         );
       if (!confirmed) {
         return;
@@ -3058,20 +4162,17 @@
             null;
           conversation = [];
           input.placeholder =
-            "Comece uma história...";
+            t("startStory");
           renderCurrentStory();
         }
         renderHistory();
         showToast(
-          "História apagada."
+          t("deleted")
         );
       } catch (error) {
         console.error(
           "Erro ao apagar história:",
           error
-        );
-        showToast(
-          "Não foi possível apagar a história."
         );
       }
     }
@@ -3083,25 +4184,25 @@
       input.value = "";
       resizeInput();
       input.placeholder =
-        "Comece uma nova história...";
+        t("newStoryPlaceholder");
       input.focus();
       showToast(
-        "Nova história."
+        t("newStoryToast")
       );
     }
     function resetChat() {
       chat.innerHTML = `
-        <div
-          id="welcome"
-          class="welcome"
-        >
+        <div id="welcome" class="welcome">
           <div class="aura-core">
             <div class="ring"></div>
             <div class="core"></div>
           </div>
           <h1>AURA</h1>
-          <p class="tagline">
-            intelligence for your story
+          <p
+            id="tagline"
+            class="tagline"
+          >
+            ${t("tagline")}
           </p>
           <div class="welcome-actions">
             <button
@@ -3109,11 +4210,17 @@
               onclick="newStory()"
             >
               <div class="welcome-card-icon">+</div>
-              <div class="welcome-card-title">
-                Nova história
+              <div
+                id="newStoryTitle"
+                class="welcome-card-title"
+              >
+                ${t("newStory")}
               </div>
-              <div class="welcome-card-description">
-                Comece um novo universo.
+              <div
+                id="newStoryDescription"
+                class="welcome-card-description"
+              >
+                ${t("newStoryDescription")}
               </div>
             </button>
             <button
@@ -3121,11 +4228,17 @@
               onclick="openMenu()"
             >
               <div class="welcome-card-icon">◌</div>
-              <div class="welcome-card-title">
-                Minhas histórias
+              <div
+                id="myStoriesTitle"
+                class="welcome-card-title"
+              >
+                ${t("myStories")}
               </div>
-              <div class="welcome-card-description">
-                Continue algo que já começou.
+              <div
+                id="myStoriesDescription"
+                class="welcome-card-description"
+              >
+                ${t("myStoriesDescription")}
               </div>
             </button>
             <button
@@ -3133,11 +4246,17 @@
               onclick="openCreditsModal()"
             >
               <div class="welcome-card-icon">✦</div>
-              <div class="welcome-card-title">
-                Seus créditos
+              <div
+                id="creditsTitle"
+                class="welcome-card-title"
+              >
+                ${t("creditsTitle")}
               </div>
-              <div class="welcome-card-description">
-                Veja seu saldo e seus planos.
+              <div
+                id="creditsDescription"
+                class="welcome-card-description"
+              >
+                ${t("creditsDescription")}
               </div>
             </button>
           </div>
@@ -3145,9 +4264,6 @@
             id="welcomeCreditLine"
             class="welcome-credit-line"
           >
-            Você tem
-            <strong>${userCredits} créditos</strong>
-            disponíveis.
           </div>
         </div>
       `;
@@ -3171,16 +4287,18 @@
       if (isThinking) {
         return;
       }
-      if (userCredits <= 0) {
+      if (
+        userCredits <= 0
+      ) {
         openCreditsModal();
         showToast(
-          "Você não possui mais créditos."
+          t("noCreditsToast")
         );
-        updateSendButton();
         return;
       }
       const message =
-        input.value.trim();
+        input.value
+          .trim();
       if (!message) {
         return;
       }
@@ -3188,7 +4306,7 @@
         await consumeCredit();
       if (!creditConsumed) {
         showToast(
-          "Não foi possível usar seu crédito."
+          t("creditError")
         );
         return;
       }
@@ -3209,24 +4327,22 @@
         message
       );
       conversation.push({
-        role: "user",
-        content: message
+        role:
+          "user",
+        content:
+          message
       });
       await saveCurrentConversation();
       input.value = "";
       resizeInput();
       setThinking(true);
       try {
-        /*
-         * O histórico completo da história é enviado
-         * para a Aura. Isso permite continuidade
-         * quando o usuário continua uma história.
-         */
         const response =
           await fetch(
             "/api/chat",
             {
-              method: "POST",
+              method:
+                "POST",
               headers: {
                 "Content-Type":
                   "application/json"
@@ -3239,7 +4355,9 @@
                     conversation.slice(
                       0,
                       -1
-                    )
+                    ),
+                  language:
+                    currentLanguage
                 })
             }
           );
@@ -3248,14 +4366,12 @@
         if (!response.ok) {
           throw new Error(
             data.error ||
-            "Erro ao conversar com a Aura"
+            "Chat error"
           );
         }
-        if (
-          !data.reply
-        ) {
+        if (!data.reply) {
           throw new Error(
-            "A Aura não retornou uma resposta."
+            "No response"
           );
         }
         conversation.push({
@@ -3266,20 +4382,31 @@
         });
         await saveCurrentConversation();
         setThinking(false);
-        await streamAura(
-          data.reply
-        );
+        if (
+          preferences.streaming
+        ) {
+          await streamAura(
+            data.reply
+          );
+        } else {
+          addAuraInstant(
+            data.reply
+          );
+          isThinking =
+            false;
+          updateSendButton();
+        }
       } catch (error) {
         console.error(error);
         setThinking(false);
         await restoreCredit();
         addAuraInstant(
-          "Não consegui responder agora. O crédito foi devolvido. Tente novamente em alguns instantes."
+          t("responseError")
         );
       }
     }
     /* =====================================================
-       USER MESSAGE
+       MESSAGES
     ===================================================== */
     function addUserMessage(
       text,
@@ -3314,13 +4441,12 @@
       chat.appendChild(
         wrapper
       );
-      if (shouldScroll) {
+      if (
+        shouldScroll
+      ) {
         scrollToBottom();
       }
     }
-    /* =====================================================
-       AURA MESSAGE
-    ===================================================== */
     function addAuraInstant(
       text,
       shouldScroll = true
@@ -3365,7 +4491,9 @@
       chat.appendChild(
         wrapper
       );
-      if (shouldScroll) {
+      if (
+        shouldScroll
+      ) {
         scrollToBottom();
       }
     }
@@ -3382,7 +4510,7 @@
           "div"
         );
       wrapper.className =
-        "message aura streaming";
+        "message aura";
       const content =
         document.createElement(
           "div"
@@ -3403,15 +4531,6 @@
         );
       bubble.className =
         "bubble";
-      const mist =
-        document.createElement(
-          "div"
-        );
-      mist.className =
-        "mist";
-      bubble.appendChild(
-        mist
-      );
       content.appendChild(
         label
       );
@@ -3428,12 +4547,6 @@
         text.split(
           /(\s+)/
         );
-      const words =
-        parts.filter(
-          part =>
-            part.trim().length > 0
-        );
-      let wordNumber = 0;
       for (
         const part of parts
       ) {
@@ -3454,51 +4567,45 @@
           document.createElement(
             "span"
           );
-        word.className =
-          "stream-word";
         word.textContent =
           part;
+        word.style.opacity =
+          "0";
+        word.style.filter =
+          "blur(4px)";
+        word.style.transition =
+          ".2s ease";
         bubble.appendChild(
           word
         );
-        wordNumber++;
-        const progress =
-          wordNumber /
-          words.length;
-        mist.style.left =
-          `${Math.min(
-            8 + progress * 84,
-            92
-          )}%`;
-        let delay = 95;
+        requestAnimationFrame(
+          () => {
+            word.style.opacity =
+              "1";
+            word.style.filter =
+              "blur(0)";
+          }
+        );
+        let delay =
+          80;
         if (
           part.endsWith(".") ||
           part.endsWith("!") ||
           part.endsWith("?")
         ) {
-          delay = 340;
-        } else if (
-          part.endsWith(",") ||
-          part.endsWith(";") ||
-          part.endsWith(":")
-        ) {
-          delay = 190;
+          delay = 280;
         }
-        scrollToBottom();
         await wait(delay);
+        scrollToBottom();
       }
-      wrapper.classList.remove(
-        "streaming"
-      );
-      wrapper.classList.add(
-        "finished"
-      );
-      await wait(500);
+      await wait(350);
       isThinking = false;
       updateSendButton();
       scrollToBottom();
     }
-    function wait(ms) {
+    function wait(
+      ms
+    ) {
       return new Promise(
         resolve =>
           setTimeout(
@@ -3508,14 +4615,16 @@
       );
     }
     function scrollToBottom() {
-      requestAnimationFrame(() => {
-        chat.scrollTo({
-          top:
-            chat.scrollHeight,
-          behavior:
-            "smooth"
-        });
-      });
+      requestAnimationFrame(
+        () => {
+          chat.scrollTo({
+            top:
+              chat.scrollHeight,
+            behavior:
+              "smooth"
+          });
+        }
+      );
     }
     /* =====================================================
        THINKING
@@ -3549,11 +4658,42 @@
       element.innerHTML = `
         <div class="thinking-core"></div>
         <span>
-          A Aura está pensando...
+          ${t("thinking")}
         </span>
       `;
       chat.appendChild(
         element
+      );
+      scrollToBottom();
+    }
+    /* =====================================================
+       CURRENT STORY RENDER
+    ===================================================== */
+    function renderCurrentStory() {
+      chat.innerHTML = "";
+      if (
+        !conversation.length
+      ) {
+        resetChat();
+        return;
+      }
+      conversation.forEach(
+        item => {
+          if (
+            item.role ===
+            "user"
+          ) {
+            addUserMessage(
+              item.content,
+              false
+            );
+          } else {
+            addAuraInstant(
+              item.content,
+              false
+            );
+          }
+        }
       );
       scrollToBottom();
     }
@@ -3577,7 +4717,8 @@
       "keydown",
       function(event) {
         if (
-          event.key === "Enter" &&
+          event.key ===
+            "Enter" &&
           !event.shiftKey
         ) {
           event.preventDefault();
@@ -3588,18 +4729,18 @@
     /* =====================================================
        HISTORY SEARCH
     ===================================================== */
-    const historySearch =
-      document.getElementById(
+    document
+      .getElementById(
         "historySearch"
+      )
+      .addEventListener(
+        "input",
+        function() {
+          historySearchTerm =
+            this.value;
+          renderHistory();
+        }
       );
-    historySearch.addEventListener(
-      "input",
-      function() {
-        historySearchTerm =
-          this.value;
-        renderHistory();
-      }
-    );
     /* =====================================================
        MENU
     ===================================================== */
@@ -3652,14 +4793,18 @@
       const sameDay =
         date.toDateString() ===
         now.toDateString();
-      if (sameDay) {
+      if (
+        sameDay
+      ) {
         return (
           "Hoje · " +
           date.toLocaleTimeString(
             "pt-BR",
             {
-              hour: "2-digit",
-              minute: "2-digit"
+              hour:
+                "2-digit",
+              minute:
+                "2-digit"
             }
           )
         );
@@ -3667,15 +4812,19 @@
       return date.toLocaleDateString(
         "pt-BR",
         {
-          day: "2-digit",
-          month: "short"
+          day:
+            "2-digit",
+          month:
+            "short"
         }
       );
     }
     function escapeHtml(
       text
     ) {
-      return String(text)
+      return String(
+        text
+      )
         .replace(
           /&/g,
           "&amp;"
@@ -3704,7 +4853,7 @@
         document.getElementById(
           "toast"
         );
-      toast.textContent =
+      toast.innerHTML =
         text;
       toast.classList.add(
         "show"
@@ -3719,12 +4868,21 @@
               "show"
             );
           },
-          2200
+          2600
         );
     }
     /* =====================================================
-       START
+       INITIALIZE
     ===================================================== */
+    document
+      .getElementById(
+        "streamingToggle"
+      )
+      .classList.toggle(
+        "active",
+        preferences.streaming
+      );
+    applyLanguage();
     checkSession();
   </script>
 </body>
