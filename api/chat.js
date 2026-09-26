@@ -25,35 +25,18 @@ export default async function handler(req, res) {
     const contents = [
       ...history.map(item => ({
         role: item.role === "assistant" ? "model" : "user",
-        parts: [
-          {
-            text: item.content
-          }
-        ]
+        parts: [{ text: item.content }]
       })),
       {
         role: "user",
-        parts: [
-          {
-            text: message
-          }
-        ]
+        parts: [{ text: message }]
       }
     ];
 
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" +
-      encodeURIComponent(apiKey),
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          systemInstruction: {
-            parts: [
-              {
-                text: `
+    const requestBody = {
+      systemInstruction: {
+        parts: [{
+          text: `
 Você é a Aura, a inteligência artificial da Aura Line.
 
 Sua função é criar e conduzir histórias interativas.
@@ -80,37 +63,85 @@ Escreva em português do Brasil.
 Não diga que a história é uma simulação.
 
 Faça a experiência parecer uma vida narrativa interativa.
-                `
-              }
-            ]
-          },
-
-          contents: contents,
-
-          generationConfig: {
-            temperature: 0.9,
-            maxOutputTokens: 1200
-          }
-        })
+          `
+        }]
+      },
+      contents,
+      generationConfig: {
+        temperature: 0.9,
+        maxOutputTokens: 1200
       }
-    );
+    };
 
-    const data = await response.json();
+    const url =
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" +
+      encodeURIComponent(apiKey);
 
-    if (!response.ok) {
-  console.error(data);
+    let data = null;
+    let lastError = null;
 
-  return res.status(503).json({
-    error: data?.error?.message || "A IA está temporariamente indisponível. Tente novamente."
-  });
-}
+    // Tenta até 3 vezes caso o Gemini esteja temporariamente indisponível.
+    for (let attempt = 1; attempt <= 3; attempt++) {
+
+      try {
+
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(requestBody)
+        });
+
+        data = await response.json();
+
+        if (response.ok) {
+          break;
+        }
+
+        lastError =
+          data?.error?.message ||
+          "Erro ao consultar a IA";
+
+        // 503 = serviço temporariamente indisponível.
+        // Espera antes de tentar novamente.
+        if (response.status === 503 && attempt < 3) {
+          await new Promise(resolve =>
+            setTimeout(resolve, 1500 * attempt)
+          );
+          continue;
+        }
+
+        return res.status(response.status).json({
+          error: lastError
+        });
+
+      } catch (error) {
+
+        lastError = error.message;
+
+        if (attempt < 3) {
+          await new Promise(resolve =>
+            setTimeout(resolve, 1500 * attempt)
+          );
+        }
+
+      }
+    }
+
+    if (!data) {
+      return res.status(503).json({
+        error: lastError ||
+          "A IA está temporariamente indisponível."
+      });
+    }
 
     const reply =
       data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!reply) {
       return res.status(500).json({
-        error: "A IA não retornou uma resposta"
+        error: "A IA não retornou uma resposta."
       });
     }
 
@@ -123,7 +154,7 @@ Faça a experiência parecer uma vida narrativa interativa.
     console.error(error);
 
     return res.status(500).json({
-      error: "Erro interno do servidor"
+      error: "Erro interno do servidor."
     });
   }
 }
