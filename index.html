@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aura Line — Sua história começa aqui</title>
+  <title>Aura Line</title>
 
   <style>
     * {
@@ -13,227 +13,172 @@
     }
 
     body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: radial-gradient(circle at top, #24113f 0%, #09070f 45%, #050509 100%);
-      color: white;
       min-height: 100vh;
+      background:
+        radial-gradient(circle at center, #15151d 0%, #08080c 42%, #030304 100%);
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+        "Helvetica Neue", Arial, sans-serif;
+      overflow: hidden;
     }
 
     .app {
-      width: 100%;
-      max-width: 900px;
-      margin: auto;
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
-    }
-
-    .welcome {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
+      align-items: center;
       justify-content: center;
-      padding: 50px 22px;
+      position: relative;
+      padding: 30px;
     }
 
-    .tag {
-      color: #c084fc;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      font-size: 12px;
-      margin-bottom: 18px;
+    .glow {
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: rgba(130, 100, 255, 0.10);
+      filter: blur(80px);
+      animation: breathe 5s ease-in-out infinite;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      width: 100%;
+      max-width: 430px;
+      animation: appear 1s ease;
+    }
+
+    .aura-core {
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 38px;
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.55);
+      box-shadow:
+        0 0 25px rgba(160,130,255,0.25),
+        inset 0 0 25px rgba(160,130,255,0.10);
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .ring::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+
+    .core {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: white;
+      box-shadow:
+        0 0 12px white,
+        0 0 35px rgba(170,140,255,0.9),
+        0 0 70px rgba(130,100,255,0.55);
+      animation: corePulse 3s ease-in-out infinite;
     }
 
     h1 {
-      font-size: clamp(42px, 9vw, 78px);
-      line-height: .95;
-      margin-bottom: 22px;
+      font-size: 38px;
+      font-weight: 500;
+      letter-spacing: 8px;
+      margin-bottom: 14px;
     }
 
-    .subtitle {
-      color: #b8b3c4;
-      font-size: 18px;
-      line-height: 1.6;
-      max-width: 650px;
-      margin-bottom: 35px;
-    }
-
-    .input-area {
-      display: flex;
-      gap: 10px;
-      max-width: 700px;
-    }
-
-    textarea {
-      flex: 1;
-      min-height: 70px;
-      resize: none;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color: white;
-      border-radius: 18px;
-      padding: 18px;
-      font-size: 16px;
-      outline: none;
-    }
-
-    textarea:focus {
-      border-color: #c084fc;
-    }
-
-    button {
-      border: none;
-      cursor: pointer;
-      border-radius: 16px;
-      padding: 0 25px;
-      font-weight: 700;
+    .tagline {
+      color: rgba(255,255,255,0.62);
       font-size: 15px;
-      color: white;
-      background: linear-gradient(135deg,#8b5cf6,#c026d3);
-      box-shadow: 0 10px 30px rgba(139,92,246,.25);
+      line-height: 1.6;
+      margin-bottom: 38px;
     }
 
-    button:active {
+    .primary {
+      width: 100%;
+      height: 58px;
+      border: none;
+      border-radius: 18px;
+      background: white;
+      color: #08080c;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .primary:active {
       transform: scale(.97);
     }
 
-    .examples {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .example {
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.08);
-      color: #d6d0df;
+    .secondary {
+      margin-top: 18px;
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.65);
+      font-size: 15px;
       cursor: pointer;
-      font-size: 13px;
     }
 
-    .chat {
-      display: none;
-      flex-direction: column;
-      height: 100vh;
+    .footer {
+      position: absolute;
+      bottom: 25px;
+      color: rgba(255,255,255,0.25);
+      font-size: 11px;
+      letter-spacing: .4px;
     }
 
-    .chat-header {
-      padding: 18px 20px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo {
-      font-size: 25px;
-      font-weight: 800;
-      letter-spacing: 3px;
-    }
-
-    .logo span {
-      color: #c084fc;
-    }
-
-    .status {
-      font-size: 12px;
-      color: #a7f3d0;
-      margin-top: 4px;
-    }
-
-    .new-story {
-      padding: 10px 14px;
-      font-size: 12px;
-      background: rgba(255,255,255,.08);
-      box-shadow: none;
-    }
-
-    .messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 25px 20px 120px;
-    }
-
-    .message {
-      max-width: 780px;
-      margin: 0 auto 20px;
-      display: flex;
-    }
-
-    .message.user {
-      justify-content: flex-end;
-    }
-
-    .bubble {
-      max-width: 80%;
-      padding: 16px 18px;
-      border-radius: 20px;
-      line-height: 1.6;
-      white-space: pre-wrap;
-    }
-
-    .assistant .bubble {
-      background: rgba(255,255,255,.07);
-      border: 1px solid rgba(255,255,255,.06);
-    }
-
-    .user .bubble {
-      background: linear-gradient(135deg,#7c3aed,#a21caf);
-    }
-
-    .loading .bubble {
-      opacity: .65;
-      font-style: italic;
-    }
-
-    .composer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 15px;
-      background: linear-gradient(transparent,#07060b 35%);
-    }
-
-    .composer-inner {
-      max-width: 860px;
-      margin: auto;
-      display: flex;
-      gap: 10px;
-    }
-
-    .composer textarea {
-      min-height: 58px;
-      max-height: 140px;
-    }
-
-    .send {
-      width: 65px;
-      padding: 0;
-    }
-
-    @media (max-width:600px) {
-      .input-area {
-        flex-direction: column;
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: .65;
       }
-
-      .input-area button {
-        height: 55px;
+      50% {
+        transform: scale(1.06);
+        opacity: 1;
       }
+    }
 
-      .bubble {
-        max-width: 90%;
+    @keyframes corePulse {
+      0%, 100% {
+        transform: scale(.85);
       }
-
-      .composer-inner {
-        gap: 7px;
+      50% {
+        transform: scale(1.08);
       }
+    }
 
-      .send {
-        width: 55px;
+    @keyframes breathe {
+      0%, 100% {
+        transform: scale(.9);
+        opacity: .6;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
   </style>
@@ -241,331 +186,50 @@
 
 <body>
 
-<div class="app">
+  <main class="app">
 
-  <section id="welcome" class="welcome">
+    <div class="glow"></div>
 
-    <div class="tag">AURA LINE AI</div>
+    <section class="content">
 
-    <h1>
-      Sua história.<br>
-      Seu mundo.
-    </h1>
+      <div class="aura-core">
+        <div class="ring"></div>
+        <div class="core"></div>
+      </div>
 
-    <p class="subtitle">
-      Crie uma vida, uma carreira, um romance ou qualquer universo que você imaginar.
-      Converse com a Aura e veja sua história evoluir a cada escolha.
-    </p>
+      <h1>AURA</h1>
 
-    <div class="input-area">
+      <p class="tagline">
+        Sua história começa aqui.
+        <br>
+        Crie. Escolha. Viva.
+      </p>
 
-      <textarea
-        id="storyInput"
-        placeholder="Conte como sua história começa..."
-      ></textarea>
-
-      <button onclick="startStory()">
-        Começar
+      <button class="primary" onclick="startStory()">
+        ✦ Começar uma história
       </button>
 
-    </div>
-
-    <div class="examples">
-
-      <div class="example"
-        onclick="setExample('Quero começar uma carreira como piloto de Fórmula 1.')">
-        🏎️ Fórmula 1
-      </div>
-
-      <div class="example"
-        onclick="setExample('Quero começar uma carreira como DJ e produtor musical.')">
-        🎧 Música
-      </div>
-
-      <div class="example"
-        onclick="setExample('Quero criar uma história de romance.')">
-        ❤️ Romance
-      </div>
-
-      <div class="example"
-        onclick="setExample('Quero criar uma história onde me torno um grande empresário.')">
-        💼 Negócios
-      </div>
-
-      <div class="example"
-        onclick="setExample('Quero viver uma aventura completamente fictícia.')">
-        🌎 Aventura
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <section id="chat" class="chat">
-
-    <div class="chat-header">
-
-      <div>
-
-        <div class="logo">
-          AURA<span>LINE</span>
-        </div>
-
-        <div class="status">
-          ● História ativa
-        </div>
-
-      </div>
-
-      <button
-        class="new-story"
-        onclick="newStory()">
-        Nova história
+      <button class="secondary" onclick="login()">
+        Entrar
       </button>
 
+    </section>
+
+    <div class="footer">
+      AURA LINE
     </div>
 
+  </main>
 
-    <div id="messages" class="messages"></div>
-
-
-    <div class="composer">
-
-      <div class="composer-inner">
-
-        <textarea
-          id="messageInput"
-          placeholder="O que você faz agora?"
-          onkeydown="handleKey(event)"
-        ></textarea>
-
-        <button
-          class="send"
-          onclick="sendMessage()">
-          ↑
-        </button>
-
-      </div>
-
-    </div>
-
-  </section>
-
-</div>
-
-
-<script>
-
-let conversation = [];
-
-
-function setExample(text) {
-  document.getElementById("storyInput").value = text;
-}
-
-
-function startStory() {
-
-  const input =
-    document.getElementById("storyInput").value.trim();
-
-  if (!input) {
-    alert("Conte primeiro como sua história começa.");
-    return;
-  }
-
-  document.getElementById("welcome").style.display = "none";
-  document.getElementById("chat").style.display = "flex";
-
-  conversation = [];
-
-  addMessage("user", input);
-
-  sendToAI(input);
-}
-
-
-function addMessage(role, text, extraClass = "") {
-
-  const messages =
-    document.getElementById("messages");
-
-  const wrapper =
-    document.createElement("div");
-
-  wrapper.className =
-    "message " + role + " " + extraClass;
-
-  const bubble =
-    document.createElement("div");
-
-  bubble.className = "bubble";
-
-  bubble.textContent = text;
-
-  wrapper.appendChild(bubble);
-
-  messages.appendChild(wrapper);
-
-  messages.scrollTop =
-    messages.scrollHeight;
-
-  return wrapper;
-}
-
-
-async function sendToAI(message) {
-
-  const loadingMessage =
-    addMessage(
-      "assistant",
-      "✨ Sua história está sendo preparada...",
-      "loading"
-    );
-
-  try {
-
-    const response = await fetch(
-      "/api/chat",
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify({
-          message: message,
-          history: conversation
-        })
-      }
-    );
-
-
-    const data =
-      await response.json();
-
-
-    if (
-      loadingMessage &&
-      loadingMessage.parentNode
-    ) {
-      loadingMessage.remove();
+  <script>
+    function startStory() {
+      alert("Em breve: criação da sua história.");
     }
 
-
-    if (!response.ok) {
-
-      throw new Error(
-        data.error || "Erro na IA."
-      );
-
+    function login() {
+      alert("Login da Aura Line em breve.");
     }
-
-
-    if (!data.reply) {
-
-      throw new Error(
-        "A IA não retornou uma resposta."
-      );
-
-    }
-
-
-    addMessage(
-      "assistant",
-      data.reply
-    );
-
-
-    conversation.push({
-      role: "user",
-      content: message
-    });
-
-
-    conversation.push({
-      role: "assistant",
-      content: data.reply
-    });
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    addMessage(
-      "assistant",
-      "Não consegui continuar sua história agora. Verifique a configuração da IA e tente novamente."
-    );
-
-  }
-
-}
-
-
-async function sendMessage() {
-
-  const input =
-    document.getElementById("messageInput");
-
-  const message =
-    input.value.trim();
-
-  if (!message) return;
-
-  input.value = "";
-
-  addMessage(
-    "user",
-    message
-  );
-
-  await sendToAI(message);
-
-}
-
-
-function handleKey(event) {
-
-  if (
-    event.key === "Enter" &&
-    !event.shiftKey
-  ) {
-
-    event.preventDefault();
-
-    sendMessage();
-
-  }
-
-}
-
-
-function newStory() {
-
-  conversation = [];
-
-  document.getElementById(
-    "messages"
-  ).innerHTML = "";
-
-  document.getElementById(
-    "chat"
-  ).style.display = "none";
-
-  document.getElementById(
-    "welcome"
-  ).style.display = "flex";
-
-  document.getElementById(
-    "storyInput"
-  ).value = "";
-
-}
-
-</script>
+  </script>
 
 </body>
 </html>
