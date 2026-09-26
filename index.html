@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050507">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Aura Line">
   <title>Aura Line</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
@@ -230,8 +233,9 @@
       height: 82px;
       z-index: 20;
       display: grid;
-      grid-template-columns: 48px 1fr 48px;
+      grid-template-columns: 48px 1fr auto;
       align-items: center;
+      gap: 10px;
       padding:
         max(12px, env(safe-area-inset-top))
         14px
@@ -283,11 +287,6 @@
     }
     .hamburger span:nth-child(2) {
       width: 72%;
-    }
-    .plus-icon {
-      font-size: 24px;
-      font-weight: 300;
-      line-height: 1;
     }
     .brand {
       display: flex;
@@ -343,6 +342,37 @@
       letter-spacing: 4px;
       font-weight: 500;
     }
+    .credits-pill {
+      min-width: 70px;
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 13px;
+      border: 1px solid rgba(255,105,184,.12);
+      background: rgba(255,68,157,.045);
+      color: #ffb0d2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+    .credits-pill:hover {
+      background: rgba(255,68,157,.075);
+      border-color: rgba(255,105,184,.20);
+    }
+    .credits-pill.low {
+      color: #ffd1e3;
+      border-color: rgba(255,157,202,.28);
+      background: rgba(255,105,184,.09);
+    }
+    .credits-pill.empty {
+      color: #fff;
+      border-color: rgba(255,157,202,.35);
+      background: rgba(255,68,157,.13);
+    }
     /* =====================================================
        SIDE MENU
     ===================================================== */
@@ -365,7 +395,7 @@
       top: 0;
       left: 0;
       bottom: 0;
-      width: min(330px, 88vw);
+      width: min(350px, 91vw);
       z-index: 110;
       display: flex;
       flex-direction: column;
@@ -436,11 +466,8 @@
       gap: 12px;
       padding: 0 15px;
       cursor: pointer;
-      margin-bottom: 22px;
-      transition:
-        transform .18s ease,
-        border-color .18s ease,
-        background .18s ease;
+      margin-bottom: 12px;
+      transition: .18s ease;
     }
     .new-story-menu:active {
       transform: scale(.97);
@@ -458,12 +485,60 @@
       font-size: 14px;
       font-weight: 500;
     }
+    .menu-shortcuts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-bottom: 18px;
+    }
+    .menu-shortcut {
+      height: 42px;
+      border: 1px solid rgba(255,255,255,.055);
+      border-radius: 12px;
+      background: rgba(255,255,255,.025);
+      color: rgba(255,255,255,.60);
+      cursor: pointer;
+      font-size: 11px;
+      transition: .18s ease;
+    }
+    .menu-shortcut:hover {
+      background: rgba(255,68,157,.045);
+      border-color: rgba(255,105,184,.12);
+      color: #ffb3d3;
+    }
+    .history-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 8px 9px;
+    }
     .history-title {
-      padding: 4px 8px 11px;
       font-size: 9px;
       letter-spacing: 2.8px;
       text-transform: uppercase;
       color: rgba(255,255,255,.27);
+    }
+    .history-count {
+      color: rgba(255,157,202,.55);
+      font-size: 10px;
+    }
+    .history-search {
+      width: 100%;
+      height: 40px;
+      border: 1px solid rgba(255,255,255,.055);
+      border-radius: 12px;
+      background: rgba(255,255,255,.028);
+      color: white;
+      outline: none;
+      padding: 0 12px;
+      font-size: 12px;
+      margin-bottom: 9px;
+    }
+    .history-search:focus {
+      border-color: rgba(255,105,184,.22);
+    }
+    .history-search::placeholder {
+      color: rgba(255,255,255,.23);
     }
     .history-list {
       flex: 1;
@@ -491,7 +566,7 @@
       align-items: center;
       width: 100%;
       min-height: 57px;
-      padding: 9px 9px 9px 10px;
+      padding: 9px 6px 9px 10px;
       margin-bottom: 4px;
       border-radius: 13px;
       border: 1px solid transparent;
@@ -527,8 +602,7 @@
       border: 1px solid rgba(255,105,184,.55);
       box-shadow:
         0 0 9px rgba(255,68,157,.10);
-      animation:
-        pinkGlow 7s ease-in-out infinite;
+      animation: pinkGlow 7s ease-in-out infinite;
     }
     .history-aura-ring::before {
       content: "";
@@ -561,22 +635,29 @@
       font-size: 10px;
       color: rgba(255,255,255,.25);
     }
-    .delete-history {
-      width: 32px;
-      height: 32px;
+    .history-actions {
+      display: flex;
+      gap: 2px;
       flex-shrink: 0;
+    }
+    .history-action {
+      width: 31px;
+      height: 31px;
       border: none;
-      border-radius: 10px;
+      border-radius: 9px;
       background: transparent;
       color: rgba(255,255,255,.22);
       cursor: pointer;
-      font-size: 15px;
-      opacity: 0;
-      transition: opacity .18s ease;
+      font-size: 13px;
+      transition: .18s ease;
     }
-    .history-item:hover .delete-history,
-    .history-item.active .delete-history {
-      opacity: 1;
+    .history-action:hover {
+      background: rgba(255,255,255,.055);
+      color: #ffb1d1;
+    }
+    .history-action.delete:hover {
+      color: #ff8fb9;
+      background: rgba(255,68,157,.08);
     }
     .account-area {
       border-top: 1px solid rgba(255,255,255,.055);
@@ -670,7 +751,7 @@
       border-radius: 10px;
     }
     /* =====================================================
-       WELCOME
+       WELCOME / HOME
     ===================================================== */
     .welcome {
       min-height: calc(100vh - 220px);
@@ -679,12 +760,12 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 30px 0;
+      padding: 30px 0 70px;
     }
     .aura-core {
       width: 154px;
       height: 154px;
-      margin-bottom: 38px;
+      margin-bottom: 30px;
       border-radius: 50%;
       position: relative;
       display: flex;
@@ -756,14 +837,77 @@
       font-weight: 500;
       letter-spacing: 9px;
       margin-left: 9px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
     .tagline {
       color: rgba(255,255,255,.48);
       font-size: 13px;
       letter-spacing: .4px;
       line-height: 1.7;
-      margin-bottom: 30px;
+      margin-bottom: 22px;
+    }
+    .welcome-actions {
+      width: min(680px, 100%);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-top: 8px;
+    }
+    .welcome-card {
+      min-height: 82px;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.055);
+      border-radius: 16px;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255,255,255,.035),
+          rgba(255,68,157,.018)
+        );
+      color: rgba(255,255,255,.78);
+      cursor: pointer;
+      text-align: left;
+      transition:
+        transform .2s ease,
+        border-color .2s ease,
+        background .2s ease;
+    }
+    .welcome-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,105,184,.16);
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255,255,255,.045),
+          rgba(255,68,157,.035)
+        );
+    }
+    .welcome-card:active {
+      transform: scale(.98);
+    }
+    .welcome-card-icon {
+      color: #ff9dca;
+      font-size: 17px;
+      margin-bottom: 8px;
+    }
+    .welcome-card-title {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .welcome-card-description {
+      color: rgba(255,255,255,.30);
+      font-size: 10px;
+      line-height: 1.4;
+    }
+    .welcome-credit-line {
+      margin-top: 17px;
+      color: rgba(255,255,255,.26);
+      font-size: 10px;
+    }
+    .welcome-credit-line strong {
+      color: rgba(255,157,202,.75);
+      font-weight: 500;
     }
     /* =====================================================
        MESSAGES
@@ -941,6 +1085,9 @@
     #messageInput::placeholder {
       color: rgba(255,255,255,.27);
     }
+    #messageInput:disabled {
+      opacity: .55;
+    }
     #sendButton {
       width: 52px;
       height: 52px;
@@ -966,13 +1113,172 @@
       cursor: default;
     }
     /* =====================================================
+       CREDIT MODAL
+    ===================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(0,0,0,.66);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .credit-modal {
+      width: min(520px, 100%);
+      max-height: min(720px, 88vh);
+      overflow-y: auto;
+      border: 1px solid rgba(255,255,255,.075);
+      border-radius: 24px;
+      background:
+        radial-gradient(
+          circle at 50% 0%,
+          rgba(255,68,157,.08),
+          transparent 42%
+        ),
+        rgba(10,10,13,.97);
+      box-shadow:
+        0 30px 100px rgba(0,0,0,.55);
+      padding: 22px;
+      transform: translateY(12px) scale(.98);
+      transition: transform .25s ease;
+    }
+    .modal-backdrop.open .credit-modal {
+      transform: translateY(0) scale(1);
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .modal-title {
+      font-size: 18px;
+      font-weight: 500;
+    }
+    .modal-subtitle {
+      margin-top: 5px;
+      color: rgba(255,255,255,.35);
+      font-size: 11px;
+    }
+    .modal-close {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(255,255,255,.055);
+      border-radius: 11px;
+      background: rgba(255,255,255,.035);
+      color: rgba(255,255,255,.60);
+      cursor: pointer;
+      font-size: 19px;
+    }
+    .credit-balance {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 17px;
+      border: 1px solid rgba(255,105,184,.12);
+      border-radius: 17px;
+      background: rgba(255,68,157,.045);
+      margin-bottom: 18px;
+    }
+    .credit-balance-label {
+      color: rgba(255,255,255,.36);
+      font-size: 10px;
+      letter-spacing: 1.7px;
+      text-transform: uppercase;
+    }
+    .credit-balance-value {
+      margin-top: 5px;
+      font-size: 25px;
+      font-weight: 500;
+      color: #ffb2d3;
+    }
+    .credit-status {
+      color: rgba(255,255,255,.36);
+      font-size: 10px;
+    }
+    .plans-title {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,.28);
+      text-transform: uppercase;
+      margin-bottom: 9px;
+    }
+    .plan-list {
+      display: grid;
+      gap: 8px;
+    }
+    .plan-card {
+      width: 100%;
+      text-align: left;
+      padding: 15px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.055);
+      background: rgba(255,255,255,.025);
+      color: white;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+    .plan-card:hover {
+      border-color: rgba(255,105,184,.16);
+      background: rgba(255,68,157,.035);
+    }
+    .plan-card.current {
+      border-color: rgba(255,105,184,.20);
+      background: rgba(255,68,157,.05);
+    }
+    .plan-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .plan-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .plan-price {
+      color: #ffb1d1;
+      font-size: 12px;
+    }
+    .plan-description {
+      color: rgba(255,255,255,.30);
+      font-size: 10px;
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+    .plan-badge {
+      color: #ff9dca;
+      font-size: 8px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .modal-note {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 13px;
+      background: rgba(255,255,255,.025);
+      color: rgba(255,255,255,.25);
+      font-size: 10px;
+      line-height: 1.6;
+      text-align: center;
+    }
+    /* =====================================================
        TOAST
     ===================================================== */
     .toast {
       position: fixed;
       left: 50%;
       bottom: 95px;
-      z-index: 300;
+      z-index: 700;
       transform:
         translate(-50%, 20px);
       padding: 11px 16px;
@@ -1118,16 +1424,40 @@
       .aura-core {
         width: 138px;
         height: 138px;
+        margin-bottom: 25px;
       }
       .core {
         width: 28px;
         height: 28px;
       }
-      .side-menu {
-        width: min(335px, 91vw);
+      .welcome {
+        padding-top: 20px;
       }
-      .delete-history {
-        opacity: .65;
+      .welcome-actions {
+        grid-template-columns: 1fr;
+        width: min(340px, 100%);
+      }
+      .welcome-card {
+        min-height: 67px;
+      }
+      .side-menu {
+        width: min(350px, 91vw);
+      }
+      .history-action {
+        opacity: .75;
+      }
+      .credits-pill {
+        min-width: 62px;
+        padding: 0 9px;
+        font-size: 10px;
+      }
+      .brand-name {
+        font-size: 11px;
+        letter-spacing: 3px;
+      }
+      .credit-modal {
+        border-radius: 21px;
+        padding: 18px;
       }
     }
   </style>
@@ -1234,9 +1564,38 @@
           Nova história
         </span>
       </button>
-      <div class="history-title">
-        Suas histórias
+      <div class="menu-shortcuts">
+        <button
+          class="menu-shortcut"
+          onclick="openCreditsModal(); closeMenu();"
+        >
+          ✦&nbsp; Créditos
+        </button>
+        <button
+          class="menu-shortcut"
+          onclick="focusHistorySearch()"
+        >
+          ⌕&nbsp; Buscar
+        </button>
       </div>
+      <div class="history-heading">
+        <div class="history-title">
+          Suas histórias
+        </div>
+        <div
+          id="historyCount"
+          class="history-count"
+        >
+          0
+        </div>
+      </div>
+      <input
+        id="historySearch"
+        class="history-search"
+        type="search"
+        placeholder="Buscar uma história..."
+        autocomplete="off"
+      >
       <div
         id="historyList"
         class="history-list"
@@ -1282,7 +1641,7 @@
       <button
         class="top-action"
         onclick="openMenu()"
-        aria-label="Abrir histórias"
+        aria-label="Abrir menu"
       >
         <div class="hamburger">
           <span></span>
@@ -1300,13 +1659,15 @@
         </div>
       </div>
       <button
-        class="top-action"
-        onclick="newStory()"
-        aria-label="Nova história"
+        id="topCredits"
+        class="credits-pill"
+        onclick="openCreditsModal()"
+        aria-label="Ver créditos"
       >
-        <div class="plus-icon">
-          +
-        </div>
+        ✦
+        <span id="topCreditsValue">
+          0
+        </span>
       </button>
     </header>
     <!-- ===================================================
@@ -1330,6 +1691,58 @@
         <p class="tagline">
           intelligence for your story
         </p>
+        <div class="welcome-actions">
+          <button
+            class="welcome-card"
+            onclick="newStory()"
+          >
+            <div class="welcome-card-icon">
+              +
+            </div>
+            <div class="welcome-card-title">
+              Nova história
+            </div>
+            <div class="welcome-card-description">
+              Comece um novo universo.
+            </div>
+          </button>
+          <button
+            class="welcome-card"
+            onclick="openMenu()"
+          >
+            <div class="welcome-card-icon">
+              ◌
+            </div>
+            <div class="welcome-card-title">
+              Minhas histórias
+            </div>
+            <div class="welcome-card-description">
+              Continue algo que já começou.
+            </div>
+          </button>
+          <button
+            class="welcome-card"
+            onclick="openCreditsModal()"
+          >
+            <div class="welcome-card-icon">
+              ✦
+            </div>
+            <div class="welcome-card-title">
+              Seus créditos
+            </div>
+            <div class="welcome-card-description">
+              Veja seu saldo e seus planos.
+            </div>
+          </button>
+        </div>
+        <div
+          id="welcomeCreditLine"
+          class="welcome-credit-line"
+        >
+          Você tem
+          <strong>0 créditos</strong>
+          disponíveis.
+        </div>
       </div>
     </section>
     <!-- ===================================================
@@ -1353,6 +1766,115 @@
       </div>
     </footer>
   </main>
+  <!-- =====================================================
+       CREDIT MODAL
+  ===================================================== -->
+  <div
+    id="creditModalBackdrop"
+    class="modal-backdrop"
+    onclick="closeCreditsModal(event)"
+  >
+    <div
+      class="credit-modal"
+      onclick="event.stopPropagation()"
+    >
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">
+            Aura Line
+          </div>
+          <div class="modal-subtitle">
+            Créditos e planos
+          </div>
+        </div>
+        <button
+          class="modal-close"
+          onclick="closeCreditsModal()"
+        >
+          ×
+        </button>
+      </div>
+      <div class="credit-balance">
+        <div>
+          <div class="credit-balance-label">
+            Saldo disponível
+          </div>
+          <div
+            id="modalCreditValue"
+            class="credit-balance-value"
+          >
+            0
+          </div>
+        </div>
+        <div
+          id="modalCreditStatus"
+          class="credit-status"
+        >
+          créditos
+        </div>
+      </div>
+      <div class="plans-title">
+        Estrutura de planos
+      </div>
+      <div class="plan-list">
+        <button
+          class="plan-card current"
+          onclick="showComingSoon('O plano gratuito já está ativo na sua conta.')"
+        >
+          <div class="plan-top">
+            <div class="plan-name">
+              Gratuito
+            </div>
+            <div class="plan-badge">
+              Atual
+            </div>
+          </div>
+          <div class="plan-description">
+            Acesso à Aura com seus créditos disponíveis.
+          </div>
+        </button>
+        <button
+          class="plan-card"
+          onclick="showComingSoon('Os planos pagos serão liberados na próxima etapa.')"
+        >
+          <div class="plan-top">
+            <div class="plan-name">
+              Plus
+            </div>
+            <div class="plan-price">
+              Em breve
+            </div>
+          </div>
+          <div class="plan-description">
+            Mais créditos, maior uso e recursos adicionais.
+          </div>
+        </button>
+        <button
+          class="plan-card"
+          onclick="showComingSoon('O plano Pro será conectado ao sistema de pagamentos.')"
+        >
+          <div class="plan-top">
+            <div class="plan-name">
+              Pro
+            </div>
+            <div class="plan-price">
+              Em breve
+            </div>
+          </div>
+          <div class="plan-description">
+            Estrutura preparada para uma experiência avançada.
+          </div>
+        </button>
+      </div>
+      <div class="modal-note">
+        Os pagamentos reais serão conectados posteriormente.
+        Por enquanto, esta área prepara a experiência de monetização.
+      </div>
+    </div>
+  </div>
+  <!-- =====================================================
+       TOAST
+  ===================================================== -->
   <div
     id="toast"
     class="toast"
@@ -1381,6 +1903,7 @@
     let currentUser = null;
     let appInitialized = false;
     let userCredits = 0;
+    let historySearchTerm = "";
     const chat =
       document.getElementById("chat");
     const input =
@@ -1400,7 +1923,8 @@
       const message =
         document.getElementById("authMessage");
       message.textContent = "";
-      message.className = "auth-error";
+      message.className =
+        "auth-error";
       if (authMode === "login") {
         authMode = "signup";
         button.textContent =
@@ -1437,7 +1961,8 @@
       const message =
         document.getElementById("authMessage");
       message.textContent = "";
-      message.className = "auth-error";
+      message.className =
+        "auth-error";
       if (!email || !password) {
         message.textContent =
           "Preencha seu e-mail e sua senha.";
@@ -1559,6 +2084,7 @@
       updateAccountUI();
       await loadCredits();
       await loadStories();
+      updateWelcome();
       setTimeout(() => {
         input.focus();
       }, 150);
@@ -1615,7 +2141,7 @@
     /* =====================================================
        CRÉDITOS
        TABELA: credits
-       COLUNAS: user_id / balance
+       COLUNAS: id / user_id / balance
     ===================================================== */
     async function loadCredits() {
       if (!currentUser) {
@@ -1628,7 +2154,9 @@
         } =
           await supabaseClient
             .from("credits")
-            .select("id, user_id, balance")
+            .select(
+              "id, user_id, balance"
+            )
             .eq(
               "user_id",
               currentUser.id
@@ -1637,11 +2165,6 @@
         if (error) {
           throw error;
         }
-        /*
-         * Se o usuário ainda não tiver uma linha
-         * na tabela, criamos automaticamente
-         * com 20 créditos.
-         */
         if (!data) {
           const {
             data: newCredit,
@@ -1674,6 +2197,7 @@
         }
         updateCreditsUI();
         updateSendButton();
+        updateWelcome();
       } catch (error) {
         console.error(
           "Erro ao carregar créditos:",
@@ -1682,21 +2206,72 @@
         userCredits = 0;
         updateCreditsUI();
         updateSendButton();
+        updateWelcome();
         showToast(
           "Não foi possível carregar seus créditos."
         );
       }
     }
     function updateCreditsUI() {
-      const element =
+      const accountElement =
         document.getElementById(
           "accountCredits"
         );
-      if (!element) {
-        return;
+      if (accountElement) {
+        accountElement.textContent =
+          `Créditos: ${userCredits}`;
       }
-      element.textContent =
-        `Créditos: ${userCredits}`;
+      const topValue =
+        document.getElementById(
+          "topCreditsValue"
+        );
+      if (topValue) {
+        topValue.textContent =
+          userCredits;
+      }
+      const topCredits =
+        document.getElementById(
+          "topCredits"
+        );
+      if (topCredits) {
+        topCredits.classList.remove(
+          "low",
+          "empty"
+        );
+        if (userCredits <= 0) {
+          topCredits.classList.add(
+            "empty"
+          );
+        } else if (
+          userCredits <= 5
+        ) {
+          topCredits.classList.add(
+            "low"
+          );
+        }
+      }
+      const modalValue =
+        document.getElementById(
+          "modalCreditValue"
+        );
+      if (modalValue) {
+        modalValue.textContent =
+          userCredits;
+      }
+      const modalStatus =
+        document.getElementById(
+          "modalCreditStatus"
+        );
+      if (modalStatus) {
+        if (userCredits === 1) {
+          modalStatus.textContent =
+            "crédito disponível";
+        } else {
+          modalStatus.textContent =
+            "créditos disponíveis";
+        }
+      }
+      updateWelcome();
     }
     async function consumeCredit() {
       if (!currentUser) {
@@ -1797,6 +2372,62 @@
       sendButton.disabled =
         userCredits <= 0;
     }
+    function updateWelcome() {
+      const line =
+        document.getElementById(
+          "welcomeCreditLine"
+        );
+      if (!line) {
+        return;
+      }
+      if (userCredits === 0) {
+        line.innerHTML =
+          'Você está sem créditos. <strong>Veja as opções disponíveis.</strong>';
+      } else {
+        const label =
+          userCredits === 1
+            ? "crédito"
+            : "créditos";
+        line.innerHTML =
+          `Você tem <strong>${userCredits} ${label}</strong> disponíveis.`;
+      }
+    }
+    /* =====================================================
+       CREDIT MODAL
+    ===================================================== */
+    function openCreditsModal() {
+      updateCreditsUI();
+      document
+        .getElementById(
+          "creditModalBackdrop"
+        )
+        .classList.add(
+          "open"
+        );
+    }
+    function closeCreditsModal(
+      event
+    ) {
+      if (
+        event &&
+        event.target !==
+          event.currentTarget
+      ) {
+        return;
+      }
+      document
+        .getElementById(
+          "creditModalBackdrop"
+        )
+        .classList.remove(
+          "open"
+        );
+    }
+    function showComingSoon(
+      text
+    ) {
+      showToast(text);
+    }
     /* =====================================================
        LOGOUT
     ===================================================== */
@@ -1809,6 +2440,7 @@
       userCredits = 0;
       appInitialized = false;
       closeMenu();
+      closeCreditsModal();
       document.getElementById(
         "app"
       ).style.display = "none";
@@ -1927,7 +2559,9 @@
           updatedAt:
             data.updated_at
         };
-        stories.unshift(story);
+        stories.unshift(
+          story
+        );
         currentStoryId =
           story.id;
         conversation = [];
@@ -2041,7 +2675,9 @@
         );
       }
     }
-    function createStoryTitle(text) {
+    function createStoryTitle(
+      text
+    ) {
       let title =
         text
           .replace(/\s+/g, " ")
@@ -2051,13 +2687,94 @@
       }
       if (title.length > 34) {
         title =
-          title.substring(
-            0,
-            34
-          ).trim() +
+          title
+            .substring(
+              0,
+              34
+            )
+            .trim() +
           "...";
       }
       return title;
+    }
+    async function renameStory(
+      event,
+      id
+    ) {
+      event.stopPropagation();
+      const story =
+        stories.find(
+          item =>
+            item.id === id
+        );
+      if (!story) {
+        return;
+      }
+      const newTitle =
+        window.prompt(
+          "Novo nome da história:",
+          story.title
+        );
+      if (
+        newTitle === null
+      ) {
+        return;
+      }
+      const title =
+        newTitle
+          .replace(/\s+/g, " ")
+          .trim();
+      if (!title) {
+        showToast(
+          "Digite um nome válido."
+        );
+        return;
+      }
+      try {
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from("stories")
+            .update({
+              title:
+                title,
+              updated_at:
+                new Date().toISOString()
+            })
+            .eq(
+              "id",
+              id
+            )
+            .eq(
+              "user_id",
+              currentUser.id
+            )
+            .select(
+              "id, title, messages, created_at, updated_at"
+            )
+            .single();
+        if (error) {
+          throw error;
+        }
+        story.title =
+          data.title;
+        story.updatedAt =
+          data.updated_at;
+        renderHistory();
+        showToast(
+          "História renomeada."
+        );
+      } catch (error) {
+        console.error(
+          "Erro ao renomear:",
+          error
+        );
+        showToast(
+          "Não foi possível renomear a história."
+        );
+      }
     }
     /* =====================================================
        HISTORY
@@ -2067,8 +2784,30 @@
         document.getElementById(
           "historyList"
         );
+      const count =
+        document.getElementById(
+          "historyCount"
+        );
       if (!list) {
         return;
+      }
+      const term =
+        historySearchTerm
+          .toLowerCase()
+          .trim();
+      const filtered =
+        stories.filter(
+          story =>
+            !term ||
+            String(
+              story.title
+            )
+              .toLowerCase()
+              .includes(term)
+        );
+      if (count) {
+        count.textContent =
+          stories.length;
       }
       if (!stories.length) {
         list.innerHTML = `
@@ -2080,8 +2819,16 @@
         `;
         return;
       }
+      if (!filtered.length) {
+        list.innerHTML = `
+          <div class="history-empty">
+            Nenhuma história encontrada.
+          </div>
+        `;
+        return;
+      }
       const ordered =
-        [...stories].sort(
+        [...filtered].sort(
           (a, b) =>
             new Date(
               b.updatedAt
@@ -2115,20 +2862,41 @@
                     ${formatDate(story.updatedAt)}
                   </div>
                 </div>
-                <button
-                  class="delete-history"
-                  onclick="deleteStory(event, '${story.id}')"
-                  aria-label="Apagar história"
-                >
-                  ×
-                </button>
+                <div class="history-actions">
+                  <button
+                    class="history-action"
+                    onclick="renameStory(event, '${story.id}')"
+                    aria-label="Renomear história"
+                  >
+                    ✎
+                  </button>
+                  <button
+                    class="history-action delete"
+                    onclick="deleteStory(event, '${story.id}')"
+                    aria-label="Apagar história"
+                  >
+                    ×
+                  </button>
+                </div>
               </div>
             `;
           }
         )
         .join("");
     }
-    async function openStory(id) {
+    function focusHistorySearch() {
+      const search =
+        document.getElementById(
+          "historySearch"
+        );
+      openMenu();
+      setTimeout(() => {
+        search.focus();
+      }, 120);
+    }
+    async function openStory(
+      id
+    ) {
       const story =
         stories.find(
           item =>
@@ -2175,6 +2943,52 @@
             <p class="tagline">
               intelligence for your story
             </p>
+            <div class="welcome-actions">
+              <button
+                class="welcome-card"
+                onclick="newStory()"
+              >
+                <div class="welcome-card-icon">+</div>
+                <div class="welcome-card-title">
+                  Nova história
+                </div>
+                <div class="welcome-card-description">
+                  Comece um novo universo.
+                </div>
+              </button>
+              <button
+                class="welcome-card"
+                onclick="openMenu()"
+              >
+                <div class="welcome-card-icon">◌</div>
+                <div class="welcome-card-title">
+                  Minhas histórias
+                </div>
+                <div class="welcome-card-description">
+                  Continue algo que já começou.
+                </div>
+              </button>
+              <button
+                class="welcome-card"
+                onclick="openCreditsModal()"
+              >
+                <div class="welcome-card-icon">✦</div>
+                <div class="welcome-card-title">
+                  Seus créditos
+                </div>
+                <div class="welcome-card-description">
+                  Veja seu saldo e seus planos.
+                </div>
+              </button>
+            </div>
+            <div
+              id="welcomeCreditLine"
+              class="welcome-credit-line"
+            >
+              Você tem
+              <strong>${userCredits} créditos</strong>
+              disponíveis.
+            </div>
           </div>
         `;
         return;
@@ -2204,6 +3018,13 @@
     ) {
       event.stopPropagation();
       if (!currentUser) {
+        return;
+      }
+      const confirmed =
+        window.confirm(
+          "Excluir esta história? Essa ação não pode ser desfeita."
+        );
+      if (!confirmed) {
         return;
       }
       try {
@@ -2282,9 +3103,56 @@
           <p class="tagline">
             intelligence for your story
           </p>
+          <div class="welcome-actions">
+            <button
+              class="welcome-card"
+              onclick="newStory()"
+            >
+              <div class="welcome-card-icon">+</div>
+              <div class="welcome-card-title">
+                Nova história
+              </div>
+              <div class="welcome-card-description">
+                Comece um novo universo.
+              </div>
+            </button>
+            <button
+              class="welcome-card"
+              onclick="openMenu()"
+            >
+              <div class="welcome-card-icon">◌</div>
+              <div class="welcome-card-title">
+                Minhas histórias
+              </div>
+              <div class="welcome-card-description">
+                Continue algo que já começou.
+              </div>
+            </button>
+            <button
+              class="welcome-card"
+              onclick="openCreditsModal()"
+            >
+              <div class="welcome-card-icon">✦</div>
+              <div class="welcome-card-title">
+                Seus créditos
+              </div>
+              <div class="welcome-card-description">
+                Veja seu saldo e seus planos.
+              </div>
+            </button>
+          </div>
+          <div
+            id="welcomeCreditLine"
+            class="welcome-credit-line"
+          >
+            Você tem
+            <strong>${userCredits} créditos</strong>
+            disponíveis.
+          </div>
         </div>
       `;
       renderHistory();
+      updateWelcome();
     }
     async function ensureStory() {
       if (currentStoryId) {
@@ -2304,6 +3172,7 @@
         return;
       }
       if (userCredits <= 0) {
+        openCreditsModal();
         showToast(
           "Você não possui mais créditos."
         );
@@ -2315,9 +3184,6 @@
       if (!message) {
         return;
       }
-      /*
-       * Consome 1 crédito antes do envio.
-       */
       const creditConsumed =
         await consumeCredit();
       if (!creditConsumed) {
@@ -2339,7 +3205,9 @@
       if (currentWelcome) {
         currentWelcome.remove();
       }
-      addUserMessage(message);
+      addUserMessage(
+        message
+      );
       conversation.push({
         role: "user",
         content: message
@@ -2349,6 +3217,11 @@
       resizeInput();
       setThinking(true);
       try {
+        /*
+         * O histórico completo da história é enviado
+         * para a Aura. Isso permite continuidade
+         * quando o usuário continua uma história.
+         */
         const response =
           await fetch(
             "/api/chat",
@@ -2378,6 +3251,13 @@
             "Erro ao conversar com a Aura"
           );
         }
+        if (
+          !data.reply
+        ) {
+          throw new Error(
+            "A Aura não retornou uma resposta."
+          );
+        }
         conversation.push({
           role:
             "assistant",
@@ -2392,17 +3272,14 @@
       } catch (error) {
         console.error(error);
         setThinking(false);
-        /*
-         * Devolve o crédito quando a API falhar.
-         */
         await restoreCredit();
         addAuraInstant(
-          "Não consegui responder agora. Tente novamente em alguns instantes."
+          "Não consegui responder agora. O crédito foi devolvido. Tente novamente em alguns instantes."
         );
       }
     }
     /* =====================================================
-       AURA MESSAGE
+       USER MESSAGE
     ===================================================== */
     function addUserMessage(
       text,
@@ -2441,6 +3318,9 @@
         scrollToBottom();
       }
     }
+    /* =====================================================
+       AURA MESSAGE
+    ===================================================== */
     function addAuraInstant(
       text,
       shouldScroll = true
@@ -2492,10 +3372,11 @@
     /* =====================================================
        STREAMING
     ===================================================== */
-    async function streamAura(text) {
+    async function streamAura(
+      text
+    ) {
       isThinking = true;
-      sendButton.disabled =
-        true;
+      updateSendButton();
       const wrapper =
         document.createElement(
           "div"
@@ -2589,19 +3470,19 @@
             8 + progress * 84,
             92
           )}%`;
-        let delay = 105;
+        let delay = 95;
         if (
           part.endsWith(".") ||
           part.endsWith("!") ||
           part.endsWith("?")
         ) {
-          delay = 360;
+          delay = 340;
         } else if (
           part.endsWith(",") ||
           part.endsWith(";") ||
           part.endsWith(":")
         ) {
-          delay = 210;
+          delay = 190;
         }
         scrollToBottom();
         await wait(delay);
@@ -2612,7 +3493,7 @@
       wrapper.classList.add(
         "finished"
       );
-      await wait(700);
+      await wait(500);
       isThinking = false;
       updateSendButton();
       scrollToBottom();
@@ -2702,6 +3583,21 @@
           event.preventDefault();
           sendMessage();
         }
+      }
+    );
+    /* =====================================================
+       HISTORY SEARCH
+    ===================================================== */
+    const historySearch =
+      document.getElementById(
+        "historySearch"
+      );
+    historySearch.addEventListener(
+      "input",
+      function() {
+        historySearchTerm =
+          this.value;
+        renderHistory();
       }
     );
     /* =====================================================
@@ -2823,7 +3719,7 @@
               "show"
             );
           },
-          1800
+          2200
         );
     }
     /* =====================================================
