@@ -111,8 +111,6 @@ button{border:0;-webkit-tap-highlight-color:transparent}
 .modal-body p{color:var(--muted);margin-bottom:14px;font-size:13.5px}
 .plan{border:1px solid var(--line2);border-radius:18px;padding:17px;margin-bottom:11px;cursor:pointer;transition:.15s;position:relative}
 .plan:active{transform:scale(.98)}
-.plan.featured{border-color:rgba(255,79,163,.45);background:linear-gradient(135deg,rgba(255,79,163,.07),rgba(155,124,255,.05
-
 .plan.featured{border-color:rgba(255,79,163,.45);background:linear-gradient(135deg,rgba(255,79,163,.07),rgba(155,124,255,.05))}
 .plan-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .plan-name{font-weight:650;font-size:15px}
@@ -205,161 +203,442 @@ button{border:0;-webkit-tap-highlight-color:transparent}
 <div class="toast" id="toast"></div>
 
 <script>
-/* ===== CONFIG — preenche com teus dados do Supabase ===== */
-const SUPABASE_URL = "https://SEU_PROJETO.supabase.co";
-const SUPABASE_KEY = "SUA_ANON_KEY";
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+/* ===== CONFIG — AURA ===== */
+const SUPABASE_URL = "https://vqmfsshmjdfjlnmbemxv.supabase.co";
+const SUPABASE_KEY = "sb_publishable_nCCjJPHoTODWLHvwTWN_AA_J8JivYaE";
+const AURA_API_URL = "https://aura-line-s.vercel.app/api/chat";
+
+const sb = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY,
+  {
+    auth:{
+      persistSession:true,
+      autoRefreshToken:true,
+      detectSessionInUrl:false
+    }
+  }
+);
 
 let user = null, credits = 0, sending = false, isSignup = false;
 
 /* ===== HELPERS ===== */
 const $ = id => document.getElementById(id);
-function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),2600); }
-function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-function now(){ return new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); }
+
+function toast(msg){
+  const t=$("toast");
+  t.textContent=msg;
+  t.classList.add("show");
+  clearTimeout(t._h);
+  t._h=setTimeout(()=>t.classList.remove("show"),2600);
+}
+
+function esc(s){
+  return String(s)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
+}
+
+function now(){
+  return new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+}
 
 /* ===== AUTH ===== */
 function toggleAuthMode(){
   isSignup = !isSignup;
+
   $("authName").style.display = isSignup ? "block" : "none";
   $("authBtn").textContent = isSignup ? "Criar conta" : "Entrar";
-  $("authSwitch").innerHTML = isSignup ? 'Já tem conta? <span>Entrar</span>' : 'Não tem conta? <span>Criar conta</span>';
+
+  $("authSwitch").innerHTML = isSignup
+    ? 'Já tem conta? <span>Entrar</span>'
+    : 'Não tem conta? <span>Criar conta</span>';
+
   $("authMsg").textContent = "";
 }
+
 async function doAuth(){
-  const email=$("authEmail").value.trim(), pass=$("authPass").value, name=$("authName").value.trim();
-  const msg=$("authMsg"); msg.className="auth-msg"; msg.textContent="";
-  if(!email||!pass){ msg.textContent="Preenche e-mail e senha."; return; }
-  if(isSignup&&!name){ msg.textContent="Falta teu nome."; return; }
+  const email=$("authEmail").value.trim();
+  const pass=$("authPass").value;
+  const name=$("authName").value.trim();
+
+  const msg=$("authMsg");
+  msg.className="auth-msg";
+  msg.textContent="";
+
+  if(!email||!pass){
+    msg.textContent="Preenche e-mail e senha.";
+    return;
+  }
+
+  if(isSignup&&!name){
+    msg.textContent="Falta teu nome.";
+    return;
+  }
+
   $("authBtn").disabled=true;
+
   try{
     if(isSignup){
-      const {error} = await sb.auth.signUp({email,password:pass,options:{data:{name}}});
+      const {error} = await sb.auth.signUp({
+        email,
+        password:pass,
+        options:{
+          data:{name}
+        }
+      });
+
       if(error) throw error;
-      msg.classList.add("ok"); msg.textContent="Conta criada! Confere teu e-mail e entra.";
+
+      msg.classList.add("ok");
+      msg.textContent="Conta criada! Confere teu e-mail e entra.";
     }else{
-      const {error} = await sb.auth.signInWithPassword({email,password:pass});
+      const {error} = await sb.auth.signInWithPassword({
+        email,
+        password:pass
+      });
+
       if(error) throw error;
     }
-  }catch(e){ msg.textContent = e.message || "Erro ao autenticar."; }
+  }catch(e){
+    msg.textContent = e.message || "Erro ao autenticar.";
+  }
+
   $("authBtn").disabled=false;
 }
-async function logout(){ await sb.auth.signOut(); location.reload(); }
+
+async function logout(){
+  await sb.auth.signOut();
+  location.reload();
+}
 
 sb.auth.onAuthStateChange(async (_e,session)=>{
-  if(session?.user){ user=session.user; await bootApp(); }
+  if(session?.user){
+    user=session.user;
+    await bootApp();
+  }
 });
 
 /* ===== BOOT ===== */
 async function bootApp(){
   $("authScreen").style.display="none";
   $("app").style.display="block";
+
   const name = user.user_metadata?.name || user.email.split("@")[0];
+
   $("drawerName").textContent=name;
   $("drawerEmail").textContent=user.email;
   $("drawerAvatar").textContent=name[0].toUpperCase();
+
   await loadCredits();
   loadHistory();
 }
 
 /* ===== CRÉDITOS ===== */
 async function loadCredits(){
-  const {data} = await sb.from("profiles").select("credits").eq("id",user.id).single();
-  credits = data?.credits ?? 0;
-  $("creditsCount").textContent = credits;
-}
-async function spendCredit(){
-  if(credits<=0) return false;
-  credits--; $("creditsCount").textContent=credits;
-  await sb.from("profiles").update({credits}).eq("id",user.id);
-  return true;
+  const {data,error} = await sb
+    .from("credits")
+    .select("balance")
+    .eq("user_id",user.id)
+    .maybeSingle();
+
+  if(error){
+    console.error("Erro ao carregar créditos:",error);
+    credits=0;
+  }else{
+    credits=data?.balance ?? 0;
+  }
+
+  $("creditsCount").textContent=credits;
 }
 
 /* ===== CHAT ===== */
 function loadHistory(){
   const inner=$("chatInner");
-  const saved=JSON.parse(localStorage.getItem("aura_chat_"+user.id)||"[]");
-  if(!saved.length){ renderEmpty(); return; }
+
+  const saved=JSON.parse(
+    localStorage.getItem("aura_chat_"+user.id)||"[]"
+  );
+
+  if(!saved.length){
+    renderEmpty();
+    return;
+  }
+
   saved.forEach(m=>addBubble(m.role,m.text,m.time,false));
   scrollBottom();
 }
+
 function saveMsg(role,text){
   const key="aura_chat_"+user.id;
-  const arr=JSON.parse(localStorage.getItem(key)||"[]");
-  arr.push({role,text,time:now()});
-  localStorage.setItem(key,JSON.stringify(arr.slice(-100)));
+
+  const arr=JSON.parse(
+    localStorage.getItem(key)||"[]"
+  );
+
+  arr.push({
+    role,
+    text,
+    time:now()
+  });
+
+  localStorage.setItem(
+    key,
+    JSON.stringify(arr.slice(-100))
+  );
 }
+
 function renderEmpty(){
   $("chatInner").innerHTML=`
     <div class="empty">
-      <div class="aura-symbol"><div class="orbit"></div><div class="orbit2"></div><div class="orb"></div></div>
+      <div class="aura-symbol">
+        <div class="orbit"></div>
+        <div class="orbit2"></div>
+        <div class="orb"></div>
+      </div>
+
       <h2>Oi, eu sou a Aura ✦</h2>
-      <p>Tô aqui pra conversar sobre o que você quiser. Por onde começamos?</p>
+
+      <p>
+        Tô aqui pra conversar sobre o que você quiser.
+        Por onde começamos?
+      </p>
+
       <div class="suggestions">
-        <button class="suggestion" onclick="quickSend(this)">Como foi teu dia?</button>
-        <button class="suggestion" onclick="quickSend(this)">Me conta algo curioso</button>
-        <button class="suggestion" onclick="quickSend(this)">Preciso desabafar</button>
+        <button class="suggestion" onclick="quickSend(this)">
+          Como foi teu dia?
+        </button>
+
+        <button class="suggestion" onclick="quickSend(this)">
+          Me conta algo curioso
+        </button>
+
+        <button class="suggestion" onclick="quickSend(this)">
+          Preciso desabafar
+        </button>
       </div>
     </div>`;
 }
-function quickSend(btn){ $("input").value=btn.textContent; sendMessage(); }
+
+function quickSend(btn){
+  $("input").value=btn.textContent;
+  sendMessage();
+}
+
 function addBubble(role,text,time,save=true){
-  const empty=$("chatInner").querySelector(".empty"); if(empty) empty.remove();
+  const empty=$("chatInner").querySelector(".empty");
+
+  if(empty) empty.remove();
+
   const div=document.createElement("div");
-  div.className="msg "+(role==="user"?"user":"aura");
-  div.innerHTML=`<div class="bubble">${esc(text)}<span class="bubble-time">${time||now()}</span></div>`;
+
+  div.className="msg "+(
+    role==="user"
+      ? "user"
+      : "aura"
+  );
+
+  div.innerHTML=`
+    <div class="bubble">
+      ${esc(text)}
+      <span class="bubble-time">
+        ${time||now()}
+      </span>
+    </div>`;
+
   $("chatInner").appendChild(div);
+
   if(save) saveMsg(role,text);
+
   scrollBottom();
 }
+
 function showTyping(){
   const div=document.createElement("div");
-  div.className="msg aura"; div.id="typingMsg";
-  div.innerHTML=`<div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>`;
-  $("chatInner").appendChild(div); scrollBottom();
+
+  div.className="msg aura";
+  div.id="typingMsg";
+
+  div.innerHTML=`
+    <div class="bubble">
+      <span class="typing">
+        <i></i>
+        <i></i>
+        <i></i>
+      </span>
+    </div>`;
+
+  $("chatInner").appendChild(div);
+
+  scrollBottom();
 }
-function hideTyping(){ $("typingMsg")?.remove(); }
-function scrollBottom(){ const s=$("chatScroll"); requestAnimationFrame(()=>s.scrollTop=s.scrollHeight); }
+
+function hideTyping(){
+  $("typingMsg")?.remove();
+}
+
+function scrollBottom(){
+  const s=$("chatScroll");
+
+  requestAnimationFrame(()=>{
+    s.scrollTop=s.scrollHeight;
+  });
+}
+
 function clearChat(){
   localStorage.removeItem("aura_chat_"+user.id);
-  $("chatInner").innerHTML=""; renderEmpty();
-  toggleDrawer(false); toast("Conversa limpa.");
+
+  $("chatInner").innerHTML="";
+
+  renderEmpty();
+
+  toggleDrawer(false);
+
+  toast("Conversa limpa.");
 }
 
+/* ===== CHAT — API REAL DA AURA ===== */
 async function sendMessage(){
-  const input=$("input"), text=input.value.trim();
-  if(!text||sending) return;
-  if(credits<=0){ openModal("credits"); toast("Sem créditos — recarrega pra continuar."); return; }
-  sending=true; $("sendBtn").disabled=true;
-  input.value=""; autoGrow(input);
+  const input=$("input");
+  const text=input.value.trim();
+
+  if(!text || sending) return;
+
+  if(credits<=0){
+    openModal("credits");
+    toast("Sem créditos — aguarde a renovação.");
+    return;
+  }
+
+  sending=true;
+  $("sendBtn").disabled=true;
+
+  input.value="";
+  autoGrow(input);
+
   addBubble("user",text);
   showTyping();
+
   try{
-    await spendCredit();
-    const reply = await askAura(text);
+    const result=await askAura(text);
+
     hideTyping();
-    addBubble("aura",reply);
+
+    addBubble("aura",result.reply);
+
+    /*
+      O backend da Aura já consumiu o crédito
+      através do RPC seguro.
+
+      Se a API retornar a quantidade atual,
+      usamos diretamente.
+    */
+    if(typeof result.credits==="number"){
+      credits=result.credits;
+      $("creditsCount").textContent=credits;
+    }else{
+      await loadCredits();
+    }
+
     await saveMemory(text);
+
   }catch(e){
     hideTyping();
-    addBubble("aura","Tive um tropeço aqui... tenta de novo? 💭");
+
+    console.error("Erro ao falar com a Aura:",e);
+
+    addBubble(
+      "aura",
+      e.message || "Tive um tropeço aqui... tenta de novo? 💭"
+    );
+
+    /*
+      Se a chamada falhou, não alteramos
+      créditos pelo navegador.
+    */
+    await loadCredits();
   }
-  sending=false; $("sendBtn").disabled=false; input.focus();
+
+  sending=false;
+  $("sendBtn").disabled=false;
+  input.focus();
 }
 
-/* ===== IA — troca pela tua edge function / API ===== */
+/* ===== IA — API REAL ===== */
 async function askAura(text){
-  const {data,error} = await sb.functions.invoke("aura-chat",{body:{message:text,user_id:user.id}});
-  if(error) throw error;
-  return data.reply;
+  const refreshed=await sb.auth.refreshSession();
+
+  let session=refreshed.data?.session;
+
+  if(!session){
+    const current=await sb.auth.getSession();
+    session=current.data?.session;
+  }
+
+  if(!session?.access_token){
+    throw new Error("Sua sessão expirou. Entre novamente.");
+  }
+
+  const response=await fetch(AURA_API_URL,{
+    method:"POST",
+
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":`Bearer ${session.access_token}`
+    },
+
+    body:JSON.stringify({
+      message:text,
+      history:[],
+      language:"pt-BR"
+    })
+  });
+
+  const data=await response.json().catch(()=>({}));
+
+  if(!response.ok){
+    throw new Error(
+      data.error ||
+      data.details ||
+      `Erro da Aura (${response.status}).`
+    );
+  }
+
+  if(!data.reply){
+    throw new Error("A Aura não retornou uma resposta.");
+  }
+
+  return data;
 }
 
 /* ===== MEMÓRIA ===== */
 async function saveMemory(text){
-  await sb.from("memories").insert({user_id:user.id,content:text});
+  try{
+    await sb
+      .from("memories")
+      .insert({
+        user_id:user.id,
+        content:text
+      });
+  }catch(e){
+    console.error("Erro ao salvar memória:",e);
+  }
 }
+
 async function loadMemory(){
-  const {data} = await sb.from("memories").select("content,created_at").eq("id",user.id).eq("user_id",user.id).order("created_at",{ascending:false}).limit(30);
+  const {data,error} = await sb
+    .from("memories")
+    .select("content,created_at")
+    .eq("user_id",user.id)
+    .order("created_at",{ascending:false})
+    .limit(30);
+
+  if(error){
+    console.error("Erro ao carregar memória:",error);
+    return [];
+  }
+
   return data||[];
 }
 
@@ -368,42 +647,115 @@ function toggleDrawer(open){
   $("drawer").classList.toggle("open",open);
   $("overlay").classList.toggle("open",open);
 }
+
 async function openModal(type){
   toggleDrawer(false);
+
   const body=$("modalBody");
+
   if(type==="credits"){
     $("modalTitle").textContent="Créditos";
+
     body.innerHTML=`
-      <p>Você tem <b style="color:var(--pink2)">${credits} créditos</b>. Cada mensagem gasta 1.</p>
-      <div class="plan" onclick="buyCredits(50)"><div class="plan-top"><span class="plan-name">50 créditos</span><span class="plan-price">R$ 9,90</span></div><div class="plan-desc">Pra conversar de boa no dia a dia.</div></div>
-      <div class="plan featured" onclick="buyCredits(200)"><div class="plan-badge">POPULAR</div><div class="plan-top"><span class="plan-name">200 créditos</span><span class="plan-price">R$ 29,90</span></div><div class="plan-desc">Melhor custo. Pra quem conversa todo dia.</div></div>
-      <div class="plan" onclick="buyCredits(500)"><div class="plan-top"><span class="plan-name">500 créditos</span><span class="plan-price">R$ 59,90</span></div><div class="plan-desc">Modo intenso. Sem contar mensagem.</div></div>`;
+      <p>
+        Você tem
+        <b style="color:var(--pink2)">
+          ${credits} créditos
+        </b>.
+      </p>
+
+      <div class="plan">
+        <div class="plan-top">
+          <span class="plan-name">FREE</span>
+          <span class="plan-price">Grátis</span>
+        </div>
+
+        <div class="plan-desc">
+          5 créditos por dia.
+        </div>
+      </div>
+
+      <div class="plan featured">
+        <div class="plan-badge">PRO</div>
+
+        <div class="plan-top">
+          <span class="plan-name">PRO</span>
+          <span class="plan-price">R$ 9,99/mês</span>
+        </div>
+
+        <div class="plan-desc">
+          30 créditos por dia.
+        </div>
+      </div>
+
+      <div class="plan">
+        <div class="plan-top">
+          <span class="plan-name">ULTRA</span>
+          <span class="plan-price">R$ 24,99/mês</span>
+        </div>
+
+        <div class="plan-desc">
+          100 créditos por dia.
+        </div>
+      </div>
+
+      <p style="margin-top:12px">
+        Os pagamentos serão adicionados posteriormente.
+      </p>
+    `;
+
   }else if(type==="memory"){
+
     $("modalTitle").textContent="Memória da Aura";
+
     body.innerHTML="<p>Carregando...</p>";
+
     const mems=await loadMemory();
+
     body.innerHTML = mems.length
-      ? "<p>Coisas que a Aura lembra de você:</p>"+mems.map(m=>`<div class="plan" style="cursor:default"><div class="plan-desc" style="color:var(--text)">${esc(m.content)}</div></div>`).join("")
+
+      ? "<p>Coisas que a Aura lembra de você:</p>"+
+        mems.map(m=>`
+          <div class="plan" style="cursor:default">
+            <div class="plan-desc" style="color:var(--text)">
+              ${esc(m.content)}
+            </div>
+          </div>
+        `).join("")
+
       : "<p>Ainda sem memórias. Conversa com ela que ela começa a lembrar de você.</p>";
   }
+
   $("modalWrap").classList.add("open");
 }
-function closeModal(){ $("modalWrap").classList.remove("open"); }
-async function buyCredits(amount){
-  credits+=amount;
-  await sb.from("profiles").update({credits}).eq("id",user.id);
-  $("creditsCount").textContent=credits;
-  closeModal(); toast(`+${amount} créditos ✦`);
+
+function closeModal(){
+  $("modalWrap").classList.remove("open");
 }
 
 /* ===== INPUT ===== */
-function autoGrow(el){ el.style.height="auto"; el.style.height=Math.min(el.scrollHeight,130)+"px"; }
-function onKey(e){ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); sendMessage(); } }
+function autoGrow(el){
+  el.style.height="auto";
+  el.style.height=Math.min(el.scrollHeight,130)+"px";
+}
+
+function onKey(e){
+  if(e.key==="Enter"&&!e.shiftKey){
+    e.preventDefault();
+    sendMessage();
+  }
+}
 
 /* ===== INIT ===== */
 (async()=>{
-  const {data:{session}} = await sb.auth.getSession();
-  if(session?.user){ user=session.user; await bootApp(); }
+  const {
+    data:{session}
+  }=await sb.auth.getSession();
+
+  if(session?.user){
+    user=session.user;
+    await bootApp();
+  }
 })();
 </script>
 </body>
