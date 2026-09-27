@@ -1402,7 +1402,7 @@
       <div class="auth-title">AURA</div>
 
       <div class="auth-subtitle" id="authSubtitle">
-        Sua inteligência pessoal.
+        Sua inteligência pessoal que lembra de você.
       </div>
 
       <form class="auth-form" id="authForm">
@@ -1688,8 +1688,8 @@
         </h1>
 
         <p class="welcome-subtitle">
-          Uma inteligência pessoal para pensar,
-          criar, pesquisar e transformar ideias em realidade.
+          Uma inteligência pessoal que lembra de você,
+          entende seu momento e aprende com o tempo.
         </p>
 
         <div class="suggestions">
@@ -1777,7 +1777,8 @@
       </div>
 
       <p class="modal-text">
-        Cada mensagem enviada para a Aura consome créditos.
+        Os créditos representam a capacidade da Aura de realizar diferentes tipos de ações.
+        Você recebe uma nova quantidade todos os dias. Os créditos não acumulam.
       </p>
 
       <div
@@ -1807,8 +1808,59 @@
             font-size:11px;
           "
         >
-          créditos disponíveis
+          créditos disponíveis hoje
         </div>
+      </div>
+
+      <div
+        style="
+          margin-top:18px;
+          padding:16px;
+          border:1px solid rgba(255,255,255,.06);
+          border-radius:16px;
+          background:rgba(255,255,255,.02);
+        "
+      >
+
+        <div
+          style="
+            display:flex;
+            justify-content:space-between;
+            padding:7px 0;
+            color:rgba(255,255,255,.65);
+            font-size:11px;
+          "
+        >
+          <span>Mensagem normal</span>
+          <strong style="color:#ff83bd;">1 crédito</strong>
+        </div>
+
+        <div
+          style="
+            display:flex;
+            justify-content:space-between;
+            padding:7px 0;
+            color:rgba(255,255,255,.65);
+            font-size:11px;
+          "
+        >
+          <span>Pesquisa na web</span>
+          <strong style="color:#ff83bd;">3 créditos</strong>
+        </div>
+
+        <div
+          style="
+            display:flex;
+            justify-content:space-between;
+            padding:7px 0;
+            color:rgba(255,255,255,.65);
+            font-size:11px;
+          "
+        >
+          <span>História ou cena longa</span>
+          <strong style="color:#ff83bd;">2 créditos</strong>
+        </div>
+
       </div>
 
       <button
@@ -1833,6 +1885,11 @@
         <button class="modal-close" data-close="plansModal">×</button>
       </div>
 
+      <p class="modal-text" style="margin-bottom:16px;">
+        Escolha o nível de experiência que combina com a forma como você quer usar a Aura.
+        Todos os planos recebem novos créditos diariamente.
+      </p>
+
       <div class="plan-grid">
 
         <div class="plan-card">
@@ -1845,9 +1902,28 @@
             Grátis
           </div>
 
+          <div
+            class="plan-desc"
+            style="color:rgba(255,255,255,.62);margin-bottom:7px;"
+          >
+            <strong>20 créditos por dia</strong>
+          </div>
+
           <div class="plan-desc">
-            Para começar a conversar com a Aura,
-            testar ideias e conhecer a experiência.
+            Para conhecer a Aura, conversar, criar ideias,
+            aprender, pesquisar de forma limitada e começar
+            a construir sua experiência personalizada.
+          </div>
+
+          <div
+            class="plan-desc"
+            style="margin-top:9px;"
+          >
+            • Memória básica<br>
+            • Personalidade da Aura<br>
+            • Conversas e histórias<br>
+            • Pesquisa web limitada<br>
+            • Créditos renovados diariamente
           </div>
 
         </div>
@@ -1860,19 +1936,42 @@
           </div>
 
           <div class="plan-price">
-            Mais recursos
+            R$ 11,99<span style="font-size:11px;color:rgba(255,255,255,.35);">/mês</span>
+          </div>
+
+          <div
+            class="plan-desc"
+            style="color:rgba(255,255,255,.62);margin-bottom:7px;"
+          >
+            <strong>50 créditos por dia</strong>
           </div>
 
           <div class="plan-desc">
-            Mais contexto, pesquisa ampliada,
-            respostas mais completas e experiência avançada.
+            A Aura que realmente acompanha você no dia a dia.
+            Mais memória, contexto e capacidade para conversas
+            mais profundas.
+          </div>
+
+          <div
+            class="plan-desc"
+            style="margin-top:9px;"
+          >
+            • Tudo do Free<br>
+            • Memória mais avançada<br>
+            • Aprende suas preferências<br>
+            • Entende melhor seu contexto emocional<br>
+            • Pesquisa web completa<br>
+            • Contexto maior<br>
+            • Personagens mais consistentes<br>
+            • Histórias mais detalhadas<br>
+            • Prioridade de resposta
           </div>
 
           <button
             class="modal-button"
             id="proPlanButton"
           >
-            Em breve
+            Assinar Pro
           </button>
 
         </div>
@@ -1885,19 +1984,43 @@
           </div>
 
           <div class="plan-price">
-            Experiência máxima
+            R$ 29,99<span style="font-size:11px;color:rgba(255,255,255,.35);">/mês</span>
+          </div>
+
+          <div
+            class="plan-desc"
+            style="color:rgba(255,255,255,.62);margin-bottom:7px;"
+          >
+            <strong>150 créditos por dia</strong>
           </div>
 
           <div class="plan-desc">
-            Pesquisa profunda, contexto ampliado
-            e recursos avançados da Aura.
+            A experiência máxima da Aura para quem quer
+            mais profundidade, memória e continuidade.
+          </div>
+
+          <div
+            class="plan-desc"
+            style="margin-top:9px;"
+          >
+            • Tudo do Pro<br>
+            • Memória avançada e detalhada<br>
+            • Aprendizado personalizado mais profundo<br>
+            • Maior compreensão emocional<br>
+            • Pesquisa profunda<br>
+            • Contexto ampliado<br>
+            • Mundos persistentes<br>
+            • Consequências longas nas histórias<br>
+            • Eventos dinâmicos<br>
+            • Prioridade máxima<br>
+            • Acesso antecipado a novidades
           </div>
 
           <button
             class="modal-button"
             id="ultraPlanButton"
           >
-            Em breve
+            Assinar Ultra
           </button>
 
         </div>
@@ -1944,6 +2067,22 @@
 
           <div class="setting-desc">
             Movimentos suaves da interface.
+          </div>
+        </div>
+
+        <div class="toggle on"></div>
+
+      </div>
+
+      <div class="setting-row">
+
+        <div>
+          <div class="setting-name">
+            Personalização da Aura
+          </div>
+
+          <div class="setting-desc">
+            A Aura aprende com suas conversas para personalizar a experiência.
           </div>
         </div>
 
@@ -2058,6 +2197,14 @@
 
     let authMode = "login";
 
+    let auraMemory = {
+      preferences:[],
+      importantPeople:[],
+      goals:[],
+      importantFacts:[],
+      emotionalPatterns:[]
+    };
+
 
     /* =====================================================
        ELEMENTS
@@ -2169,7 +2316,7 @@
             "Entrar";
 
           authSubtitle.textContent =
-            "Sua inteligência pessoal.";
+            "Sua inteligência pessoal que lembra de você.";
 
           authSwitch.innerHTML =
             'Ainda não tenho uma conta. <span>Criar conta</span>';
@@ -2408,6 +2555,8 @@
 
       }
 
+      loadAuraMemory();
+
       updateAccountUI();
 
       loadStories();
@@ -2462,6 +2611,14 @@
 
       currentStoryId = null;
 
+      auraMemory = {
+        preferences:[],
+        importantPeople:[],
+        goals:[],
+        importantFacts:[],
+        emotionalPatterns:[]
+      };
+
       closeMenu();
 
       app.style.display =
@@ -2480,6 +2637,335 @@
       showToast(
         "Você saiu da conta."
       );
+
+    }
+
+
+    /* =====================================================
+       AURA PERSONAL MEMORY
+       -----------------------------------------------------
+       Estrutura local preparada para a memória personalizada.
+       A memória real entre dispositivos/conversas deverá ser
+       persistida no Supabase/backend.
+    ===================================================== */
+
+    function memoryKey(){
+
+      if(!currentUser){
+        return null;
+      }
+
+      return (
+        "aura_memory_" +
+        currentUser.id
+      );
+
+    }
+
+
+    function loadAuraMemory(){
+
+      const key =
+        memoryKey();
+
+      if(!key){
+        return;
+      }
+
+      try{
+
+        const saved =
+          localStorage.getItem(key);
+
+        if(saved){
+
+          const parsed =
+            JSON.parse(saved);
+
+          auraMemory = {
+            preferences:
+              Array.isArray(
+                parsed.preferences
+              )
+                ? parsed.preferences
+                : [],
+
+            importantPeople:
+              Array.isArray(
+                parsed.importantPeople
+              )
+                ? parsed.importantPeople
+                : [],
+
+            goals:
+              Array.isArray(
+                parsed.goals
+              )
+                ? parsed.goals
+                : [],
+
+            importantFacts:
+              Array.isArray(
+                parsed.importantFacts
+              )
+                ? parsed.importantFacts
+                : [],
+
+            emotionalPatterns:
+              Array.isArray(
+                parsed.emotionalPatterns
+              )
+                ? parsed.emotionalPatterns
+                : []
+          };
+
+        }
+
+      }catch(error){
+
+        console.error(
+          "Erro ao carregar memória da Aura:",
+          error
+        );
+
+      }
+
+    }
+
+
+    function saveAuraMemory(){
+
+      const key =
+        memoryKey();
+
+      if(!key){
+        return;
+      }
+
+      try{
+
+        localStorage.setItem(
+          key,
+          JSON.stringify(
+            auraMemory
+          )
+        );
+
+      }catch(error){
+
+        console.error(
+          "Erro ao salvar memória da Aura:",
+          error
+        );
+
+      }
+
+    }
+
+
+    /*
+      Essa função não tenta "adivinhar" fatos pessoais.
+      Ela apenas registra sinais simples e seguros da conversa
+      para que o contexto possa ser enviado ao backend.
+    */
+
+    function learnFromUserMessage(message){
+
+      const text =
+        String(message || "")
+          .trim();
+
+      if(!text){
+        return;
+      }
+
+      const lower =
+        text.toLowerCase();
+
+      const preferencePatterns = [
+        "eu gosto de ",
+        "eu adoro ",
+        "eu prefiro ",
+        "gosto de ",
+        "adoro ",
+        "prefiro ",
+        "não gosto de ",
+        "nao gosto de ",
+        "odeio "
+      ];
+
+      const hasPreference =
+        preferencePatterns.some(
+          pattern =>
+            lower.includes(pattern)
+        );
+
+      if(hasPreference){
+
+        const clean =
+          text
+            .replace(/\s+/g," ")
+            .trim();
+
+        if(
+          !auraMemory.preferences.includes(
+            clean
+          )
+        ){
+
+          auraMemory.preferences.unshift(
+            clean
+          );
+
+          auraMemory.preferences =
+            auraMemory.preferences.slice(
+              0,
+              20
+            );
+
+        }
+
+      }
+
+      const goalPatterns = [
+        "quero conseguir ",
+        "quero aprender ",
+        "meu objetivo é ",
+        "meu objetivo e ",
+        "quero fazer ",
+        "quero criar ",
+        "estou tentando "
+      ];
+
+      if(
+        goalPatterns.some(
+          pattern =>
+            lower.includes(pattern)
+        )
+      ){
+
+        if(
+          !auraMemory.goals.includes(
+            text
+          )
+        ){
+
+          auraMemory.goals.unshift(
+            text
+          );
+
+          auraMemory.goals =
+            auraMemory.goals.slice(
+              0,
+              15
+            );
+
+        }
+
+      }
+
+      const emotionalSignals = [
+        "estou feliz",
+        "tô feliz",
+        "to feliz",
+        "estou triste",
+        "tô triste",
+        "to triste",
+        "estou preocupado",
+        "tô preocupado",
+        "to preocupado",
+        "estou ansioso",
+        "tô ansioso",
+        "to ansioso",
+        "estou animado",
+        "tô animado",
+        "to animado",
+        "estou com raiva",
+        "tô com raiva",
+        "to com raiva"
+      ];
+
+      emotionalSignals.forEach(
+        signal => {
+
+          if(
+            lower.includes(signal)
+          ){
+
+            if(
+              !auraMemory.emotionalPatterns.includes(
+                signal
+              )
+            ){
+
+              auraMemory.emotionalPatterns.unshift(
+                signal
+              );
+
+              auraMemory.emotionalPatterns =
+                auraMemory.emotionalPatterns.slice(
+                  0,
+                  15
+                );
+
+            }
+
+          }
+
+        }
+      );
+
+      saveAuraMemory();
+
+    }
+
+
+    function buildAuraContext(){
+
+      return {
+
+        memory:{
+          preferences:
+            auraMemory.preferences.slice(
+              0,
+              10
+            ),
+
+          importantPeople:
+            auraMemory.importantPeople.slice(
+              0,
+              10
+            ),
+
+          goals:
+            auraMemory.goals.slice(
+              0,
+              10
+            ),
+
+          importantFacts:
+            auraMemory.importantFacts.slice(
+              0,
+              10
+            ),
+
+          emotionalPatterns:
+            auraMemory.emotionalPatterns.slice(
+              0,
+              10
+            )
+        },
+
+        behavior:{
+          understandEmotion:true,
+          adaptTone:true,
+          maintainPersonality:true,
+          rememberRelevantContext:true,
+          learnFromUser:true,
+          preserveConversationContinuity:true
+        }
+
+      };
 
     }
 
@@ -2793,6 +3279,7 @@
           `;
 
         return;
+
       }
 
       stories
@@ -3048,6 +3535,15 @@
         content:message
       });
 
+      /*
+        A Aura aprende sinais relevantes da conversa.
+        O backend deverá transformar esse contexto em
+        memória persistente real.
+      */
+      learnFromUserMessage(
+        message
+      );
+
       addMessage(
         "user",
         message
@@ -3120,7 +3616,10 @@
                     "pt-BR",
 
                   plan:
-                    "free"
+                    "free",
+
+                  auraContext:
+                    buildAuraContext()
 
                 })
 
@@ -3197,6 +3696,91 @@
         }else{
 
           await loadCredits();
+
+        }
+
+        /*
+          Se o backend futuramente retornar memórias
+          aprendidas de forma estruturada, elas podem
+          ser incorporadas aqui sem alterar o visual.
+        */
+
+        if(
+          data.memory &&
+          typeof data.memory === "object"
+        ){
+
+          if(
+            Array.isArray(
+              data.memory.preferences
+            )
+          ){
+
+            auraMemory.preferences =
+              data.memory.preferences.slice(
+                0,
+                20
+              );
+
+          }
+
+          if(
+            Array.isArray(
+              data.memory.importantPeople
+            )
+          ){
+
+            auraMemory.importantPeople =
+              data.memory.importantPeople.slice(
+                0,
+                20
+              );
+
+          }
+
+          if(
+            Array.isArray(
+              data.memory.goals
+            )
+          ){
+
+            auraMemory.goals =
+              data.memory.goals.slice(
+                0,
+                20
+              );
+
+          }
+
+          if(
+            Array.isArray(
+              data.memory.importantFacts
+            )
+          ){
+
+            auraMemory.importantFacts =
+              data.memory.importantFacts.slice(
+                0,
+                20
+              );
+
+          }
+
+          if(
+            Array.isArray(
+              data.memory.emotionalPatterns
+            )
+          ){
+
+            auraMemory.emotionalPatterns =
+              data.memory.emotionalPatterns.slice(
+                0,
+                20
+              );
+
+          }
+
+          saveAuraMemory();
 
         }
 
