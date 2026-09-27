@@ -740,6 +740,70 @@
     }
 
     /* =====================================================
+       SETTINGS
+       ===================================================== */
+
+    const settingsKey = () =>
+      currentUser ? "aura_settings_" + currentUser.id : "aura_settings";
+
+    function loadSettings(){
+      let saved = {};
+      try{
+        saved = JSON.parse(localStorage.getItem(settingsKey()) || "{}");
+      }catch{}
+
+      const settings = {
+        dark: saved.dark !== false,
+        animations: saved.animations !== false,
+        personalization: saved.personalization !== false,
+        language: saved.language || "pt-BR"
+      };
+
+      [["darkModeToggle","dark"],["animationsToggle","animations"],["personalizationToggle","personalization"]].forEach(([id,name])=>{
+        const el=document.getElementById(id);
+        if(el) el.classList.toggle("on",!!settings[name]);
+      });
+
+      const select=document.getElementById("languageSelect");
+      if(select) select.value=settings.language;
+
+      document.documentElement.classList.toggle("no-aura-animations",!settings.animations);
+      return settings;
+    }
+
+    function saveSetting(name,value){
+      const settings=loadSettings();
+      settings[name]=value;
+      localStorage.setItem(settingsKey(),JSON.stringify(settings));
+      loadSettings();
+    }
+
+    function bindSettings(){
+      [["darkModeToggle","dark"],["animationsToggle","animations"],["personalizationToggle","personalization"]].forEach(([id,name])=>{
+        const el=document.getElementById(id);
+        if(!el || el.dataset.bound) return;
+        el.dataset.bound="1";
+        el.addEventListener("click",()=>{
+          saveSetting(name,!el.classList.contains("on"));
+          showToast("Configuração salva.");
+        });
+      });
+
+      const select=document.getElementById("languageSelect");
+      if(select && !select.dataset.bound){
+        select.dataset.bound="1";
+        select.addEventListener("change",event=>{
+          saveSetting("language",event.target.value);
+          showToast("Idioma salvo.");
+        });
+      }
+
+      loadSettings();
+    }
+
+    bindSettings();
+
+    /* =====================================================
        CHAT
     ===================================================== */
 
