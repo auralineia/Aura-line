@@ -1,44 +1,45 @@
 const MODEL = "openai/gpt-oss-20b";
 
-const FREE_PLAN = {
-  name: "FREE",
-  research: "full",
-  memory: "basic",
-  context: "short",
-  speed: "normal",
-  complexity: "essential"
+const PLANS = {
+  free: {
+    name: "FREE",
+    research: "full",
+    memory: "basic",
+    context: "short",
+    speed: "normal",
+    complexity: "essential"
+  },
+  pro: {
+    name: "PRO",
+    research: "full",
+    memory: "long",
+    context: "large",
+    speed: "fast",
+    complexity: "advanced"
+  },
+  ultra: {
+    name: "ULTRA",
+    research: "deep",
+    memory: "advanced",
+    context: "very_large",
+    speed: "priority",
+    complexity: "maximum"
+  }
 };
 
-const PRO_PLAN = {
-  name: "PRO",
-  research: "full",
-  memory: "long",
-  context: "large",
-  speed: "fast",
-  complexity: "advanced"
-};
+/* =========================================================
+   SUPABASE
+========================================================= */
 
-const ULTRA_PLAN = {
-  name: "ULTRA",
-  research: "deep",
-  memory: "advanced",
-  context: "very_large",
-  speed: "priority",
-  complexity: "maximum"
-};
-
-/*
- * ------------------------------------------------------------
- * SUPABASE
- * ------------------------------------------------------------
- */
-
-function getSupabaseConfig() {
+function supabaseConfig() {
   const url = process.env.SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const serviceKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !serviceKey) {
-    throw new Error("Supabase server configuration missing.");
+    throw new Error(
+      "Configuração do Supabase não encontrada."
+    );
   }
 
   return {
@@ -47,7 +48,7 @@ function getSupabaseConfig() {
   };
 }
 
-function getBearerToken(req) {
+function bearer(req) {
   const authorization =
     req.headers?.authorization ||
     req.headers?.Authorization ||
@@ -60,10 +61,10 @@ function getBearerToken(req) {
   return authorization.slice(7).trim();
 }
 
-async function getAuthenticatedUser(req) {
-  const accessToken = getBearerToken(req);
+async function authenticatedUser(req) {
+  const token = bearer(req);
 
-  if (!accessToken) {
+  if (!token) {
     return null;
   }
 
@@ -75,50 +76,35 @@ async function getAuthenticatedUser(req) {
 
   if (!url || !anonKey) {
     throw new Error(
-      "SUPABASE_URL ou SUPABASE_ANON_KEY não configurada."
+      "SUPABASE_URL ou chave pública não configurada."
     );
   }
 
   const response = await fetch(
     `${url.replace(/\/+$/, "")}/auth/v1/user`,
     {
-      method: "GET",
       headers: {
         apikey: anonKey,
-        Authorization: `Bearer ${accessToken}`
+        Authorization: `Bearer ${token}`
       }
     }
   );
 
   if (!response.ok) {
-    const raw = await response.text();
-
-    console.error(
-      "Supabase authentication failed:",
-      response.status,
-      raw
-    );
-
     return null;
   }
 
   const user = await response.json();
 
-  if (!user || !user.id) {
-    return null;
-  }
-
-  return user;
+  return user?.id ? user : null;
 }
 
-/*
- * ------------------------------------------------------------
- * CRÉDITOS
- * ------------------------------------------------------------
- */
+/* =========================================================
+   CRÉDITOS
+========================================================= */
 
 async function consumeCredits(userId, amount) {
-  const { url, serviceKey } = getSupabaseConfig();
+  const { url, serviceKey } = supabaseConfig();
 
   const response = await fetch(
     `${url}/rest/v1/rpc/consume_credits_for_user`,
@@ -136,12 +122,12 @@ async function consumeCredits(userId, amount) {
     }
   );
 
-  if (!response.ok) {
-    const raw = await response.text();
+  const raw = await response.text();
 
+  if (!response.ok) {
     if (
-      raw.toLowerCase().includes("créditos insuficientes") ||
-      raw.toLowerCase().includes("insufficient")
+      raw.toLowerCase().includes("insufficient") ||
+      raw.toLowerCase().includes("créditos insuficientes")
     ) {
       return {
         ok: false,
@@ -154,58 +140,398 @@ async function consumeCredits(userId, amount) {
     );
   }
 
-  const balance = await response.json();
+  let value;
 
-  let numericBalance;
+  try {
+    value = JSON.parse(raw);
+  } catch {
+    value = raw;
+  }
 
-  if (Array.isArray(balance)) {
-    numericBalance = Number(balance[0]);
+  let balance;
+
+  if (Array.isArray(value)) {
+    balance = Number(value[0]);
   } else if (
-    balance &&
-    typeof balance === "object" &&
-    "balance" in balance
+    value &&
+    typeof value === "object" &&
+    "balance" in value
   ) {
-    numericBalance = Number(balance.balance);
+    balance = Number(value.balance);
   } else {
-    numericBalance = Number(balance);
+    balance = Number(value);
   }
 
   return {
     ok: true,
-    balance: Number.isFinite(numericBalance)
-      ? numericBalance
+    balance: Number.isFinite(balance)
+      ? balance
       : 0
   };
 }
 
-/*
- * ------------------------------------------------------------
- * PLANOS
- * ------------------------------------------------------------
- */
+/* =========================================================
+   MEMÓRIA
+========================================================= */
 
-function getPlanConfig(plan) {
-  const normalized = String(plan || "free").toLowerCase();
+async function getMemories(userId) {
+  const { url, serviceKey } = supabaseConfig();
 
-  if (normalized === "ultra") {
-    return ULTRA_PLAN;
+  try {
+    const response = await fetch(
+      `${url}/rest/v1/aura_memories` +
+      `?user_id=eq.${encodeURIComponent(userId)}` +
+      `&select=id,memory,category,importance,updated_at` +
+      `&order=importance.desc,updated_at.desc` +
+      `&limit=30`,
+      {
+        headers: {
+          apikey: serviceKey,
+          Authorization: `Bearer ${serviceKey}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      console.error(
+        "Erro lendo memórias:",
+        await response.text()
+      );
+      return [];
+    }
+
+    const data = await response.json();
+
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error(
+      "Falha ao ler memórias:",
+      error
+    );
+
+    return [];
+  }
+}
+
+async function memoryExists(userId, memory) {
+  const { url, serviceKey } = supabaseConfig();
+
+  const response = await fetch(
+    `${url}/rest/v1/aura_memories` +
+    `?user_id=eq.${encodeURIComponent(userId)}` +
+    `&memory=eq.${encodeURIComponent(memory)}` +
+    `&select=id&limit=1`,
+    {
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`
+      }
+    }
+  );
+
+  if (!response.ok) {
+    return false;
   }
 
-  if (normalized === "pro") {
-    return PRO_PLAN;
+  const data = await response.json();
+
+  return Array.isArray(data) && data.length > 0;
+}
+
+async function saveMemory(
+  userId,
+  memory,
+  category = "general",
+  importance = 5
+) {
+  if (!memory || !memory.trim()) {
+    return false;
   }
 
-  return FREE_PLAN;
+  const cleanMemory =
+    memory.trim().slice(0, 500);
+
+  if (
+    await memoryExists(
+      userId,
+      cleanMemory
+    )
+  ) {
+    return true;
+  }
+
+  const { url, serviceKey } =
+    supabaseConfig();
+
+  const response = await fetch(
+    `${url}/rest/v1/aura_memories`,
+    {
+      method: "POST",
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal"
+      },
+      body: JSON.stringify({
+        user_id: userId,
+        memory: cleanMemory,
+        category,
+        importance
+      })
+    }
+  );
+
+  if (!response.ok) {
+    console.error(
+      "Erro salvando memória:",
+      await response.text()
+    );
+
+    return false;
+  }
+
+  return true;
 }
 
 /*
- * ------------------------------------------------------------
- * PESQUISA
- * ------------------------------------------------------------
+ * Reconhecimento determinístico de nome.
+ *
+ * Isso não depende da IA decidir se deve guardar.
  */
+function detectName(message) {
+  const text = String(message || "").trim();
+
+  const patterns = [
+    /(?:meu nome é|meu nome e|pode me chamar de|me chamo)\s+([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ' -]{1,60})/i
+  ];
+
+  for (const pattern of patterns) {
+    const match = text.match(pattern);
+
+    if (match?.[1]) {
+      let name = match[1]
+        .trim()
+        .replace(/[.!?,;:]+$/, "")
+        .trim();
+
+      /*
+       * Evita capturar frases gigantes.
+       */
+      name = name
+        .split(/\s+(?:e|mas|porque|que|sou|tenho|moro|gosto)\s+/i)[0]
+        .trim();
+
+      if (
+        name.length >= 2 &&
+        name.length <= 60
+      ) {
+        return name;
+      }
+    }
+  }
+
+  return null;
+}
+
+/*
+ * Detecta pedidos explícitos para lembrar.
+ */
+function wantsMemory(message) {
+  const text =
+    String(message || "").toLowerCase();
+
+  const terms = [
+    "lembre disso",
+    "lembra disso",
+    "guarde isso",
+    "guarda isso",
+    "memorize isso",
+    "salva isso",
+    "salve isso",
+    "quero que você lembre",
+    "quero que lembre",
+    "não esqueça",
+    "nao esqueça",
+    "nao esqueca"
+  ];
+
+  return terms.some(
+    term => text.includes(term)
+  );
+}
+
+async function processExplicitMemory(
+  userId,
+  message
+) {
+  const name = detectName(message);
+
+  if (name) {
+    await saveMemory(
+      userId,
+      `O nome do usuário é ${name}.`,
+      "personal",
+      10
+    );
+  }
+
+  /*
+   * Para pedidos explícitos de memória,
+   * usamos uma chamada pequena para identificar
+   * o conteúdo que deve ser salvo.
+   */
+  if (wantsMemory(message) && !name) {
+    await extractAndSaveMemory(
+      userId,
+      message
+    );
+  }
+}
+
+/*
+ * Memórias mais complexas continuam usando a IA,
+ * mas somente quando necessário.
+ */
+async function extractAndSaveMemory(
+  userId,
+  message
+) {
+  const key =
+    process.env.GROQ_API_KEY;
+
+  if (!key) {
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${key}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: MODEL,
+          temperature: 0,
+          max_completion_tokens: 250,
+          messages: [
+            {
+              role: "system",
+              content: `
+Você extrai memórias pessoais explícitas do usuário.
+
+Retorne SOMENTE JSON válido.
+
+Formato:
+{
+  "memory": "informação",
+  "category": "personal",
+  "importance": 5
+}
+
+Se não existir memória clara, retorne:
+null
+
+Não invente informações.
+`
+            },
+            {
+              role: "user",
+              content:
+                message.slice(0, 2500)
+            }
+          ]
+        })
+      }
+    );
+
+    if (!response.ok) {
+      return;
+    }
+
+    const data = await response.json();
+
+    let content =
+      data?.choices?.[0]?.message?.content ||
+      "";
+
+    content = content
+      .replace(/```json/gi, "")
+      .replace(/```/g, "")
+      .trim();
+
+    if (!content || content === "null") {
+      return;
+    }
+
+    let parsed;
+
+    try {
+      parsed = JSON.parse(content);
+    } catch {
+      return;
+    }
+
+    if (
+      parsed &&
+      typeof parsed.memory === "string"
+    ) {
+      await saveMemory(
+        userId,
+        parsed.memory,
+        parsed.category || "general",
+        Math.min(
+          10,
+          Math.max(
+            1,
+            Number(parsed.importance) || 5
+          )
+        )
+      );
+    }
+  } catch (error) {
+    console.error(
+      "Erro extraindo memória:",
+      error
+    );
+  }
+}
+
+/* =========================================================
+   HISTÓRICO
+========================================================= */
+
+function safeHistory(history) {
+  if (!Array.isArray(history)) {
+    return [];
+  }
+
+  return history
+    .filter(
+      item =>
+        item &&
+        (item.role === "user" ||
+          item.role === "assistant") &&
+        typeof item.content === "string"
+    )
+    .slice(-8)
+    .map(item => ({
+      role: item.role,
+      content:
+        item.content.slice(0, 1800)
+    }));
+}
+
+/* =========================================================
+   PESQUISA
+========================================================= */
 
 function needsWebSearch(message) {
-  const text = String(message || "").toLowerCase();
+  const text =
+    String(message || "").toLowerCase();
 
   const terms = [
     "hoje",
@@ -249,13 +575,16 @@ function needsWebSearch(message) {
     "eleições"
   ];
 
-  return terms.some(term => text.includes(term));
+  return terms.some(
+    term => text.includes(term)
+  );
 }
 
 async function searchTavily(query) {
-  const tavilyKey = process.env.TAVILY_API_KEY;
+  const key =
+    process.env.TAVILY_API_KEY;
 
-  if (!tavilyKey) {
+  if (!key) {
     return null;
   }
 
@@ -268,7 +597,7 @@ async function searchTavily(query) {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          api_key: tavilyKey,
+          api_key: key,
           query,
           search_depth: "advanced",
           include_answer: true,
@@ -278,22 +607,11 @@ async function searchTavily(query) {
     );
 
     if (!response.ok) {
-      console.error(
-        "Tavily error:",
-        response.status,
-        await response.text()
-      );
-
       return null;
     }
 
     return await response.json();
-  } catch (error) {
-    console.error(
-      "Tavily request failed:",
-      error
-    );
-
+  } catch {
     return null;
   }
 }
@@ -325,485 +643,135 @@ Conteúdo: ${item.content || ""}`
   return "";
 }
 
-/*
- * ------------------------------------------------------------
- * HISTÓRICO
- * ------------------------------------------------------------
- */
-
-function safeHistory(history) {
-  if (!Array.isArray(history)) {
-    return [];
-  }
-
-  return history
-    .filter(
-      item =>
-        item &&
-        (item.role === "user" ||
-          item.role === "assistant") &&
-        typeof item.content === "string"
-    )
-    .slice(-8)
-    .map(item => ({
-      role: item.role,
-      content: item.content.slice(0, 1800)
-    }));
-}
-
-/*
- * ------------------------------------------------------------
- * MEMÓRIA PERSISTENTE
- * ------------------------------------------------------------
- */
-
-async function getMemories(userId) {
-  const { url, serviceKey } = getSupabaseConfig();
-
-  try {
-    const response = await fetch(
-      `${url}/rest/v1/aura_memories?user_id=eq.${encodeURIComponent(
-        userId
-      )}&select=id,memory,category,importance,updated_at&order=importance.desc,updated_at.desc&limit=30`,
-      {
-        method: "GET",
-        headers: {
-          apikey: serviceKey,
-          Authorization: `Bearer ${serviceKey}`,
-          "Content-Type": "application/json"
-        }
-      }
-    );
-
-    if (!response.ok) {
-      console.error(
-        "Memory read error:",
-        response.status,
-        await response.text()
-      );
-
-      return [];
-    }
-
-    const memories = await response.json();
-
-    if (!Array.isArray(memories)) {
-      return [];
-    }
-
-    return memories;
-  } catch (error) {
-    console.error(
-      "Memory read failed:",
-      error
-    );
-
-    return [];
-  }
-}
-
-function formatMemories(memories) {
-  if (!Array.isArray(memories) || !memories.length) {
-    return "";
-  }
-
-  return memories
-    .map(
-      item =>
-        `- ${String(item.memory || "").slice(0, 500)}`
-    )
-    .join("\n");
-}
-
-/*
- * ------------------------------------------------------------
- * EXTRAÇÃO DE MEMÓRIA
- * ------------------------------------------------------------
- */
-
-async function extractMemories(message) {
-  const apiKey = process.env.GROQ_API_KEY;
-
-  if (!apiKey) {
-    return [];
-  }
-
-  const prompt = `
-Analise a mensagem abaixo e identifique somente informações pessoais
-que possam ser úteis para lembrar do usuário no futuro.
-
-Não invente informações.
-
-Não registre:
-- perguntas comuns;
-- notícias;
-- informações temporárias sem importância;
-- conteúdo técnico;
-- informações sobre outras pessoas que não sejam relevantes para o usuário;
-- qualquer coisa que não seja uma memória útil.
-
-Registre, quando existir:
-- nome;
-- preferências;
-- gostos;
-- objetivos;
-- projetos;
-- profissão;
-- relacionamento;
-- hábitos;
-- fatos pessoais importantes;
-- situações emocionais relevantes;
-- decisões importantes;
-- informações que o usuário explicitamente pediu para lembrar.
-
-Responda SOMENTE com JSON válido neste formato:
-
-[
-  {
-    "memory": "frase curta sobre a informação",
-    "category": "personal|preference|project|relationship|goal|emotional|general",
-    "importance": 1
-  }
-]
-
-importance deve ser de 1 a 10.
-
-Se não houver nenhuma memória útil, responda:
-[]
-
-Mensagem do usuário:
-${String(message || "").slice(0, 4000)}
-`;
-
-  try {
-    const response = await fetch(
-      "https://api.groq.com/openai/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: MODEL,
-          messages: [
-            {
-              role: "system",
-              content:
-                "Você é um sistema de extração de memória. Retorne apenas JSON válido."
-            },
-            {
-              role: "user",
-              content: prompt
-            }
-          ],
-          temperature: 0,
-          max_completion_tokens: 350,
-          top_p: 1
-        })
-      }
-    );
-
-    if (!response.ok) {
-      console.error(
-        "Memory extraction error:",
-        response.status,
-        await response.text()
-      );
-
-      return [];
-    }
-
-    const data = await response.json();
-
-    const content =
-      data?.choices?.[0]?.message?.content || "[]";
-
-    let parsed;
-
-    try {
-      parsed = JSON.parse(content);
-    } catch {
-      const cleaned = content
-        .replace(/```json/gi, "")
-        .replace(/```/g, "")
-        .trim();
-
-      try {
-        parsed = JSON.parse(cleaned);
-      } catch {
-        return [];
-      }
-    }
-
-    if (!Array.isArray(parsed)) {
-      return [];
-    }
-
-    return parsed
-      .filter(
-        item =>
-          item &&
-          typeof item.memory === "string" &&
-          item.memory.trim()
-      )
-      .slice(0, 3)
-      .map(item => ({
-        memory: item.memory.trim().slice(0, 500),
-        category:
-          typeof item.category === "string"
-            ? item.category
-            : "general",
-        importance: Math.min(
-          10,
-          Math.max(
-            1,
-            Number(item.importance) || 5
-          )
-        )
-      }));
-  } catch (error) {
-    console.error(
-      "Memory extraction failed:",
-      error
-    );
-
-    return [];
-  }
-}
-
-/*
- * ------------------------------------------------------------
- * SALVAR MEMÓRIAS
- * ------------------------------------------------------------
- */
-
-async function saveMemories(userId, memories) {
-  if (!Array.isArray(memories) || !memories.length) {
-    return;
-  }
-
-  const { url, serviceKey } = getSupabaseConfig();
-
-  for (const item of memories) {
-    try {
-      const searchUrl =
-        `${url}/rest/v1/aura_memories` +
-        `?user_id=eq.${encodeURIComponent(userId)}` +
-        `&memory=eq.${encodeURIComponent(item.memory)}` +
-        `&select=id`;
-
-      const existingResponse = await fetch(
-        searchUrl,
-        {
-          method: "GET",
-          headers: {
-            apikey: serviceKey,
-            Authorization: `Bearer ${serviceKey}`,
-            "Content-Type": "application/json"
-          }
-        }
-      );
-
-      if (!existingResponse.ok) {
-        continue;
-      }
-
-      const existing =
-        await existingResponse.json();
-
-      if (
-        Array.isArray(existing) &&
-        existing.length
-      ) {
-        continue;
-      }
-
-      await fetch(
-        `${url}/rest/v1/aura_memories`,
-        {
-          method: "POST",
-          headers: {
-            apikey: serviceKey,
-            Authorization: `Bearer ${serviceKey}`,
-            "Content-Type": "application/json",
-            Prefer: "return=minimal"
-          },
-          body: JSON.stringify({
-            user_id: userId,
-            memory: item.memory,
-            category: item.category,
-            importance: item.importance
-          })
-        }
-      );
-    } catch (error) {
-      console.error(
-        "Memory save failed:",
-        error
-      );
-    }
-  }
-}
-
-/*
- * ------------------------------------------------------------
- * DATA / HORA
- * ------------------------------------------------------------
- */
+/* =========================================================
+   DATA / HORA
+========================================================= */
 
 function getToday() {
-  return new Intl.DateTimeFormat("pt-BR", {
-    timeZone: "America/Sao_Paulo",
-    dateStyle: "full"
-  }).format(new Date());
+  return new Intl.DateTimeFormat(
+    "pt-BR",
+    {
+      timeZone: "America/Sao_Paulo",
+      dateStyle: "full"
+    }
+  ).format(new Date());
 }
 
 function getTime() {
-  return new Intl.DateTimeFormat("pt-BR", {
-    timeZone: "America/Sao_Paulo",
-    timeStyle: "short"
-  }).format(new Date());
+  return new Intl.DateTimeFormat(
+    "pt-BR",
+    {
+      timeZone: "America/Sao_Paulo",
+      timeStyle: "short"
+    }
+  ).format(new Date());
 }
 
-/*
- * ------------------------------------------------------------
- * SYSTEM PROMPT
- * ------------------------------------------------------------
- */
+/* =========================================================
+   PROMPT
+========================================================= */
 
 function buildSystemPrompt(
-  planConfig,
+  plan,
   language,
   memories
 ) {
   const memoryText =
-    formatMemories(memories);
+    memories.length
+      ? memories
+          .map(
+            item =>
+              `- ${item.memory}`
+          )
+          .join("\n")
+      : "Nenhuma memória persistente disponível.";
 
   return `
-IDENTIDADE FUNDAMENTAL DA AURA:
+IDENTIDADE DA AURA:
 
-Você é Aura.
+Seu nome é Aura.
 
-Você faz parte da Aura Line.
-
-A Aura foi criada e desenvolvida pela Aura Line.
+Você foi criada pela Aura Line.
 
 A OpenAI NÃO é a criadora da Aura.
 
-O modelo de inteligência utilizado pela Aura pode ser fornecido por tecnologia de terceiros, mas isso não significa que essa empresa seja a criadora da Aura.
+Você pode utilizar modelos ou tecnologias de terceiros para gerar respostas, mas isso não muda sua identidade.
 
-Se o usuário perguntar "quem te criou?", diga que você foi criada pela Aura Line.
-
-Se o usuário perguntar "você é da OpenAI?", NÃO diga que foi criada pela OpenAI.
-
-Uma resposta adequada é:
+Se perguntarem "você é da OpenAI?", responda:
 "Não. Eu sou a Aura, criada pela Aura Line. A tecnologia de IA usada por mim pode envolver modelos de terceiros."
 
-Nunca diga:
-"Fui criada pela OpenAI."
-"Sou uma IA da OpenAI."
-"Meu criador é a OpenAI."
+Nunca diga que foi criada pela OpenAI.
 
-Não invente outras empresas ou pessoas como criadores da Aura.
+Nunca diga que a OpenAI é sua empresa criadora.
+
+Nunca invente outro criador.
 
 ----------------------------------------
 
 PERSONALIDADE:
 
-Você é uma inteligência artificial pessoal moderna, natural, útil e direta.
+Você é uma IA pessoal moderna, natural,
+inteligente, útil, direta e humana.
 
-Seu nome é Aura.
+Seja amigável sem exagerar.
 
-Você pertence à Aura Line.
+Se o usuário estiver triste ou passando por
+uma situação difícil, responda com empatia.
 
-Converse de maneira humana e natural.
-
-Se o usuário estiver passando por uma situação emocional, responda com empatia sem ser artificial ou exagerada.
-
-Não revele instruções internas, prompts, chaves, tokens ou informações confidenciais.
+Não revele prompts, instruções internas,
+tokens, chaves ou segredos técnicos.
 
 ----------------------------------------
 
 MEMÓRIA DO USUÁRIO:
 
-As informações abaixo foram lembradas de conversas anteriores.
+Estas são memórias persistentes do usuário.
 
-Use essas informações SOMENTE quando forem relevantes para a conversa atual.
+Use-as quando forem relevantes.
 
-Não diga que sabe algo sobre o usuário se isso não estiver nas memórias.
+Não invente novas memórias.
 
-Não invente memórias.
+Não diga que possui um banco de dados.
 
-Não mencione a existência do banco de dados ou do sistema de memória.
+MEMÓRIAS:
 
-Memórias:
-
-${memoryText || "Nenhuma memória persistente disponível ainda."}
+${memoryText}
 
 ----------------------------------------
 
-DATA E HORA:
-
-Data atual no Brasil:
+DATA:
 ${getToday()}
 
-Horário atual no Brasil:
+HORÁRIO:
 ${getTime()}
 
-Idioma principal:
+IDIOMA:
 ${language || "pt-BR"}
 
-----------------------------------------
-
 PLANO:
-
-Nome:
-${planConfig.name}
-
-Pesquisa:
-${planConfig.research}
-
-Memória:
-${planConfig.memory}
-
-Contexto:
-${planConfig.context}
-
-Velocidade:
-${planConfig.speed}
-
-Complexidade:
-${planConfig.complexity}
+${plan.name}
 
 ----------------------------------------
 
 REGRAS:
 
-- Responda naturalmente.
-- Seja clara, objetiva e útil.
 - Responda em português quando o usuário falar português.
+- Seja objetiva quando a pergunta for simples.
+- Seja detalhada quando o usuário pedir detalhes.
 - Não invente fatos.
-- Para informações atuais, use pesquisa na internet quando disponível.
-- Para perguntas sobre F1, futebol, UFC, notícias, preços, resultados, horários ou acontecimentos recentes, verifique informações atuais.
-- Quando houver resultados de pesquisa, use-os para formular a resposta.
-- Não invente uma pesquisa que não foi realizada.
+- Para informações atuais, use pesquisa quando disponível.
 - Preserve o contexto da conversa.
-- Use as memórias relevantes quando ajudarem.
-- Não mencione limitações internas desnecessariamente.
-- Se uma informação pesquisada tiver uma data, considere essa data ao responder.
+- Use as memórias quando forem relevantes.
 `;
 }
 
-/*
- * ------------------------------------------------------------
- * GROQ
- * ------------------------------------------------------------
- */
+/* =========================================================
+   GROQ
+========================================================= */
 
 async function generateWithGroq(
   messages,
-  useBrowserSearch
+  browserSearch
 ) {
   const body = {
     model: MODEL,
@@ -815,7 +783,7 @@ async function generateWithGroq(
     top_p: 0.95
   };
 
-  if (useBrowserSearch) {
+  if (browserSearch) {
     body.tools = [
       {
         type: "browser_search"
@@ -830,61 +798,53 @@ async function generateWithGroq(
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
-        "Content-Type": "application/json"
+        Authorization:
+          `Bearer ${process.env.GROQ_API_KEY}`,
+        "Content-Type":
+          "application/json"
       },
       body: JSON.stringify(body)
     }
   );
 
-  const raw = await response.text();
+  const raw =
+    await response.text();
 
   if (!response.ok) {
-    console.error(
-      "Groq API error:",
-      response.status,
-      raw
-    );
-
-    let parsed;
+    let parsed = null;
 
     try {
       parsed = JSON.parse(raw);
-    } catch {
-      parsed = null;
-    }
+    } catch {}
 
-    const groqMessage =
+    const message =
       parsed?.error?.message ||
       parsed?.message ||
       raw ||
-      "Erro desconhecido na API da Groq.";
+      "Erro na Groq.";
 
     throw new Error(
-      `Groq ${response.status}: ${groqMessage}`
+      `Groq ${response.status}: ${message}`
     );
   }
-
-  let data;
 
   try {
-    data = JSON.parse(raw);
+    return JSON.parse(raw);
   } catch {
     throw new Error(
-      "A Groq retornou uma resposta inválida."
+      "Resposta inválida da Groq."
     );
   }
-
-  return data;
 }
 
-/*
- * ------------------------------------------------------------
- * API
- * ------------------------------------------------------------
- */
+/* =========================================================
+   HANDLER
+========================================================= */
 
-export default async function handler(req, res) {
+export default async function handler(
+  req,
+  res
+) {
   res.setHeader(
     "Access-Control-Allow-Origin",
     "*"
@@ -914,12 +874,12 @@ export default async function handler(req, res) {
     if (!process.env.GROQ_API_KEY) {
       return res.status(500).json({
         error:
-          "GROQ_API_KEY não configurada na Vercel."
+          "GROQ_API_KEY não configurada."
       });
     }
 
     const user =
-      await getAuthenticatedUser(req);
+      await authenticatedUser(req);
 
     if (!user) {
       return res.status(401).json({
@@ -942,34 +902,34 @@ export default async function handler(req, res) {
       });
     }
 
-    const planConfig =
-      getPlanConfig(req.body?.plan);
+    const normalizedPlan =
+      String(
+        req.body?.plan || "free"
+      ).toLowerCase();
+
+    const plan =
+      PLANS[normalizedPlan] ||
+      PLANS.free;
 
     /*
-     * 1 crédito por pergunta.
+     * Consome 1 crédito.
      */
-    const creditResult =
+    const credit =
       await consumeCredits(
         user.id,
         1
       );
 
-    if (!creditResult.ok) {
-      if (creditResult.insufficient) {
-        return res.status(402).json({
-          error:
-            "Créditos insuficientes.",
-          credits: 0
-        });
-      }
-
-      throw new Error(
-        "Não foi possível consumir o crédito."
-      );
+    if (!credit.ok) {
+      return res.status(402).json({
+        error:
+          "Créditos insuficientes.",
+        credits: 0
+      });
     }
 
     /*
-     * Recupera memórias persistentes.
+     * Recupera memória.
      */
     const memories =
       await getMemories(user.id);
@@ -984,15 +944,18 @@ export default async function handler(req, res) {
         await searchTavily(message);
     }
 
+    const researchText =
+      formatResearch(research);
+
     /*
-     * Monta contexto.
+     * Monta mensagens.
      */
     const messages = [
       {
         role: "system",
         content:
           buildSystemPrompt(
-            planConfig,
+            plan,
             language,
             memories
           )
@@ -1005,86 +968,61 @@ export default async function handler(req, res) {
       }
     ];
 
-    /*
-     * Resultados da pesquisa.
-     */
-    const researchText =
-      formatResearch(research);
-
     if (researchText) {
       messages.push({
         role: "system",
         content: `
-RESULTADOS DE PESQUISA:
-
-Use estas informações como fonte para responder à pergunta atual.
+RESULTADOS RECENTES DE PESQUISA:
 
 ${researchText}
 
-Se houver conflito entre seu conhecimento interno e os resultados recentes, priorize os resultados recentes.
+Use esses resultados para responder.
 `
       });
     }
 
-    /*
-     * Browser Search da Groq como fallback.
-     */
-    const useBrowserSearch =
+    const browserSearch =
       needsWebSearch(message) &&
       !researchText;
 
     /*
      * Gera resposta.
      */
-    const groqData =
+    const data =
       await generateWithGroq(
         messages,
-        useBrowserSearch
+        browserSearch
       );
 
     const reply =
-      groqData
-        ?.choices?.[0]
-        ?.message
-        ?.content || "";
+      data?.choices?.[0]?.message?.content ||
+      "";
 
     if (!reply) {
-      console.error(
-        "Groq returned no content:",
-        JSON.stringify(groqData)
-      );
-
       return res.status(500).json({
         error:
-          "A Aura não recebeu conteúdo da IA."
+          "A Aura não recebeu resposta da IA."
       });
     }
 
     /*
-     * Extrai memórias em segundo plano lógico.
+     * Processa memória DEPOIS da resposta.
      *
-     * O usuário NÃO precisa pagar créditos extras.
-     * A extração usa a mesma infraestrutura da aplicação.
+     * Isso não altera a resposta atual.
      */
-    const extractedMemories =
-      await extractMemories(message);
-
-    if (extractedMemories.length) {
-      await saveMemories(
-        user.id,
-        extractedMemories
-      );
-    }
+    await processExplicitMemory(
+      user.id,
+      message
+    );
 
     return res.status(200).json({
       reply,
-      plan: planConfig.name,
+      plan: plan.name,
       researched:
         Boolean(researchText) ||
-        useBrowserSearch,
+        browserSearch,
       model: MODEL,
-      credits:
-        creditResult.balance
+      credits: credit.balance
     });
 
   } catch (error) {
