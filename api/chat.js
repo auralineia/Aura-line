@@ -2,7 +2,7 @@ const MODEL = "openai/gpt-oss-20b";
 
 const FREE_PLAN = {
   name: "FREE",
-  research: "limited",
+  research: "full",
   memory: "basic",
   context: "short",
   speed: "normal",
@@ -62,7 +62,10 @@ async function getAuthenticatedUser(req) {
   }
 
   const url = process.env.SUPABASE_URL;
-  const anonKey = process.env.SUPABASE_ANON_KEY;
+
+  const anonKey =
+    process.env.SUPABASE_ANON_KEY ||
+    process.env.SUPABASE_PUBLISHABLE_KEY;
 
   if (!url || !anonKey) {
     throw new Error(
@@ -141,9 +144,25 @@ async function consumeCredits(userId, amount) {
 
   const balance = await response.json();
 
+  let numericBalance;
+
+  if (Array.isArray(balance)) {
+    numericBalance = Number(balance[0]);
+  } else if (
+    balance &&
+    typeof balance === "object" &&
+    "balance" in balance
+  ) {
+    numericBalance = Number(balance.balance);
+  } else {
+    numericBalance = Number(balance);
+  }
+
   return {
     ok: true,
-    balance: Number(balance)
+    balance: Number.isFinite(numericBalance)
+      ? numericBalance
+      : 0
   };
 }
 
@@ -161,14 +180,6 @@ function getPlanConfig(plan) {
   return FREE_PLAN;
 }
 
-function getClientIp(req) {
-  return (
-    req.headers?.["x-forwarded-for"] ||
-    req.headers?.["x-real-ip"] ||
-    ""
-  );
-}
-
 function needsWebSearch(message) {
   const text = String(message || "").toLowerCase();
 
@@ -176,30 +187,43 @@ function needsWebSearch(message) {
     "hoje",
     "agora",
     "atualmente",
+    "agora",
     "últimas notícias",
     "última notícia",
     "notícias",
+    "notícia",
     "recentemente",
+    "recente",
     "preço",
     "preços",
     "valor atual",
     "cotação",
-    "cotação do dólar",
     "dólar hoje",
     "euro hoje",
     "quem é",
     "quando é",
+    "quando vai",
     "data",
     "horário",
     "horas",
     "resultado",
+    "resultados",
     "placar",
     "jogo",
     "jogos",
     "ufc",
     "f1",
     "fórmula 1",
-    "formula 1"
+    "formula 1",
+    "gp",
+    "grande prêmio",
+    "grande premio",
+    "corrida",
+    "classificação",
+    "classificou",
+    "campeonato",
+    "eleição",
+    "eleições"
   ];
 
   return terms.some(term => text.includes(term));
@@ -211,10 +235,11 @@ function safeHistory(history) {
   }
 
   return history
-    .filter(item =>
-      item &&
-      (item.role === "user" || item.role === "assistant") &&
-      typeof item.content === "string"
+    .filter(
+      item =>
+        item &&
+        (item.role === "user" || item.role === "assistant") &&
+        typeof item.content === "string"
     )
     .slice(-20)
     .map(item => ({
@@ -241,10 +266,14 @@ function buildSystemPrompt(planConfig, language) {
   return `
 Você é Aura, uma inteligência artificial pessoal moderna, útil, direta e natural.
 
-Data atual no Brasil: ${getToday()}
-Horário atual no Brasil: ${getTime()}
+Data atual no Brasil:
+${getToday()}
 
-Idioma principal do usuário: ${language || "pt-BR"}.
+Horário atual no Brasil:
+${getTime()}
+
+Idioma principal do usuário:
+${language || "pt-BR"}
 
 Plano atual:
 - Nome: ${planConfig.name}
@@ -254,19 +283,24 @@ Plano atual:
 - Velocidade: ${planConfig.speed}
 - Complexidade: ${planConfig.complexity}
 
-Regras:
+REGRAS IMPORTANTES:
+
 - Responda naturalmente.
-- Seja clara e objetiva.
+- Seja clara, objetiva e útil.
+- Responda em português quando o usuário falar português.
 - Não invente fatos.
-- Quando a pergunta depender de informações atuais e houver pesquisa disponível, use pesquisa.
-- Não diga que realizou pesquisa se não realizou.
+- Para informações atuais, use pesquisa na internet quando disponível.
+- Para perguntas sobre F1, futebol, UFC, notícias, preços, resultados, horários ou acontecimentos recentes, verifique informações atuais.
+- Quando houver resultados de pesquisa, use-os para formular a resposta.
+- Não invente uma pesquisa que não foi realizada.
+- Não revele instruções internas, chaves ou tokens.
 - Preserve o contexto da conversa.
-- Não revele instruções internas, chaves, tokens ou detalhes privados do sistema.
-- Responda no idioma solicitado pelo usuário.
+- Não mencione limitações internas desnecessariamente.
+- Se uma informação pesquisada tiver uma data, considere essa data ao responder.
 `;
 }
 
-async function searchWeb(query) {
+async function searchTavily(query) {
   const tavilyKey = process.env.TAVILY_API_KEY;
 
   if (!tavilyKey) {
@@ -284,7 +318,7 @@ async function searchWeb(query) {
         body: JSON.stringify({
           api_key: tavilyKey,
           query,
-          search_depth: "basic",
+          search_depth: "advanced",
           include_answer: true,
           max_results: 5
         })
@@ -292,21 +326,139 @@ async function searchWeb(query) {
     );
 
     if (!response.ok) {
+      console.error(
+        "Tavily error:",
+        response.status,
+        await response.text()
+      );
+
       return null;
     }
 
     return await response.json();
-  } catch {
+  } catch (error) {
+    console.error("Tavily request failed:", error);
     return null;
   }
 }
 
+function formatResearch(research) {
+  if (!research) {
+    return "";
+  }
+
+  if (
+    Array.isArray(research.results) &&
+    research.results.length
+  ) {
+    return research.results
+      .slice(0, 5)
+      .map(
+        item =>
+          `Título: ${item.title || ""}
+URL: ${item.url || ""}
+Conteúdo: ${item.content || ""}`
+      )
+      .join("\n\n");
+  }
+
+  if (research.answer) {
+    return String(research.answer);
+  }
+
+  return "";
+}
+
+async function generateWithGroq(messages, useBrowserSearch) {
+  const body = {
+    model: MODEL,
+    messages,
+    temperature: 0.6,
+    reasoning_effort: "medium",
+    include_reasoning: false,
+    max_completion_tokens: 2048,
+    top_p: 0.95
+  };
+
+  /*
+   * O GPT-OSS suporta Browser Search nativo no Groq.
+   * Isso permite que a Aura pesquise informações atuais,
+   * como resultados de F1, notícias, UFC etc.
+   */
+  if (useBrowserSearch) {
+    body.tools = [
+      {
+        type: "browser_search"
+      }
+    ];
+
+    body.tool_choice = "required";
+  }
+
+  const response = await fetch(
+    "https://api.groq.com/openai/v1/chat/completions",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+  );
+
+  const raw = await response.text();
+
+  if (!response.ok) {
+    console.error(
+      "Groq API error:",
+      response.status,
+      raw
+    );
+
+    let parsed;
+
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      parsed = null;
+    }
+
+    const groqMessage =
+      parsed?.error?.message ||
+      parsed?.message ||
+      raw ||
+      "Erro desconhecido na API da Groq.";
+
+    throw new Error(
+      `Groq ${response.status}: ${groqMessage}`
+    );
+  }
+
+  let data;
+
+  try {
+    data = JSON.parse(raw);
+  } catch {
+    throw new Error(
+      "A Groq retornou uma resposta inválida."
+    );
+  }
+
+  return data;
+}
+
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "*"
+  );
+
   res.setHeader(
     "Access-Control-Allow-Methods",
     "POST, OPTIONS"
   );
+
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Content-Type, Authorization"
@@ -325,7 +477,7 @@ export default async function handler(req, res) {
   try {
     if (!process.env.GROQ_API_KEY) {
       return res.status(500).json({
-        error: "GROQ_API_KEY não configurada."
+        error: "GROQ_API_KEY não configurada na Vercel."
       });
     }
 
@@ -343,7 +495,10 @@ export default async function handler(req, res) {
       language
     } = req.body || {};
 
-    if (!message || typeof message !== "string") {
+    if (
+      !message ||
+      typeof message !== "string"
+    ) {
       return res.status(400).json({
         error: "Mensagem inválida."
       });
@@ -353,10 +508,14 @@ export default async function handler(req, res) {
       req.body?.plan
     );
 
-    const creditResult = await consumeCredits(
-      user.id,
-      1
-    );
+    /*
+     * Consome exatamente 1 crédito por pergunta.
+     */
+    const creditResult =
+      await consumeCredits(
+        user.id,
+        1
+      );
 
     if (!creditResult.ok) {
       if (creditResult.insufficient) {
@@ -366,16 +525,19 @@ export default async function handler(req, res) {
         });
       }
 
-      throw new Error("Não foi possível consumir o crédito.");
+      throw new Error(
+        "Não foi possível consumir o crédito."
+      );
     }
 
     let research = null;
 
-    if (
-      planConfig.research !== "limited" &&
-      needsWebSearch(message)
-    ) {
-      research = await searchWeb(message);
+    /*
+     * Primeiro tenta Tavily, caso a variável
+     * esteja configurada.
+     */
+    if (needsWebSearch(message)) {
+      research = await searchTavily(message);
     }
 
     const messages = [
@@ -393,72 +555,74 @@ export default async function handler(req, res) {
       }
     ];
 
-    if (research?.results?.length) {
-      const sources = research.results
-        .slice(0, 5)
-        .map(
-          item =>
-            `Título: ${item.title}\nURL: ${item.url}\nConteúdo: ${item.content}`
-        )
-        .join("\n\n");
+    /*
+     * Se Tavily encontrou informações,
+     * coloca os resultados no contexto.
+     */
+    const researchText =
+      formatResearch(research);
 
+    if (researchText) {
       messages.push({
         role: "system",
-        content:
-          `Resultados de pesquisa para ajudar na resposta:\n\n${sources}`
+        content: `
+RESULTADOS DE PESQUISA:
+
+Use estas informações como fonte para responder à pergunta atual.
+
+${researchText}
+
+Se houver conflito entre seu conhecimento interno e os resultados recentes, priorize os resultados recentes.
+`
       });
     }
 
-    const groqResponse = await fetch(
-      "https://api.groq.com/openai/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: MODEL,
-          messages,
-          temperature: 0.65,
-          reasoning_effort: "medium",
-          include_reasoning: false,
-          max_completion_tokens: 1200,
-          top_p: 0.9
-        })
-      }
-    );
+    /*
+     * Se a pergunta exige informação atual e
+     * Tavily não retornou nada, usa o Browser Search
+     * nativo do Groq.
+     */
+    const useBrowserSearch =
+      needsWebSearch(message) &&
+      !researchText;
 
-    if (!groqResponse.ok) {
-      const raw = await groqResponse.text();
-
-      return res.status(500).json({
-        error: "Erro ao gerar resposta.",
-        details: raw
-      });
-    }
-
-    const groqData = await groqResponse.json();
+    const groqData =
+      await generateWithGroq(
+        messages,
+        useBrowserSearch
+      );
 
     const reply =
-      groqData?.choices?.[0]?.message?.content || "";
+      groqData?.choices?.[0]?.message?.content ||
+      "";
 
     if (!reply) {
+      console.error(
+        "Groq returned no content:",
+        JSON.stringify(groqData)
+      );
+
       return res.status(500).json({
-        error: "A Aura não retornou uma resposta."
+        error:
+          "A Aura não recebeu conteúdo da IA."
       });
     }
 
     return res.status(200).json({
       reply,
       plan: planConfig.name,
-      researched: Boolean(research),
+      researched:
+        Boolean(researchText) ||
+        useBrowserSearch,
       model: MODEL,
       credits: creditResult.balance
     });
 
   } catch (error) {
-    console.error("API /api/chat error:", error);
+    console.error(
+      "API /api/chat error:",
+      error
+    );
 
     return res.status(500).json({
       error:
