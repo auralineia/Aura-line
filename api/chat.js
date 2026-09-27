@@ -208,21 +208,6 @@ async function consumeCredits(
    MEMÓRIA
 ========================================================= */
 
-/*
- * IMPORTANTE:
- *
- * A memória usa o TOKEN DO USUÁRIO.
- *
- * Isso significa que:
- *
- * Kelvyn -> somente memórias de Kelvyn
- * João   -> somente memórias de João
- * Maria  -> somente memórias de Maria
- *
- * O service role continua sendo usado apenas
- * para operações administrativas, como créditos.
- */
-
 async function getMemories(
   userId,
   userToken
@@ -376,7 +361,12 @@ async function saveMemory(
   const cleanMemory =
     memory
       .trim()
+      .replace(/\s+/g, " ")
       .slice(0, 500);
+
+  if (!cleanMemory) {
+    return false;
+  }
 
   if (
     await memoryExists(
@@ -486,6 +476,395 @@ function detectName(message) {
 }
 
 /* =========================================================
+   DETECÇÃO AUTOMÁTICA DE MEMÓRIAS
+========================================================= */
+
+function automaticMemories(message) {
+  const text =
+    String(message || "")
+      .trim();
+
+  if (!text) {
+    return [];
+  }
+
+  const memories = [];
+
+  function add(
+    memory,
+    category,
+    importance
+  ) {
+    if (
+      memory &&
+      typeof memory === "string"
+    ) {
+      memories.push({
+        memory:
+          memory
+            .trim()
+            .replace(/\s+/g, " ")
+            .slice(0, 500),
+        category,
+        importance
+      });
+    }
+  }
+
+  /* =======================================================
+     NOME
+  ======================================================= */
+
+  const name =
+    detectName(text);
+
+  if (name) {
+    add(
+      `O nome do usuário é ${name}.`,
+      "personal",
+      10
+    );
+  }
+
+  /* =======================================================
+     IDADE
+  ======================================================= */
+
+  const agePatterns = [
+    /(?:eu\s+)?tenho\s+(\d{1,3})\s+anos\b/i,
+    /(?:eu\s+)?estou\s+com\s+(\d{1,3})\s+anos\b/i,
+    /(?:minha\s+idade\s+é|minha idade e)\s+(\d{1,3})\b/i
+  ];
+
+  for (const pattern of agePatterns) {
+    const match =
+      text.match(pattern);
+
+    if (match?.[1]) {
+      const age =
+        Number(match[1]);
+
+      if (
+        age >= 1 &&
+        age <= 120
+      ) {
+        add(
+          `A idade do usuário é ${age} anos.`,
+          "personal",
+          9
+        );
+      }
+
+      break;
+    }
+  }
+
+  /* =======================================================
+     DATA DE NASCIMENTO
+  ======================================================= */
+
+  const birthPatterns = [
+    /(?:nasci em|nasc[ií] no dia|meu aniversário é|meu aniversario e|faço aniversário em|faco aniversario em)\s+(.{2,80})/i
+  ];
+
+  for (const pattern of birthPatterns) {
+    const match =
+      text.match(pattern);
+
+    if (match?.[1]) {
+      const value =
+        match[1]
+          .replace(
+            /[.!?]+$/,
+            ""
+          )
+          .trim();
+
+      if (value.length >= 3) {
+        add(
+          `A data de nascimento ou aniversário do usuário é ${value}.`,
+          "personal",
+          9
+        );
+      }
+
+      break;
+    }
+  }
+
+  /* =======================================================
+     CIDADE / LOCALIZAÇÃO
+  ======================================================= */
+
+  const cityPatterns = [
+    /(?:moro em|moro na|moro no|vivo em|vivo na|vivo no|sou de|sou da|sou do)\s+([^.!?,;]{2,80})/i
+  ];
+
+  for (const pattern of cityPatterns) {
+    const match =
+      text.match(pattern);
+
+    if (match?.[1]) {
+      const place =
+        match[1]
+          .trim()
+          .replace(
+            /\s+(?:há|ha)\s+\d+.*$/i,
+            ""
+          );
+
+      if (
+        place.length >= 2 &&
+        place.length <= 80
+      ) {
+        add(
+          `O usuário mora ou é de ${place}.`,
+          "location",
+          7
+        );
+      }
+
+      break;
+    }
+  }
+
+  /* =======================================================
+     PROFISSÃO
+  ======================================================= */
+
+  const professionPatterns = [
+    /(?:sou|trabalho como|trabalho de|atuo como|atuo na área de|atuo na area de)\s+(?:um |uma |o |a )?([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\s-]{2,60})/i
+  ];
+
+  const professionWords = [
+    "médico",
+    "médica",
+    "engenheiro",
+    "engenheira",
+    "advogado",
+    "advogada",
+    "professor",
+    "professora",
+    "empresário",
+    "empresaria",
+    "empresária",
+    "dentista",
+    "psicólogo",
+    "psicóloga",
+    "enfermeiro",
+    "enfermeira",
+    "arquiteto",
+    "arquiteta",
+    "programador",
+    "programadora",
+    "desenvolvedor",
+    "desenvolvedora",
+    "designer",
+    "jornalista",
+    "fotógrafo",
+    "fotógrafa",
+    "piloto",
+    "pilota",
+    "músico",
+    "músico",
+    "dj",
+    "artista",
+    "vendedor",
+    "vendedora",
+    "gerente",
+    "diretor",
+    "diretora",
+    "estudante"
+  ];
+
+  for (const word of professionWords) {
+    const professionRegex =
+      new RegExp(
+        `\\b${word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
+        "i"
+      );
+
+    if (
+      professionRegex.test(text) &&
+      /(?:sou|trabalho|atuo|minha profissão|minha profissao)/i.test(text)
+    ) {
+      add(
+        `A profissão do usuário está relacionada a ${word}.`,
+        "professional",
+        7
+      );
+
+      break;
+    }
+  }
+
+  /* =======================================================
+     RELACIONAMENTO
+  ======================================================= */
+
+  const relationshipPatterns = [
+    /(?:sou|estou)\s+(casado|casada|solteiro|solteira|noivo|noiva|namorando|divorciado|divorciada|viúvo|viúva)\b/i
+  ];
+
+  for (const pattern of relationshipPatterns) {
+    const match =
+      text.match(pattern);
+
+    if (match?.[1]) {
+      add(
+        `O usuário está ${match[1].toLowerCase()}.`,
+        "relationship",
+        7
+      );
+
+      break;
+    }
+  }
+
+  /* =======================================================
+     FILHOS / FAMÍLIA
+  ======================================================= */
+
+  const childPatterns = [
+    /(?:tenho|possuo)\s+(\d+)\s+(filhos?|filhas?)\b/i,
+    /(?:meu filho se chama|minha filha se chama)\s+([^.!?,;]+)/i
+  ];
+
+  for (const pattern of childPatterns) {
+    const match =
+      text.match(pattern);
+
+    if (!match) {
+      continue;
+    }
+
+    if (
+      match[1] &&
+      /^\d+$/.test(match[1])
+    ) {
+      add(
+        `O usuário tem ${match[1]} ${match[2].toLowerCase()}.`,
+        "family",
+        8
+      );
+    } else if (match[1]) {
+      const childName =
+        match[1]
+          .trim()
+          .replace(
+            /[.!?]+$/,
+            ""
+          );
+
+      if (childName.length >= 2) {
+        add(
+          `O usuário tem um familiar chamado ${childName}.`,
+          "family",
+          8
+        );
+      }
+    }
+
+    break;
+  }
+
+  /* =======================================================
+     GOSTOS / PREFERÊNCIAS
+  ======================================================= */
+
+  const likePatterns = [
+    /(?:eu\s+)?gosto\s+de\s+([^.!?]{2,100})/i,
+    /(?:eu\s+)?adoro\s+([^.!?]{2,100})/i,
+    /(?:eu\s+)?amo\s+([^.!?]{2,100})/i,
+    /(?:meu|minha)\s+(?:carro|comida|filme|série|serie|música|musica|time|equipe)\s+(?:favorito|favorita)\s+(?:é|e|são|sao)\s+([^.!?]{2,100})/i
+  ];
+
+  for (const pattern of likePatterns) {
+    const match =
+      text.match(pattern);
+
+    if (match?.[1]) {
+      const preference =
+        match[1]
+          .trim()
+          .replace(
+            /[.!?]+$/,
+            ""
+          );
+
+      if (
+        preference.length >= 2 &&
+        preference.length <= 100
+      ) {
+        add(
+          `O usuário gosta de ${preference}.`,
+          "preference",
+          6
+        );
+      }
+
+      break;
+    }
+  }
+
+  /* =======================================================
+     OBJETIVOS / SONHOS
+  ======================================================= */
+
+  const goalPatterns = [
+    /(?:meu sonho é|minha meta é|meu objetivo é|quero muito|pretendo)\s+([^.!?]{3,150})/i
+  ];
+
+  for (const pattern of goalPatterns) {
+    const match =
+      text.match(pattern);
+
+    if (match?.[1]) {
+      const goal =
+        match[1]
+          .trim()
+          .replace(
+            /[.!?]+$/,
+            ""
+          );
+
+      if (
+        goal.length >= 3 &&
+        goal.length <= 150
+      ) {
+        add(
+          `Um objetivo ou sonho importante do usuário é ${goal}.`,
+          "goals",
+          7
+        );
+      }
+
+      break;
+    }
+  }
+
+  /* =======================================================
+     EVITA DUPLICATAS DENTRO DA MESMA MENSAGEM
+  ======================================================= */
+
+  const unique = [];
+  const seen = new Set();
+
+  for (const item of memories) {
+    const key =
+      item.memory
+        .toLowerCase();
+
+    if (!seen.has(key)) {
+      seen.add(key);
+      unique.push(item);
+    }
+  }
+
+  return unique.slice(0, 10);
+}
+
+/* =========================================================
    PEDIDO EXPLÍCITO DE MEMÓRIA
 ========================================================= */
 
@@ -506,7 +885,9 @@ function wantsMemory(message) {
     "quero que lembre",
     "não esqueça",
     "nao esqueça",
-    "nao esqueca"
+    "nao esqueca",
+    "lembra de mim",
+    "lembre de mim"
   ];
 
   return terms.some(
@@ -514,46 +895,44 @@ function wantsMemory(message) {
   );
 }
 
-async function processExplicitMemory(
-  userId,
-  userToken,
-  message
-) {
-  const name =
-    detectName(message);
-
-  if (name) {
-    await saveMemory(
-      userId,
-      userToken,
-      `O nome do usuário é ${name}.`,
-      "personal",
-      10
-    );
-  }
-
-  /*
-   * Para memórias explícitas mais complexas,
-   * usamos a IA somente quando necessário.
-   */
-
-  if (
-    wantsMemory(message) &&
-    !name
-  ) {
-    await extractAndSaveMemory(
-      userId,
-      userToken,
-      message
-    );
-  }
-}
-
 /* =========================================================
-   EXTRAÇÃO DE MEMÓRIA COMPLEXA
+   EXTRAÇÃO AUTOMÁTICA COM IA
 ========================================================= */
 
-async function extractAndSaveMemory(
+function looksPersonal(message) {
+  const text =
+    String(message || "")
+      .toLowerCase();
+
+  const indicators = [
+    "eu ",
+    "meu ",
+    "minha ",
+    "meus ",
+    "minhas ",
+    "tenho ",
+    "sou ",
+    "moro ",
+    "vivo ",
+    "gosto ",
+    "adoro ",
+    "amo ",
+    "quero ",
+    "pretendo ",
+    "meu sonho",
+    "minha meta",
+    "minha profissão",
+    "meu trabalho",
+    "meu aniversário",
+    "meu aniversario"
+  ];
+
+  return indicators.some(
+    term => text.includes(term)
+  );
+}
+
+async function extractAndSaveMemories(
   userId,
   userToken,
   message
@@ -562,6 +941,12 @@ async function extractAndSaveMemory(
     process.env.GROQ_API_KEY;
 
   if (!key) {
+    return;
+  }
+
+  if (
+    !looksPersonal(message)
+  ) {
     return;
   }
 
@@ -579,35 +964,79 @@ async function extractAndSaveMemory(
         body: JSON.stringify({
           model: MODEL,
           temperature: 0,
-          max_completion_tokens: 250,
+          max_completion_tokens: 500,
           messages: [
             {
               role: "system",
               content: `
-Você extrai memórias pessoais explícitas do usuário.
+Você é o sistema de memória pessoal da Aura.
 
-Retorne SOMENTE JSON válido.
+Sua função é identificar informações pessoais relevantes que o usuário acabou de revelar espontaneamente.
 
-Formato:
+NÃO espere que o usuário diga "lembre disso".
+
+Extraia informações como:
+- nome
+- idade
+- aniversário
+- cidade/local onde mora
+- profissão
+- trabalho
+- relacionamento
+- filhos
+- familiares
+- gostos
+- preferências
+- hobbies
+- objetivos
+- sonhos
+- informações pessoais importantes para conversas futuras
+
+NÃO salve:
+- perguntas comuns
+- fatos gerais
+- informações temporárias sem importância
+- informações sobre terceiros que não sejam relevantes para o usuário
+- conteúdo inventado
+- informações que você não tenha certeza que foram afirmadas pelo usuário
+
+Retorne SOMENTE um JSON válido neste formato:
 
 {
-  "memory": "informação",
-  "category": "personal",
-  "importance": 5
+  "memories": [
+    {
+      "memory": "O usuário tem 52 anos.",
+      "category": "personal",
+      "importance": 9
+    }
+  ]
 }
 
-Se não existir memória clara, retorne:
+Categorias permitidas:
+personal
+location
+professional
+relationship
+family
+preference
+goals
+general
 
-null
+Importance:
+1 a 10.
 
-Não invente informações.
+Se não houver nenhuma informação pessoal relevante:
+
+{
+  "memories": []
+}
 `
             },
             {
               role: "user",
               content:
                 String(message)
-                  .slice(0, 2500)
+                  .slice(0, 3000)
             }
           ]
         })
@@ -616,7 +1045,7 @@ Não invente informações.
 
     if (!response.ok) {
       console.error(
-        "Erro na extração de memória:",
+        "Erro na extração automática de memória:",
         response.status,
         await response.text()
       );
@@ -645,10 +1074,7 @@ Não invente informações.
         )
         .trim();
 
-    if (
-      !content ||
-      content === "null"
-    ) {
+    if (!content) {
       return;
     }
 
@@ -657,36 +1083,114 @@ Não invente informações.
     try {
       parsed =
         JSON.parse(content);
-    } catch {
+    } catch (error) {
+      console.error(
+        "Não foi possível interpretar memórias automáticas:",
+        error
+      );
+
       return;
     }
 
-    if (
-      parsed &&
-      typeof parsed.memory ===
-        "string"
-    ) {
-      await saveMemory(
-        userId,
-        userToken,
-        parsed.memory,
-        parsed.category ||
-          "general",
+    const memories =
+      Array.isArray(
+        parsed?.memories
+      )
+        ? parsed.memories
+        : [];
+
+    for (const item of memories.slice(0, 8)) {
+      if (
+        !item ||
+        typeof item.memory !==
+          "string"
+      ) {
+        continue;
+      }
+
+      const importance =
         Math.min(
           10,
           Math.max(
             1,
             Number(
-              parsed.importance
+              item.importance
             ) || 5
           )
-        )
+        );
+
+      await saveMemory(
+        userId,
+        userToken,
+        item.memory,
+        item.category ||
+          "general",
+        importance
       );
     }
   } catch (error) {
     console.error(
-      "Erro extraindo memória:",
+      "Erro extraindo memórias automáticas:",
       error
+    );
+  }
+}
+
+/* =========================================================
+   PROCESSAMENTO DE MEMÓRIA
+========================================================= */
+
+async function processMemory(
+  userId,
+  userToken,
+  message
+) {
+  /*
+   * Primeiro salva informações simples
+   * sem gastar outra chamada de IA.
+   */
+  const automatic =
+    automaticMemories(
+      message
+    );
+
+  for (const item of automatic) {
+    await saveMemory(
+      userId,
+      userToken,
+      item.memory,
+      item.category,
+      item.importance
+    );
+  }
+
+  /*
+   * Depois usa IA somente quando a mensagem
+   * parece conter informação pessoal.
+   *
+   * Isso permite descobrir informações mais
+   * complexas que os padrões acima não detectam.
+   */
+  if (
+    looksPersonal(message)
+  ) {
+    await extractAndSaveMemories(
+      userId,
+      userToken,
+      message
+    );
+  }
+
+  /*
+   * Pedidos explícitos continuam funcionando.
+   */
+  if (
+    wantsMemory(message)
+  ) {
+    await extractAndSaveMemories(
+      userId,
+      userToken,
+      message
     );
   }
 }
@@ -958,6 +1462,9 @@ Não invente novas memórias.
 
 Não diga que possui um banco de dados.
 
+Se houver uma memória sobre o nome do usuário,
+use o nome exatamente como estiver registrado.
+
 MEMÓRIAS:
 
 ${memoryText}
@@ -992,6 +1499,7 @@ REGRAS:
 - Preserve o contexto da conversa.
 - Use as memórias quando forem relevantes.
 - Se uma memória disser o nome do usuário, use esse nome naturalmente.
+- Não altere nomes, idades ou outros dados pessoais armazenados.
 `;
 }
 
@@ -1128,9 +1636,6 @@ export default async function handler(
         });
     }
 
-    /*
-     * Recupera o token original da sessão.
-     */
     const userToken =
       bearer(req);
 
@@ -1212,9 +1717,6 @@ export default async function handler(
        MEMÓRIA
     ===================================================== */
 
-    /*
-     * AGORA A LEITURA USA O TOKEN DO USUÁRIO.
-     */
     const memories =
       await getMemories(
         user.id,
@@ -1315,13 +1817,22 @@ Use esses resultados para responder.
     }
 
     /* =====================================================
-       SALVA MEMÓRIA
+       MEMÓRIA AUTOMÁTICA
     ===================================================== */
 
     /*
-     * Também usa o TOKEN DO USUÁRIO.
+     * A Aura aprende informações pessoais
+     * naturalmente, sem exigir:
+     *
+     * "lembra disso"
+     *
+     * Exemplo:
+     *
+     * "Tenho 52 anos"
+     *
+     * será processado automaticamente.
      */
-    await processExplicitMemory(
+    await processMemory(
       user.id,
       userToken,
       message
