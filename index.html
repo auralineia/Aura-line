@@ -8,6 +8,7 @@
   <title>Aura</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
 
   <style>
     *{
@@ -1153,6 +1154,11 @@
       display:flex;
     }
 
+
+    .checkout-overlay{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.72);backdrop-filter:blur(14px);opacity:0;pointer-events:none;transition:.2s}
+    .checkout-overlay.open{opacity:1;pointer-events:auto}
+    .checkout-modal{width:min(100%,500px);max-height:90vh;overflow:auto;border:1px solid rgba(255,79,163,.22);border-radius:24px;background:radial-gradient(circle at 20% 0%,rgba(255,79,163,.09),transparent 38%),#0b0b10;box-shadow:0 30px 100px rgba(0,0,0,.7);padding:22px}
+    .checkout-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.checkout-title{font-size:18px;font-weight:650}.checkout-plan{font-size:12px;color:var(--pink2);margin-bottom:16px}.checkout-close{width:35px;height:35px;border-radius:11px;background:rgba(255,255,255,.045);color:rgba(255,255,255,.6);font-size:20px;cursor:pointer}.checkout-note{font-size:10px;line-height:1.55;color:rgba(255,255,255,.34);margin-top:10px}.checkout-status{min-height:18px;font-size:11px;color:#ff91b7;margin:8px 0}
     .modal{
       width:100%;
       max-width:470px;
@@ -2095,6 +2101,21 @@
     </div>
   </div>
 
+
+  <div class="checkout-overlay" id="checkoutOverlay">
+    <div class="checkout-modal">
+      <div class="checkout-head">
+        <div>
+          <div class="checkout-title">Assinar AURA</div>
+          <div class="checkout-plan" id="checkoutPlanLabel"></div>
+        </div>
+        <button class="checkout-close" id="checkoutClose" type="button">×</button>
+      </div>
+      <div id="cardPaymentBrick_container"></div>
+      <div class="checkout-status" id="checkoutStatus"></div>
+      <div class="checkout-note">Pagamento protegido pelo Mercado Pago. Os dados completos do cartão são tratados pelo componente seguro do Mercado Pago.</div>
+    </div>
+  </div>
 
   <div
     class="modal-overlay"
@@ -4437,60 +4458,71 @@
     );
 
 
-    async function startCheckout(plan){
-      if(!currentUser){
-        showToast("Entre na sua conta primeiro.");
-        return;
-      }
+    let checkoutBrickController=null;
+    let checkoutPlan=null;
 
-      const sessionResult = await supabaseClient.auth.getSession();
-      const session = sessionResult.data?.session;
+    async function openCheckout(plan){
+      if(!currentUser){showToast("Entre na sua conta primeiro.");return;}
+      const sessionResult=await supabaseClient.auth.getSession();
+      const session=sessionResult.data?.session;
+      if(!session?.access_token){showToast("Sessão expirada. Entre novamente.");return;}
 
-      if(!session?.access_token){
-        showToast("Sessão expirada. Entre novamente.");
-        return;
-      }
-
-      const button = document.getElementById(
-        plan === "pro" ? "proPlanButton" : "ultraPlanButton"
-      );
-
-      if(button){
-        button.disabled = true;
-        button.textContent = "Abrindo checkout...";
-      }
+      checkoutPlan=plan;
+      document.getElementById("checkoutPlanLabel").textContent=plan==="pro"?"PRO — R$ 11,99/mês":"ULTRA — R$ 29,99/mês";
+      document.getElementById("checkoutStatus").textContent="";
+      document.getElementById("checkoutOverlay").classList.add("open");
 
       try{
-        const response = await fetch("/api/checkout",{
-          method:"POST",
-          headers:{
-            "Content-Type":"application/json",
-            "Authorization":`Bearer ${session.access_token}`
-          },
-          body:JSON.stringify({plan})
+        if(checkoutBrickController){checkoutBrickController.unmount();checkoutBrickController=null;}
+        const keyResponse=await fetch("/api/checkout-config");
+        const keyData=await keyResponse.json().catch(()=>({}));
+        if(!keyResponse.ok||!keyData.public_key)throw new Error(keyData.error||"Chave pública do Mercado Pago não configurada.");
+        const mp=new MercadoPago(keyData.public_key,{locale:"pt-BR"});
+        const builder=mp.bricks();
+        const amount=plan==="pro"?11.99:29.99;
+        checkoutBrickController=await builder.create("cardPayment","cardPaymentBrick_container",{
+          initialization:{amount},
+          customization:{paymentMethods:{types:{excluded:["debit_card","prepaid_card"]}}},
+          callbacks:{
+            onReady:()=>{},
+            onError:(error)=>{console.error("Mercado Pago Brick:",error);},
+            onSubmit:async(formData)=>{
+              const status=document.getElementById("checkoutStatus");
+              status.textContent="Processando assinatura...";
+              const response=await fetch("/api/subscribe",{
+                method:"POST",
+                headers:{"Content-Type":"application/json","Authorization":`Bearer ${session.access_token}`},
+                body:JSON.stringify({plan,card_token_id:formData.token})
+              });
+              const data=await response.json().catch(()=>({}));
+              if(!response.ok)throw new Error(data.error||"Não foi possível ativar a assinatura.");
+              status.textContent="Assinatura ativada.";
+              showToast("Plano "+plan.toUpperCase()+" ativado.");
+              closeCheckout();
+              await loadCredits();
+            }
+          }
         });
-
-        const data = await response.json().catch(()=>({}));
-
-        if(!response.ok || !data.checkout_url){
-          throw new Error(data.error || "Não foi possível abrir o checkout.");
-        }
-
-        window.location.href = data.checkout_url;
       }catch(error){
         console.error("Checkout:",error);
-        showToast(error?.message || "Erro ao iniciar checkout.");
-      }finally{
-        if(button){
-          button.disabled = false;
-          button.textContent = plan === "pro" ? "Assinar Pro" : "Assinar Ultra";
-        }
+        document.getElementById("checkoutStatus").textContent=error?.message||"Erro ao abrir pagamento.";
+        showToast(error?.message||"Erro ao abrir pagamento.");
       }
     }
 
-    document.getElementById("proPlanButton").addEventListener("click",()=>startCheckout("pro"));
-    document.getElementById("ultraPlanButton").addEventListener("click",()=>startCheckout("ultra"));
+    function closeCheckout(){
+      const overlay=document.getElementById("checkoutOverlay");
+      overlay.classList.remove("open");
+      if(checkoutBrickController){checkoutBrickController.unmount();checkoutBrickController=null;}
+      checkoutPlan=null;
+    }
 
+    document.getElementById("checkoutClose").addEventListener("click",closeCheckout);
+    document.getElementById("checkoutOverlay").addEventListener("click",(event)=>{
+      if(event.target.id==="checkoutOverlay")closeCheckout();
+    });
+    document.getElementById("proPlanButton").addEventListener("click",()=>openCheckout("pro"));
+    document.getElementById("ultraPlanButton").addEventListener("click",()=>openCheckout("ultra"));
 
     document.getElementById("supportSendButton").addEventListener("click", async () => {
       const text = document.getElementById("supportText").value.trim();
