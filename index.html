@@ -2043,66 +2043,40 @@
         <button class="modal-close" data-close="settingsModal">×</button>
       </div>
 
-      <div class="setting-row">
-
+      <div class="setting-row setting-interactive" data-setting="dark">
         <div>
-          <div class="setting-name">
-            Tema escuro
-          </div>
-
-          <div class="setting-desc">
-            A Aura foi projetada para o modo escuro.
-          </div>
+          <div class="setting-name">Tema escuro</div>
+          <div class="setting-desc">A Aura foi projetada para o modo escuro.</div>
         </div>
-
-        <div class="toggle on"></div>
-
+        <button class="toggle on" id="darkModeToggle" type="button" aria-label="Alternar tema"></button>
       </div>
 
-      <div class="setting-row">
-
+      <div class="setting-row setting-interactive" data-setting="animations">
         <div>
-          <div class="setting-name">
-            Animações
-          </div>
-
-          <div class="setting-desc">
-            Movimentos suaves da interface.
-          </div>
+          <div class="setting-name">Animações</div>
+          <div class="setting-desc">Movimentos suaves da interface.</div>
         </div>
-
-        <div class="toggle on"></div>
-
+        <button class="toggle on" id="animationsToggle" type="button" aria-label="Alternar animações"></button>
       </div>
 
-      <div class="setting-row">
-
+      <div class="setting-row setting-interactive" data-setting="personalization">
         <div>
-          <div class="setting-name">
-            Personalização da Aura
-          </div>
-
-          <div class="setting-desc">
-            A Aura aprende com suas conversas para personalizar a experiência.
-          </div>
+          <div class="setting-name">Personalização da Aura</div>
+          <div class="setting-desc">A Aura aprende com suas conversas para personalizar a experiência.</div>
         </div>
-
-        <div class="toggle on"></div>
-
+        <button class="toggle on" id="personalizationToggle" type="button" aria-label="Alternar personalização"></button>
       </div>
 
-      <div class="setting-row">
-
+      <div class="setting-row setting-interactive">
         <div>
-          <div class="setting-name">
-            Idioma
-          </div>
-
-          <div class="setting-desc">
-            Português — Brasil
-          </div>
+          <div class="setting-name">Idioma</div>
+          <div class="setting-desc">Escolha o idioma da interface e das respostas.</div>
         </div>
-
+        <select id="languageSelect" class="settings-select" aria-label="Idioma">
+          <option value="pt-BR">Português — Brasil</option>
+          <option value="en-US">English — United States</option>
+          <option value="es-ES">Español — España</option>
+        </select>
       </div>
 
     </div>
@@ -2147,8 +2121,9 @@
         class="modal-button"
         id="supportSendButton"
       >
-        Copiar mensagem
+        Enviar para o suporte
       </button>
+      <div id="supportStatus" style="margin-top:10px;color:rgba(255,255,255,.42);font-size:11px;line-height:1.4;"></div>
 
     </div>
   </div>
@@ -3613,7 +3588,7 @@
                     ),
 
                   language:
-                    "pt-BR",
+                    (loadSettings().language || "pt-BR"),
 
                   plan:
                     "free",
@@ -4398,75 +4373,115 @@
     );
 
 
-    document.getElementById(
-      "proPlanButton"
-    ).addEventListener(
-      "click",
-      () => {
-
-        showToast(
-          "Checkout do plano PRO será conectado em breve."
-        );
-
+    async function startCheckout(plan){
+      if(!currentUser){
+        showToast("Entre na sua conta primeiro.");
+        return;
       }
-    );
 
+      const sessionResult = await supabaseClient.auth.getSession();
+      const session = sessionResult.data?.session;
 
-    document.getElementById(
-      "ultraPlanButton"
-    ).addEventListener(
-      "click",
-      () => {
-
-        showToast(
-          "Checkout do plano ULTRA será conectado em breve."
-        );
-
+      if(!session?.access_token){
+        showToast("Sessão expirada. Entre novamente.");
+        return;
       }
-    );
 
+      const button = document.getElementById(
+        plan === "pro" ? "proPlanButton" : "ultraPlanButton"
+      );
 
-    document.getElementById(
-      "supportSendButton"
-    ).addEventListener(
-      "click",
-      async () => {
+      if(button){
+        button.disabled = true;
+        button.textContent = "Abrindo checkout...";
+      }
 
-        const text =
-          document.getElementById(
-            "supportText"
-          ).value.trim();
+      try{
+        const response = await fetch("/api/checkout",{
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json",
+            "Authorization":`Bearer ${session.access_token}`
+          },
+          body:JSON.stringify({plan})
+        });
 
-        if(!text){
+        const data = await response.json().catch(()=>({}));
 
-          showToast(
-            "Escreva uma mensagem primeiro."
-          );
-
-          return;
-
+        if(!response.ok || !data.checkout_url){
+          throw new Error(data.error || "Não foi possível abrir o checkout.");
         }
 
-        try{
+        window.location.href = data.checkout_url;
+      }catch(error){
+        console.error("Checkout:",error);
+        showToast(error?.message || "Erro ao iniciar checkout.");
+      }finally{
+        if(button){
+          button.disabled = false;
+          button.textContent = plan === "pro" ? "Assinar Pro" : "Assinar Ultra";
+        }
+      }
+    }
 
-          await navigator.clipboard.writeText(
-            text
-          );
+    document.getElementById("proPlanButton").addEventListener("click",()=>startCheckout("pro"));
+    document.getElementById("ultraPlanButton").addEventListener("click",()=>startCheckout("ultra"));
 
-          showToast(
-            "Mensagem copiada."
-          );
 
-        }catch{
+    document.getElementById("supportSendButton").addEventListener("click", async () => {
+      const text = document.getElementById("supportText").value.trim();
+      const status = document.getElementById("supportStatus");
 
-          showToast(
-            "Não foi possível copiar."
-          );
+      if(!text){
+        showToast("Escreva uma mensagem primeiro.");
+        return;
+      }
 
+      const sessionResult = await supabaseClient.auth.getSession();
+      const session = sessionResult.data?.session;
+
+      if(!session?.access_token){
+        showToast("Sessão expirada. Entre novamente.");
+        return;
+      }
+
+      const button = document.getElementById("supportSendButton");
+      button.disabled = true;
+      button.textContent = "Enviando...";
+      if(status) status.textContent = "";
+
+      try{
+        const response = await fetch("/api/chat",{
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json",
+            "Authorization":`Bearer ${session.access_token}`
+          },
+          body:JSON.stringify({
+            action:"support",
+            subject:"Solicitação de suporte AURA",
+            message:text
+          })
+        });
+
+        const data = await response.json().catch(()=>({}));
+
+        if(!response.ok){
+          throw new Error(data.error || "Não foi possível enviar o chamado.");
         }
 
+        document.getElementById("supportText").value = "";
+        if(status) status.textContent = "Chamado enviado. Nossa equipe poderá acompanhar sua solicitação.";
+        showToast("Chamado enviado para o suporte.");
+      }catch(error){
+        console.error("Support:",error);
+        if(status) status.textContent = error?.message || "Erro ao enviar.";
+        showToast(error?.message || "Erro ao enviar suporte.");
+      }finally{
+        button.disabled = false;
+        button.textContent = "Enviar para o suporte";
       }
-    );
+    });
 
 
     /* =====================================================
