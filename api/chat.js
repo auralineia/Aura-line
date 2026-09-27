@@ -871,6 +871,103 @@ function setCors(res) {
   );
 }
 
+
+async function handleSupportRequest(req, res, user) {
+  const token = bearer(req);
+  const subject = String(req.body?.subject || "Suporte AURA").slice(0, 160);
+  const message = String(req.body?.message || "").trim().slice(0, 5000);
+  if (!message) return json(res, 400, { error: "Escreva uma mensagem." });
+
+  const { url, serviceKey } = supabaseConfig();
+  const response = await fetch(
+    `${url}/rest/v1/support_tickets`,
+    {
+      method: "POST",
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal"
+      },
+      body: JSON.stringify({
+        user_id: user.id,
+        email: user.email || null,
+        subject,
+        message,
+        status: "open"
+      })
+    }
+  );
+
+  if (!response.ok) {
+    const raw = await response.text();
+    console.error("Support ticket:", response.status, raw);
+    return json(res, 500, { error: "Não foi possível enviar o chamado." });
+  }
+
+  return json(res, 200, { ok: true });
+}
+
+async function handleMercadoPagoWebhook(req, res) {
+  const token = process.env.MERCADOPAGO_ACCESS_TOKEN;
+  if (!token) return json(res, 500, { error: "Mercado Pago não configurado." });
+
+  const type = String(req.body?.type || req.body?.action || "");
+  const id = req.body?.data?.id || req.body?.id;
+  if (!id || (!type.includes("subscription") && !type.includes("preapproval"))) {
+    return json(res, 200, { received: true });
+  }
+
+  const mpResponse = await fetch(
+    "https://api.mercadopago.com/preapproval/" + encodeURIComponent(id),
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  const subscription = await mpResponse.json().catch(() => ({}));
+  if (!mpResponse.ok) {
+    console.error("Mercado Pago webhook:", mpResponse.status, subscription);
+    return json(res, 502, { error: "Não foi possível consultar a assinatura." });
+  }
+
+  const parts = String(subscription.external_reference || "").split(":");
+  const userId = parts[0];
+  const plan = parts[1];
+  if (!userId || !["pro", "ultra"].includes(plan)) {
+    return json(res, 200, { received: true });
+  }
+
+  const { url, serviceKey } = supabaseConfig();
+  const status = String(subscription.status || "pending").toLowerCase();
+  const periodEnd = subscription.next_payment_date || null;
+
+  const response = await fetch(
+    `${url}/rest/v1/subscriptions?user_id=eq.${encodeURIComponent(userId)}`,
+    {
+      method: "PATCH",
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal"
+      },
+      body: JSON.stringify({
+        plan,
+        status,
+        mercado_pago_subscription_id: String(subscription.id || id),
+        current_period_end: periodEnd,
+        updated_at: new Date().toISOString()
+      })
+    }
+  );
+
+  if (!response.ok) {
+    const raw = await response.text();
+    console.error("Subscription update:", response.status, raw);
+    return json(res, 500, { error: "Não foi possível atualizar a assinatura." });
+  }
+
+  return json(res, 200, { received: true });
+}
+
 export default async function handler(req, res) {
   setCors(res);
 
@@ -885,6 +982,12 @@ export default async function handler(req, res) {
   }
 
   try {
+    const action = String(req.body?.action || "").toLowerCase();
+
+    if (action === "mercadopago_webhook") {
+      return await handleMercadoPagoWebhook(req, res);
+    }
+
     const user = await authenticatedUser(req);
 
     if (!user) {
@@ -895,6 +998,10 @@ export default async function handler(req, res) {
 
     const token = bearer(req);
     const body = req.body || {};
+
+    if (String(body.action || "").toLowerCase() === "support") {
+      return await handleSupportRequest(req, res, user);
+    }
 
     const message = String(body.message || "").trim();
 
