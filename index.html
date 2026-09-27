@@ -598,7 +598,7 @@
 
     .history-item{
       width:100%;
-      min-height:58px;
+            min-height:58px;
       display:flex;
       align-items:center;
       gap:10px;
@@ -1198,8 +1198,7 @@
       color:rgba(255,255,255,.30);
       font-size:10px;
     }
-
-    .toggle{
+        .toggle{
       width:45px;
       height:25px;
       border-radius:20px;
@@ -1798,7 +1797,7 @@
             font-weight:650;
           "
         >
-          20
+                    20
         </div>
 
         <div
@@ -2398,7 +2397,7 @@
 
           const {
             data,
-            error
+                        error
           } =
             await supabaseClient.auth.signInWithPassword({
               email,
@@ -2998,8 +2997,7 @@
         if(error){
           throw error;
         }
-
-        if(data){
+                if(data){
 
           credits =
             Number(
@@ -3598,7 +3596,7 @@
                   "application/json",
 
                 "Authorization":
-                  `Bearer ${session.access_token}`
+                                    `Bearer ${session.access_token}`
               },
 
               body:
@@ -4197,8 +4195,7 @@
       () => {
 
         closeMenu();
-
-        openModal(
+                openModal(
           "plansModal"
         );
 
