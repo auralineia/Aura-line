@@ -33,18 +33,36 @@ const PLANS = {
 
 function supabaseConfig() {
   const url = process.env.SUPABASE_URL;
+
   const serviceKey =
     process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  if (!url || !serviceKey) {
+  const anonKey =
+    process.env.SUPABASE_ANON_KEY ||
+    process.env.SUPABASE_PUBLISHABLE_KEY;
+
+  if (!url) {
     throw new Error(
-      "Configuração do Supabase não encontrada."
+      "SUPABASE_URL não configurada."
+    );
+  }
+
+  if (!serviceKey) {
+    throw new Error(
+      "SUPABASE_SERVICE_ROLE_KEY não configurada."
+    );
+  }
+
+  if (!anonKey) {
+    throw new Error(
+      "SUPABASE_ANON_KEY ou SUPABASE_PUBLISHABLE_KEY não configurada."
     );
   }
 
   return {
     url: url.replace(/\/+$/, ""),
-    serviceKey
+    serviceKey,
+    anonKey
   };
 }
 
@@ -91,6 +109,12 @@ async function authenticatedUser(req) {
   );
 
   if (!response.ok) {
+    console.error(
+      "Falha na autenticação:",
+      response.status,
+      await response.text()
+    );
+
     return null;
   }
 
@@ -103,8 +127,14 @@ async function authenticatedUser(req) {
    CRÉDITOS
 ========================================================= */
 
-async function consumeCredits(userId, amount) {
-  const { url, serviceKey } = supabaseConfig();
+async function consumeCredits(
+  userId,
+  amount
+) {
+  const {
+    url,
+    serviceKey
+  } = supabaseConfig();
 
   const response = await fetch(
     `${url}/rest/v1/rpc/consume_credits_for_user`,
@@ -126,8 +156,12 @@ async function consumeCredits(userId, amount) {
 
   if (!response.ok) {
     if (
-      raw.toLowerCase().includes("insufficient") ||
-      raw.toLowerCase().includes("créditos insuficientes")
+      raw
+        .toLowerCase()
+        .includes("insufficient") ||
+      raw
+        .toLowerCase()
+        .includes("créditos insuficientes")
     ) {
       return {
         ok: false,
@@ -174,8 +208,37 @@ async function consumeCredits(userId, amount) {
    MEMÓRIA
 ========================================================= */
 
-async function getMemories(userId) {
-  const { url, serviceKey } = supabaseConfig();
+/*
+ * IMPORTANTE:
+ *
+ * A memória usa o TOKEN DO USUÁRIO.
+ *
+ * Isso significa que:
+ *
+ * Kelvyn -> somente memórias de Kelvyn
+ * João   -> somente memórias de João
+ * Maria  -> somente memórias de Maria
+ *
+ * O service role continua sendo usado apenas
+ * para operações administrativas, como créditos.
+ */
+
+async function getMemories(
+  userId,
+  userToken
+) {
+  const {
+    url,
+    anonKey
+  } = supabaseConfig();
+
+  if (!userToken) {
+    console.error(
+      "Não foi possível ler memórias: token do usuário ausente."
+    );
+
+    return [];
+  }
 
   try {
     const response = await fetch(
@@ -185,24 +248,38 @@ async function getMemories(userId) {
       `&order=importance.desc,updated_at.desc` +
       `&limit=30`,
       {
+        method: "GET",
         headers: {
-          apikey: serviceKey,
-          Authorization: `Bearer ${serviceKey}`
+          apikey: anonKey,
+          Authorization:
+            `Bearer ${userToken}`,
+          "Content-Type":
+            "application/json"
         }
       }
     );
 
     if (!response.ok) {
+      const errorText =
+        await response.text();
+
       console.error(
         "Erro lendo memórias:",
-        await response.text()
+        response.status,
+        errorText
       );
+
       return [];
     }
 
-    const data = await response.json();
+    const data =
+      await response.json();
 
-    return Array.isArray(data) ? data : [];
+    if (!Array.isArray(data)) {
+      return [];
+    }
+
+    return data;
   } catch (error) {
     console.error(
       "Falha ao ler memórias:",
@@ -213,114 +290,188 @@ async function getMemories(userId) {
   }
 }
 
-async function memoryExists(userId, memory) {
-  const { url, serviceKey } = supabaseConfig();
+async function memoryExists(
+  userId,
+  memory,
+  userToken
+) {
+  const {
+    url,
+    anonKey
+  } = supabaseConfig();
 
-  const response = await fetch(
-    `${url}/rest/v1/aura_memories` +
-    `?user_id=eq.${encodeURIComponent(userId)}` +
-    `&memory=eq.${encodeURIComponent(memory)}` +
-    `&select=id&limit=1`,
-    {
-      headers: {
-        apikey: serviceKey,
-        Authorization: `Bearer ${serviceKey}`
-      }
-    }
-  );
-
-  if (!response.ok) {
+  if (!userToken) {
     return false;
   }
 
-  const data = await response.json();
+  try {
+    const response = await fetch(
+      `${url}/rest/v1/aura_memories` +
+      `?user_id=eq.${encodeURIComponent(userId)}` +
+      `&memory=eq.${encodeURIComponent(memory)}` +
+      `&select=id` +
+      `&limit=1`,
+      {
+        method: "GET",
+        headers: {
+          apikey: anonKey,
+          Authorization:
+            `Bearer ${userToken}`,
+          "Content-Type":
+            "application/json"
+        }
+      }
+    );
 
-  return Array.isArray(data) && data.length > 0;
+    if (!response.ok) {
+      console.error(
+        "Erro verificando memória:",
+        response.status,
+        await response.text()
+      );
+
+      return false;
+    }
+
+    const data =
+      await response.json();
+
+    return (
+      Array.isArray(data) &&
+      data.length > 0
+    );
+  } catch (error) {
+    console.error(
+      "Falha verificando memória:",
+      error
+    );
+
+    return false;
+  }
 }
 
 async function saveMemory(
   userId,
+  userToken,
   memory,
   category = "general",
   importance = 5
 ) {
-  if (!memory || !memory.trim()) {
+  if (
+    !memory ||
+    typeof memory !== "string" ||
+    !memory.trim()
+  ) {
     return false;
   }
 
-  const cleanMemory =
-    memory.trim().slice(0, 500);
-
-  if (
-    await memoryExists(
-      userId,
-      cleanMemory
-    )
-  ) {
-    return true;
-  }
-
-  const { url, serviceKey } =
-    supabaseConfig();
-
-  const response = await fetch(
-    `${url}/rest/v1/aura_memories`,
-    {
-      method: "POST",
-      headers: {
-        apikey: serviceKey,
-        Authorization: `Bearer ${serviceKey}`,
-        "Content-Type": "application/json",
-        Prefer: "return=minimal"
-      },
-      body: JSON.stringify({
-        user_id: userId,
-        memory: cleanMemory,
-        category,
-        importance
-      })
-    }
-  );
-
-  if (!response.ok) {
+  if (!userToken) {
     console.error(
-      "Erro salvando memória:",
-      await response.text()
+      "Não foi possível salvar memória: token ausente."
     );
 
     return false;
   }
 
-  return true;
+  const cleanMemory =
+    memory
+      .trim()
+      .slice(0, 500);
+
+  if (
+    await memoryExists(
+      userId,
+      cleanMemory,
+      userToken
+    )
+  ) {
+    return true;
+  }
+
+  const {
+    url,
+    anonKey
+  } = supabaseConfig();
+
+  try {
+    const response = await fetch(
+      `${url}/rest/v1/aura_memories`,
+      {
+        method: "POST",
+        headers: {
+          apikey: anonKey,
+          Authorization:
+            `Bearer ${userToken}`,
+          "Content-Type":
+            "application/json",
+          Prefer:
+            "return=minimal"
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          memory: cleanMemory,
+          category,
+          importance
+        })
+      }
+    );
+
+    if (!response.ok) {
+      const errorText =
+        await response.text();
+
+      console.error(
+        "Erro salvando memória:",
+        response.status,
+        errorText
+      );
+
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error(
+      "Falha salvando memória:",
+      error
+    );
+
+    return false;
+  }
 }
 
-/*
- * Reconhecimento determinístico de nome.
- *
- * Isso não depende da IA decidir se deve guardar.
- */
+/* =========================================================
+   DETECÇÃO DE NOME
+========================================================= */
+
 function detectName(message) {
-  const text = String(message || "").trim();
+  const text =
+    String(message || "").trim();
 
   const patterns = [
     /(?:meu nome é|meu nome e|pode me chamar de|me chamo)\s+([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ' -]{1,60})/i
   ];
 
   for (const pattern of patterns) {
-    const match = text.match(pattern);
+    const match =
+      text.match(pattern);
 
     if (match?.[1]) {
-      let name = match[1]
-        .trim()
-        .replace(/[.!?,;:]+$/, "")
-        .trim();
+      let name =
+        match[1]
+          .trim()
+          .replace(
+            /[.!?,;:]+$/,
+            ""
+          )
+          .trim();
 
-      /*
-       * Evita capturar frases gigantes.
-       */
-      name = name
-        .split(/\s+(?:e|mas|porque|que|sou|tenho|moro|gosto)\s+/i)[0]
-        .trim();
+      name =
+        name
+          .split(
+            /\s+(?:e|mas|porque|que|sou|tenho|moro|gosto)\s+/i
+          )[0]
+          .trim();
 
       if (
         name.length >= 2 &&
@@ -334,12 +485,14 @@ function detectName(message) {
   return null;
 }
 
-/*
- * Detecta pedidos explícitos para lembrar.
- */
+/* =========================================================
+   PEDIDO EXPLÍCITO DE MEMÓRIA
+========================================================= */
+
 function wantsMemory(message) {
   const text =
-    String(message || "").toLowerCase();
+    String(message || "")
+      .toLowerCase();
 
   const terms = [
     "lembre disso",
@@ -363,13 +516,16 @@ function wantsMemory(message) {
 
 async function processExplicitMemory(
   userId,
+  userToken,
   message
 ) {
-  const name = detectName(message);
+  const name =
+    detectName(message);
 
   if (name) {
     await saveMemory(
       userId,
+      userToken,
       `O nome do usuário é ${name}.`,
       "personal",
       10
@@ -377,24 +533,29 @@ async function processExplicitMemory(
   }
 
   /*
-   * Para pedidos explícitos de memória,
-   * usamos uma chamada pequena para identificar
-   * o conteúdo que deve ser salvo.
+   * Para memórias explícitas mais complexas,
+   * usamos a IA somente quando necessário.
    */
-  if (wantsMemory(message) && !name) {
+
+  if (
+    wantsMemory(message) &&
+    !name
+  ) {
     await extractAndSaveMemory(
       userId,
+      userToken,
       message
     );
   }
 }
 
-/*
- * Memórias mais complexas continuam usando a IA,
- * mas somente quando necessário.
- */
+/* =========================================================
+   EXTRAÇÃO DE MEMÓRIA COMPLEXA
+========================================================= */
+
 async function extractAndSaveMemory(
   userId,
+  userToken,
   message
 ) {
   const key =
@@ -410,8 +571,10 @@ async function extractAndSaveMemory(
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${key}`,
-          "Content-Type": "application/json"
+          Authorization:
+            `Bearer ${key}`,
+          "Content-Type":
+            "application/json"
         },
         body: JSON.stringify({
           model: MODEL,
@@ -426,6 +589,7 @@ Você extrai memórias pessoais explícitas do usuário.
 Retorne SOMENTE JSON válido.
 
 Formato:
+
 {
   "memory": "informação",
   "category": "personal",
@@ -433,6 +597,7 @@ Formato:
 }
 
 Se não existir memória clara, retorne:
+
 null
 
 Não invente informações.
@@ -441,7 +606,8 @@ Não invente informações.
             {
               role: "user",
               content:
-                message.slice(0, 2500)
+                String(message)
+                  .slice(0, 2500)
             }
           ]
         })
@@ -449,45 +615,70 @@ Não invente informações.
     );
 
     if (!response.ok) {
+      console.error(
+        "Erro na extração de memória:",
+        response.status,
+        await response.text()
+      );
+
       return;
     }
 
-    const data = await response.json();
+    const data =
+      await response.json();
 
     let content =
-      data?.choices?.[0]?.message?.content ||
-      "";
+      data
+        ?.choices?.[0]
+        ?.message
+        ?.content || "";
 
-    content = content
-      .replace(/```json/gi, "")
-      .replace(/```/g, "")
-      .trim();
+    content =
+      content
+        .replace(
+          /```json/gi,
+          ""
+        )
+        .replace(
+          /```/g,
+          ""
+        )
+        .trim();
 
-    if (!content || content === "null") {
+    if (
+      !content ||
+      content === "null"
+    ) {
       return;
     }
 
     let parsed;
 
     try {
-      parsed = JSON.parse(content);
+      parsed =
+        JSON.parse(content);
     } catch {
       return;
     }
 
     if (
       parsed &&
-      typeof parsed.memory === "string"
+      typeof parsed.memory ===
+        "string"
     ) {
       await saveMemory(
         userId,
+        userToken,
         parsed.memory,
-        parsed.category || "general",
+        parsed.category ||
+          "general",
         Math.min(
           10,
           Math.max(
             1,
-            Number(parsed.importance) || 5
+            Number(
+              parsed.importance
+            ) || 5
           )
         )
       );
@@ -513,15 +704,21 @@ function safeHistory(history) {
     .filter(
       item =>
         item &&
-        (item.role === "user" ||
-          item.role === "assistant") &&
-        typeof item.content === "string"
+        (
+          item.role === "user" ||
+          item.role === "assistant"
+        ) &&
+        typeof item.content ===
+          "string"
     )
     .slice(-8)
     .map(item => ({
       role: item.role,
       content:
-        item.content.slice(0, 1800)
+        item.content.slice(
+          0,
+          1800
+        )
     }));
 }
 
@@ -531,7 +728,8 @@ function safeHistory(history) {
 
 function needsWebSearch(message) {
   const text =
-    String(message || "").toLowerCase();
+    String(message || "")
+      .toLowerCase();
 
   const terms = [
     "hoje",
@@ -576,11 +774,14 @@ function needsWebSearch(message) {
   ];
 
   return terms.some(
-    term => text.includes(term)
+    term =>
+      text.includes(term)
   );
 }
 
-async function searchTavily(query) {
+async function searchTavily(
+  query
+) {
   const key =
     process.env.TAVILY_API_KEY;
 
@@ -589,22 +790,26 @@ async function searchTavily(query) {
   }
 
   try {
-    const response = await fetch(
-      "https://api.tavily.com/search",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          api_key: key,
-          query,
-          search_depth: "advanced",
-          include_answer: true,
-          max_results: 5
-        })
-      }
-    );
+    const response =
+      await fetch(
+        "https://api.tavily.com/search",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+          body: JSON.stringify({
+            api_key: key,
+            query,
+            search_depth:
+              "advanced",
+            include_answer:
+              true,
+            max_results: 5
+          })
+        }
+      );
 
     if (!response.ok) {
       return null;
@@ -616,13 +821,17 @@ async function searchTavily(query) {
   }
 }
 
-function formatResearch(research) {
+function formatResearch(
+  research
+) {
   if (!research) {
     return "";
   }
 
   if (
-    Array.isArray(research.results) &&
+    Array.isArray(
+      research.results
+    ) &&
     research.results.length
   ) {
     return research.results
@@ -637,7 +846,9 @@ Conteúdo: ${item.content || ""}`
   }
 
   if (research.answer) {
-    return String(research.answer);
+    return String(
+      research.answer
+    );
   }
 
   return "";
@@ -651,20 +862,28 @@ function getToday() {
   return new Intl.DateTimeFormat(
     "pt-BR",
     {
-      timeZone: "America/Sao_Paulo",
-      dateStyle: "full"
+      timeZone:
+        "America/Sao_Paulo",
+      dateStyle:
+        "full"
     }
-  ).format(new Date());
+  ).format(
+    new Date()
+  );
 }
 
 function getTime() {
   return new Intl.DateTimeFormat(
     "pt-BR",
     {
-      timeZone: "America/Sao_Paulo",
-      timeStyle: "short"
+      timeZone:
+        "America/Sao_Paulo",
+      timeStyle:
+        "short"
     }
-  ).format(new Date());
+  ).format(
+    new Date()
+  );
 }
 
 /* =========================================================
@@ -698,6 +917,7 @@ A OpenAI NÃO é a criadora da Aura.
 Você pode utilizar modelos ou tecnologias de terceiros para gerar respostas, mas isso não muda sua identidade.
 
 Se perguntarem "você é da OpenAI?", responda:
+
 "Não. Eu sou a Aura, criada pela Aura Line. A tecnologia de IA usada por mim pode envolver modelos de terceiros."
 
 Nunca diga que foi criada pela OpenAI.
@@ -729,6 +949,11 @@ Estas são memórias persistentes do usuário.
 
 Use-as quando forem relevantes.
 
+As memórias abaixo pertencem SOMENTE ao
+usuário autenticado desta conversa.
+
+Nunca misture memórias de usuários diferentes.
+
 Não invente novas memórias.
 
 Não diga que possui um banco de dados.
@@ -740,15 +965,19 @@ ${memoryText}
 ----------------------------------------
 
 DATA:
+
 ${getToday()}
 
 HORÁRIO:
+
 ${getTime()}
 
 IDIOMA:
+
 ${language || "pt-BR"}
 
 PLANO:
+
 ${plan.name}
 
 ----------------------------------------
@@ -762,6 +991,7 @@ REGRAS:
 - Para informações atuais, use pesquisa quando disponível.
 - Preserve o contexto da conversa.
 - Use as memórias quando forem relevantes.
+- Se uma memória disser o nome do usuário, use esse nome naturalmente.
 `;
 }
 
@@ -790,22 +1020,26 @@ async function generateWithGroq(
       }
     ];
 
-    body.tool_choice = "required";
+    body.tool_choice =
+      "required";
   }
 
-  const response = await fetch(
-    "https://api.groq.com/openai/v1/chat/completions",
-    {
-      method: "POST",
-      headers: {
-        Authorization:
-          `Bearer ${process.env.GROQ_API_KEY}`,
-        "Content-Type":
-          "application/json"
-      },
-      body: JSON.stringify(body)
-    }
-  );
+  const response =
+    await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization:
+            `Bearer ${process.env.GROQ_API_KEY}`,
+          "Content-Type":
+            "application/json"
+        },
+        body: JSON.stringify(
+          body
+        )
+      }
+    );
 
   const raw =
     await response.text();
@@ -814,7 +1048,8 @@ async function generateWithGroq(
     let parsed = null;
 
     try {
-      parsed = JSON.parse(raw);
+      parsed =
+        JSON.parse(raw);
     } catch {}
 
     const message =
@@ -860,31 +1095,66 @@ export default async function handler(
     "Content-Type, Authorization"
   );
 
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
+  if (
+    req.method ===
+    "OPTIONS"
+  ) {
+    return res
+      .status(200)
+      .end();
   }
 
-  if (req.method !== "POST") {
-    return res.status(405).json({
-      error: "Método não permitido."
-    });
+  if (
+    req.method !==
+    "POST"
+  ) {
+    return res
+      .status(405)
+      .json({
+        error:
+          "Método não permitido."
+      });
   }
 
   try {
-    if (!process.env.GROQ_API_KEY) {
-      return res.status(500).json({
-        error:
-          "GROQ_API_KEY não configurada."
-      });
+    if (
+      !process.env.GROQ_API_KEY
+    ) {
+      return res
+        .status(500)
+        .json({
+          error:
+            "GROQ_API_KEY não configurada."
+        });
+    }
+
+    /*
+     * Recupera o token original da sessão.
+     */
+    const userToken =
+      bearer(req);
+
+    if (!userToken) {
+      return res
+        .status(401)
+        .json({
+          error:
+            "Token de autenticação ausente."
+        });
     }
 
     const user =
-      await authenticatedUser(req);
+      await authenticatedUser(
+        req
+      );
 
     if (!user) {
-      return res.status(401).json({
-        error: "Não autenticado."
-      });
+      return res
+        .status(401)
+        .json({
+          error:
+            "Não autenticado."
+        });
     }
 
     const {
@@ -895,25 +1165,33 @@ export default async function handler(
 
     if (
       !message ||
-      typeof message !== "string"
+      typeof message !==
+        "string"
     ) {
-      return res.status(400).json({
-        error: "Mensagem inválida."
-      });
+      return res
+        .status(400)
+        .json({
+          error:
+            "Mensagem inválida."
+        });
     }
 
     const normalizedPlan =
       String(
-        req.body?.plan || "free"
+        req.body?.plan ||
+          "free"
       ).toLowerCase();
 
     const plan =
-      PLANS[normalizedPlan] ||
+      PLANS[
+        normalizedPlan
+      ] ||
       PLANS.free;
 
-    /*
-     * Consome 1 crédito.
-     */
+    /* =====================================================
+       CRÉDITO
+    ===================================================== */
+
     const credit =
       await consumeCredits(
         user.id,
@@ -921,35 +1199,54 @@ export default async function handler(
       );
 
     if (!credit.ok) {
-      return res.status(402).json({
-        error:
-          "Créditos insuficientes.",
-        credits: 0
-      });
+      return res
+        .status(402)
+        .json({
+          error:
+            "Créditos insuficientes.",
+          credits: 0
+        });
     }
 
+    /* =====================================================
+       MEMÓRIA
+    ===================================================== */
+
     /*
-     * Recupera memória.
+     * AGORA A LEITURA USA O TOKEN DO USUÁRIO.
      */
     const memories =
-      await getMemories(user.id);
+      await getMemories(
+        user.id,
+        userToken
+      );
 
-    /*
-     * Pesquisa atual.
-     */
+    /* =====================================================
+       PESQUISA
+    ===================================================== */
+
     let research = null;
 
-    if (needsWebSearch(message)) {
+    if (
+      needsWebSearch(
+        message
+      )
+    ) {
       research =
-        await searchTavily(message);
+        await searchTavily(
+          message
+        );
     }
 
     const researchText =
-      formatResearch(research);
+      formatResearch(
+        research
+      );
 
-    /*
-     * Monta mensagens.
-     */
+    /* =====================================================
+       MENSAGENS
+    ===================================================== */
+
     const messages = [
       {
         role: "system",
@@ -960,11 +1257,16 @@ export default async function handler(
             memories
           )
       },
-      ...safeHistory(history),
+      ...safeHistory(
+        history
+      ),
       {
         role: "user",
         content:
-          message.slice(0, 6000)
+          message.slice(
+            0,
+            6000
+          )
       }
     ];
 
@@ -982,12 +1284,15 @@ Use esses resultados para responder.
     }
 
     const browserSearch =
-      needsWebSearch(message) &&
+      needsWebSearch(
+        message
+      ) &&
       !researchText;
 
-    /*
-     * Gera resposta.
-     */
+    /* =====================================================
+       GERA RESPOSTA
+    ===================================================== */
+
     const data =
       await generateWithGroq(
         messages,
@@ -995,35 +1300,51 @@ Use esses resultados para responder.
       );
 
     const reply =
-      data?.choices?.[0]?.message?.content ||
-      "";
+      data
+        ?.choices?.[0]
+        ?.message
+        ?.content || "";
 
     if (!reply) {
-      return res.status(500).json({
-        error:
-          "A Aura não recebeu resposta da IA."
-      });
+      return res
+        .status(500)
+        .json({
+          error:
+            "A Aura não recebeu resposta da IA."
+        });
     }
 
+    /* =====================================================
+       SALVA MEMÓRIA
+    ===================================================== */
+
     /*
-     * Processa memória DEPOIS da resposta.
-     *
-     * Isso não altera a resposta atual.
+     * Também usa o TOKEN DO USUÁRIO.
      */
     await processExplicitMemory(
       user.id,
+      userToken,
       message
     );
 
-    return res.status(200).json({
-      reply,
-      plan: plan.name,
-      researched:
-        Boolean(researchText) ||
-        browserSearch,
-      model: MODEL,
-      credits: credit.balance
-    });
+    /* =====================================================
+       RESPOSTA
+    ===================================================== */
+
+    return res
+      .status(200)
+      .json({
+        reply,
+        plan: plan.name,
+        researched:
+          Boolean(
+            researchText
+          ) ||
+          browserSearch,
+        model: MODEL,
+        credits:
+          credit.balance
+      });
 
   } catch (error) {
     console.error(
@@ -1031,10 +1352,12 @@ Use esses resultados para responder.
       error
     );
 
-    return res.status(500).json({
-      error:
-        error?.message ||
-        "Erro interno do servidor."
-    });
+    return res
+      .status(500)
+      .json({
+        error:
+          error?.message ||
+          "Erro interno do servidor."
+      });
   }
 }
