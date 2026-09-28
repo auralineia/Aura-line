@@ -1354,108 +1354,44 @@
 
 
     async function handleAuth(event){
-
-      event.preventDefault();
-
-      const email =
-        authEmail.value.trim();
-
-      const password =
-        authPassword.value;
-
-      if(!email || !password){
-
-        authMessage.textContent =
-          "Preencha e-mail e senha.";
-
-        return;
-      }
-
-      authButton.disabled = true;
-
-      authMessage.textContent =
-        "Aguarde...";
-
+      if(event) event.preventDefault();
+      const email=authEmail.value.trim();
+      const password=authPassword.value;
+      if(!email||!password){authMessage.textContent="Preencha e-mail e senha.";return;}
+      authButton.disabled=true;
+      authMessage.className="auth-error";
+      authMessage.textContent="Aguarde...";
       try{
-
-        if(authMode === "signup"){
-
-          const {
-            data,
-            error
-          } =
-            await supabaseClient.auth.signUp({
-              email,
-              password
-            });
-
-          if(error){
-            throw error;
-          }
-
-          if(data.session){
-
-            currentUser =
-              data.user;
-
+        let result;
+        if(authMode==="signup"){
+          const response=await fetch(SUPABASE_URL+"/auth/v1/signup",{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY},body:JSON.stringify({email,password})});
+          result=await response.json();
+          if(!response.ok) throw new Error(result?.msg||result?.message||result?.error_description||"Não foi possível criar a conta.");
+          if(result?.access_token&&result?.refresh_token){
+            await supabaseClient.auth.setSession({access_token:result.access_token,refresh_token:result.refresh_token});
+            currentUser=result.user||null;
             await showApp();
-
           }else{
-
-            authMessage.className =
-              "auth-error auth-success";
-
-            authMessage.textContent =
-              "Conta criada. Verifique seu e-mail para confirmar.";
-
+            authMessage.className="auth-error auth-success";
+            authMessage.textContent="Conta criada. Verifique seu e-mail para confirmar.";
           }
-
         }else{
-
-          const {
-            data,
-                        error
-          } =
-            await supabaseClient.auth.signInWithPassword({
-              email,
-              password
-            });
-
-          if(error){
-            throw error;
-          }
-
-          currentUser =
-            data.user;
-
+          const response=await fetch(SUPABASE_URL+"/auth/v1/token?grant_type=password",{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY},body:JSON.stringify({email,password})});
+          result=await response.json();
+          if(!response.ok) throw new Error(result?.msg||result?.message||result?.error_description||"Não foi possível entrar.");
+          if(!result?.access_token||!result?.refresh_token) throw new Error("O servidor não retornou uma sessão válida.");
+          await supabaseClient.auth.setSession({access_token:result.access_token,refresh_token:result.refresh_token});
+          currentUser=result.user||null;
           await showApp();
-
         }
-
       }catch(error){
-
-        console.error(error);
-
-        authMessage.className =
-          "auth-error";
-
-        authMessage.textContent =
-          translateAuthError(
-            error?.message
-          );
-
+        console.error("RIMAK AUTH:",error);
+        authMessage.className="auth-error";
+        authMessage.textContent=translateAuthError(error?.message);
       }finally{
-
-        authButton.disabled =
-          false;
-
-        authButton.textContent =
-          authMode === "login"
-            ? "Entrar"
-            : "Criar conta";
-
+        authButton.disabled=false;
+        authButton.textContent=authMode==="login"?"Entrar":"Criar conta";
       }
-
     }
 
 
