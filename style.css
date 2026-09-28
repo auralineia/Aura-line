@@ -118,6 +118,26 @@
     .aura-symbol .orbit,.aura-symbol .orbit2{position:absolute;width:18px;height:42px;border-radius:5px;background:linear-gradient(180deg,var(--pink2),var(--pink));box-shadow:0 0 24px rgba(255,79,163,.28);transform:skewX(-18deg);animation:rimak-bar 1.8s ease-in-out infinite}
     .aura-symbol .orbit{left:48px;height:54px;animation-delay:-.45s}.aura-symbol .orbit2{left:76px;height:36px;opacity:.72;animation-delay:-.9s}
     .aura-symbol .orb{position:absolute;left:104px;width:18px;height:18px;border-radius:4px;background:#fff;transform:skewX(-18deg) rotate(45deg);box-shadow:0 0 14px #fff,0 0 32px rgba(255,79,163,.8);animation:rimak-core 1.8s ease-in-out infinite}
+
+    /* The exact login logo, reused at chat start and thinking state */
+    .welcome-logo{
+      width:154px;
+      height:64px;
+      margin:0;
+    }
+
+    .thinking-logo{
+      width:28px;
+      height:24px;
+      margin:0;
+      flex:0 0 28px;
+      transform:scale(.18);
+      transform-origin:center;
+    }
+
+    .thinking-text{
+      display:inline;
+    }
     @keyframes rimak-bar{0%,100%{transform:skewX(-18deg) translateY(7px);opacity:.5}50%{transform:skewX(-18deg) translateY(-7px);opacity:1}}
     @keyframes rimak-core{0%,100%{transform:skewX(-18deg) rotate(45deg) scale(.78);opacity:.55}50%{transform:skewX(-18deg) rotate(45deg) scale(1.12);opacity:1}}
     .auth-title{
