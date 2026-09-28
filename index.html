@@ -1386,15 +1386,7 @@
       handleAuth(event);
     });
 
-    // Fallback for mobile/WebKit: guarantee the Enter button invokes the auth flow.
-    authButton.addEventListener("click", async (event) => {
-      if (!authForm.checkValidity()) {
-        authForm.reportValidity();
-        return;
-      }
-      event.preventDefault();
-      await handleAuth(event);
-    });
+
 
 
     async function handleAuth(event){
