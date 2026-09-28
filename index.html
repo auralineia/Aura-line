@@ -108,8 +108,9 @@
 
       <div class="brand">
 
-        <div class="mini-symbol">
+        <div class="aura-symbol brand-logo" aria-hidden="true">
           <div class="orbit"></div>
+          <div class="orbit2"></div>
           <div class="orb"></div>
         </div>
 
@@ -3226,7 +3227,7 @@
       set("#settingsModal .setting-row:nth-of-type(1) .setting-name","dark");set("#settingsModal .setting-row:nth-of-type(1) .setting-desc","darkDesc");set("#settingsModal .setting-row:nth-of-type(2) .setting-name","animations");set("#settingsModal .setting-row:nth-of-type(2) .setting-desc","animationsDesc");set("#settingsModal .setting-row:nth-of-type(3) .setting-name","personal");set("#settingsModal .setting-row:nth-of-type(3) .setting-desc","personalDesc");set("#settingsModal .setting-row:nth-of-type(4) .setting-name","language");set("#settingsModal .setting-row:nth-of-type(4) .setting-desc","languageDesc");
       const plans=document.querySelectorAll("#plansModal .plan-card");if(plans.length){set("#plansModal .plan-card:nth-child(1) .plan-price","free");plans.forEach((p,i)=>{const d=p.querySelector(".plan-desc");if(d&&i<3)d.innerHTML="<strong>"+(i===0?20:i===1?50:150)+" "+t.perDay+"</strong>";});}
       const pbtn=document.getElementById("proPlanButton"),ubtn=document.getElementById("ultraPlanButton");if(pbtn)pbtn.textContent=t.proButton;if(ubtn)ubtn.textContent=t.ultraButton;
-      const labels=document.querySelectorAll(".thinking");labels.forEach(el=>{const span=el.querySelector(".thinking-text");if(span&&span.firstChild)span.firstChild.textContent=t.thinking;});
+      const labels=document.querySelectorAll(".thinking");labels.forEach(el=>{const span=el.querySelector(".thinking-text");if(!span)return;const dots=span.querySelector(".thinking-dots");span.textContent=t.thinking;if(dots)span.appendChild(dots);});
       document.querySelectorAll(".aura-sources-title").forEach(el=>el.textContent=t.sources);
     }
     const settingsKey = () => currentUser ? "aura_settings_" + currentUser.id : "aura_settings";

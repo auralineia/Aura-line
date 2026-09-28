@@ -630,7 +630,10 @@ function needsWebSearch(message) {
 
 async function searchTavily(query) {
   const key = process.env.TAVILY_API_KEY;
-  if (!key) return null;
+  if (!key) {
+    console.error("Tavily: TAVILY_API_KEY não configurada.");
+    return null;
+  }
 
   try {
     const response = await fetch(
@@ -1030,6 +1033,12 @@ export default async function handler(req, res) {
       : null;
 
     const researchText = formatResearch(research);
+
+    if (shouldResearch && !researchText) {
+      return json(res, 503, {
+        error: "A pesquisa web da RIMAK está temporariamente indisponível. Tente novamente em instantes."
+      });
+    }
 
     const credit = await consumeCredits(user.id, 1);
 
