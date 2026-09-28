@@ -339,11 +339,13 @@ async function updateSubscription({
 
   const response =
     await supabaseRest(
-      `subscriptions?user_id=eq.${encodeURIComponent(
-        userId
-      )}`,
+      "subscriptions",
       {
-        method: "PATCH",
+        method: "POST",
+        headers: {
+          Prefer: "resolution=merge-duplicates,return=minimal"
+        },
+        body: JSON.stringify({
 
         headers: {
           Prefer:
@@ -372,7 +374,8 @@ async function updateSubscription({
             currentPeriodEnd || null,
 
           updated_at:
-            new Date().toISOString()
+            new Date().toISOString(),
+          user_id: userId
         })
       }
     );
