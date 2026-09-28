@@ -186,7 +186,61 @@ function saveSettings(s){localStorage.setItem("rimak-settings",JSON.stringify(s)
 function applySettings(){const s=settings();document.body.classList.toggle("light",!s.dark);$("darkToggle").classList.toggle("on",s.dark);$("animToggle").classList.toggle("on",s.animations);$("personalToggle").classList.toggle("on",s.personalization);const lang=localStorage.getItem("rimak-language")||"pt-BR";$("language").value=lang;const t=translations[lang];document.querySelector('[data-view="chat"]').innerHTML="⌂ &nbsp; "+t.chat;document.querySelector('[data-view="plans"]').innerHTML="◇ &nbsp; "+t.plans;document.querySelector('[data-view="settings"]').innerHTML="⚙ &nbsp; "+t.settings;document.querySelector('[data-view="support"]').innerHTML="? &nbsp; "+t.support;$("chatInput").placeholder=t.placeholder;if($("welcome")){$("welcome").querySelector("h1").textContent=t.welcome;$("welcome").querySelector("p").textContent=t.welcomeText}}
 $("darkToggle").onclick=()=>{const s=settings();s.dark=!s.dark;saveSettings(s);applySettings()};$("animToggle").onclick=()=>{const s=settings();s.animations=!s.animations;saveSettings(s);applySettings()};$("personalToggle").onclick=()=>{const s=settings();s.personalization=!s.personalization;saveSettings(s)};$("language").onchange=e=>{localStorage.setItem("rimak-language",e.target.value);applySettings()};
 $("supportBtn").onclick=async()=>{const text=$("supportText").value.trim();if(!text)return;$("supportBtn").disabled=true;try{const token=await sessionToken();const r=await fetch(api("/api/chat"),{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+token},body:JSON.stringify({action:"support",subject:"Solicitação de suporte RIMAK",message:text})});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||"Não foi possível enviar.");$("supportText").value="";$("supportStatus").textContent=translations[localStorage.getItem("rimak-language")||"pt-BR"].supportSent}catch(e){$("supportStatus").textContent=e.message}finally{$("supportBtn").disabled=false}};
-async function openCheckout(plan){const token=await sessionToken();if(!token)return showAuth();$("checkoutModal").classList.add("open");$("checkoutTitle").textContent=plan==="pro"?"PRO — R$ 11,99/mês":"ULTRA — R$ 29,99/mês";$("checkoutStatus").textContent="Carregando pagamento...";$("pix").classList.remove("show");try{if(state.brick){state.brick.unmount();state.brick=null}const kr=await fetch("/api/checkout-config");const kd=await kr.json();if(!kd.public_key)throw new Error(kd.error||"Mercado Pago não configurado.");const mp=new MercadoPago(kd.public_key,{locale:"pt-BR"});const amount=plan==="pro"?11.99:29.99;state.brick=await mp.bricks().create("payment","paymentBrick",{initialization:{amount},customization:{paymentMethods:{creditCard:"all",debitCard:"all",bankTransfer:"pix"},visual:{theme:"dark"}},callbacks:{onReady:()=>{$("checkoutStatus").textContent=""},onError:e=>{$("checkoutStatus").textContent="Não foi possível carregar o pagamento."},onSubmit:async(form)=>{const r=await fetch("/api/payment",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+token},body:JSON.stringify({plan,payment:form})});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||"Pagamento não processado.");$("checkoutStatus").textContent=d.status==="approved"?"Pagamento aprovado. Seu plano foi ativado.":"Pix gerado. Conclua o pagamento.";if(d.qr_code||d.qr_code_base64){$("pix").classList.add("show");$("pixImage").style.display=d.qr_code_base64?"block":"none";if(d.qr_code_base64)$("pixImage").src="data:image/png;base64,"+d.qr_code_base64;$("pixCode").textContent=d.qr_code||"";$("copyPix").onclick=async()=>{await navigator.clipboard.writeText(d.qr_code||"");$("checkoutStatus").textContent="Pix copiado."}}if(d.status==="approved"){state.plan=plan;closeCheckout();await loadAccount()}}}})}}catch(e){$("checkoutStatus").textContent=e.message}}
+async function openCheckout(plan){
+  const token=await sessionToken();
+  if(!token){showAuth();return}
+  $("checkoutModal").classList.add("open");
+  $("checkoutTitle").textContent=plan==="pro"?"PRO — R$ 11,99/mês":"ULTRA — R$ 29,99/mês";
+  $("checkoutStatus").textContent="Carregando pagamento...";
+  $("pix").classList.remove("show");
+  try{
+    if(state.brick){state.brick.unmount();state.brick=null}
+    const kr=await fetch("/api/checkout-config");
+    const kd=await kr.json().catch(()=>({}));
+    if(!kr.ok||!kd.public_key)throw new Error(kd.error||"Mercado Pago não configurado.");
+    const mp=new MercadoPago(kd.public_key,{locale:"pt-BR"});
+    const amount=plan==="pro"?11.99:29.99;
+    state.brick=await mp.bricks().create("payment","paymentBrick",{
+      initialization:{amount},
+      customization:{
+        paymentMethods:{creditCard:"all",debitCard:"all",bankTransfer:"pix"},
+        visual:{theme:"dark"}
+      },
+      callbacks:{
+        onReady:()=>{$("checkoutStatus").textContent=""},
+        onError:()=>{$("checkoutStatus").textContent="Não foi possível carregar o pagamento."},
+        onSubmit:async(form)=>{
+          const response=await fetch("/api/payment",{
+            method:"POST",
+            headers:{"Content-Type":"application/json",Authorization:"Bearer "+token},
+            body:JSON.stringify({plan,payment:form})
+          });
+          const data=await response.json().catch(()=>({}));
+          if(!response.ok)throw new Error(data.error||"Pagamento não processado.");
+          $("checkoutStatus").textContent=data.status==="approved"?"Pagamento aprovado. Seu plano foi ativado.":"Pix gerado. Conclua o pagamento.";
+          if(data.qr_code||data.qr_code_base64){
+            $("pix").classList.add("show");
+            $("pixImage").style.display=data.qr_code_base64?"block":"none";
+            if(data.qr_code_base64)$("pixImage").src="data:image/png;base64,"+data.qr_code_base64;
+            $("pixCode").textContent=data.qr_code||"";
+            $("copyPix").onclick=async()=>{
+              try{await navigator.clipboard.writeText(data.qr_code||"");$("checkoutStatus").textContent="Pix copiado."}
+              catch{$("checkoutStatus").textContent="Não foi possível copiar automaticamente."}
+            };
+          }
+          if(data.status==="approved"){
+            state.plan=plan;
+            closeCheckout();
+            await loadAccount();
+          }
+        }
+      }
+    });
+  }catch(e){
+    console.error("Checkout:",e);
+    $("checkoutStatus").textContent=e.message||"Não foi possível abrir o pagamento.";
+  }
+}
 function closeCheckout(){if(state.brick){state.brick.unmount();state.brick=null}$("paymentBrick").innerHTML="";$("checkoutModal").classList.remove("open")}
 $("checkoutClose").onclick=closeCheckout;$("checkoutModal").onclick=e=>{if(e.target.id==="checkoutModal")closeCheckout()};$("proBtn").onclick=()=>openCheckout("pro");$("ultraBtn").onclick=()=>openCheckout("ultra");
 function init(){applySettings();supabase.auth.getSession().then(({data})=>{if(data?.session?.user)enterApp(data.session.user)}).catch(()=>showAuth())}
