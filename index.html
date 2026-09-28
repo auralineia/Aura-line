@@ -1243,6 +1243,12 @@
     .checkout-methods{display:grid;gap:10px;margin-top:8px;}
     .checkout-method-label{font-size:10px;letter-spacing:1.5px;color:rgba(255,255,255,.3);text-transform:uppercase;}
     #paymentBrick_container{min-height:180px;}
+    .pix-result{display:none;margin-top:10px;padding:14px;border:1px solid rgba(255,79,163,.18);border-radius:16px;background:rgba(255,79,163,.035);}
+    .pix-result.show{display:block;}
+    .pix-qr{display:block;width:180px;height:180px;margin:0 auto 12px;border-radius:12px;background:white;}
+    .pix-copy{width:100%;height:42px;border-radius:12px;background:#fff;color:#050507;font-weight:600;cursor:pointer;}
+    .pix-code{margin:8px 0;color:rgba(255,255,255,.4);font-size:9px;line-height:1.4;word-break:break-all;max-height:52px;overflow:auto;}
+
 
 
     /* =====================================================
@@ -2059,7 +2065,7 @@
         </div>
         <button class="checkout-close" id="checkoutClose" type="button">×</button>
       </div>
-      <div class="checkout-methods"><div class="checkout-method-label">Formas de pagamento</div><div id="paymentBrick_container"></div></div>
+      <div class="checkout-methods"><div class="checkout-method-label">Formas de pagamento</div><div id="paymentBrick_container"></div><div class="pix-result" id="pixResult"><img class="pix-qr" id="pixQr" alt="QR Code Pix"><div class="pix-code" id="pixCode"></div><button class="pix-copy" id="pixCopyButton" type="button">Copiar Pix</button></div></div>
       <div class="checkout-status" id="checkoutStatus"></div>
       <div class="checkout-note">Pagamento protegido pelo Mercado Pago. Os dados completos do cartão são tratados pelo componente seguro do Mercado Pago.</div>
     </div>
@@ -4421,7 +4427,7 @@
       if(!session?.access_token){showToast("Sessão expirada. Entre novamente.");return;}
       checkoutPlan=plan;document.getElementById("checkoutPlanLabel").textContent=plan==="pro"?"PRO — R$ 11,99/mês":"ULTRA — R$ 29,99/mês";document.getElementById("checkoutStatus").textContent="";document.getElementById("checkoutOverlay").classList.add("open");
       try{if(checkoutBrickController){checkoutBrickController.unmount();checkoutBrickController=null;}const keyResponse=await fetch("/api/checkout-config");const keyData=await keyResponse.json().catch(()=>({}));if(!keyResponse.ok||!keyData.public_key)throw new Error(keyData.error||"Chave pública do Mercado Pago não configurada.");const mp=new MercadoPago(keyData.public_key,{locale:"pt-BR"});const builder=mp.bricks();const amount=plan==="pro"?11.99:29.99;
-        checkoutBrickController=await builder.create("payment","paymentBrick_container",{initialization:{amount},customization:{paymentMethods:{creditCard:"all",debitCard:"all",bankTransfer:"pix",ticket:"all",mercadoPago:"all"},visual:{theme:"dark"}},callbacks:{onReady:()=>{},onError:error=>{console.error("Mercado Pago Payment Brick:",error);document.getElementById("checkoutStatus").textContent="Não foi possível carregar o pagamento.";},onSubmit:async(formData)=>{const status=document.getElementById("checkoutStatus");status.textContent="Processando pagamento...";const response=await fetch("/api/payment",{method:"POST",headers:{"Content-Type":"application/json","Authorization":`Bearer ${session.access_token}`},body:JSON.stringify({plan,payment:formData})});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.error||"Não foi possível processar o pagamento.");status.textContent=data.status==="approved"?"Pagamento aprovado. Seu plano foi ativado.":"Pagamento criado. Aguarde a confirmação do Mercado Pago.";showToast(data.status==="approved"?"Plano "+plan.toUpperCase()+" ativado.":"Pagamento enviado.");if(data.status==="approved"){closeCheckout();await loadCredits();}}}});      
+        checkoutBrickController=await builder.create("payment","paymentBrick_container",{initialization:{amount},customization:{paymentMethods:{creditCard:"all",debitCard:"all",bankTransfer:"pix",ticket:"all",mercadoPago:"all"},visual:{theme:"dark"}},callbacks:{onReady:()=>{},onError:error=>{console.error("Mercado Pago Payment Brick:",error);document.getElementById("checkoutStatus").textContent="Não foi possível carregar o pagamento.";},onSubmit:async(formData)=>{const status=document.getElementById("checkoutStatus");status.textContent="Processando pagamento...";const response=await fetch("/api/payment",{method:"POST",headers:{"Content-Type":"application/json","Authorization":`Bearer ${session.access_token}`},body:JSON.stringify({plan,payment:formData})});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.error||"Não foi possível processar o pagamento.");status.textContent=data.status==="approved"?"Pagamento aprovado. Seu plano foi ativado.":"Pix gerado. Pague pelo QR Code ou Pix Copia e Cola.";if(data.qr_code||data.qr_code_base64){const box=document.getElementById("pixResult"),qr=document.getElementById("pixQr"),code=document.getElementById("pixCode");box.classList.add("show");if(data.qr_code_base64)qr.src="data:image/png;base64,"+data.qr_code_base64;else qr.style.display="none";code.textContent=data.qr_code||"";document.getElementById("pixCopyButton").onclick=async()=>{try{await navigator.clipboard.writeText(data.qr_code||"");showToast("Pix copiado.");}catch{showToast("Não foi possível copiar automaticamente.");}};}showToast(data.status==="approved"?"Plano "+plan.toUpperCase()+" ativado.":"Pix gerado.");if(data.status==="approved"){closeCheckout();await loadCredits();}}}});      
       }catch(error){console.error("Checkout:",error);document.getElementById("checkoutStatus").textContent=error?.message||"Erro ao abrir pagamento.";showToast(error?.message||"Erro ao abrir pagamento.");}
     }
 
