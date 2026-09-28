@@ -1617,7 +1617,42 @@
        SESSION
     ===================================================== */
 
+    async function handleAuthCallback(){
+      try{
+        const url = new URL(window.location.href);
+        const code = url.searchParams.get("code");
+        if(code){
+          const { data, error } = await supabaseClient.auth.exchangeCodeForSession(code);
+          if(error){
+            console.error("RIMAK AUTH CALLBACK:", error);
+            return false;
+          }
+          if(data?.session?.user){
+            currentUser = data.session.user;
+            window.history.replaceState({}, document.title, url.origin + url.pathname);
+            return true;
+          }
+        }
+        if(window.location.hash.includes("access_token=") || window.location.hash.includes("type=signup")){
+          const { data } = await supabaseClient.auth.getSession();
+          if(data?.session?.user){
+            currentUser = data.session.user;
+            window.history.replaceState({}, document.title, window.location.pathname);
+            return true;
+          }
+        }
+      }catch(error){
+        console.error("RIMAK AUTH CALLBACK:", error);
+      }
+      return false;
+    }
+
     async function checkSession(){
+      const callbackHandled = await handleAuthCallback();
+      if(callbackHandled){
+        await showApp();
+        return;
+      }
 
       const {
         data
