@@ -161,6 +161,28 @@ function verifyMercadoPagoSignature(req) {
   }
 }
 
+async function getMercadoPagoPayment(paymentId) {
+  const accessToken=process.env.MERCADOPAGO_ACCESS_TOKEN;
+  if(!accessToken) throw new Error("MERCADOPAGO_ACCESS_TOKEN não configurado.");
+  const response=await fetch(`https://api.mercadopago.com/v1/payments/${encodeURIComponent(paymentId)}`,{headers:{Authorization:"Bearer "+accessToken}});
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok) throw new Error(data?.message||`Mercado Pago retornou ${response.status}.`);
+  return data;
+}
+async function processPixPayment(payment){
+  const reference=String(payment?.external_reference||"");
+  const parts=reference.split(":");
+  if(parts.length<4||parts[0]!=="aura"||parts[3]!=="pix") return false;
+  const userId=parts[1],plan=parts[2];
+  if(!userId||!["pro","ultra"].includes(plan)) return false;
+  const status=String(payment?.status||"").toLowerCase();
+  if(status!=="approved") return true;
+  const config=planConfig(plan);
+  const currentPeriodEnd=new Date(Date.now()+30*24*60*60*1000).toISOString();
+  await updateSubscription({userId,plan,status:"active",mercadoPagoId:null,externalReference:reference,currentPeriodEnd});
+  return true;
+}
+
 async function getMercadoPagoSubscription(
   subscriptionId
 ) {
@@ -404,10 +426,16 @@ export default async function handler(
     const body =
       req.body || {};
 
-    const subscriptionId =
-      body?.data?.id ||
-      body?.id ||
-      null;
+    const notificationType=String(body?.type||body?.topic||"").toLowerCase();
+    const notificationId=body?.data?.id||body?.id||null;
+
+    if((notificationType==="payment"||notificationType==="payment.created")&&notificationId){
+      const payment=await getMercadoPagoPayment(notificationId);
+      const processed=await processPixPayment(payment);
+      return res.status(200).json({ok:true,processed});
+    }
+
+    const subscriptionId=notificationId;
 
     /*
      * Algumas notificações podem chegar
