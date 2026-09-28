@@ -1337,20 +1337,8 @@
        AUTH
     ===================================================== */
 
-    authForm.addEventListener(
-      "submit",
-      handleAuth
-    );
-
-    // Fallback for mobile/WebKit: guarantee the Enter button invokes the auth flow.
-    authButton.addEventListener("click", async (event) => {
-      if (!authForm.checkValidity()) {
-        authForm.reportValidity();
-        return;
-      }
-      event.preventDefault();
-      await handleAuth(event);
-    });
+    authForm.addEventListener("submit", handleAuth);
+    authButton.addEventListener("click", handleAuth);
 
 
     async function handleAuth(event){
