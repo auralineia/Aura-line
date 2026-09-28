@@ -1,0 +1,13 @@
+run = "npm start"
+entrypoint = "server.cjs"
+
+[deployment]
+run = ["sh", "-c", "npm start"]
+deploymentTarget = "cloudrun"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[env]
+RIMAK_BACKEND_URL = "https://aura-line-s.vercel.app"
