@@ -38,6 +38,32 @@ jobs:
           if [ ! -d ios ]; then npx cap add ios; fi
           npx cap sync
 
+      - name: Build Android debug APK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Compile Android debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: RIMAK-Android-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      - name: Upload native projects
+        uses: actions/upload-artifact@v4
+        with:
+          name: RIMAK-Native-Projects
+          path: |
+            android/
+            ios/
+          if-no-files-found: error
+
       - name: Commit native projects
         run: |
           git config user.name "RIMAK Bot"
