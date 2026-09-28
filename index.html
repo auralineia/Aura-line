@@ -449,7 +449,7 @@
         Sua inteligência pessoal que lembra de você.
       </div>
 
-      <form class="auth-form" id="authForm" onsubmit="return false;" autocomplete="on">
+      <form class="auth-form" id="authForm" autocomplete="on">
 
         <input
           class="auth-input"
@@ -1243,6 +1243,8 @@
 
     let authMode = "login";
 
+    let authBusy = false;
+
     let auraMemory = {
       preferences:[],
       importantPeople:[],
@@ -1380,11 +1382,15 @@
     ===================================================== */
 
     authForm.addEventListener("submit", handleAuth);
+    authButton.addEventListener("click", handleAuth);
 
 
     async function handleAuth(event){
 
       if(event) event.preventDefault();
+
+      if(authBusy) return false;
+      authBusy = true;
 
       const email = authEmail.value.trim();
       const password = authPassword.value;
@@ -1455,6 +1461,7 @@
         authMessage.textContent = translateAuthError(error?.message);
         return false;
       }finally{
+        authBusy = false;
         authButton.disabled = false;
         authButton.textContent =
           authMode === "login" ? "Entrar" : "Criar conta";
