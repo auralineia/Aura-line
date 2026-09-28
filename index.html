@@ -1374,9 +1374,6 @@
       }
     );
 
-    applyLanguage(loadSettings().language);
-
-
     /* =====================================================
        AUTH
     ===================================================== */
@@ -3557,6 +3554,8 @@
       const labels=document.querySelectorAll(".thinking");labels.forEach(el=>{const span=el.querySelector("span");if(span)span.firstChild.textContent=t.thinking;});
       document.querySelectorAll(".aura-sources-title").forEach(el=>el.textContent=t.sources);
     }
+    applyLanguage(loadSettings().language);
+
     const settingsKey = () => currentUser ? "aura_settings_" + currentUser.id : "aura_settings";
     function loadSettings(){let saved={};try{saved=JSON.parse(localStorage.getItem(settingsKey())||"{}");}catch{} const settings={dark:saved.dark!==false,animations:saved.animations!==false,personalization:saved.personalization!==false,language:saved.language||"pt-BR"};[["darkModeToggle","dark"],["animationsToggle","animations"],["personalizationToggle","personalization"]].forEach(([id,name])=>{const el=document.getElementById(id);if(el)el.classList.toggle("on",!!settings[name]);});const select=document.getElementById("languageSelect");if(select)select.value=settings.language;document.documentElement.classList.toggle("no-aura-animations",!settings.animations);document.documentElement.classList.toggle("aura-light-mode",!settings.dark);applyLanguage(settings.language);return settings;}
     function saveSetting(name,value){const settings=loadSettings();settings[name]=value;localStorage.setItem(settingsKey(),JSON.stringify(settings));loadSettings();}
