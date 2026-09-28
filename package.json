@@ -4,9 +4,20 @@
   "private": true,
   "description": "RIMAK — inteligência pessoal",
   "scripts": {
-    "start": "node server.cjs"
+    "start": "node server.cjs",
+    "cap:sync": "cap sync",
+    "cap:android": "cap open android",
+    "cap:ios": "cap open ios"
   },
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@capacitor/core": "^7.4.3",
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/ios": "^7.4.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.3"
   }
 }
