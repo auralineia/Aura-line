@@ -641,10 +641,10 @@ async function searchTavily(query) {
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${key}`
         },
         body: JSON.stringify({
-          api_key: key,
           query: String(query).slice(0, 2500),
           search_depth: "advanced",
           include_answer: true,
@@ -772,6 +772,9 @@ Se o usuário perguntar sobre uma afirmação externa, verifique quando necessá
 
 VERIFICAÇÃO
 - Para fatos atuais, preços, notícias, resultados, datas específicas, pessoas públicas e afirmações externas que possam estar erradas, use a pesquisa quando disponível.
+- Quando houver resultados de pesquisa nesta mensagem, eles têm prioridade sobre seu conhecimento prévio para fatos atuais.
+- Para preços e disponibilidade, informe somente valores sustentados pelos resultados pesquisados. Se houver divergência entre fontes, explique a divergência.
+- Nunca invente estimativas, projeções, preços ou datas para preencher uma lacuna da pesquisa.
 - Se o usuário disser "tem certeza?", "vi uma matéria", "é verdade que..." ou pedir fonte, trate isso como pedido de verificação.
 - Diferencie claramente: fato confirmado, afirmação do usuário e informação não confirmada.
 - Não invente fontes, links, datas ou resultados.
