@@ -328,6 +328,46 @@
     .mini-symbol{position:relative;width:28px;height:28px;display:flex;align-items:center;justify-content:center;gap:3px}
     .mini-symbol .orbit,.mini-symbol .orb{position:relative;inset:auto;width:5px;height:17px;border-radius:2px;background:var(--pink);transform:skewX(-18deg);box-shadow:0 0 10px rgba(255,79,163,.45);animation:rimak-bar 1.5s ease-in-out infinite}
     .mini-symbol .orbit{height:23px;animation-delay:-.3s}.mini-symbol .orb{height:12px;background:#fff;animation-delay:-.6s}
+
+    .credit-pill{
+      height:40px;
+      min-width:76px;
+      padding:0 12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      border:1px solid rgba(255,255,255,.085);
+      border-radius:14px;
+      background:rgba(255,255,255,.035);
+      color:rgba(255,255,255,.78);
+      cursor:pointer;
+      transition:.18s;
+    }
+
+    .credit-pill:active{
+      transform:scale(.96);
+    }
+
+    .credit-dot{
+      width:7px;
+      height:7px;
+      flex:0 0 7px;
+      border-radius:50%;
+      background:var(--pink);
+      box-shadow:0 0 10px rgba(255,79,163,.75);
+    }
+
+    #creditsCount{
+      font-size:12px;
+      font-weight:600;
+      color:inherit;
+    }
+
+    .credit-label{
+      color:rgba(255,255,255,.35);
+      font-size:10px;
+    }
     .menu-overlay{
       position:fixed;
       inset:0;
