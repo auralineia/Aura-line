@@ -10,4 +10,4 @@ localPort = 3000
 externalPort = 80
 
 [env]
-RIMAK_BACKEND_URL = "https://aura-line-s.vercel.app"
+RIMAK_BACKEND_URL = "https://rimak.vercel.app"
