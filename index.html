@@ -7,7 +7,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>RIMAK</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="https://sdk.mercadopago.com/js/v2"></script>
 
@@ -68,1491 +67,258 @@
        AUTH
     ===================================================== */
 
-    #authScreen{
-      position:fixed;
-      inset:0;
-      z-index:9999;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:24px;
-      overflow:auto;
-      background:
-        radial-gradient(
-          circle at 50% 25%,
-          rgba(255,79,163,.13),
-          transparent 30%
-        ),
-        radial-gradient(
-          circle at 50% 75%,
-          rgba(155,124,255,.08),
-          transparent 35%
-        ),
-        #050507;
+    let enteringApp = false;
+
+    function setAuthMessage(message, success=false){
+      authMessage.className =
+        success ? "auth-error auth-success" : "auth-error";
+      authMessage.textContent = message || "";
     }
 
-    .auth-box{
-      width:100%;
-      max-width:390px;
-      text-align:center;
-    }
+    function translateAuthError(error){
+      const raw = error?.message || error || "";
+      const text = String(raw).toLowerCase();
 
-    /* RIMAK kinetic identity — no circular emblem */
-    .aura-symbol{position:relative;width:154px;height:64px;margin:0 auto 26px;display:flex;align-items:center;justify-content:center}
-    .aura-symbol .orbit,.aura-symbol .orbit2{position:absolute;width:18px;height:42px;border-radius:5px;background:linear-gradient(180deg,var(--pink2),var(--pink));box-shadow:0 0 24px rgba(255,79,163,.28);transform:skewX(-18deg);animation:rimak-bar 1.8s ease-in-out infinite}
-    .aura-symbol .orbit{left:48px;height:54px;animation-delay:-.45s}.aura-symbol .orbit2{left:76px;height:36px;opacity:.72;animation-delay:-.9s}
-    .aura-symbol .orb{position:absolute;left:104px;width:18px;height:18px;border-radius:4px;background:#fff;transform:skewX(-18deg) rotate(45deg);box-shadow:0 0 14px #fff,0 0 32px rgba(255,79,163,.8);animation:rimak-core 1.8s ease-in-out infinite}
-    @keyframes rimak-bar{0%,100%{transform:skewX(-18deg) translateY(7px);opacity:.5}50%{transform:skewX(-18deg) translateY(-7px);opacity:1}}
-    @keyframes rimak-core{0%,100%{transform:skewX(-18deg) rotate(45deg) scale(.78);opacity:.55}50%{transform:skewX(-18deg) rotate(45deg) scale(1.12);opacity:1}}
-    .auth-title{
-      font-size:34px;
-      font-weight:600;
-      letter-spacing:9px;
-      margin-right:-9px;
-      margin-bottom:10px;
-    }
-
-    .auth-subtitle{
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.6;
-      margin-bottom:28px;
-    }
-
-    .auth-form{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-
-    .auth-input{
-      width:100%;
-      height:54px;
-      border:1px solid var(--line2);
-      border-radius:16px;
-      outline:none;
-      background:rgba(255,255,255,.035);
-      color:white;
-      padding:0 17px;
-      font-size:15px;
-      transition:.2s;
-    }
-
-    .auth-input:focus{
-      border-color:rgba(255,79,163,.38);
-      box-shadow:0 0 0 4px rgba(255,79,163,.055);
-    }
-
-    .auth-input::placeholder{
-      color:rgba(255,255,255,.27);
-    }
-
-    .auth-button{
-      height:54px;
-      border-radius:16px;
-      background:#fff;
-      color:#050507;
-      font-weight:650;
-      cursor:pointer;
-      margin-top:4px;
-      transition:.2s;
-    }
-
-    .auth-button:active{
-      transform:scale(.98);
-    }
-
-    .auth-button:disabled{
-      opacity:.45;
-    }
-
-    .auth-switch{
-      margin-top:20px;
-      background:none;
-      color:var(--muted);
-      font-size:13px;
-      cursor:pointer;
-    }
-
-    .auth-switch span{
-      color:var(--pink2);
-    }
-
-    .auth-error{
-      min-height:18px;
-      margin-top:12px;
-      color:#ff91b7;
-      font-size:12px;
-      line-height:1.4;
-    }
-
-    .auth-success{
-      color:#9fffd2;
-    }
-
-    /* =====================================================
-       APP
-    ===================================================== */
-
-    #app{
-      display:none;
-    }
-
-    .app{
-      position:relative;
-      width:100%;
-      height:100%;
-      overflow:hidden;
-      background:
-        radial-gradient(
-          circle at 50% -20%,
-          rgba(255,79,163,.065),
-          transparent 36%
-        ),
-        radial-gradient(
-          circle at 100% 100%,
-          rgba(155,124,255,.045),
-          transparent 30%
-        ),
-        var(--bg);
-    }
-
-    .app::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      opacity:.018;
-      background-image:
-        linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);
-      background-size:80px 80px;
-      mask-image:linear-gradient(to bottom,#000,transparent 85%);
-    }
-
-    /* =====================================================
-       TOPBAR
-    ===================================================== */
-
-    .topbar{
-      position:absolute;
-      top:0;
-      left:0;
-      right:0;
-      height:78px;
-      z-index:30;
-      display:grid;
-      grid-template-columns:52px 1fr auto;
-      align-items:center;
-      gap:10px;
-      padding:
-        max(12px,env(safe-area-inset-top))
-        14px
-        10px;
-      background:
-        linear-gradient(
-          to bottom,
-          rgba(5,5,7,.96),
-          rgba(5,5,7,.76),
-          transparent
-        );
-      backdrop-filter:blur(18px);
-    }
-
-    .top-action{
-      width:42px;
-      height:42px;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:rgba(255,255,255,.035);
-      color:rgba(255,255,255,.72);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      cursor:pointer;
-      transition:.18s;
-    }
-
-    .top-action:active{
-      transform:scale(.92);
-    }
-
-    .hamburger{
-      width:18px;
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-    }
-
-    .hamburger span{
-      width:100%;
-      height:1.5px;
-      border-radius:10px;
-      background:rgba(255,255,255,.8);
-    }
-
-    .hamburger span:nth-child(2){
-      width:72%;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:9px;
-    }
-
-    .brand-name{
-      font-size:12px;
-      font-weight:600;
-      letter-spacing:5px;
-      margin-right:-5px;
-    }
-
-    .mini-symbol{position:relative;width:28px;height:28px;display:flex;align-items:center;justify-content:center;gap:3px}
-    .mini-symbol .orbit,.mini-symbol .orb{position:relative;inset:auto;width:5px;height:17px;border-radius:2px;background:var(--pink);transform:skewX(-18deg);box-shadow:0 0 10px rgba(255,79,163,.45);animation:rimak-bar 1.5s ease-in-out infinite}
-    .mini-symbol .orbit{height:23px;animation-delay:-.3s}.mini-symbol .orb{height:12px;background:#fff;animation-delay:-.6s}
-    .brand-name{
-        font-size:11px;
-        letter-spacing:4px;
+      if(text.includes("auth_library_not_loaded")){
+        return "O serviço de login não carregou. Atualize a página e tente novamente.";
       }
 
-      .credit-pill{
-        min-width:70px;
-        padding:0 10px;
+      if(text.includes("invalid login credentials")){
+        return "E-mail ou senha incorretos.";
       }
 
-      .chat{
-        padding:88px 13px 123px;
+      if(text.includes("email not confirmed")){
+        return "Confirme seu e-mail antes de entrar.";
       }
 
-      .hero-symbol{
-        width:120px;
-        height:120px;
-        margin-bottom:25px;
+      if(text.includes("user already registered")){
+        return "Esse e-mail já possui uma conta.";
       }
 
-      .hero-orb{
-        width:21px;
-        height:21px;
+      if(text.includes("password")){
+        return "A senha precisa ter pelo menos 6 caracteres.";
       }
 
-      .welcome-title{
-        font-size:31px;
-        letter-spacing:8px;
-        margin-right:-8px;
+      if(text.includes("rate limit") || text.includes("too many requests")){
+        return "Muitas tentativas. Aguarde alguns minutos e tente novamente.";
       }
 
-      .welcome-subtitle{
-        font-size:13px;
-        max-width:320px;
+      if(text.includes("failed to fetch") || text.includes("network")){
+        return "Não foi possível conectar ao serviço de login. Verifique sua internet e tente novamente.";
       }
 
-      .suggestions{
-        max-width:350px;
+      if(text.includes("session_not_created")){
+        return "O login foi aceito, mas a sessão não pôde ser criada. Tente novamente.";
       }
 
-      .suggestion{
-        font-size:10px;
-        padding:9px 11px;
-      }
-
-      .message-content{
-        max-width:88%;
-      }
-
-      .bubble{
-        font-size:13.5px;
-        padding:13px 14px;
-      }
-
-      .side-menu{
-        width:min(340px,92vw);
-      }
-
-      .modal{
-        padding:20px;
-        border-radius:21px;
-      }
-
-      #messageInput{
-        min-height:53px;
-        border-radius:17px;
-      }
-
-      #sendButton{
-        width:53px;
-        height:53px;
-        border-radius:17px;
-      }
+      return String(raw) || "Não foi possível continuar.";
     }
 
-    @media(prefers-reduced-motion:reduce){
-      *,
-      *::before,
-      *::after{
-        animation:none !important;
-        transition:none !important;
-        scroll-behavior:auto !important;
-      }
-    }
-  </style>
-  <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="icon" href="/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/icon.svg">
-  <meta name="apple-mobile-web-app-title" content="RIMAK">
-  <meta name="mobile-web-app-capable" content="yes">
-</head>
+    async function finishAuthenticatedUser(user){
+      if(!user) throw new Error("USER_NOT_FOUND");
 
-<body>
+      currentUser = user;
 
-  <!-- =====================================================
-       AUTH
-  ===================================================== -->
+      if(enteringApp) return;
+      enteringApp = true;
 
-  <div id="authScreen">
+      try{
+        authScreen.style.display = "none";
+        app.style.display = "block";
 
-    <div class="auth-box">
+        loadRIMAKMemory();
+        updateAccountUI();
+        loadStories();
+        await loadCredits();
 
-      <div class="aura-symbol">
-        <div class="orbit"></div>
-        <div class="orbit2"></div>
-        <div class="orb"></div>
-      </div>
-
-      <div class="auth-title">RIMAK</div>
-
-      <div class="auth-subtitle" id="authSubtitle">
-        Sua inteligência pessoal que lembra de você.
-      </div>
-
-      <form class="auth-form" id="authForm">
-
-        <input
-          class="auth-input"
-          id="authEmail"
-          type="email"
-          placeholder="Seu e-mail"
-          autocomplete="email"
-          required
-        >
-
-        <input
-          class="auth-input"
-          id="authPassword"
-          type="password"
-          placeholder="Sua senha"
-          autocomplete="current-password"
-          required
-        >
-
-        <button
-          class="auth-button"
-          id="authButton"
-          type="submit"
-        >
-          Entrar
-        </button>
-
-      </form>
-
-      <button
-        class="auth-switch"
-        id="authSwitch"
-        type="button"
-      >
-        Ainda não tenho uma conta. <span>Criar conta</span>
-      </button>
-
-      <div
-        class="auth-error"
-        id="authMessage"
-      ></div>
-
-    </div>
-
-  </div>
-
-
-  <!-- =====================================================
-       APP
-  ===================================================== -->
-
-  <div class="app" id="app">
-
-    <!-- TOPBAR -->
-
-    <header class="topbar">
-
-      <button
-        class="top-action"
-        id="menuButton"
-        aria-label="Abrir menu"
-      >
-        <div class="hamburger">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </button>
-
-      <div class="brand">
-
-        <div class="mini-symbol">
-          <div class="orbit"></div>
-          <div class="orb"></div>
-        </div>
-
-        <div class="brand-name">
-          RIMAK
-        </div>
-
-      </div>
-
-      <button
-        class="credit-pill"
-        id="creditButton"
-        type="button"
-      >
-        <span class="credit-dot"></span>
-        <span id="creditsCount">20</span>
-        <span class="credit-label">créditos</span>
-      </button>
-
-    </header>
-
-
-    <!-- MENU -->
-
-    <div
-      class="menu-overlay"
-      id="menuOverlay"
-    ></div>
-
-    <aside
-      class="side-menu"
-      id="sideMenu"
-    >
-
-      <div class="menu-header">
-
-        <div class="menu-brand">
-
-          <div class="mini-symbol">
-            <div class="orbit"></div>
-            <div class="orb"></div>
-          </div>
-
-          <div class="menu-brand-name">
-            RIMAK
-          </div>
-
-        </div>
-
-        <button
-          class="close-menu"
-          id="closeMenu"
-          type="button"
-        >
-          ×
-        </button>
-
-      </div>
-
-
-      <button
-        class="new-chat"
-        id="newChatButton"
-        type="button"
-      >
-        <span class="new-chat-icon">＋</span>
-        <span>Nova conversa</span>
-      </button>
-
-
-      <div class="menu-section">
-
-        <div class="menu-section-title">
-          RIMAK
-        </div>
-
-        <button
-          class="menu-item"
-          id="historyButton"
-          type="button"
-        >
-          <span class="menu-icon">◌</span>
-          <span>Histórico</span>
-        </button>
-
-        <button
-          class="menu-item"
-          id="creditsMenuButton"
-          type="button"
-        >
-          <span class="menu-icon">✦</span>
-          <span>Créditos</span>
-        </button>
-
-        <button
-          class="menu-item"
-          id="plansMenuButton"
-          type="button"
-        >
-          <span class="menu-icon">◇</span>
-          <span>Planos</span>
-        </button>
-
-      </div>
-
-
-      <div class="menu-section">
-
-        <div class="menu-section-title">
-          Aplicativo
-        </div>
-
-        <button
-          class="menu-item"
-          id="settingsButton"
-          type="button"
-        >
-          <span class="menu-icon">⌘</span>
-          <span>Configurações</span>
-        </button>
-
-        <button
-          class="menu-item"
-          id="supportButton"
-          type="button"
-        >
-          <span class="menu-icon">?</span>
-          <span>Suporte</span>
-        </button>
-
-      </div>
-
-
-      <div class="history-title">
-        Conversas
-      </div>
-
-      <div
-        class="history-list"
-        id="historyList"
-      ></div>
-
-
-      <div class="account-area">
-
-        <div class="account-card">
-
-          <div
-            class="account-avatar"
-            id="accountAvatar"
-          >
-            A
-          </div>
-
-          <div class="account-info">
-
-            <div class="account-label">
-              CONTA
-            </div>
-
-            <div
-              class="account-email"
-              id="accountEmail"
-            >
-              —
-            </div>
-
-          </div>
-
-        </div>
-
-        <button
-          class="logout-button"
-          id="logoutButton"
-          type="button"
-        >
-          Sair da conta
-        </button>
-
-      </div>
-
-    </aside>
-
-
-    <!-- CHAT -->
-
-    <main
-      class="chat"
-      id="chat"
-    >
-
-      <section
-        class="welcome"
-        id="welcome"
-      >
-
-        <div class="hero-symbol" aria-label="RIMAK">
-          <div class="hero-ring"></div>
-          <div class="hero-ring" style="height:54px;width:22px;animation-delay:-.35s;opacity:.72"></div>
-          <div class="hero-ring" style="height:36px;width:18px;animation-delay:-.7s;opacity:.48"></div>
-        </div>
-
-        <h1 class="welcome-title">
-          RIMAK
-        </h1>
-
-        <p class="welcome-subtitle">
-          Uma inteligência pessoal que lembra de você,
-          entende seu momento e aprende com o tempo.
-        </p>
-
-        <div class="suggestions">
-
-          <button
-            class="suggestion"
-            data-prompt="Me ajude a criar uma ideia"
-          >
-            Criar uma ideia
-          </button>
-
-          <button
-            class="suggestion"
-            data-prompt="Me ajude a planejar meu próximo projeto"
-          >
-            Planejar um projeto
-          </button>
-
-          <button
-            class="suggestion"
-            data-prompt="Quero aprender algo novo hoje"
-          >
-            Aprender algo
-          </button>
-
-          <button
-            class="suggestion"
-            data-prompt="Me dê ideias criativas para ganhar dinheiro"
-          >
-            Ideias para ganhar dinheiro
-          </button>
-
-        </div>
-
-      </section>
-
-    </main>
-
-
-    <!-- COMPOSER -->
-
-    <div class="composer">
-
-      <div class="composer-inner">
-
-        <textarea
-          id="messageInput"
-          rows="1"
-          placeholder="Converse com a RIMAK..."
-          autocomplete="off"
-        ></textarea>
-
-        <button
-          id="sendButton"
-          type="button"
-          aria-label="Enviar"
-        >
-          ↑
-        </button>
-
-      </div>
-
-      <div class="composer-note">
-        A RIMAK pode cometer erros. Verifique informações importantes.
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- =====================================================
-       MODALS
-  ===================================================== -->
-
-  <div
-    class="modal-overlay"
-    id="creditsModal"
-  >
-    <div class="modal">
-
-      <div class="modal-header">
-        <div class="modal-title">Seus créditos</div>
-        <button class="modal-close" data-close="creditsModal">×</button>
-      </div>
-
-      <p class="modal-text">
-        Os créditos representam a capacidade da RIMAK de realizar diferentes tipos de ações.
-        Você recebe uma nova quantidade todos os dias. Os créditos não acumulam.
-      </p>
-
-      <div
-        style="
-          margin-top:22px;
-          padding:24px;
-          border:1px solid rgba(255,79,163,.18);
-          border-radius:18px;
-          text-align:center;
-          background:rgba(255,79,163,.035);
-        "
-      >
-        <div
-          id="modalCreditsCount"
-          style="
-            font-size:42px;
-            font-weight:650;
-          "
-        >
-                    20
-        </div>
-
-        <div
-          style="
-            margin-top:5px;
-            color:rgba(255,255,255,.35);
-            font-size:11px;
-          "
-        >
-          créditos disponíveis hoje
-        </div>
-      </div>
-
-      <div
-        style="
-          margin-top:18px;
-          padding:16px;
-          border:1px solid rgba(255,255,255,.06);
-          border-radius:16px;
-          background:rgba(255,255,255,.02);
-        "
-      >
-
-        <div
-          style="
-            display:flex;
-            justify-content:space-between;
-            padding:7px 0;
-            color:rgba(255,255,255,.65);
-            font-size:11px;
-          "
-        >
-          <span>Mensagem normal</span>
-          <strong style="color:#ff83bd;">1 crédito</strong>
-        </div>
-
-        <div
-          style="
-            display:flex;
-            justify-content:space-between;
-            padding:7px 0;
-            color:rgba(255,255,255,.65);
-            font-size:11px;
-          "
-        >
-          <span>Pesquisa na web</span>
-          <strong style="color:#ff83bd;">3 créditos</strong>
-        </div>
-
-        <div
-          style="
-            display:flex;
-            justify-content:space-between;
-            padding:7px 0;
-            color:rgba(255,255,255,.65);
-            font-size:11px;
-          "
-        >
-          <span>História ou cena longa</span>
-          <strong style="color:#ff83bd;">2 créditos</strong>
-        </div>
-
-      </div>
-
-      <button
-        class="modal-button"
-        id="creditsPlansButton"
-      >
-        Ver planos
-      </button>
-
-    </div>
-  </div>
-
-
-  <div
-    class="modal-overlay"
-    id="plansModal"
-  >
-    <div class="modal">
-
-      <div class="modal-header">
-        <div class="modal-title">Planos RIMAK</div>
-        <button class="modal-close" data-close="plansModal">×</button>
-      </div>
-
-      <p class="modal-text" style="margin-bottom:16px;">
-        Escolha o nível de experiência que combina com a forma como você quer usar a RIMAK.
-        Todos os planos recebem novos créditos diariamente.
-      </p>
-
-      <div class="plan-grid">
-
-        <div class="plan-card">
-
-          <div class="plan-name">
-            FREE
-          </div>
-
-          <div class="plan-price">
-            Grátis
-          </div>
-
-          <div
-            class="plan-desc"
-            style="color:rgba(255,255,255,.62);margin-bottom:7px;"
-          >
-            <strong>20 créditos por dia</strong>
-          </div>
-
-          <div class="plan-desc">
-            Para conhecer a RIMAK, conversar, criar ideias,
-            aprender, pesquisar de forma limitada e começar
-            a construir sua experiência personalizada.
-          </div>
-
-          <div
-            class="plan-desc"
-            style="margin-top:9px;"
-          >
-            • Memória básica<br>
-            • Personalidade da RIMAK<br>
-            • Conversas e histórias<br>
-            • Pesquisa web limitada<br>
-            • Créditos renovados diariamente
-          </div>
-
-        </div>
-
-
-        <div class="plan-card pro">
-
-          <div class="plan-name">
-            PRO
-          </div>
-
-          <div class="plan-price">
-            R$ 11,99<span style="font-size:11px;color:rgba(255,255,255,.35);">/mês</span>
-          </div>
-
-          <div
-            class="plan-desc"
-            style="color:rgba(255,255,255,.62);margin-bottom:7px;"
-          >
-            <strong>50 créditos por dia</strong>
-          </div>
-
-          <div class="plan-desc">
-            A RIMAK que realmente acompanha você no dia a dia.
-            Mais memória, contexto e capacidade para conversas
-            mais profundas.
-          </div>
-
-          <div
-            class="plan-desc"
-            style="margin-top:9px;"
-          >
-            • Tudo do Free<br>
-            • Memória mais avançada<br>
-            • Aprende suas preferências<br>
-            • Entende melhor seu contexto emocional<br>
-            • Pesquisa web completa<br>
-            • Contexto maior<br>
-            • Personagens mais consistentes<br>
-            • Histórias mais detalhadas<br>
-            • Prioridade de resposta
-          </div>
-
-          <button
-            class="modal-button"
-            id="proPlanButton"
-          >
-            Assinar Pro
-          </button>
-
-        </div>
-
-
-        <div class="plan-card">
-
-          <div class="plan-name">
-            ULTRA
-          </div>
-
-          <div class="plan-price">
-            R$ 29,99<span style="font-size:11px;color:rgba(255,255,255,.35);">/mês</span>
-          </div>
-
-          <div
-            class="plan-desc"
-            style="color:rgba(255,255,255,.62);margin-bottom:7px;"
-          >
-            <strong>150 créditos por dia</strong>
-          </div>
-
-          <div class="plan-desc">
-            A experiência máxima da RIMAK para quem quer
-            mais profundidade, memória e continuidade.
-          </div>
-
-          <div
-            class="plan-desc"
-            style="margin-top:9px;"
-          >
-            • Tudo do Pro<br>
-            • Memória avançada e detalhada<br>
-            • Aprendizado personalizado mais profundo<br>
-            • Maior compreensão emocional<br>
-            • Pesquisa profunda<br>
-            • Contexto ampliado<br>
-            • Mundos persistentes<br>
-            • Consequências longas nas histórias<br>
-            • Eventos dinâmicos<br>
-            • Prioridade máxima<br>
-            • Acesso antecipado a novidades
-          </div>
-
-          <button
-            class="modal-button"
-            id="ultraPlanButton"
-          >
-            Assinar Ultra
-          </button>
-
-        </div>
-
-      </div>
-
-    </div>
-  </div>
-
-
-  <div class="checkout-overlay" id="checkoutOverlay">
-    <div class="checkout-modal">
-      <div class="checkout-head">
-        <div>
-          <div class="checkout-title">Assinar RIMAK</div>
-          <div class="checkout-plan" id="checkoutPlanLabel"></div>
-        </div>
-        <button class="checkout-close" id="checkoutClose" type="button">×</button>
-      </div>
-      <div class="checkout-methods"><div class="checkout-method-label">Formas de pagamento</div><div id="paymentBrick_container"></div><div class="pix-result" id="pixResult"><img class="pix-qr" id="pixQr" alt="QR Code Pix"><div class="pix-code" id="pixCode"></div><button class="pix-copy" id="pixCopyButton" type="button">Copiar Pix</button></div></div>
-      <div class="checkout-status" id="checkoutStatus"></div>
-      <div class="checkout-note">Pagamento protegido pelo Mercado Pago. Os dados completos do cartão são tratados pelo componente seguro do Mercado Pago.</div>
-    </div>
-  </div>
-
-  <div
-    class="modal-overlay"
-    id="settingsModal"
-  >
-    <div class="modal">
-
-      <div class="modal-header">
-        <div class="modal-title">Configurações</div>
-        <button class="modal-close" data-close="settingsModal">×</button>
-      </div>
-
-      <div class="setting-row setting-interactive" data-setting="dark">
-        <div>
-          <div class="setting-name">Tema escuro</div>
-          <div class="setting-desc">A RIMAK foi projetada para o modo escuro.</div>
-        </div>
-        <button class="toggle on" id="darkModeToggle" type="button" aria-label="Alternar tema"></button>
-      </div>
-
-      <div class="setting-row setting-interactive" data-setting="animations">
-        <div>
-          <div class="setting-name">Animações</div>
-          <div class="setting-desc">Movimentos suaves da interface.</div>
-        </div>
-        <button class="toggle on" id="animationsToggle" type="button" aria-label="Alternar animações"></button>
-      </div>
-
-      <div class="setting-row setting-interactive" data-setting="personalization">
-        <div>
-          <div class="setting-name">Personalização da RIMAK</div>
-          <div class="setting-desc">A RIMAK aprende com suas conversas para personalizar a experiência.</div>
-        </div>
-        <button class="toggle on" id="personalizationToggle" type="button" aria-label="Alternar personalização"></button>
-      </div>
-
-      <div class="setting-row setting-interactive">
-        <div>
-          <div class="setting-name">Idioma</div>
-          <div class="setting-desc">Escolha o idioma da interface e das respostas.</div>
-        </div>
-        <select id="languageSelect" class="settings-select" aria-label="Idioma">
-          <option value="pt-BR">Português — Brasil</option>
-          <option value="en-US">English — United States</option>
-          <option value="es-ES">Español — España</option>
-        </select>
-      </div>
-
-    </div>
-  </div>
-
-
-  <div
-    class="modal-overlay"
-    id="supportModal"
-  >
-    <div class="modal">
-
-      <div class="modal-header">
-        <div class="modal-title">Suporte</div>
-        <button class="modal-close" data-close="supportModal">×</button>
-      </div>
-
-      <p class="modal-text">
-        Encontrou um problema ou tem uma sugestão?
-        Você pode descrever o que aconteceu e usar
-        esse espaço para organizar o que precisa ser resolvido.
-      </p>
-
-      <textarea
-        id="supportText"
-        style="
-          width:100%;
-          height:130px;
-          margin-top:18px;
-          padding:14px;
-          resize:none;
-          outline:none;
-          border:1px solid rgba(255,255,255,.08);
-          border-radius:15px;
-          background:rgba(255,255,255,.035);
-          color:white;
-        "
-        placeholder="Descreva o problema..."
-      ></textarea>
-
-      <button
-        class="modal-button"
-        id="supportSendButton"
-      >
-        Enviar para o suporte
-      </button>
-      <div id="supportStatus" style="margin-top:10px;color:rgba(255,255,255,.42);font-size:11px;line-height:1.4;"></div>
-
-    </div>
-  </div>
-
-
-  <!-- TOAST -->
-
-  <div
-    class="toast"
-    id="toast"
-  ></div>
-
-
-  <script>
-    /* =====================================================
-       SUPABASE
-    ===================================================== */
-
-    const SUPABASE_URL =
-      "https://vqmfsshmjdfjlnmbemxv.supabase.co";
-
-    const SUPABASE_KEY =
-      "sb_publishable_nCCjJPHoTODWLHvwTWN_AA_J8JivYaE";
-
-    let supabaseClient = null;
-
-    function getSupabaseClient(){
-      if(supabaseClient) return supabaseClient;
-
-      if(!window.supabase || typeof window.supabase.createClient !== "function"){
-        throw new Error("O serviço de autenticação não carregou. Recarregue a página e tente novamente.");
-      }
-
-      supabaseClient = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY,
-        {
-          auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true,
-            storageKey: "rimak-auth"
-          }
-        }
-      );
-
-      return supabaseClient;
-    }
-
-    getSupabaseClient();
-
-
-    /* =====================================================
-       STATE
-    ===================================================== */
-
-    let currentUser = null;
-
-    let conversation = [];
-
-    let stories = [];
-
-    let currentStoryId = null;
-
-    let credits = 20;
-
-    let isThinking = false;
-
-    let authMode = "login";
-
-    let auraMemory = {
-      preferences:[],
-      importantPeople:[],
-      goals:[],
-      importantFacts:[],
-      emotionalPatterns:[]
-    };
-
-
-    /* =====================================================
-       ELEMENTS
-    ===================================================== */
-
-    const authScreen =
-      document.getElementById("authScreen");
-
-    const app =
-      document.getElementById("app");
-
-    const authForm =
-      document.getElementById("authForm");
-
-    const authEmail =
-      document.getElementById("authEmail");
-
-    const authPassword =
-      document.getElementById("authPassword");
-
-    const authButton =
-      document.getElementById("authButton");
-
-    const authSwitch =
-      document.getElementById("authSwitch");
-
-    const authSubtitle =
-      document.getElementById("authSubtitle");
-
-    const authMessage =
-      document.getElementById("authMessage");
-
-    const chat =
-      document.getElementById("chat");
-
-    const welcome =
-      document.getElementById("welcome");
-
-    const input =
-      document.getElementById("messageInput");
-
-    const sendButton =
-      document.getElementById("sendButton");
-
-    const historyList =
-      document.getElementById("historyList");
-
-    const creditsCount =
-      document.getElementById("creditsCount");
-
-    const modalCreditsCount =
-      document.getElementById("modalCreditsCount");
-
-    const toast =
-      document.getElementById("toast");
-
-
-    /* =====================================================
-       TOAST
-    ===================================================== */
-
-    let toastTimer;
-
-    function showToast(message){
-
-      toast.textContent =
-        String(message || "");
-
-      toast.classList.add("show");
-
-      clearTimeout(toastTimer);
-
-      toastTimer =
         setTimeout(() => {
-          toast.classList.remove("show");
-        }, 2600);
+          if(typeof input !== "undefined" && input) input.focus();
+        },150);
+      }finally{
+        enteringApp = false;
+      }
     }
 
+    async function loginWithFallback(email,password){
+      const client = getSupabaseClient();
 
-    /* =====================================================
-       AUTH MODE
-    ===================================================== */
+      try{
+        const { data, error } =
+          await client.auth.signInWithPassword({
+            email,
+            password
+          });
 
-    authSwitch.addEventListener(
-      "click",
-      () => {
-
-        authMode =
-          authMode === "login"
-            ? "signup"
-            : "login";
-
-        authMessage.textContent = "";
-
-        if(authMode === "signup"){
-
-          authButton.textContent =
-            "Criar conta";
-
-          authSubtitle.textContent =
-            "Crie sua conta para começar.";
-
-          authSwitch.innerHTML =
-            'Já tenho uma conta. <span>Entrar</span>';
-
-        }else{
-
-          authButton.textContent =
-            "Entrar";
-
-          authSubtitle.textContent =
-            "Sua inteligência pessoal que lembra de você.";
-
-          authSwitch.innerHTML =
-            'Ainda não tenho uma conta. <span>Criar conta</span>';
-
+        if(!error && data?.session && data?.user){
+          return { session:data.session, user:data.user };
         }
 
+        if(error) throw error;
+      }catch(sdkError){
+        console.warn("RIMAK AUTH SDK fallback:", sdkError);
+
+        const restData =
+          await authRest(
+            "/auth/v1/token?grant_type=password",
+            {email,password}
+          );
+
+        const session =
+          await establishSession(restData);
+
+        return {
+          session,
+          user:session.user || restData.user
+        };
       }
-    );
 
-    applyLanguage(loadSettings().language);
+      throw new Error("SESSION_NOT_CREATED");
+    }
 
+    async function signupWithFallback(email,password){
+      const client = getSupabaseClient();
 
-    /* =====================================================
-       AUTH
-    ===================================================== */
+      try{
+        const { data, error } =
+          await client.auth.signUp({
+            email,
+            password
+          });
+
+        if(error) throw error;
+
+        return data;
+      }catch(sdkError){
+        console.warn("RIMAK SIGNUP SDK fallback:", sdkError);
+
+        return await authRest(
+          "/auth/v1/signup",
+          {email,password}
+        );
+      }
+    }
 
     authForm.addEventListener("submit", handleAuth);
 
     async function handleAuth(event){
       event.preventDefault();
 
+      if(authButton.disabled) return;
+
       const email = authEmail.value.trim().toLowerCase();
       const password = authPassword.value;
 
       if(!email || !password){
-        authMessage.className="auth-error";
-        authMessage.textContent="Preencha e-mail e senha.";
+        setAuthMessage("Preencha e-mail e senha.");
         return;
       }
 
-      authButton.disabled=true;
-      authMessage.className="auth-error";
-      authMessage.textContent="Entrando...";
+      if(password.length < 6){
+        setAuthMessage("A senha precisa ter pelo menos 6 caracteres.");
+        return;
+      }
+
+      authButton.disabled = true;
+      authMessage.textContent = "";
+      authButton.textContent =
+        authMode === "login" ? "Entrando..." : "Criando...";
 
       try{
-        const client = getSupabaseClient();
-
         if(authMode === "signup"){
-          const { data, error } = await client.auth.signUp({
-            email,
-            password
-          });
-
-          if(error) throw error;
+          const data =
+            await signupWithFallback(email,password);
 
           if(data?.session && data?.user){
-            currentUser = data.user;
-            await showApp();
+            await finishAuthenticatedUser(data.user);
           }else{
-            authMessage.className="auth-error auth-success";
-            authMessage.textContent="Conta criada. Verifique seu e-mail para confirmar.";
+            setAuthMessage(
+              "Conta criada. Verifique seu e-mail para confirmar.",
+              true
+            );
           }
+
           return;
         }
 
-        const { data, error } = await client.auth.signInWithPassword({
-          email,
-          password
-        });
+        const result =
+          await loginWithFallback(email,password);
+
+        await finishAuthenticatedUser(result.user);
+
+      }catch(error){
+        console.error("RIMAK AUTH:",error);
+        setAuthMessage(translateAuthError(error));
+      }finally{
+        authButton.disabled = false;
+        authButton.textContent =
+          authMode === "login" ? "Entrar" : "Criar conta";
+      }
+    }
+
+    async function checkSession(){
+      try{
+        const client = getSupabaseClient();
+        const { data, error } =
+          await client.auth.getSession();
 
         if(error) throw error;
 
-        if(!data?.session || !data?.user){
-          throw new Error("Login realizado, mas a sessão não foi criada.");
+        if(data?.session?.user){
+          await finishAuthenticatedUser(data.session.user);
+          return;
         }
-
-        currentUser = data.user;
-        await showApp();
-
       }catch(error){
-        console.error("RIMAK AUTH:", error);
-        authMessage.className="auth-error";
-        authMessage.textContent=translateAuthError(error?.message);
-      }finally{
-        authButton.disabled=false;
-        authButton.textContent=authMode==="login"?"Entrar":"Criar conta";
+        console.warn("RIMAK SESSION:",error);
       }
+
+      currentUser = null;
+      authScreen.style.display = "flex";
+      app.style.display = "none";
     }
-
-
-    function translateAuthError(error){
-
-      if(!error){
-        return "Não foi possível continuar.";
-      }
-
-      const text =
-        String(error).toLowerCase();
-
-      if(
-        text.includes(
-          "invalid login credentials"
-        )
-      ){
-        return "E-mail ou senha incorretos.";
-      }
-
-      if(
-        text.includes(
-          "user already registered"
-        )
-      ){
-        return "Esse e-mail já possui uma conta.";
-      }
-
-      if(
-        text.includes(
-          "password"
-        )
-      ){
-        return "Verifique sua senha.";
-      }
-
-      if(
-        text.includes(
-          "email not confirmed"
-        )
-      ){
-        return "Confirme seu e-mail antes de entrar.";
-      }
-
-      return error;
-    }
-
-
-    /* =====================================================
-       SESSION
-    ===================================================== */
-
-    async function checkSession(){
-
-      const {
-        data
-      } =
-        await supabaseClient.auth.getSession();
-
-      if(data?.session){
-
-        currentUser =
-          data.session.user;
-
-        await showApp();
-
-      }else{
-
-        authScreen.style.display =
-          "flex";
-
-        app.style.display =
-          "none";
-
-      }
-
-    }
-
 
     getSupabaseClient().auth.onAuthStateChange(
-      async (event,session) => {
+      (event,session) => {
+        if(
+          session?.user &&
+          (event === "SIGNED_IN" ||
+           event === "TOKEN_REFRESHED" ||
+           event === "INITIAL_SESSION")
+        ){
+          currentUser = session.user;
 
-        if(session){
-
-          currentUser =
-            session.user;
-
-          await showApp();
-
+          if(
+            event !== "INITIAL_SESSION" &&
+            !enteringApp &&
+            authScreen.style.display !== "none"
+          ){
+            finishAuthenticatedUser(session.user).catch(error => {
+              console.error("RIMAK AUTH STATE:",error);
+            });
+          }
         }
 
+        if(event === "SIGNED_OUT"){
+          currentUser = null;
+        }
       }
     );
 
-
     async function showApp(){
-
-      authScreen.style.display =
-        "none";
-
-      app.style.display =
-        "block";
-
-      if(!currentUser){
-
-        const {
-          data
-        } =
-          await supabaseClient.auth.getUser();
-
-        currentUser =
-          data?.user || null;
-
+      if(currentUser){
+        await finishAuthenticatedUser(currentUser);
+        return;
       }
 
-      loadRIMAKMemory();
+      const { data } =
+        await getSupabaseClient().auth.getUser();
 
-      updateAccountUI();
-
-      loadStories();
-
-      await loadCredits();
-
-      setTimeout(() => {
-        input.focus();
-      },150);
-
+      if(data?.user){
+        await finishAuthenticatedUser(data.user);
+      }else{
+        authScreen.style.display = "flex";
+        app.style.display = "none";
+      }
     }
-
 
     /* =====================================================
        ACCOUNT
@@ -1585,7 +351,7 @@
 
     async function logout(){
 
-      await supabaseClient.auth.signOut();
+      await getSupabaseClient().auth.signOut();
 
       currentUser = null;
 
@@ -2540,7 +1306,7 @@
         let session = null;
 
         const refreshed =
-          await supabaseClient.auth.refreshSession();
+          await getSupabaseClient().auth.refreshSession();
 
         if(
           refreshed.data?.session
@@ -2552,7 +1318,7 @@
         }else{
 
           const currentSession =
-            await supabaseClient.auth.getSession();
+            await getSupabaseClient().auth.getSession();
 
           session =
             currentSession.data?.session ||
@@ -3419,7 +2185,7 @@
 
     async function openCheckout(plan){
       if(!currentUser){showToast("Entre na sua conta primeiro.");return;}
-      const sessionResult=await supabaseClient.auth.getSession();const session=sessionResult.data?.session;
+      const sessionResult=await getSupabaseClient().auth.getSession();const session=sessionResult.data?.session;
       if(!session?.access_token){showToast("Sessão expirada. Entre novamente.");return;}
       checkoutPlan=plan;document.getElementById("checkoutPlanLabel").textContent=plan==="pro"?"PRO — R$ 11,99/mês":"ULTRA — R$ 29,99/mês";document.getElementById("checkoutStatus").textContent="";document.getElementById("checkoutOverlay").classList.add("open");
       try{if(checkoutBrickController){checkoutBrickController.unmount();checkoutBrickController=null;}const keyResponse=await fetch(apiUrl("/api/checkout-config"));const keyData=await keyResponse.json().catch(()=>({}));if(!keyResponse.ok||!keyData.public_key)throw new Error(keyData.error||"Chave pública do Mercado Pago não configurada.");const mp=new MercadoPago(keyData.public_key,{locale:"pt-BR"});const builder=mp.bricks();const amount=plan==="pro"?11.99:29.99;
@@ -3450,7 +2216,7 @@
         return;
       }
 
-      const sessionResult = await supabaseClient.auth.getSession();
+      const sessionResult = await getSupabaseClient().auth.getSession();
       const session = sessionResult.data?.session;
 
       if(!session?.access_token){
@@ -3651,7 +2417,7 @@
 (function(){
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", function(){
-      navigator.serviceWorker.register("/sw.js").catch(function(error){
+      navigator.serviceWorker.register("/sw.js?v=2").catch(function(error){
         console.warn("RIMAK service worker:", error);
       });
     });
