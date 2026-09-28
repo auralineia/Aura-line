@@ -1620,30 +1620,81 @@
     async function handleAuthCallback(){
       try{
         const url = new URL(window.location.href);
-        const code = url.searchParams.get("code");
-        if(code){
-          const { data, error } = await supabaseClient.auth.exchangeCodeForSession(code);
-          if(error){
-            console.error("RIMAK AUTH CALLBACK:", error);
-            return false;
+        const hasCode = url.searchParams.has("code");
+        const hasAuthHash =
+          window.location.hash.includes("access_token=") ||
+          window.location.hash.includes("refresh_token=") ||
+          window.location.hash.includes("type=signup");
+
+        if(hasCode){
+          const code = url.searchParams.get("code");
+
+          if(code){
+            const { data, error } =
+              await supabaseClient.auth.exchangeCodeForSession(code);
+
+            if(error){
+              console.error("RIMAK AUTH CALLBACK:", error);
+              return false;
+            }
+
+            if(data?.session?.user){
+              currentUser = data.session.user;
+
+              window.history.replaceState(
+                {},
+                document.title,
+                url.origin + url.pathname
+              );
+
+              return true;
+            }
           }
-          if(data?.session?.user){
-            currentUser = data.session.user;
-            window.history.replaceState({}, document.title, url.origin + url.pathname);
+        }
+
+        if(hasAuthHash){
+          const {
+            data: {
+              session
+            }
+          } = await supabaseClient.auth.getSession();
+
+          if(session?.user){
+            currentUser = session.user;
+
+            window.history.replaceState(
+              {},
+              document.title,
+              url.origin + url.pathname
+            );
+
             return true;
           }
         }
-        if(window.location.hash.includes("access_token=") || window.location.hash.includes("type=signup")){
-          const { data } = await supabaseClient.auth.getSession();
-          if(data?.session?.user){
-            currentUser = data.session.user;
-            window.history.replaceState({}, document.title, window.location.pathname);
-            return true;
+
+        const {
+          data: {
+            session
           }
+        } = await supabaseClient.auth.getSession();
+
+        if(session?.user){
+          currentUser = session.user;
+
+          if(hasCode || hasAuthHash){
+            window.history.replaceState(
+              {},
+              document.title,
+              url.origin + url.pathname
+            );
+          }
+
+          return true;
         }
       }catch(error){
         console.error("RIMAK AUTH CALLBACK:", error);
       }
+
       return false;
     }
 
