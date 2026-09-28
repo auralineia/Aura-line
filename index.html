@@ -50,8 +50,35 @@
         sans-serif;
     }
 
+    html{
+      overscroll-behavior:none;
+      background:var(--bg);
+    }
+
     body{
       overflow:hidden;
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+      overscroll-behavior:none;
+      -webkit-text-size-adjust:100%;
+    }
+
+    body.auth-active{
+      overflow:hidden;
+      touch-action:none;
+    }
+
+    #authScreen{
+      touch-action:auto;
+      -webkit-user-select:none;
+      user-select:none;
+    }
+
+    #authScreen input{
+      -webkit-user-select:text;
+      user-select:text;
     }
 
     button,input,textarea{
@@ -75,7 +102,9 @@
       align-items:center;
       justify-content:center;
       padding:24px;
-      overflow:auto;
+      overflow:hidden;
+      overscroll-behavior:none;
+      -webkit-overflow-scrolling:auto;
       background:
         radial-gradient(
           circle at 50% 25%,
@@ -420,7 +449,7 @@
         Sua inteligência pessoal que lembra de você.
       </div>
 
-      <form class="auth-form" id="authForm">
+      <form class="auth-form" id="authForm" onsubmit="return false;" autocomplete="on">
 
         <input
           class="auth-input"
@@ -1175,10 +1204,24 @@
     const SUPABASE_KEY =
       "sb_publishable_nCCjJPHoTODWLHvwTWN_AA_J8JivYaE";
 
+    if (!window.supabase || typeof window.supabase.createClient !== "function") {
+      const msg = document.getElementById("authMessage");
+      if (msg) msg.textContent = "O sistema de login não carregou. Recarregue a página.";
+      throw new Error("Supabase SDK failed to load");
+    }
+
     const supabaseClient =
       window.supabase.createClient(
         SUPABASE_URL,
-        SUPABASE_KEY
+        SUPABASE_KEY,
+        {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+            storageKey: "rimak-auth-clean"
+          }
+        }
       );
 
 
@@ -1336,10 +1379,12 @@
        AUTH
     ===================================================== */
 
-    authForm.addEventListener(
-      "submit",
-      handleAuth
-    );
+    authForm.addEventListener("submit", handleAuth);
+
+    authButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      handleAuth(event);
+    });
 
     // Fallback for mobile/WebKit: guarantee the Enter button invokes the auth flow.
     authButton.addEventListener("click", async (event) => {
@@ -1354,107 +1399,55 @@
 
     async function handleAuth(event){
 
-      event.preventDefault();
+      if(event) event.preventDefault();
 
-      const email =
-        authEmail.value.trim();
-
-      const password =
-        authPassword.value;
+      const email = authEmail.value.trim();
+      const password = authPassword.value;
 
       if(!email || !password){
-
-        authMessage.textContent =
-          "Preencha e-mail e senha.";
-
-        return;
+        authMessage.className = "auth-error";
+        authMessage.textContent = "Preencha e-mail e senha.";
+        return false;
       }
 
       authButton.disabled = true;
-
-      authMessage.textContent =
-        "Aguarde...";
+      authMessage.className = "auth-error";
+      authMessage.textContent = "Entrando...";
 
       try{
+        let data, error;
 
         if(authMode === "signup"){
+          ({data, error} = await supabaseClient.auth.signUp({email, password}));
+          if(error) throw error;
 
-          const {
-            data,
-            error
-          } =
-            await supabaseClient.auth.signUp({
-              email,
-              password
-            });
-
-          if(error){
-            throw error;
-          }
-
-          if(data.session){
-
-            currentUser =
-              data.user;
-
+          if(data?.session){
+            currentUser = data.user;
             await showApp();
-
           }else{
-
-            authMessage.className =
-              "auth-error auth-success";
-
-            authMessage.textContent =
-              "Conta criada. Verifique seu e-mail para confirmar.";
-
+            authMessage.className = "auth-error auth-success";
+            authMessage.textContent = "Conta criada. Verifique seu e-mail para confirmar.";
           }
-
         }else{
+          ({data, error} = await supabaseClient.auth.signInWithPassword({email, password}));
+          if(error) throw error;
 
-          const {
-            data,
-                        error
-          } =
-            await supabaseClient.auth.signInWithPassword({
-              email,
-              password
-            });
-
-          if(error){
-            throw error;
-          }
-
-          currentUser =
-            data.user;
-
+          if(!data?.session?.user) throw new Error("Sessão não foi criada.");
+          currentUser = data.session.user;
           await showApp();
-
         }
 
+        return false;
       }catch(error){
+        console.error("RIMAK AUTH:", error);
 
-        console.error(error);
-
-        authMessage.className =
-          "auth-error";
-
-        authMessage.textContent =
-          translateAuthError(
-            error?.message
-          );
-
+        authMessage.className = "auth-error";
+        authMessage.textContent = translateAuthError(error?.message);
+        return false;
       }finally{
-
-        authButton.disabled =
-          false;
-
-        authButton.textContent =
-          authMode === "login"
-            ? "Entrar"
-            : "Criar conta";
-
+        authButton.disabled = false;
+        authButton.textContent = authMode === "login" ? "Entrar" : "Criar conta";
       }
-
     }
 
 
@@ -1523,11 +1516,9 @@
 
       }else{
 
-        authScreen.style.display =
-          "flex";
-
-        app.style.display =
-          "none";
+        document.body.classList.add("auth-active");
+        authScreen.style.display = "flex";
+        app.style.display = "none";
 
       }
 
@@ -3667,7 +3658,14 @@
     ===================================================== */
 
     loadSettings();
-    checkSession();
+
+    document.body.classList.add("auth-active");
+
+    checkSession().catch((error) => {
+      console.error("RIMAK SESSION:", error);
+      authScreen.style.display = "flex";
+      app.style.display = "none";
+    });
 
 
   </script>
