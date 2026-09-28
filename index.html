@@ -744,66 +744,6 @@
        SETTINGS
        ===================================================== */
 
-    const settingsKey = () =>
-      currentUser ? "aura_settings_" + currentUser.id : "aura_settings";
-
-    function loadSettings(){
-      let saved = {};
-      try{
-        saved = JSON.parse(localStorage.getItem(settingsKey()) || "{}");
-      }catch{}
-
-      const settings = {
-        dark: saved.dark !== false,
-        animations: saved.animations !== false,
-        personalization: saved.personalization !== false,
-        language: saved.language || "pt-BR"
-      };
-
-      [["darkModeToggle","dark"],["animationsToggle","animations"],["personalizationToggle","personalization"]].forEach(([id,name])=>{
-        const el=document.getElementById(id);
-        if(el) el.classList.toggle("on",!!settings[name]);
-      });
-
-      const select=document.getElementById("languageSelect");
-      if(select) select.value=settings.language;
-
-      document.documentElement.classList.toggle("no-aura-animations",!settings.animations);
-      return settings;
-    }
-
-    function saveSetting(name,value){
-      const settings=loadSettings();
-      settings[name]=value;
-      localStorage.setItem(settingsKey(),JSON.stringify(settings));
-      loadSettings();
-    }
-
-    function bindSettings(){
-      [["darkModeToggle","dark"],["animationsToggle","animations"],["personalizationToggle","personalization"]].forEach(([id,name])=>{
-        const el=document.getElementById(id);
-        if(!el || el.dataset.bound) return;
-        el.dataset.bound="1";
-        el.addEventListener("click",()=>{
-          saveSetting(name,!el.classList.contains("on"));
-          showToast("Configuração salva.");
-        });
-      });
-
-      const select=document.getElementById("languageSelect");
-      if(select && !select.dataset.bound){
-        select.dataset.bound="1";
-        select.addEventListener("change",event=>{
-          saveSetting("language",event.target.value);
-          showToast("Idioma salvo.");
-        });
-      }
-
-      loadSettings();
-    }
-
-    bindSettings();
-
     /* =====================================================
        CHAT
     ===================================================== */
@@ -1296,6 +1236,14 @@
     .toggle.on::after{
       left:23px;
     }
+    .settings-select{min-width:150px;max-width:175px;height:38px;padding:0 10px;border:1px solid rgba(255,255,255,.09);border-radius:11px;outline:none;background:#111117;color:rgba(255,255,255,.82);font-size:11px;}
+    .settings-select option{background:#111117;color:white;}
+    .no-aura-animations *, .no-aura-animations *::before, .no-aura-animations *::after{animation:none !important;transition:none !important;}
+    .aura-light-mode{--bg:#f4f4f6;--panel:#fff;--panel2:#f7f7f9;--text:rgba(0,0,0,.86);--muted:rgba(0,0,0,.48);--faint:rgba(0,0,0,.22);--line:rgba(0,0,0,.09);--line2:rgba(0,0,0,.14);}
+    .checkout-methods{display:grid;gap:10px;margin-top:8px;}
+    .checkout-method-label{font-size:10px;letter-spacing:1.5px;color:rgba(255,255,255,.3);text-transform:uppercase;}
+    #paymentBrick_container{min-height:180px;}
+
 
     /* =====================================================
        TOAST
@@ -2111,7 +2059,7 @@
         </div>
         <button class="checkout-close" id="checkoutClose" type="button">×</button>
       </div>
-      <div id="cardPaymentBrick_container"></div>
+      <div class="checkout-methods"><div class="checkout-method-label">Formas de pagamento</div><div id="paymentBrick_container"></div></div>
       <div class="checkout-status" id="checkoutStatus"></div>
       <div class="checkout-note">Pagamento protegido pelo Mercado Pago. Os dados completos do cartão são tratados pelo componente seguro do Mercado Pago.</div>
     </div>
@@ -4461,53 +4409,20 @@
     let checkoutBrickController=null;
     let checkoutPlan=null;
 
+    const settingsKey = () => currentUser ? "aura_settings_" + currentUser.id : "aura_settings";
+    function loadSettings(){let saved={};try{saved=JSON.parse(localStorage.getItem(settingsKey())||"{}");}catch{} const settings={dark:saved.dark!==false,animations:saved.animations!==false,personalization:saved.personalization!==false,language:saved.language||"pt-BR"};[["darkModeToggle","dark"],["animationsToggle","animations"],["personalizationToggle","personalization"]].forEach(([id,name])=>{const el=document.getElementById(id);if(el)el.classList.toggle("on",!!settings[name]);});const select=document.getElementById("languageSelect");if(select)select.value=settings.language;document.documentElement.classList.toggle("no-aura-animations",!settings.animations);document.documentElement.classList.toggle("aura-light-mode",!settings.dark);return settings;}
+    function saveSetting(name,value){const settings=loadSettings();settings[name]=value;localStorage.setItem(settingsKey(),JSON.stringify(settings));loadSettings();}
+    function bindSettings(){[["darkModeToggle","dark"],["animationsToggle","animations"],["personalizationToggle","personalization"]].forEach(([id,name])=>{const el=document.getElementById(id);if(!el||el.dataset.bound)return;el.dataset.bound="1";el.addEventListener("click",()=>{saveSetting(name,!el.classList.contains("on"));showToast("Configuração salva.");});});const select=document.getElementById("languageSelect");if(select&&!select.dataset.bound){select.dataset.bound="1";select.addEventListener("change",e=>{saveSetting("language",e.target.value);showToast("Idioma salvo.");});}loadSettings();}
+    bindSettings();
+
     async function openCheckout(plan){
       if(!currentUser){showToast("Entre na sua conta primeiro.");return;}
-      const sessionResult=await supabaseClient.auth.getSession();
-      const session=sessionResult.data?.session;
+      const sessionResult=await supabaseClient.auth.getSession();const session=sessionResult.data?.session;
       if(!session?.access_token){showToast("Sessão expirada. Entre novamente.");return;}
-
-      checkoutPlan=plan;
-      document.getElementById("checkoutPlanLabel").textContent=plan==="pro"?"PRO — R$ 11,99/mês":"ULTRA — R$ 29,99/mês";
-      document.getElementById("checkoutStatus").textContent="";
-      document.getElementById("checkoutOverlay").classList.add("open");
-
-      try{
-        if(checkoutBrickController){checkoutBrickController.unmount();checkoutBrickController=null;}
-        const keyResponse=await fetch("/api/checkout-config");
-        const keyData=await keyResponse.json().catch(()=>({}));
-        if(!keyResponse.ok||!keyData.public_key)throw new Error(keyData.error||"Chave pública do Mercado Pago não configurada.");
-        const mp=new MercadoPago(keyData.public_key,{locale:"pt-BR"});
-        const builder=mp.bricks();
-        const amount=plan==="pro"?11.99:29.99;
-        checkoutBrickController=await builder.create("cardPayment","cardPaymentBrick_container",{
-          initialization:{amount},
-          customization:{paymentMethods:{types:{excluded:["debit_card","prepaid_card"]}}},
-          callbacks:{
-            onReady:()=>{},
-            onError:(error)=>{console.error("Mercado Pago Brick:",error);},
-            onSubmit:async(formData)=>{
-              const status=document.getElementById("checkoutStatus");
-              status.textContent="Processando assinatura...";
-              const response=await fetch("/api/subscribe",{
-                method:"POST",
-                headers:{"Content-Type":"application/json","Authorization":`Bearer ${session.access_token}`},
-                body:JSON.stringify({plan,card_token_id:formData.token})
-              });
-              const data=await response.json().catch(()=>({}));
-              if(!response.ok)throw new Error(data.error||"Não foi possível ativar a assinatura.");
-              status.textContent="Assinatura ativada.";
-              showToast("Plano "+plan.toUpperCase()+" ativado.");
-              closeCheckout();
-              await loadCredits();
-            }
-          }
-        });
-      }catch(error){
-        console.error("Checkout:",error);
-        document.getElementById("checkoutStatus").textContent=error?.message||"Erro ao abrir pagamento.";
-        showToast(error?.message||"Erro ao abrir pagamento.");
-      }
+      checkoutPlan=plan;document.getElementById("checkoutPlanLabel").textContent=plan==="pro"?"PRO — R$ 11,99/mês":"ULTRA — R$ 29,99/mês";document.getElementById("checkoutStatus").textContent="";document.getElementById("checkoutOverlay").classList.add("open");
+      try{if(checkoutBrickController){checkoutBrickController.unmount();checkoutBrickController=null;}const keyResponse=await fetch("/api/checkout-config");const keyData=await keyResponse.json().catch(()=>({}));if(!keyResponse.ok||!keyData.public_key)throw new Error(keyData.error||"Chave pública do Mercado Pago não configurada.");const mp=new MercadoPago(keyData.public_key,{locale:"pt-BR"});const builder=mp.bricks();const amount=plan==="pro"?11.99:29.99;
+        checkoutBrickController=await builder.create("payment","paymentBrick_container",{initialization:{amount},customization:{paymentMethods:{creditCard:"all",debitCard:"all",bankTransfer:"pix",ticket:"all",mercadoPago:"all"},visual:{theme:"dark"}},callbacks:{onReady:()=>{},onError:error=>{console.error("Mercado Pago Payment Brick:",error);document.getElementById("checkoutStatus").textContent="Não foi possível carregar o pagamento.";},onSubmit:async(formData)=>{const status=document.getElementById("checkoutStatus");status.textContent="Processando pagamento...";const response=await fetch("/api/payment",{method:"POST",headers:{"Content-Type":"application/json","Authorization":`Bearer ${session.access_token}`},body:JSON.stringify({plan,payment:formData})});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.error||"Não foi possível processar o pagamento.");status.textContent=data.status==="approved"?"Pagamento aprovado. Seu plano foi ativado.":"Pagamento criado. Aguarde a confirmação do Mercado Pago.";showToast(data.status==="approved"?"Plano "+plan.toUpperCase()+" ativado.":"Pagamento enviado.");if(data.status==="approved"){closeCheckout();await loadCredits();}}}});      
+      }catch(error){console.error("Checkout:",error);document.getElementById("checkoutStatus").textContent=error?.message||"Erro ao abrir pagamento.";showToast(error?.message||"Erro ao abrir pagamento.");}
     }
 
     function closeCheckout(){
@@ -4724,6 +4639,7 @@
        INIT
     ===================================================== */
 
+    loadSettings();
     checkSession();
 
   </script>
