@@ -472,7 +472,7 @@
         <button
           class="auth-button"
           id="authButton"
-          type="submit"
+          type="button"
         >
           Entrar
         </button>
@@ -1381,18 +1381,21 @@
        AUTH
     ===================================================== */
 
-    authForm.addEventListener("submit", handleAuth);
     authButton.addEventListener("click", handleAuth);
-
+    authForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      handleAuth(event);
+    });
 
     async function handleAuth(event){
 
       if(event) event.preventDefault();
 
-      if(authBusy) return false;
-      authBusy = true;
+      if(authBusy){
+        return false;
+      }
 
-      const email = authEmail.value.trim();
+      const email = authEmail.value.trim().toLowerCase();
       const password = authPassword.value;
 
       if(!email || !password){
@@ -1403,69 +1406,122 @@
 
       if(authMode === "signup" && password.length < 6){
         authMessage.className = "auth-error";
-        authMessage.textContent = "A senha precisa ter pelo menos 6 caracteres.";
+        authMessage.textContent =
+          "A senha precisa ter pelo menos 6 caracteres.";
         authPassword.focus();
         return false;
       }
 
+      authBusy = true;
       authButton.disabled = true;
       authMessage.className = "auth-error";
       authMessage.textContent =
-        authMode === "signup" ? "Criando sua conta..." : "Entrando...";
+        authMode === "signup"
+          ? "Criando sua conta..."
+          : "Entrando...";
 
       try{
-        let data, error;
 
         if(authMode === "signup"){
-          ({data, error} = await supabaseClient.auth.signUp({
-            email,
-            password
-          }));
 
-          if(error) throw error;
+          const { data, error } =
+            await supabaseClient.auth.signUp({
+              email,
+              password,
+              options:{
+                emailRedirectTo:
+                  window.location.origin + "/"
+              }
+            });
+
+          if(error){
+            throw error;
+          }
 
           if(!data?.user){
-            throw new Error("O Supabase não retornou o usuário criado.");
+            throw new Error(
+              "O servidor de autenticação não retornou a conta criada."
+            );
           }
 
-          if(data.session){
+          if(data?.session){
+
             currentUser = data.user;
-            await showApp();
-          }else{
-            authMessage.className = "auth-error auth-success";
-            authMessage.textContent =
-              "Conta criada com sucesso. Verifique seu e-mail para confirmar a conta e depois entre na RIMAK.";
-            authPassword.value = "";
-          }
-        }else{
-          ({data, error} = await supabaseClient.auth.signInWithPassword({
-            email,
-            password
-          }));
 
-          if(error) throw error;
+            await showApp();
+
+          }else{
+
+            authMode = "login";
+
+            authButton.textContent = "Entrar";
+
+            authSubtitle.textContent =
+              "Conta criada. Confirme seu e-mail para continuar.";
+
+            authSwitch.innerHTML =
+              'Ainda não tenho uma conta. <span>Criar conta</span>';
+
+            authMessage.className =
+              "auth-error auth-success";
+
+            authMessage.textContent =
+              "Conta criada. Enviamos um link de confirmação para seu e-mail. Depois de confirmar, volte aqui e entre.";
+
+            authPassword.value = "";
+
+          }
+
+        }else{
+
+          const { data, error } =
+            await supabaseClient.auth.signInWithPassword({
+              email,
+              password
+            });
+
+          if(error){
+            throw error;
+          }
 
           if(!data?.session?.user){
-            throw new Error("Sessão não foi criada.");
+            throw new Error(
+              "O login foi aceito, mas o servidor não criou uma sessão."
+            );
           }
 
-          currentUser = data.session.user;
+          currentUser =
+            data.session.user;
+
           await showApp();
+
         }
 
         return false;
+
       }catch(error){
+
         console.error("RIMAK AUTH:", error);
 
         authMessage.className = "auth-error";
-        authMessage.textContent = translateAuthError(error?.message);
+        authMessage.textContent =
+          translateAuthError(error);
+
         return false;
+
       }finally{
+
         authBusy = false;
         authButton.disabled = false;
-        authButton.textContent =
-          authMode === "login" ? "Entrar" : "Criar conta";
+
+        if(authMode === "login"){
+          authButton.textContent = "Entrar";
+        }else{
+          authButton.textContent = "Criar conta";
+        }
+
       }
+
     }
 
 
@@ -1475,7 +1531,19 @@
         return "Não foi possível continuar.";
       }
 
-      const text = String(error).toLowerCase();
+      const text =
+        String(
+          error?.message ||
+          error?.error_description ||
+          error
+        ).toLowerCase();
+
+      if(
+        text.includes("database error") ||
+        text.includes("unexpected_failure")
+      ){
+        return "O cadastro chegou ao servidor, mas o banco de autenticação recusou a criação da conta. A RIMAK precisa corrigir o serviço de autenticação.";
+      }
 
       if(
         text.includes("user already registered") ||
@@ -1529,10 +1597,22 @@
           text.includes("not allowed")
         )
       ){
-        return "O cadastro por e-mail está desativado no Supabase.";
+        return "O cadastro por e-mail está desativado.";
       }
 
-      return error?.message || String(error);
+      if(
+        text.includes("fetch") ||
+        text.includes("network") ||
+        text.includes("failed to fetch")
+      ){
+        return "Não foi possível conectar ao serviço de login. Tente novamente.";
+      }
+
+      return (
+        error?.message ||
+        error?.error_description ||
+        String(error)
+      );
     }
 
 
@@ -1565,16 +1645,26 @@
     }
 
 
+    let authShowing = false;
+
     supabaseClient.auth.onAuthStateChange(
-      async (event,session) => {
+      async (event, session) => {
 
-        if(session){
+        if(!session?.user){
+          return;
+        }
 
-          currentUser =
-            session.user;
+        if(authShowing){
+          return;
+        }
 
+        authShowing = true;
+
+        try{
+          currentUser = session.user;
           await showApp();
-
+        }finally{
+          authShowing = false;
         }
 
       }
