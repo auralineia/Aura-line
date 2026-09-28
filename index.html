@@ -1381,13 +1381,6 @@
 
     authForm.addEventListener("submit", handleAuth);
 
-    authButton.addEventListener("click", (event) => {
-      event.preventDefault();
-      handleAuth(event);
-    });
-
-
-
 
     async function handleAuth(event){
 
@@ -1402,29 +1395,54 @@
         return false;
       }
 
+      if(authMode === "signup" && password.length < 6){
+        authMessage.className = "auth-error";
+        authMessage.textContent = "A senha precisa ter pelo menos 6 caracteres.";
+        authPassword.focus();
+        return false;
+      }
+
       authButton.disabled = true;
       authMessage.className = "auth-error";
-      authMessage.textContent = "Entrando...";
+      authMessage.textContent =
+        authMode === "signup" ? "Criando sua conta..." : "Entrando...";
 
       try{
         let data, error;
 
         if(authMode === "signup"){
-          ({data, error} = await supabaseClient.auth.signUp({email, password}));
+          ({data, error} = await supabaseClient.auth.signUp({
+            email,
+            password
+          }));
+
           if(error) throw error;
 
-          if(data?.session){
+          if(!data?.user){
+            throw new Error("O Supabase não retornou o usuário criado.");
+          }
+
+          if(data.session){
             currentUser = data.user;
             await showApp();
           }else{
             authMessage.className = "auth-error auth-success";
-            authMessage.textContent = "Conta criada. Verifique seu e-mail para confirmar.";
+            authMessage.textContent =
+              "Conta criada com sucesso. Verifique seu e-mail para confirmar a conta e depois entre na RIMAK.";
+            authPassword.value = "";
           }
         }else{
-          ({data, error} = await supabaseClient.auth.signInWithPassword({email, password}));
+          ({data, error} = await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+          }));
+
           if(error) throw error;
 
-          if(!data?.session?.user) throw new Error("Sessão não foi criada.");
+          if(!data?.session?.user){
+            throw new Error("Sessão não foi criada.");
+          }
+
           currentUser = data.session.user;
           await showApp();
         }
@@ -1438,7 +1456,8 @@
         return false;
       }finally{
         authButton.disabled = false;
-        authButton.textContent = authMode === "login" ? "Entrar" : "Criar conta";
+        authButton.textContent =
+          authMode === "login" ? "Entrar" : "Criar conta";
       }
     }
 
@@ -1449,42 +1468,64 @@
         return "Não foi possível continuar.";
       }
 
-      const text =
-        String(error).toLowerCase();
+      const text = String(error).toLowerCase();
 
       if(
-        text.includes(
-          "invalid login credentials"
-        )
+        text.includes("user already registered") ||
+        text.includes("already registered") ||
+        text.includes("already been registered")
+      ){
+        return "Esse e-mail já possui uma conta. Tente entrar.";
+      }
+
+      if(
+        text.includes("invalid login credentials")
       ){
         return "E-mail ou senha incorretos.";
       }
 
       if(
-        text.includes(
-          "user already registered"
-        )
-      ){
-        return "Esse e-mail já possui uma conta.";
-      }
-
-      if(
-        text.includes(
-          "password"
-        )
-      ){
-        return "Verifique sua senha.";
-      }
-
-      if(
-        text.includes(
-          "email not confirmed"
-        )
+        text.includes("email not confirmed")
       ){
         return "Confirme seu e-mail antes de entrar.";
       }
 
-      return error;
+      if(
+        text.includes("password") &&
+        (
+          text.includes("at least") ||
+          text.includes("characters") ||
+          text.includes("weak")
+        )
+      ){
+        return "A senha precisa ter pelo menos 6 caracteres.";
+      }
+
+      if(
+        text.includes("invalid email") ||
+        text.includes("email address")
+      ){
+        return "Digite um e-mail válido.";
+      }
+
+      if(
+        text.includes("rate limit") ||
+        text.includes("too many requests")
+      ){
+        return "Muitas tentativas. Aguarde alguns minutos e tente novamente.";
+      }
+
+      if(
+        text.includes("signup") &&
+        (
+          text.includes("disabled") ||
+          text.includes("not allowed")
+        )
+      ){
+        return "O cadastro por e-mail está desativado no Supabase.";
+      }
+
+      return error?.message || String(error);
     }
 
 
