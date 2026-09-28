@@ -1,251 +1,3676 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#050507">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="RIMAK">
-<link rel="manifest" href="/manifest.webmanifest">
-<link rel="icon" href="/icon.svg">
-<title>RIMAK</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://sdk.mercadopago.com/js/v2"></script>
-<style>
-:root{--bg:#050507;--panel:#0b0b10;--panel2:#101017;--line:rgba(255,255,255,.09);--text:#f8f7fb;--muted:#96939f;--pink:#ff4fa3;--pink2:#ff82bd;--shadow:0 25px 80px rgba(0,0,0,.45)}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}a{color:var(--pink2)}
-.hidden{display:none!important}
-#authScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 50% 20%,rgba(255,79,163,.10),transparent 35%),#050507}
-.authBox{width:min(430px,100%);padding:38px 30px;border:1px solid var(--line);border-radius:28px;background:rgba(12,12,17,.88);box-shadow:var(--shadow);backdrop-filter:blur(25px)}
-.brandMark{width:78px;height:42px;margin:0 auto 24px;display:flex;align-items:center;justify-content:center;gap:5px;transform:skewX(-22deg)}
-.brandMark i{display:block;width:7px;height:32px;border-radius:5px;background:linear-gradient(180deg,#fff,var(--pink));box-shadow:0 0 22px rgba(255,79,163,.3)}
-.brandMark i:nth-child(2){height:22px}.brandMark i:nth-child(3){height:39px}.brandMark i:nth-child(4){height:25px}
-.brandName{text-align:center;font-size:29px;font-weight:800;letter-spacing:.16em}.authSub{text-align:center;color:var(--muted);font-size:14px;line-height:1.5;margin:9px 0 28px}
-.authForm{display:grid;gap:12px}.authInput,.chatInput,.supportInput{width:100%;border:1px solid var(--line);background:#08080c;color:var(--text);border-radius:14px;padding:14px 15px;outline:none}.authInput:focus,.chatInput:focus,.supportInput:focus{border-color:rgba(255,79,163,.55);box-shadow:0 0 0 3px rgba(255,79,163,.08)}
-.primary{border:0;border-radius:14px;padding:14px 18px;color:white;background:linear-gradient(135deg,#ff3e98,#d62b82);font-weight:700;box-shadow:0 10px 30px rgba(255,79,163,.18)}.primary:disabled{opacity:.5;cursor:not-allowed}
-.authSwitch{border:0;background:none;color:var(--muted);display:block;margin:18px auto 0;font-size:13px}.authSwitch span{color:var(--pink2)}.authMsg{min-height:20px;text-align:center;font-size:12px;margin-top:14px;color:#ff9fc9}
-#app{min-height:100vh;display:none}.layout{min-height:100vh;display:flex}
-.sidebar{width:260px;flex:none;border-right:1px solid var(--line);background:rgba(7,7,10,.96);padding:22px 15px;display:flex;flex-direction:column}.sideBrand{display:flex;align-items:center;gap:10px;padding:4px 10px 24px}.sideBrand .brandMark{width:38px;height:25px;margin:0;gap:3px}.sideBrand .brandMark i{width:4px;height:19px}.sideBrand .brandMark i:nth-child(2){height:13px}.sideBrand .brandMark i:nth-child(3){height:23px}.sideBrand .brandMark i:nth-child(4){height:15px}.sideBrand b{letter-spacing:.13em}.nav{display:grid;gap:5px}.nav button,.bottomAction{border:1px solid transparent;background:transparent;color:#b7b4bf;text-align:left;padding:12px;border-radius:12px}.nav button:hover,.nav button.active,.bottomAction:hover{background:#111118;color:white;border-color:var(--line)}.sideBottom{margin-top:auto;border-top:1px solid var(--line);padding-top:15px}.accountMini{padding:10px 12px 15px}.accountMini small{display:block;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.main{flex:1;min-width:0;display:flex;flex-direction:column}.topbar{height:68px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;background:rgba(5,5,7,.82);backdrop-filter:blur(18px);z-index:10}.topTitle{font-weight:700}.credits{border:1px solid var(--line);background:#0d0d13;border-radius:999px;padding:8px 12px;color:#ddd;font-size:12px}.credits strong{color:var(--pink2)}.mobileMenu{display:none;background:none;border:0;color:white;font-size:22px}.chatArea{width:min(920px,100%);margin:auto;flex:1;padding:38px 22px 145px}.welcome{text-align:center;padding:55px 10px 20px}.welcome h1{font-size:clamp(32px,6vw,56px);margin:0 0 12px;letter-spacing:-.04em}.welcome p{color:var(--muted);margin:0 auto;max-width:620px;line-height:1.6}.suggestions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:35px auto;max-width:760px}.suggestion{border:1px solid var(--line);background:#0b0b10;color:#d8d5de;border-radius:16px;padding:15px;text-align:left}.suggestion:hover{border-color:rgba(255,79,163,.35);background:#101017}.message{display:flex;margin:18px 0}.message.user{justify-content:flex-end}.bubble{max-width:min(760px,88%);border-radius:18px;padding:14px 16px;line-height:1.6;font-size:15px}.user .bubble{background:#18131a;border:1px solid rgba(255,79,163,.16)}.assistant .bubble{background:transparent}.bubble p{margin:0 0 10px}.bubble p:last-child{margin-bottom:0}.bubble h1,.bubble h2,.bubble h3{margin:15px 0 8px}.bubble ul,.bubble ol{padding-left:22px}.bubble strong{font-weight:750}.sources{margin-top:12px;border-top:1px solid var(--line);padding-top:9px;font-size:11px;color:var(--muted)}.sources a{display:block;margin-top:5px;text-decoration:none}.thinking{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;padding:12px 4px}.thinkingMark{display:flex;gap:3px;transform:skewX(-22deg)}.thinkingMark i{width:4px;height:18px;border-radius:3px;background:var(--pink);animation:pulse 1s infinite}.thinkingMark i:nth-child(2){height:12px;animation-delay:.15s}.thinkingMark i:nth-child(3){height:21px;animation-delay:.3s}.thinkingMark i:nth-child(4){height:14px;animation-delay:.45s}@keyframes pulse{50%{opacity:.25;transform:translateY(3px)}}.composer{position:fixed;bottom:0;left:260px;right:0;padding:18px 22px 22px;background:linear-gradient(transparent,rgba(5,5,7,.96) 25%);z-index:8}.composerInner{width:min(920px,100%);margin:auto;display:flex;align-items:flex-end;gap:10px;border:1px solid var(--line);background:#0b0b10;border-radius:20px;padding:8px;box-shadow:var(--shadow)}.chatInput{border:0;background:transparent;resize:none;max-height:150px;padding:11px}.send{width:45px;height:45px;border:0;border-radius:14px;background:var(--pink);color:white;font-weight:800}.panel{display:none;width:min(900px,100%);margin:0 auto;padding:40px 24px}.panel.active{display:block}.panel h2{font-size:28px;margin-top:0}.panelSub{color:var(--muted);line-height:1.5}.planGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:25px}.plan{border:1px solid var(--line);background:#0b0b10;border-radius:20px;padding:22px}.plan.featured{border-color:rgba(255,79,163,.4);box-shadow:0 0 40px rgba(255,79,163,.07)}.plan h3{margin:0 0 8px}.price{font-size:28px;font-weight:800;margin:10px 0}.plan ul{padding-left:20px;color:#bbb;line-height:1.8}.setting{border:1px solid var(--line);background:#0b0b10;border-radius:16px;padding:15px;margin:10px 0;display:flex;align-items:center;justify-content:space-between;gap:15px}.setting label{font-weight:650}.setting small{display:block;color:var(--muted);font-weight:400;margin-top:4px}.toggle{width:48px;height:28px;border:0;border-radius:99px;background:#292931;position:relative}.toggle:after{content:"";position:absolute;width:22px;height:22px;border-radius:50%;background:white;top:3px;left:3px;transition:.2s}.toggle.on{background:var(--pink)}.toggle.on:after{left:23px}.select{background:#09090d;color:white;border:1px solid var(--line);padding:9px;border-radius:10px}.modalBack{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.modalBack.open{display:flex}.modal{width:min(680px,100%);max-height:90vh;overflow:auto;background:#0b0b10;border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow)}.modalHead{display:flex;align-items:center;justify-content:space-between}.close{border:0;background:#17171f;color:white;width:36px;height:36px;border-radius:10px}.supportInput{min-height:160px;resize:vertical;margin:15px 0}.status{color:var(--muted);font-size:12px;min-height:20px}.pix{display:none;margin-top:15px;text-align:center}.pix.show{display:block}.pix img{width:220px;max-width:100%;background:white;padding:8px;border-radius:10px}.pixCode{word-break:break-all;background:#08080c;border:1px solid var(--line);padding:12px;border-radius:10px;color:#bbb;font-size:11px;text-align:left;margin:10px 0}
-.light{--bg:#f5f4f7;--panel:#fff;--panel2:#fff;--line:rgba(20,20,30,.12);--text:#16151a;--muted:#6d6975}.light .sidebar,.light .topbar,.light .composer{background:rgba(250,250,252,.94)}.light .suggestion,.light .plan,.light .setting,.light .composerInner,.light .credits,.light .modal,.light .authBox{background:#fff}.light .authInput,.light .chatInput,.light .supportInput,.light .select{background:#f7f6f8;color:#16151a}.light .bubble.user{background:#fff0f7}.light .nav button,.light .bottomAction{color:#67636e}
-@media(max-width:800px){.sidebar{position:fixed;inset:0 auto 0 0;width:270px;transform:translateX(-105%);transition:.2s;z-index:30;box-shadow:var(--shadow)}.sidebar.open{transform:none}.mobileMenu{display:block}.topbar{padding:0 15px}.composer{left:0;padding:12px 12px 16px}.chatArea{padding-left:14px;padding-right:14px}.planGrid{grid-template-columns:1fr}.suggestions{grid-template-columns:1fr}.welcome{padding-top:35px}.panel{padding:28px 16px}.bubble{max-width:94%}}
-</style>
-</head>
-<body>
-<section id="authScreen">
-  <div class="authBox">
-    <div class="brandMark"><i></i><i></i><i></i><i></i></div>
-    <div class="brandName">RIMAK</div>
-    <div class="authSub" id="authSub">Sua inteligência pessoal que lembra de você.</div>
-    <form class="authForm" id="authForm" onsubmit="return false;">
-      <input id="authEmail" class="authInput" type="email" autocomplete="email" placeholder="Seu e-mail" required>
-      <input id="authPassword" class="authInput" type="password" autocomplete="current-password" placeholder="Sua senha" required>
-      <button id="authButton" class="primary">Entrar</button>
-    </form>
-    <button id="authSwitch" class="authSwitch">Ainda não tenho uma conta. <span>Criar conta</span></button>
-    <div id="authMsg" class="authMsg"></div>
-  </div>
-</section>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#050507">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>RIMAK</title>
 
-<section id="app">
-<div class="layout">
-<aside id="sidebar" class="sidebar">
-  <div class="sideBrand"><div class="brandMark"><i></i><i></i><i></i><i></i></div><b>RIMAK</b></div>
-  <nav class="nav">
-    <button class="navBtn active" data-view="chat">⌂ &nbsp; Conversa</button>
-    <button class="navBtn" data-view="plans">◇ &nbsp; Planos</button>
-    <button class="navBtn" data-view="settings">⚙ &nbsp; Configurações</button>
-    <button class="navBtn" data-view="support">? &nbsp; Suporte</button>
-  </nav>
-  <div class="sideBottom">
-    <div class="accountMini"><small id="accountEmail">Conta RIMAK</small><small id="planLabel">FREE · 20 créditos/dia</small></div>
-    <button id="logoutBtn" class="bottomAction">Sair da conta</button>
-  </div>
-</aside>
-<main class="main">
-<header class="topbar">
-  <div style="display:flex;align-items:center;gap:12px"><button id="mobileMenu" class="mobileMenu">☰</button><div class="topTitle" id="topTitle">RIMAK</div></div>
-  <div class="credits">Créditos: <strong id="creditCount">20</strong></div>
-</header>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
 
-<section id="view-chat" class="panel active">
-  <div class="chatArea" style="width:100%;padding-left:0;padding-right:0">
-    <div id="welcome" class="welcome">
-      <h1>Olá.</h1><p>Eu sou a RIMAK. Posso conversar com você, pesquisar informações atuais, lembrar do que importa e ajudar a executar suas ideias.</p>
-      <div class="suggestions">
-        <button class="suggestion" data-prompt="Pesquise as principais notícias de hoje e me mostre as fontes.">📰 O que está acontecendo hoje?</button>
-        <button class="suggestion" data-prompt="Me explique algo de forma simples e prática.">✦ Explique algo para mim</button>
-        <button class="suggestion" data-prompt="Pesquise os principais acontecimentos recentes da Fórmula 1.">🏁 Pesquise a F1</button>
-        <button class="suggestion" data-prompt="Me ajude a criar um plano para ganhar dinheiro com IA.">◈ Criar um plano</button>
-      </div>
-    </div>
-    <div id="messages"></div>
-  </div>
-</section>
-
-<section id="view-plans" class="panel">
-  <h2>Planos</h2><p class="panelSub">Escolha como quer usar a RIMAK. Seus planos permanecem exatamente com os limites definidos.</p>
-  <div class="planGrid">
-    <article class="plan"><h3>FREE</h3><div class="price">Grátis</div><ul><li>20 créditos por dia</li><li>Pesquisa web</li><li>Memória básica</li></ul><button class="primary" style="width:100%" disabled>Plano atual</button></article>
-    <article class="plan featured"><h3>PRO</h3><div class="price">R$ 11,99<span style="font-size:13px;color:var(--muted)">/mês</span></div><ul><li>50 créditos por dia</li><li>Pesquisa web</li><li>Memória longa</li></ul><button id="proBtn" class="primary" style="width:100%">Assinar PRO</button></article>
-    <article class="plan"><h3>ULTRA</h3><div class="price">R$ 29,99<span style="font-size:13px;color:var(--muted)">/mês</span></div><ul><li>150 créditos por dia</li><li>Pesquisa profunda</li><li>Memória avançada</li></ul><button id="ultraBtn" class="primary" style="width:100%">Assinar ULTRA</button></article>
-  </div>
-</section>
-
-<section id="view-settings" class="panel">
-  <h2>Configurações</h2><p class="panelSub">Personalize a experiência da RIMAK.</p>
-  <div class="setting"><div><label>Modo escuro</label><small>Alterne entre tema escuro e claro.</small></div><button id="darkToggle" class="toggle on"></button></div>
-  <div class="setting"><div><label>Animações</label><small>Controla efeitos visuais da interface.</small></div><button id="animToggle" class="toggle on"></button></div>
-  <div class="setting"><div><label>Personalização</label><small>Permite usar suas preferências como contexto.</small></div><button id="personalToggle" class="toggle on"></button></div>
-  <div class="setting"><div><label>Idioma</label><small>Idioma de toda a interface.</small></div><select id="language" class="select"><option value="pt-BR">Português</option><option value="en-US">English</option><option value="es-ES">Español</option></select></div>
-</section>
-
-<section id="view-support" class="panel">
-  <h2>Suporte</h2><p class="panelSub">Envie sua solicitação diretamente para a equipe da RIMAK.</p>
-  <div class="setting" style="display:block"><label>Como podemos ajudar?</label><textarea id="supportText" class="supportInput" placeholder="Descreva o problema ou dúvida..."></textarea><button id="supportBtn" class="primary">Enviar para o suporte</button><div id="supportStatus" class="status"></div></div>
-</section>
-</main>
-</div>
-
-<div class="composer">
-  <div class="composerInner"><textarea id="chatInput" class="chatInput" rows="1" placeholder="Converse com a RIMAK..."></textarea><button id="sendBtn" class="send">↑</button></div>
-</div>
-</section>
-
-<div id="checkoutModal" class="modalBack">
-  <div class="modal">
-    <div class="modalHead"><div><h2 id="checkoutTitle" style="margin:0">Assinar</h2><div class="status">Pagamento seguro pelo Mercado Pago.</div></div><button id="checkoutClose" class="close">×</button></div>
-    <div id="paymentBrick" style="margin-top:15px"></div>
-    <div id="checkoutStatus" class="status"></div>
-    <div id="pix" class="pix"><img id="pixImage" alt="QR Code Pix"><div id="pixCode" class="pixCode"></div><button id="copyPix" class="primary">Copiar Pix</button></div>
-  </div>
-</div>
-
-<script>
-const SUPABASE_URL="https://vqmfsshmjdfjlnmbemxv.supabase.co";
-const SUPABASE_KEY="sb_publishable_nCCjJPHoTODWLHvwTWN_AA_J8JivYaE";
-const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:"rimak-auth-clean"}});
-if(!window.supabase){document.getElementById("authMsg").textContent="Não foi possível carregar o sistema de login. Recarregue a página.";throw new Error("Supabase SDK failed to load");}
-const $=id=>document.getElementById(id);
-const state={user:null,mode:"login",messages:[],credits:20,plan:"free",view:"chat",sending:false,brick:null};
-const translations={
-"pt-BR":{chat:"Conversa",plans:"Planos",settings:"Configurações",support:"Suporte",placeholder:"Converse com a RIMAK...",welcome:"Olá.",welcomeText:"Eu sou a RIMAK. Posso conversar com você, pesquisar informações atuais, lembrar do que importa e ajudar a executar suas ideias.",supportSent:"Chamado enviado para o suporte."},
-"en-US":{chat:"Chat",plans:"Plans",settings:"Settings",support:"Support",placeholder:"Talk to RIMAK...",welcome:"Hello.",welcomeText:"I am RIMAK. I can chat with you, research current information, remember what matters and help execute your ideas.",supportSent:"Support request sent."},
-"es-ES":{chat:"Conversación",plans:"Planes",settings:"Configuración",support:"Soporte",placeholder:"Habla con RIMAK...",welcome:"Hola.",welcomeText:"Soy RIMAK. Puedo conversar contigo, investigar información actual, recordar lo importante y ayudarte a ejecutar tus ideas.",supportSent:"Solicitud enviada al soporte."}
-};
-function api(path){return path}
-function sessionToken(){return supabase.auth.getSession().then(x=>x.data.session?.access_token||null)}
-function authText(e){const s=String(e?.message||e||"").toLowerCase();if(s.includes("invalid login credentials"))return"E-mail ou senha incorretos.";if(s.includes("email not confirmed"))return"Confirme seu e-mail antes de entrar.";if(s.includes("user already registered"))return"Esse e-mail já possui uma conta.";if(s.includes("password"))return"A senha precisa ter pelo menos 6 caracteres.";if(s.includes("rate limit")||s.includes("too many"))return"Muitas tentativas. Aguarde alguns minutos.";return String(e?.message||e||"Não foi possível continuar.")}
-function authMessage(t,ok=false){$("authMsg").textContent=t;$("authMsg").style.color=ok?"#9effc5":"#ff9fc9"}
-let entered=false;
-async function enterApp(user){
-  if(entered && state.user?.id===user?.id)return;
-  entered=true;
-  state.user=user;
-  $("authScreen").style.display="none";
-  $("app").style.display="block";
-  $("accountEmail").textContent=user.email||"Conta RIMAK";
-  await loadAccount();
-  applySettings();
-  if(state.messages.length===0)renderWelcome();
-  $("chatInput").focus();
-}
-async function loadAccount(){
-  try{
-    const {data:credit,error:creditError}=await supabase.from("credits").select("balance").eq("user_id",state.user.id).maybeSingle();
-    if(!creditError && credit){
-      state.credits=Number(credit.balance??0);
-    }else if(!creditError && !credit){
-      const created=await supabase.from("credits").insert({user_id:state.user.id,balance:20}).select("balance").single();
-      if(!created.error)state.credits=Number(created.data?.balance??20);
+  <style>
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
     }
-    const {data:sub}=await supabase.from("subscriptions").select("plan,status").eq("user_id",state.user.id).order("updated_at",{ascending:false}).limit(1).maybeSingle();
-    const active=["active","authorized","approved"].includes(String(sub?.status||"").toLowerCase());
-    state.plan=active&&["pro","ultra"].includes(String(sub?.plan||"").toLowerCase())?String(sub.plan).toLowerCase():"free";
-  }catch(e){console.warn("RIMAK account:",e)}
-  updateCredits();
-}
-$("authForm").addEventListener("submit",async e=>{e.preventDefault();if($("authButton").disabled)return;const email=$("authEmail").value.trim().toLowerCase(),password=$("authPassword").value;if(password.length<6){authMessage("A senha precisa ter pelo menos 6 caracteres.");return}$("authButton").disabled=true;$("authButton").textContent=state.mode==="login"?"Entrando...":"Criando...";try{if(state.mode==="login"){let {data,error}=await supabase.auth.signInWithPassword({email,password});if(error){const r=await fetch(SUPABASE_URL+"/auth/v1/token?grant_type=password",{method:"POST",headers:{apikey:SUPABASE_KEY,"Content-Type":"application/json"},body:JSON.stringify({email,password})});const d=await r.json();if(!r.ok)throw error;const s=await supabase.auth.setSession({access_token:d.access_token,refresh_token:d.refresh_token});if(s.error)throw s.error;data=s.data}if(!data?.user)throw new Error("Sessão não criada.");await enterApp(data.user)}else{const {data,error}=await supabase.auth.signUp({email,password});if(error)throw error;if(data?.session&&data?.user)await enterApp(data.user);else authMessage("Conta criada. Verifique seu e-mail para confirmar.",true)}}catch(e){console.error(e);authMessage(authText(e))}finally{$("authButton").disabled=false;$("authButton").textContent=state.mode==="login"?"Entrar":"Criar conta"}});
-$("authSwitch").onclick=()=>{state.mode=state.mode==="login"?"signup":"login";$("authButton").textContent=state.mode==="login"?"Entrar":"Criar conta";$("authSub").textContent=state.mode==="login"?"Sua inteligência pessoal que lembra de você.":"Crie sua conta para começar.";authMessage("")};
-supabase.auth.onAuthStateChange((event,session)=>{if(session?.user&&event==="INITIAL_SESSION"){enterApp(session.user).catch(console.error)}});
-supabase.auth.getSession().then(({data})=>{if(data?.session?.user)enterApp(data.session.user)});
-function renderWelcome(){const w=$("welcome");w.style.display="block";$("messages").innerHTML=""}
-function escape(s){return String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-function md(s){let x=escape(s);const links=[];x=x.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,(_,a,u)=>{links.push('<a href="'+u+'" target="_blank" rel="noopener">'+a+"</a>");return"@@L"+(links.length-1)+"@@"});x=x.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>").replace(/__([^_]+)__/g,"<strong>$1</strong>");const lines=x.split("\n");let out="",list=false;for(const line of lines){if(/^\s*[-*]\s+/.test(line)){if(!list){out+="<ul>";list=true}out+="<li>"+line.replace(/^\s*[-*]\s+/,"")+"</li>";continue}if(list){out+="</ul>";list=false}if(/^###\s+/.test(line))out+="<h3>"+line.slice(4)+"</h3>";else if(/^##\s+/.test(line))out+="<h2>"+line.slice(3)+"</h2>";else if(/^#\s+/.test(line))out+="<h1>"+line.slice(2)+"</h1>";else if(line.trim())out+="<p>"+line+"</p>"}if(list)out+="</ul>";links.forEach((v,i)=>out=out.replace("@@L"+i+"@@",v));return out||"<p></p>"}
-function addMessage(role,text,sources=[]){$("welcome").style.display="none";const row=document.createElement("div");row.className="message "+role;const b=document.createElement("div");b.className="bubble";b.innerHTML=role==="assistant"?md(text):"<p>"+escape(text).replace(/\n/g,"<br>")+"</p>";if(sources?.length){const s=document.createElement("div");s.className="sources";s.textContent="Fontes pesquisadas";sources.forEach(v=>{const a=document.createElement("a");a.href=v.url;a.target="_blank";a.rel="noopener";a.textContent=v.title||v.url;s.appendChild(a)});b.appendChild(s)}row.appendChild(b);$("messages").appendChild(row);$("messages").scrollIntoView({block:"end",behavior:"smooth"})}
-function thinking(){const row=document.createElement("div");row.id="thinking";row.className="thinking";row.innerHTML='<div class="thinkingMark"><i></i><i></i><i></i><i></i></div><span>RIMAK está pensando...</span>';$("messages").appendChild(row)}
-function updateCredits(){$("creditCount").textContent=state.credits;$("planLabel").textContent=state.plan.toUpperCase()+" · "+(state.plan==="ultra"?150:state.plan==="pro"?50:20)+" créditos/dia"}
-async function sendMessage(){if(state.sending)return;const input=$("chatInput"),message=input.value.trim();if(!message)return;const token=await sessionToken();if(!token){showAuth();return}state.sending=true;input.value="";resize();addMessage("user",message);thinking();try{const history=state.messages.slice(-8);const r=await fetch(api("/api/chat"),{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+token},body:JSON.stringify({message,history,language:localStorage.getItem("rimak-language")||"pt-BR"})});const d=await r.json().catch(()=>({}));$("thinking")?.remove();if(r.status===402){addMessage("assistant","Seus créditos acabaram. Abra **Planos** para escolher uma opção.");return}if(r.status===401){await supabase.auth.signOut();showAuth();return}if(!r.ok)throw new Error(d.error||"Não foi possível responder.");state.messages.push({role:"user",content:message},{role:"assistant",content:d.reply});if(state.messages.length>16)state.messages=state.messages.slice(-16);state.credits=typeof d.credits==="number"?d.credits:state.credits;state.plan=d.plan||state.plan;updateCredits();addMessage("assistant",d.reply,d.sources||[])}catch(e){$("thinking")?.remove();addMessage("assistant","Não consegui concluir agora. "+(e.message||"Tente novamente."))}finally{state.sending=false}}
-function resize(){const x=$("chatInput");x.style.height="auto";x.style.height=Math.min(x.scrollHeight,150)+"px"}
-$("chatInput").addEventListener("input",resize);$("chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage()}});$("sendBtn").onclick=sendMessage;document.querySelectorAll(".suggestion").forEach(b=>b.onclick=()=>{$("chatInput").value=b.dataset.prompt;resize();sendMessage()});
-function showAuth(){$("app").style.display="none";$("authScreen").style.display="flex"}
-$("logoutBtn").onclick=async()=>{await supabase.auth.signOut();state.user=null;state.messages=[];showAuth()};
-document.querySelectorAll(".navBtn").forEach(b=>b.onclick=()=>switchView(b.dataset.view));
-$("mobileMenu").onclick=()=>$("sidebar").classList.toggle("open");
-function switchView(view){state.view=view;document.querySelectorAll(".navBtn").forEach(b=>b.classList.toggle("active",b.dataset.view===view));document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));$("view-"+view).classList.add("active");$("topTitle").textContent=translations[localStorage.getItem("rimak-language")||"pt-BR"][view]||"RIMAK";$("sidebar").classList.remove("open")}
-function settings(){return JSON.parse(localStorage.getItem("rimak-settings")||'{"dark":true,"animations":true,"personalization":true}')}
-function saveSettings(s){localStorage.setItem("rimak-settings",JSON.stringify(s))}
-function applySettings(){const s=settings();document.body.classList.toggle("light",!s.dark);$("darkToggle").classList.toggle("on",s.dark);$("animToggle").classList.toggle("on",s.animations);$("personalToggle").classList.toggle("on",s.personalization);const lang=localStorage.getItem("rimak-language")||"pt-BR";$("language").value=lang;const t=translations[lang];document.querySelector('[data-view="chat"]').innerHTML="⌂ &nbsp; "+t.chat;document.querySelector('[data-view="plans"]').innerHTML="◇ &nbsp; "+t.plans;document.querySelector('[data-view="settings"]').innerHTML="⚙ &nbsp; "+t.settings;document.querySelector('[data-view="support"]').innerHTML="? &nbsp; "+t.support;$("chatInput").placeholder=t.placeholder;if($("welcome")){$("welcome").querySelector("h1").textContent=t.welcome;$("welcome").querySelector("p").textContent=t.welcomeText}}
-$("darkToggle").onclick=()=>{const s=settings();s.dark=!s.dark;saveSettings(s);applySettings()};$("animToggle").onclick=()=>{const s=settings();s.animations=!s.animations;saveSettings(s);applySettings()};$("personalToggle").onclick=()=>{const s=settings();s.personalization=!s.personalization;saveSettings(s)};$("language").onchange=e=>{localStorage.setItem("rimak-language",e.target.value);applySettings()};
-$("supportBtn").onclick=async()=>{const text=$("supportText").value.trim();if(!text)return;$("supportBtn").disabled=true;try{const token=await sessionToken();const r=await fetch(api("/api/chat"),{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+token},body:JSON.stringify({action:"support",subject:"Solicitação de suporte RIMAK",message:text})});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||"Não foi possível enviar.");$("supportText").value="";$("supportStatus").textContent=translations[localStorage.getItem("rimak-language")||"pt-BR"].supportSent}catch(e){$("supportStatus").textContent=e.message}finally{$("supportBtn").disabled=false}};
-async function openCheckout(plan){
-  const token=await sessionToken();
-  if(!token){showAuth();return}
-  $("checkoutModal").classList.add("open");
-  $("checkoutTitle").textContent=plan==="pro"?"PRO — R$ 11,99/mês":"ULTRA — R$ 29,99/mês";
-  $("checkoutStatus").textContent="Carregando pagamento...";
-  $("pix").classList.remove("show");
-  try{
-    if(state.brick){state.brick.unmount();state.brick=null}
-    const kr=await fetch("/api/checkout-config");
-    const kd=await kr.json().catch(()=>({}));
-    if(!kr.ok||!kd.public_key)throw new Error(kd.error||"Mercado Pago não configurado.");
-    const mp=new MercadoPago(kd.public_key,{locale:"pt-BR"});
-    const amount=plan==="pro"?11.99:29.99;
-    state.brick=await mp.bricks().create("payment","paymentBrick",{
-      initialization:{amount},
-      customization:{
-        paymentMethods:{creditCard:"all",debitCard:"all",bankTransfer:"pix"},
-        visual:{theme:"dark"}
-      },
-      callbacks:{
-        onReady:()=>{$("checkoutStatus").textContent=""},
-        onError:()=>{$("checkoutStatus").textContent="Não foi possível carregar o pagamento."},
-        onSubmit:async(form)=>{
-          const response=await fetch("/api/payment",{
-            method:"POST",
-            headers:{"Content-Type":"application/json",Authorization:"Bearer "+token},
-            body:JSON.stringify({plan,payment:form})
-          });
-          const data=await response.json().catch(()=>({}));
-          if(!response.ok)throw new Error(data.error||"Pagamento não processado.");
-          $("checkoutStatus").textContent=data.status==="approved"?"Pagamento aprovado. Seu plano foi ativado.":"Pix gerado. Conclua o pagamento.";
-          if(data.qr_code||data.qr_code_base64){
-            $("pix").classList.add("show");
-            $("pixImage").style.display=data.qr_code_base64?"block":"none";
-            if(data.qr_code_base64)$("pixImage").src="data:image/png;base64,"+data.qr_code_base64;
-            $("pixCode").textContent=data.qr_code||"";
-            $("copyPix").onclick=async()=>{
-              try{await navigator.clipboard.writeText(data.qr_code||"");$("checkoutStatus").textContent="Pix copiado."}
-              catch{$("checkoutStatus").textContent="Não foi possível copiar automaticamente."}
-            };
-          }
-          if(data.status==="approved"){
-            state.plan=plan;
-            closeCheckout();
-            await loadAccount();
-          }
+
+    :root{
+      --bg:#050507;
+      --bg2:#09090d;
+      --panel:#0d0d12;
+      --panel2:#111117;
+      --white:#fafafa;
+      --text:rgba(255,255,255,.90);
+      --muted:rgba(255,255,255,.45);
+      --faint:rgba(255,255,255,.22);
+      --line:rgba(255,255,255,.075);
+      --line2:rgba(255,255,255,.12);
+      --pink:#ff4fa3;
+      --pink2:#ff83bd;
+      --purple:#9b7cff;
+      --danger:#ff719e;
+    }
+
+    html,body{
+      width:100%;
+      height:100%;
+      background:var(--bg);
+      color:white;
+      font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+    }
+
+    body{
+      overflow:hidden;
+    }
+
+    button,input,textarea{
+      font:inherit;
+    }
+
+    button{
+      border:0;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    /* =====================================================
+       AUTH
+    ===================================================== */
+
+    #authScreen{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      overflow:auto;
+      background:
+        radial-gradient(
+          circle at 50% 25%,
+          rgba(255,79,163,.13),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 50% 75%,
+          rgba(155,124,255,.08),
+          transparent 35%
+        ),
+        #050507;
+    }
+
+    .auth-box{
+      width:100%;
+      max-width:390px;
+      text-align:center;
+    }
+
+    /* RIMAK kinetic identity — no circular emblem */
+    .aura-symbol{position:relative;width:154px;height:64px;margin:0 auto 26px;display:flex;align-items:center;justify-content:center}
+    .aura-symbol .orbit,.aura-symbol .orbit2{position:absolute;width:18px;height:42px;border-radius:5px;background:linear-gradient(180deg,var(--pink2),var(--pink));box-shadow:0 0 24px rgba(255,79,163,.28);transform:skewX(-18deg);animation:rimak-bar 1.8s ease-in-out infinite}
+    .aura-symbol .orbit{left:48px;height:54px;animation-delay:-.45s}.aura-symbol .orbit2{left:76px;height:36px;opacity:.72;animation-delay:-.9s}
+    .aura-symbol .orb{position:absolute;left:104px;width:18px;height:18px;border-radius:4px;background:#fff;transform:skewX(-18deg) rotate(45deg);box-shadow:0 0 14px #fff,0 0 32px rgba(255,79,163,.8);animation:rimak-core 1.8s ease-in-out infinite}
+    @keyframes rimak-bar{0%,100%{transform:skewX(-18deg) translateY(7px);opacity:.5}50%{transform:skewX(-18deg) translateY(-7px);opacity:1}}
+    @keyframes rimak-core{0%,100%{transform:skewX(-18deg) rotate(45deg) scale(.78);opacity:.55}50%{transform:skewX(-18deg) rotate(45deg) scale(1.12);opacity:1}}
+    .auth-title{
+      font-size:34px;
+      font-weight:600;
+      letter-spacing:9px;
+      margin-right:-9px;
+      margin-bottom:10px;
+    }
+
+    .auth-subtitle{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
+      margin-bottom:28px;
+    }
+
+    .auth-form{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .auth-input{
+      width:100%;
+      height:54px;
+      border:1px solid var(--line2);
+      border-radius:16px;
+      outline:none;
+      background:rgba(255,255,255,.035);
+      color:white;
+      padding:0 17px;
+      font-size:15px;
+      transition:.2s;
+    }
+
+    .auth-input:focus{
+      border-color:rgba(255,79,163,.38);
+      box-shadow:0 0 0 4px rgba(255,79,163,.055);
+    }
+
+    .auth-input::placeholder{
+      color:rgba(255,255,255,.27);
+    }
+
+    .auth-button{
+      height:54px;
+      border-radius:16px;
+      background:#fff;
+      color:#050507;
+      font-weight:650;
+      cursor:pointer;
+      margin-top:4px;
+      transition:.2s;
+    }
+
+    .auth-button:active{
+      transform:scale(.98);
+    }
+
+    .auth-button:disabled{
+      opacity:.45;
+    }
+
+    .auth-switch{
+      margin-top:20px;
+      background:none;
+      color:var(--muted);
+      font-size:13px;
+      cursor:pointer;
+    }
+
+    .auth-switch span{
+      color:var(--pink2);
+    }
+
+    .auth-error{
+      min-height:18px;
+      margin-top:12px;
+      color:#ff91b7;
+      font-size:12px;
+      line-height:1.4;
+    }
+
+    .auth-success{
+      color:#9fffd2;
+    }
+
+    /* =====================================================
+       APP
+    ===================================================== */
+
+    #app{
+      display:none;
+    }
+
+    .app{
+      position:relative;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      background:
+        radial-gradient(
+          circle at 50% -20%,
+          rgba(255,79,163,.065),
+          transparent 36%
+        ),
+        radial-gradient(
+          circle at 100% 100%,
+          rgba(155,124,255,.045),
+          transparent 30%
+        ),
+        var(--bg);
+    }
+
+    .app::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.018;
+      background-image:
+        linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);
+      background-size:80px 80px;
+      mask-image:linear-gradient(to bottom,#000,transparent 85%);
+    }
+
+    /* =====================================================
+       TOPBAR
+    ===================================================== */
+
+    .topbar{
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      height:78px;
+      z-index:30;
+      display:grid;
+      grid-template-columns:52px 1fr auto;
+      align-items:center;
+      gap:10px;
+      padding:
+        max(12px,env(safe-area-inset-top))
+        14px
+        10px;
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(5,5,7,.96),
+          rgba(5,5,7,.76),
+          transparent
+        );
+      backdrop-filter:blur(18px);
+    }
+
+    .top-action{
+      width:42px;
+      height:42px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:rgba(255,255,255,.035);
+      color:rgba(255,255,255,.72);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      transition:.18s;
+    }
+
+    .top-action:active{
+      transform:scale(.92);
+    }
+
+    .hamburger{
+      width:18px;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+
+    .hamburger span{
+      width:100%;
+      height:1.5px;
+      border-radius:10px;
+      background:rgba(255,255,255,.8);
+    }
+
+    .hamburger span:nth-child(2){
+      width:72%;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:9px;
+    }
+
+    .brand-name{
+      font-size:12px;
+      font-weight:600;
+      letter-spacing:5px;
+      margin-right:-5px;
+    }
+
+    .mini-symbol{position:relative;width:28px;height:28px;display:flex;align-items:center;justify-content:center;gap:3px}
+    .mini-symbol .orbit,.mini-symbol .orb{position:relative;inset:auto;width:5px;height:17px;border-radius:2px;background:var(--pink);transform:skewX(-18deg);box-shadow:0 0 10px rgba(255,79,163,.45);animation:rimak-bar 1.5s ease-in-out infinite}
+    .mini-symbol .orbit{height:23px;animation-delay:-.3s}.mini-symbol .orb{height:12px;background:#fff;animation-delay:-.6s}
+    .brand-name{
+        font-size:11px;
+        letter-spacing:4px;
+      }
+
+      .credit-pill{
+        min-width:70px;
+        padding:0 10px;
+      }
+
+      .chat{
+        padding:88px 13px 123px;
+      }
+
+      .hero-symbol{
+        width:120px;
+        height:120px;
+        margin-bottom:25px;
+      }
+
+      .hero-orb{
+        width:21px;
+        height:21px;
+      }
+
+      .welcome-title{
+        font-size:31px;
+        letter-spacing:8px;
+        margin-right:-8px;
+      }
+
+      .welcome-subtitle{
+        font-size:13px;
+        max-width:320px;
+      }
+
+      .suggestions{
+        max-width:350px;
+      }
+
+      .suggestion{
+        font-size:10px;
+        padding:9px 11px;
+      }
+
+      .message-content{
+        max-width:88%;
+      }
+
+      .bubble{
+        font-size:13.5px;
+        padding:13px 14px;
+      }
+
+      .side-menu{
+        width:min(340px,92vw);
+      }
+
+      .modal{
+        padding:20px;
+        border-radius:21px;
+      }
+
+      #messageInput{
+        min-height:53px;
+        border-radius:17px;
+      }
+
+      #sendButton{
+        width:53px;
+        height:53px;
+        border-radius:17px;
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      *,
+      *::before,
+      *::after{
+        animation:none !important;
+        transition:none !important;
+        scroll-behavior:auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =====================================================
+       AUTH
+  ===================================================== -->
+
+  <div id="authScreen">
+
+    <div class="auth-box">
+
+      <div class="aura-symbol">
+        <div class="orbit"></div>
+        <div class="orbit2"></div>
+        <div class="orb"></div>
+      </div>
+
+      <div class="auth-title">RIMAK</div>
+
+      <div class="auth-subtitle" id="authSubtitle">
+        Sua inteligência pessoal que lembra de você.
+      </div>
+
+      <form class="auth-form" id="authForm">
+
+        <input
+          class="auth-input"
+          id="authEmail"
+          type="email"
+          placeholder="Seu e-mail"
+          autocomplete="email"
+          required
+        >
+
+        <input
+          class="auth-input"
+          id="authPassword"
+          type="password"
+          placeholder="Sua senha"
+          autocomplete="current-password"
+          required
+        >
+
+        <button
+          class="auth-button"
+          id="authButton"
+          type="submit"
+        >
+          Entrar
+        </button>
+
+      </form>
+
+      <button
+        class="auth-switch"
+        id="authSwitch"
+        type="button"
+      >
+        Ainda não tenho uma conta. <span>Criar conta</span>
+      </button>
+
+      <div
+        class="auth-error"
+        id="authMessage"
+      ></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       APP
+  ===================================================== -->
+
+  <div class="app" id="app">
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+      <button
+        class="top-action"
+        id="menuButton"
+        aria-label="Abrir menu"
+      >
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </button>
+
+      <div class="brand">
+
+        <div class="mini-symbol">
+          <div class="orbit"></div>
+          <div class="orb"></div>
+        </div>
+
+        <div class="brand-name">
+          RIMAK
+        </div>
+
+      </div>
+
+      <button
+        class="credit-pill"
+        id="creditButton"
+        type="button"
+      >
+        <span class="credit-dot"></span>
+        <span id="creditsCount">20</span>
+        <span class="credit-label">créditos</span>
+      </button>
+
+    </header>
+
+
+    <!-- MENU -->
+
+    <div
+      class="menu-overlay"
+      id="menuOverlay"
+    ></div>
+
+    <aside
+      class="side-menu"
+      id="sideMenu"
+    >
+
+      <div class="menu-header">
+
+        <div class="menu-brand">
+
+          <div class="mini-symbol">
+            <div class="orbit"></div>
+            <div class="orb"></div>
+          </div>
+
+          <div class="menu-brand-name">
+            RIMAK
+          </div>
+
+        </div>
+
+        <button
+          class="close-menu"
+          id="closeMenu"
+          type="button"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <button
+        class="new-chat"
+        id="newChatButton"
+        type="button"
+      >
+        <span class="new-chat-icon">＋</span>
+        <span>Nova conversa</span>
+      </button>
+
+
+      <div class="menu-section">
+
+        <div class="menu-section-title">
+          RIMAK
+        </div>
+
+        <button
+          class="menu-item"
+          id="historyButton"
+          type="button"
+        >
+          <span class="menu-icon">◌</span>
+          <span>Histórico</span>
+        </button>
+
+        <button
+          class="menu-item"
+          id="creditsMenuButton"
+          type="button"
+        >
+          <span class="menu-icon">✦</span>
+          <span>Créditos</span>
+        </button>
+
+        <button
+          class="menu-item"
+          id="plansMenuButton"
+          type="button"
+        >
+          <span class="menu-icon">◇</span>
+          <span>Planos</span>
+        </button>
+
+      </div>
+
+
+      <div class="menu-section">
+
+        <div class="menu-section-title">
+          Aplicativo
+        </div>
+
+        <button
+          class="menu-item"
+          id="settingsButton"
+          type="button"
+        >
+          <span class="menu-icon">⌘</span>
+          <span>Configurações</span>
+        </button>
+
+        <button
+          class="menu-item"
+          id="supportButton"
+          type="button"
+        >
+          <span class="menu-icon">?</span>
+          <span>Suporte</span>
+        </button>
+
+      </div>
+
+
+      <div class="history-title">
+        Conversas
+      </div>
+
+      <div
+        class="history-list"
+        id="historyList"
+      ></div>
+
+
+      <div class="account-area">
+
+        <div class="account-card">
+
+          <div
+            class="account-avatar"
+            id="accountAvatar"
+          >
+            A
+          </div>
+
+          <div class="account-info">
+
+            <div class="account-label">
+              CONTA
+            </div>
+
+            <div
+              class="account-email"
+              id="accountEmail"
+            >
+              —
+            </div>
+
+          </div>
+
+        </div>
+
+        <button
+          class="logout-button"
+          id="logoutButton"
+          type="button"
+        >
+          Sair da conta
+        </button>
+
+      </div>
+
+    </aside>
+
+
+    <!-- CHAT -->
+
+    <main
+      class="chat"
+      id="chat"
+    >
+
+      <section
+        class="welcome"
+        id="welcome"
+      >
+
+        <div class="hero-symbol" aria-label="RIMAK">
+          <div class="hero-ring"></div>
+          <div class="hero-ring" style="height:54px;width:22px;animation-delay:-.35s;opacity:.72"></div>
+          <div class="hero-ring" style="height:36px;width:18px;animation-delay:-.7s;opacity:.48"></div>
+        </div>
+
+        <h1 class="welcome-title">
+          RIMAK
+        </h1>
+
+        <p class="welcome-subtitle">
+          Uma inteligência pessoal que lembra de você,
+          entende seu momento e aprende com o tempo.
+        </p>
+
+        <div class="suggestions">
+
+          <button
+            class="suggestion"
+            data-prompt="Me ajude a criar uma ideia"
+          >
+            Criar uma ideia
+          </button>
+
+          <button
+            class="suggestion"
+            data-prompt="Me ajude a planejar meu próximo projeto"
+          >
+            Planejar um projeto
+          </button>
+
+          <button
+            class="suggestion"
+            data-prompt="Quero aprender algo novo hoje"
+          >
+            Aprender algo
+          </button>
+
+          <button
+            class="suggestion"
+            data-prompt="Me dê ideias criativas para ganhar dinheiro"
+          >
+            Ideias para ganhar dinheiro
+          </button>
+
+        </div>
+
+      </section>
+
+    </main>
+
+
+    <!-- COMPOSER -->
+
+    <div class="composer">
+
+      <div class="composer-inner">
+
+        <textarea
+          id="messageInput"
+          rows="1"
+          placeholder="Converse com a RIMAK..."
+          autocomplete="off"
+        ></textarea>
+
+        <button
+          id="sendButton"
+          type="button"
+          aria-label="Enviar"
+        >
+          ↑
+        </button>
+
+      </div>
+
+      <div class="composer-note">
+        A RIMAK pode cometer erros. Verifique informações importantes.
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       MODALS
+  ===================================================== -->
+
+  <div
+    class="modal-overlay"
+    id="creditsModal"
+  >
+    <div class="modal">
+
+      <div class="modal-header">
+        <div class="modal-title">Seus créditos</div>
+        <button class="modal-close" data-close="creditsModal">×</button>
+      </div>
+
+      <p class="modal-text">
+        Os créditos representam a capacidade da RIMAK de realizar diferentes tipos de ações.
+        Você recebe uma nova quantidade todos os dias. Os créditos não acumulam.
+      </p>
+
+      <div
+        style="
+          margin-top:22px;
+          padding:24px;
+          border:1px solid rgba(255,79,163,.18);
+          border-radius:18px;
+          text-align:center;
+          background:rgba(255,79,163,.035);
+        "
+      >
+        <div
+          id="modalCreditsCount"
+          style="
+            font-size:42px;
+            font-weight:650;
+          "
+        >
+                    20
+        </div>
+
+        <div
+          style="
+            margin-top:5px;
+            color:rgba(255,255,255,.35);
+            font-size:11px;
+          "
+        >
+          créditos disponíveis hoje
+        </div>
+      </div>
+
+      <div
+        style="
+          margin-top:18px;
+          padding:16px;
+          border:1px solid rgba(255,255,255,.06);
+          border-radius:16px;
+          background:rgba(255,255,255,.02);
+        "
+      >
+
+        <div
+          style="
+            display:flex;
+            justify-content:space-between;
+            padding:7px 0;
+            color:rgba(255,255,255,.65);
+            font-size:11px;
+          "
+        >
+          <span>Mensagem normal</span>
+          <strong style="color:#ff83bd;">1 crédito</strong>
+        </div>
+
+        <div
+          style="
+            display:flex;
+            justify-content:space-between;
+            padding:7px 0;
+            color:rgba(255,255,255,.65);
+            font-size:11px;
+          "
+        >
+          <span>Pesquisa na web</span>
+          <strong style="color:#ff83bd;">3 créditos</strong>
+        </div>
+
+        <div
+          style="
+            display:flex;
+            justify-content:space-between;
+            padding:7px 0;
+            color:rgba(255,255,255,.65);
+            font-size:11px;
+          "
+        >
+          <span>História ou cena longa</span>
+          <strong style="color:#ff83bd;">2 créditos</strong>
+        </div>
+
+      </div>
+
+      <button
+        class="modal-button"
+        id="creditsPlansButton"
+      >
+        Ver planos
+      </button>
+
+    </div>
+  </div>
+
+
+  <div
+    class="modal-overlay"
+    id="plansModal"
+  >
+    <div class="modal">
+
+      <div class="modal-header">
+        <div class="modal-title">Planos RIMAK</div>
+        <button class="modal-close" data-close="plansModal">×</button>
+      </div>
+
+      <p class="modal-text" style="margin-bottom:16px;">
+        Escolha o nível de experiência que combina com a forma como você quer usar a RIMAK.
+        Todos os planos recebem novos créditos diariamente.
+      </p>
+
+      <div class="plan-grid">
+
+        <div class="plan-card">
+
+          <div class="plan-name">
+            FREE
+          </div>
+
+          <div class="plan-price">
+            Grátis
+          </div>
+
+          <div
+            class="plan-desc"
+            style="color:rgba(255,255,255,.62);margin-bottom:7px;"
+          >
+            <strong>20 créditos por dia</strong>
+          </div>
+
+          <div class="plan-desc">
+            Para conhecer a RIMAK, conversar, criar ideias,
+            aprender, pesquisar de forma limitada e começar
+            a construir sua experiência personalizada.
+          </div>
+
+          <div
+            class="plan-desc"
+            style="margin-top:9px;"
+          >
+            • Memória básica<br>
+            • Personalidade da RIMAK<br>
+            • Conversas e histórias<br>
+            • Pesquisa web limitada<br>
+            • Créditos renovados diariamente
+          </div>
+
+        </div>
+
+
+        <div class="plan-card pro">
+
+          <div class="plan-name">
+            PRO
+          </div>
+
+          <div class="plan-price">
+            R$ 11,99<span style="font-size:11px;color:rgba(255,255,255,.35);">/mês</span>
+          </div>
+
+          <div
+            class="plan-desc"
+            style="color:rgba(255,255,255,.62);margin-bottom:7px;"
+          >
+            <strong>50 créditos por dia</strong>
+          </div>
+
+          <div class="plan-desc">
+            A RIMAK que realmente acompanha você no dia a dia.
+            Mais memória, contexto e capacidade para conversas
+            mais profundas.
+          </div>
+
+          <div
+            class="plan-desc"
+            style="margin-top:9px;"
+          >
+            • Tudo do Free<br>
+            • Memória mais avançada<br>
+            • Aprende suas preferências<br>
+            • Entende melhor seu contexto emocional<br>
+            • Pesquisa web completa<br>
+            • Contexto maior<br>
+            • Personagens mais consistentes<br>
+            • Histórias mais detalhadas<br>
+            • Prioridade de resposta
+          </div>
+
+          <button
+            class="modal-button"
+            id="proPlanButton"
+          >
+            Assinar Pro
+          </button>
+
+        </div>
+
+
+        <div class="plan-card">
+
+          <div class="plan-name">
+            ULTRA
+          </div>
+
+          <div class="plan-price">
+            R$ 29,99<span style="font-size:11px;color:rgba(255,255,255,.35);">/mês</span>
+          </div>
+
+          <div
+            class="plan-desc"
+            style="color:rgba(255,255,255,.62);margin-bottom:7px;"
+          >
+            <strong>150 créditos por dia</strong>
+          </div>
+
+          <div class="plan-desc">
+            A experiência máxima da RIMAK para quem quer
+            mais profundidade, memória e continuidade.
+          </div>
+
+          <div
+            class="plan-desc"
+            style="margin-top:9px;"
+          >
+            • Tudo do Pro<br>
+            • Memória avançada e detalhada<br>
+            • Aprendizado personalizado mais profundo<br>
+            • Maior compreensão emocional<br>
+            • Pesquisa profunda<br>
+            • Contexto ampliado<br>
+            • Mundos persistentes<br>
+            • Consequências longas nas histórias<br>
+            • Eventos dinâmicos<br>
+            • Prioridade máxima<br>
+            • Acesso antecipado a novidades
+          </div>
+
+          <button
+            class="modal-button"
+            id="ultraPlanButton"
+          >
+            Assinar Ultra
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="checkout-overlay" id="checkoutOverlay">
+    <div class="checkout-modal">
+      <div class="checkout-head">
+        <div>
+          <div class="checkout-title">Assinar RIMAK</div>
+          <div class="checkout-plan" id="checkoutPlanLabel"></div>
+        </div>
+        <button class="checkout-close" id="checkoutClose" type="button">×</button>
+      </div>
+      <div class="checkout-methods"><div class="checkout-method-label">Formas de pagamento</div><div id="paymentBrick_container"></div><div class="pix-result" id="pixResult"><img class="pix-qr" id="pixQr" alt="QR Code Pix"><div class="pix-code" id="pixCode"></div><button class="pix-copy" id="pixCopyButton" type="button">Copiar Pix</button></div></div>
+      <div class="checkout-status" id="checkoutStatus"></div>
+      <div class="checkout-note">Pagamento protegido pelo Mercado Pago. Os dados completos do cartão são tratados pelo componente seguro do Mercado Pago.</div>
+    </div>
+  </div>
+
+  <div
+    class="modal-overlay"
+    id="settingsModal"
+  >
+    <div class="modal">
+
+      <div class="modal-header">
+        <div class="modal-title">Configurações</div>
+        <button class="modal-close" data-close="settingsModal">×</button>
+      </div>
+
+      <div class="setting-row setting-interactive" data-setting="dark">
+        <div>
+          <div class="setting-name">Tema escuro</div>
+          <div class="setting-desc">A RIMAK foi projetada para o modo escuro.</div>
+        </div>
+        <button class="toggle on" id="darkModeToggle" type="button" aria-label="Alternar tema"></button>
+      </div>
+
+      <div class="setting-row setting-interactive" data-setting="animations">
+        <div>
+          <div class="setting-name">Animações</div>
+          <div class="setting-desc">Movimentos suaves da interface.</div>
+        </div>
+        <button class="toggle on" id="animationsToggle" type="button" aria-label="Alternar animações"></button>
+      </div>
+
+      <div class="setting-row setting-interactive" data-setting="personalization">
+        <div>
+          <div class="setting-name">Personalização da RIMAK</div>
+          <div class="setting-desc">A RIMAK aprende com suas conversas para personalizar a experiência.</div>
+        </div>
+        <button class="toggle on" id="personalizationToggle" type="button" aria-label="Alternar personalização"></button>
+      </div>
+
+      <div class="setting-row setting-interactive">
+        <div>
+          <div class="setting-name">Idioma</div>
+          <div class="setting-desc">Escolha o idioma da interface e das respostas.</div>
+        </div>
+        <select id="languageSelect" class="settings-select" aria-label="Idioma">
+          <option value="pt-BR">Português — Brasil</option>
+          <option value="en-US">English — United States</option>
+          <option value="es-ES">Español — España</option>
+        </select>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div
+    class="modal-overlay"
+    id="supportModal"
+  >
+    <div class="modal">
+
+      <div class="modal-header">
+        <div class="modal-title">Suporte</div>
+        <button class="modal-close" data-close="supportModal">×</button>
+      </div>
+
+      <p class="modal-text">
+        Encontrou um problema ou tem uma sugestão?
+        Você pode descrever o que aconteceu e usar
+        esse espaço para organizar o que precisa ser resolvido.
+      </p>
+
+      <textarea
+        id="supportText"
+        style="
+          width:100%;
+          height:130px;
+          margin-top:18px;
+          padding:14px;
+          resize:none;
+          outline:none;
+          border:1px solid rgba(255,255,255,.08);
+          border-radius:15px;
+          background:rgba(255,255,255,.035);
+          color:white;
+        "
+        placeholder="Descreva o problema..."
+      ></textarea>
+
+      <button
+        class="modal-button"
+        id="supportSendButton"
+      >
+        Enviar para o suporte
+      </button>
+      <div id="supportStatus" style="margin-top:10px;color:rgba(255,255,255,.42);font-size:11px;line-height:1.4;"></div>
+
+    </div>
+  </div>
+
+
+  <!-- TOAST -->
+
+  <div
+    class="toast"
+    id="toast"
+  ></div>
+
+
+  <script>
+    /* =====================================================
+       SUPABASE
+    ===================================================== */
+
+    const SUPABASE_URL =
+      "https://vqmfsshmjdfjlnmbemxv.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_nCCjJPHoTODWLHvwTWN_AA_J8JivYaE";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    /* =====================================================
+       STATE
+    ===================================================== */
+
+    let currentUser = null;
+
+    let conversation = [];
+
+    let stories = [];
+
+    let currentStoryId = null;
+
+    let credits = 20;
+
+    let isThinking = false;
+
+    let authMode = "login";
+
+    let auraMemory = {
+      preferences:[],
+      importantPeople:[],
+      goals:[],
+      importantFacts:[],
+      emotionalPatterns:[]
+    };
+
+
+    /* =====================================================
+       ELEMENTS
+    ===================================================== */
+
+    const authScreen =
+      document.getElementById("authScreen");
+
+    const app =
+      document.getElementById("app");
+
+    const authForm =
+      document.getElementById("authForm");
+
+    const authEmail =
+      document.getElementById("authEmail");
+
+    const authPassword =
+      document.getElementById("authPassword");
+
+    const authButton =
+      document.getElementById("authButton");
+
+    const authSwitch =
+      document.getElementById("authSwitch");
+
+    const authSubtitle =
+      document.getElementById("authSubtitle");
+
+    const authMessage =
+      document.getElementById("authMessage");
+
+    const chat =
+      document.getElementById("chat");
+
+    const welcome =
+      document.getElementById("welcome");
+
+    const input =
+      document.getElementById("messageInput");
+
+    const sendButton =
+      document.getElementById("sendButton");
+
+    const historyList =
+      document.getElementById("historyList");
+
+    const creditsCount =
+      document.getElementById("creditsCount");
+
+    const modalCreditsCount =
+      document.getElementById("modalCreditsCount");
+
+    const toast =
+      document.getElementById("toast");
+
+
+    /* =====================================================
+       TOAST
+    ===================================================== */
+
+    let toastTimer;
+
+    function showToast(message){
+
+      toast.textContent =
+        String(message || "");
+
+      toast.classList.add("show");
+
+      clearTimeout(toastTimer);
+
+      toastTimer =
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 2600);
+    }
+
+
+    /* =====================================================
+       AUTH MODE
+    ===================================================== */
+
+    authSwitch.addEventListener(
+      "click",
+      () => {
+
+        authMode =
+          authMode === "login"
+            ? "signup"
+            : "login";
+
+        authMessage.textContent = "";
+
+        if(authMode === "signup"){
+
+          authButton.textContent =
+            "Criar conta";
+
+          authSubtitle.textContent =
+            "Crie sua conta para começar.";
+
+          authSwitch.innerHTML =
+            'Já tenho uma conta. <span>Entrar</span>';
+
+        }else{
+
+          authButton.textContent =
+            "Entrar";
+
+          authSubtitle.textContent =
+            "Sua inteligência pessoal que lembra de você.";
+
+          authSwitch.innerHTML =
+            'Ainda não tenho uma conta. <span>Criar conta</span>';
+
         }
+
+      }
+    );
+
+    applyLanguage(loadSettings().language);
+
+
+    /* =====================================================
+       AUTH
+    ===================================================== */
+
+    authForm.addEventListener(
+      "submit",
+      handleAuth
+    );
+
+    // Fallback for mobile/WebKit: guarantee the Enter button invokes the auth flow.
+    authButton.addEventListener("click", async (event) => {
+      if (!authForm.checkValidity()) {
+        authForm.reportValidity();
+        return;
+      }
+      event.preventDefault();
+      await handleAuth(event);
+    });
+
+
+    async function handleAuth(event){
+
+      event.preventDefault();
+
+      const email =
+        authEmail.value.trim();
+
+      const password =
+        authPassword.value;
+
+      if(!email || !password){
+
+        authMessage.textContent =
+          "Preencha e-mail e senha.";
+
+        return;
+      }
+
+      authButton.disabled = true;
+
+      authMessage.textContent =
+        "Aguarde...";
+
+      try{
+
+        if(authMode === "signup"){
+
+          const {
+            data,
+            error
+          } =
+            await supabaseClient.auth.signUp({
+              email,
+              password
+            });
+
+          if(error){
+            throw error;
+          }
+
+          if(data.session){
+
+            currentUser =
+              data.user;
+
+            await showApp();
+
+          }else{
+
+            authMessage.className =
+              "auth-error auth-success";
+
+            authMessage.textContent =
+              "Conta criada. Verifique seu e-mail para confirmar.";
+
+          }
+
+        }else{
+
+          const {
+            data,
+                        error
+          } =
+            await supabaseClient.auth.signInWithPassword({
+              email,
+              password
+            });
+
+          if(error){
+            throw error;
+          }
+
+          currentUser =
+            data.user;
+
+          await showApp();
+
+        }
+
+      }catch(error){
+
+        console.error(error);
+
+        authMessage.className =
+          "auth-error";
+
+        authMessage.textContent =
+          translateAuthError(
+            error?.message
+          );
+
+      }finally{
+
+        authButton.disabled =
+          false;
+
+        authButton.textContent =
+          authMode === "login"
+            ? "Entrar"
+            : "Criar conta";
+
+      }
+
+    }
+
+
+    function translateAuthError(error){
+
+      if(!error){
+        return "Não foi possível continuar.";
+      }
+
+      const text =
+        String(error).toLowerCase();
+
+      if(
+        text.includes(
+          "invalid login credentials"
+        )
+      ){
+        return "E-mail ou senha incorretos.";
+      }
+
+      if(
+        text.includes(
+          "user already registered"
+        )
+      ){
+        return "Esse e-mail já possui uma conta.";
+      }
+
+      if(
+        text.includes(
+          "password"
+        )
+      ){
+        return "Verifique sua senha.";
+      }
+
+      if(
+        text.includes(
+          "email not confirmed"
+        )
+      ){
+        return "Confirme seu e-mail antes de entrar.";
+      }
+
+      return error;
+    }
+
+
+    /* =====================================================
+       SESSION
+    ===================================================== */
+
+    async function checkSession(){
+
+      const {
+        data
+      } =
+        await supabaseClient.auth.getSession();
+
+      if(data?.session){
+
+        currentUser =
+          data.session.user;
+
+        await showApp();
+
+      }else{
+
+        authScreen.style.display =
+          "flex";
+
+        app.style.display =
+          "none";
+
+      }
+
+    }
+
+
+    supabaseClient.auth.onAuthStateChange(
+      async (event,session) => {
+
+        if(session){
+
+          currentUser =
+            session.user;
+
+          await showApp();
+
+        }
+
+      }
+    );
+
+
+    async function showApp(){
+
+      authScreen.style.display =
+        "none";
+
+      app.style.display =
+        "block";
+
+      if(!currentUser){
+
+        const {
+          data
+        } =
+          await supabaseClient.auth.getUser();
+
+        currentUser =
+          data?.user || null;
+
+      }
+
+      loadRIMAKMemory();
+
+      updateAccountUI();
+
+      loadStories();
+
+      await loadCredits();
+
+      setTimeout(() => {
+        input.focus();
+      },150);
+
+    }
+
+
+    /* =====================================================
+       ACCOUNT
+    ===================================================== */
+
+    function updateAccountUI(){
+
+      if(!currentUser){
+        return;
+      }
+
+      const email =
+        currentUser.email ||
+        "Conta RIMAK";
+
+      document.getElementById(
+        "accountEmail"
+      ).textContent =
+        email;
+
+      document.getElementById(
+        "accountAvatar"
+      ).textContent =
+        email
+          .charAt(0)
+          .toUpperCase();
+
+    }
+
+
+    async function logout(){
+
+      await supabaseClient.auth.signOut();
+
+      currentUser = null;
+
+      conversation = [];
+
+      stories = [];
+
+      currentStoryId = null;
+
+      auraMemory = {
+        preferences:[],
+        importantPeople:[],
+        goals:[],
+        importantFacts:[],
+        emotionalPatterns:[]
+      };
+
+      closeMenu();
+
+      app.style.display =
+        "none";
+
+      authScreen.style.display =
+        "flex";
+
+      authPassword.value = "";
+
+      authMessage.textContent =
+        "";
+
+      resetChat();
+
+      showToast(
+        "Você saiu da conta."
+      );
+
+    }
+
+
+    /* =====================================================
+       RIMAK PERSONAL MEMORY
+       -----------------------------------------------------
+       Estrutura local preparada para a memória personalizada.
+       A memória real entre dispositivos/conversas deverá ser
+       persistida no Supabase/backend.
+    ===================================================== */
+
+    function memoryKey(){
+
+      if(!currentUser){
+        return null;
+      }
+
+      return (
+        "aura_memory_" +
+        currentUser.id
+      );
+
+    }
+
+
+    function loadRIMAKMemory(){
+
+      const key =
+        memoryKey();
+
+      if(!key){
+        return;
+      }
+
+      try{
+
+        const saved =
+          localStorage.getItem(key);
+
+        if(saved){
+
+          const parsed =
+            JSON.parse(saved);
+
+          auraMemory = {
+            preferences:
+              Array.isArray(
+                parsed.preferences
+              )
+                ? parsed.preferences
+                : [],
+
+            importantPeople:
+              Array.isArray(
+                parsed.importantPeople
+              )
+                ? parsed.importantPeople
+                : [],
+
+            goals:
+              Array.isArray(
+                parsed.goals
+              )
+                ? parsed.goals
+                : [],
+
+            importantFacts:
+              Array.isArray(
+                parsed.importantFacts
+              )
+                ? parsed.importantFacts
+                : [],
+
+            emotionalPatterns:
+              Array.isArray(
+                parsed.emotionalPatterns
+              )
+                ? parsed.emotionalPatterns
+                : []
+          };
+
+        }
+
+      }catch(error){
+
+        console.error(
+          "Erro ao carregar memória da RIMAK:",
+          error
+        );
+
+      }
+
+    }
+
+
+    function saveRIMAKMemory(){
+
+      const key =
+        memoryKey();
+
+      if(!key){
+        return;
+      }
+
+      try{
+
+        localStorage.setItem(
+          key,
+          JSON.stringify(
+            auraMemory
+          )
+        );
+
+      }catch(error){
+
+        console.error(
+          "Erro ao salvar memória da RIMAK:",
+          error
+        );
+
+      }
+
+    }
+
+
+    /*
+      Essa função não tenta "adivinhar" fatos pessoais.
+      Ela apenas registra sinais simples e seguros da conversa
+      para que o contexto possa ser enviado ao backend.
+    */
+
+    function learnFromUserMessage(message){
+
+      const text =
+        String(message || "")
+          .trim();
+
+      if(!text){
+        return;
+      }
+
+      const lower =
+        text.toLowerCase();
+
+      const preferencePatterns = [
+        "eu gosto de ",
+        "eu adoro ",
+        "eu prefiro ",
+        "gosto de ",
+        "adoro ",
+        "prefiro ",
+        "não gosto de ",
+        "nao gosto de ",
+        "odeio "
+      ];
+
+      const hasPreference =
+        preferencePatterns.some(
+          pattern =>
+            lower.includes(pattern)
+        );
+
+      if(hasPreference){
+
+        const clean =
+          text
+            .replace(/\s+/g," ")
+            .trim();
+
+        if(
+          !auraMemory.preferences.includes(
+            clean
+          )
+        ){
+
+          auraMemory.preferences.unshift(
+            clean
+          );
+
+          auraMemory.preferences =
+            auraMemory.preferences.slice(
+              0,
+              20
+            );
+
+        }
+
+      }
+
+      const goalPatterns = [
+        "quero conseguir ",
+        "quero aprender ",
+        "meu objetivo é ",
+        "meu objetivo e ",
+        "quero fazer ",
+        "quero criar ",
+        "estou tentando "
+      ];
+
+      if(
+        goalPatterns.some(
+          pattern =>
+            lower.includes(pattern)
+        )
+      ){
+
+        if(
+          !auraMemory.goals.includes(
+            text
+          )
+        ){
+
+          auraMemory.goals.unshift(
+            text
+          );
+
+          auraMemory.goals =
+            auraMemory.goals.slice(
+              0,
+              15
+            );
+
+        }
+
+      }
+
+      const emotionalSignals = [
+        "estou feliz",
+        "tô feliz",
+        "to feliz",
+        "estou triste",
+        "tô triste",
+        "to triste",
+        "estou preocupado",
+        "tô preocupado",
+        "to preocupado",
+        "estou ansioso",
+        "tô ansioso",
+        "to ansioso",
+        "estou animado",
+        "tô animado",
+        "to animado",
+        "estou com raiva",
+        "tô com raiva",
+        "to com raiva"
+      ];
+
+      emotionalSignals.forEach(
+        signal => {
+
+          if(
+            lower.includes(signal)
+          ){
+
+            if(
+              !auraMemory.emotionalPatterns.includes(
+                signal
+              )
+            ){
+
+              auraMemory.emotionalPatterns.unshift(
+                signal
+              );
+
+              auraMemory.emotionalPatterns =
+                auraMemory.emotionalPatterns.slice(
+                  0,
+                  15
+                );
+
+            }
+
+          }
+
+        }
+      );
+
+      saveRIMAKMemory();
+
+    }
+
+
+    function buildRIMAKContext(){
+
+      return {
+
+        memory:{
+          preferences:
+            auraMemory.preferences.slice(
+              0,
+              10
+            ),
+
+          importantPeople:
+            auraMemory.importantPeople.slice(
+              0,
+              10
+            ),
+
+          goals:
+            auraMemory.goals.slice(
+              0,
+              10
+            ),
+
+          importantFacts:
+            auraMemory.importantFacts.slice(
+              0,
+              10
+            ),
+
+          emotionalPatterns:
+            auraMemory.emotionalPatterns.slice(
+              0,
+              10
+            )
+        },
+
+        behavior:{
+          understandEmotion:true,
+          adaptTone:true,
+          maintainPersonality:true,
+          rememberRelevantContext:true,
+          learnFromUser:true,
+          preserveConversationContinuity:true
+        }
+
+      };
+
+    }
+
+
+    /* =====================================================
+       CREDITS
+    ===================================================== */
+
+    async function loadCredits(){
+
+      if(!currentUser){
+        return;
+      }
+
+      try{
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from("credits")
+            .select("balance")
+            .eq(
+              "user_id",
+              currentUser.id
+            )
+            .maybeSingle();
+
+        if(error){
+          throw error;
+        }
+                if(data){
+
+          credits =
+            Number(
+              data.balance ?? 0
+            );
+
+        }else{
+
+          const {
+            data:created,
+            error:createError
+          } =
+            await supabaseClient
+              .from("credits")
+              .insert({
+                user_id:
+                  currentUser.id,
+                balance:20
+              })
+              .select("balance")
+              .single();
+
+          if(createError){
+            throw createError;
+          }
+
+          credits =
+            Number(
+              created?.balance ?? 20
+            );
+
+        }
+
+      }catch(error){
+
+        console.error(
+          "Erro ao carregar créditos:",
+          error
+        );
+
+      }
+
+      updateCreditsUI();
+
+    }
+
+
+    function updateCreditsUI(){
+
+      creditsCount.textContent =
+        String(
+          Math.max(
+            0,
+            Number(credits || 0)
+          )
+        );
+
+      modalCreditsCount.textContent =
+        String(
+          Math.max(
+            0,
+            Number(credits || 0)
+          )
+        );
+
+    }
+
+
+    /* =====================================================
+       STORIES / HISTORY
+    ===================================================== */
+
+    function storageKey(){
+
+      if(!currentUser){
+        return null;
+      }
+
+      return (
+        "aura_line_stories_" +
+        currentUser.id
+      );
+
+    }
+
+
+    function loadStories(){
+
+      const key =
+        storageKey();
+
+      if(!key){
+        return;
+      }
+
+      try{
+
+        const saved =
+          localStorage.getItem(key);
+
+        stories =
+          saved
+            ? JSON.parse(saved)
+            : [];
+
+      }catch{
+
+        stories = [];
+
+      }
+
+      renderHistory();
+
+    }
+
+
+    function saveStories(){
+
+      const key =
+        storageKey();
+
+      if(!key){
+        return;
+      }
+
+      localStorage.setItem(
+        key,
+        JSON.stringify(stories)
+      );
+
+      renderHistory();
+
+    }
+
+
+    function createStory(){
+
+      const story = {
+
+        id:
+          "story_" +
+          Date.now() +
+          "_" +
+          Math.random()
+            .toString(36)
+            .slice(2),
+
+        title:
+          "Nova conversa",
+
+        messages:[],
+
+        createdAt:
+          Date.now(),
+
+        updatedAt:
+          Date.now()
+
+      };
+
+      stories.unshift(story);
+
+      currentStoryId =
+        story.id;
+
+      conversation = [];
+
+      saveStories();
+
+      renderCurrentStory();
+
+      closeMenu();
+
+      input.focus();
+
+      return story;
+
+    }
+
+
+    function getCurrentStory(){
+
+      return stories.find(
+        story =>
+          story.id ===
+          currentStoryId
+      );
+
+    }
+
+
+    function saveCurrentConversation(){
+
+      if(!currentStoryId){
+        return;
+      }
+
+      const story =
+        getCurrentStory();
+
+      if(!story){
+        return;
+      }
+
+      story.messages =
+        conversation.map(
+          item => ({
+            role:item.role,
+            content:item.content
+          })
+        );
+
+      story.updatedAt =
+        Date.now();
+
+      const firstUser =
+        conversation.find(
+          item =>
+            item.role === "user"
+        );
+
+      if(firstUser){
+
+        story.title =
+          firstUser.content
+            .replace(/\s+/g," ")
+            .trim()
+            .slice(0,45);
+
+      }
+
+      stories =
+        [
+          story,
+          ...stories.filter(
+            item =>
+              item.id !==
+              story.id
+          )
+        ];
+
+      saveStories();
+
+    }
+
+
+    function ensureStory(){
+
+      if(currentStoryId){
+
+        const existing =
+          getCurrentStory();
+
+        if(existing){
+          return existing;
+        }
+
+      }
+
+      return createStory();
+
+    }
+
+
+    function renderHistory(){
+
+      historyList.innerHTML =
+        "";
+
+      if(!stories.length){
+
+        historyList.innerHTML =
+          `
+            <div class="history-empty">
+              Suas conversas aparecerão aqui.
+            </div>
+          `;
+
+        return;
+
+      }
+
+      stories
+        .slice(0,50)
+        .forEach(story => {
+
+          const item =
+            document.createElement("div");
+
+          item.className =
+            "history-item" +
+            (
+              story.id ===
+              currentStoryId
+                ? " active"
+                : ""
+            );
+
+          const date =
+            new Date(
+              story.updatedAt ||
+              story.createdAt
+            );
+
+          item.innerHTML =
+            `
+              <div class="history-symbol"></div>
+
+              <div class="history-info">
+                <div class="history-name">
+                  ${escapeHTML(
+                    story.title ||
+                    "Nova conversa"
+                  )}
+                </div>
+
+                <div class="history-date">
+                  ${date.toLocaleDateString(
+                    "pt-BR",
+                    {
+                      day:"2-digit",
+                      month:"2-digit"
+                    }
+                  )}
+                </div>
+              </div>
+
+              <button
+                class="delete-history"
+                type="button"
+                aria-label="Excluir"
+              >
+                ×
+              </button>
+            `;
+
+          item.addEventListener(
+            "click",
+            event => {
+
+              if(
+                event.target.closest(
+                  ".delete-history"
+                )
+              ){
+                return;
+              }
+
+              openStory(
+                story.id
+              );
+
+            }
+          );
+
+          item
+            .querySelector(
+              ".delete-history"
+            )
+            .addEventListener(
+              "click",
+              event => {
+
+                event.stopPropagation();
+
+                deleteStory(
+                  story.id
+                );
+
+              }
+            );
+
+          historyList.appendChild(
+            item
+          );
+
+        });
+
+    }
+
+
+    function openStory(id){
+
+      const story =
+        stories.find(
+          item =>
+            item.id === id
+        );
+
+      if(!story){
+        return;
+      }
+
+      currentStoryId =
+        story.id;
+
+      conversation =
+        Array.isArray(
+          story.messages
+        )
+          ? [...story.messages]
+          : [];
+
+      renderCurrentStory();
+
+      closeMenu();
+
+    }
+
+
+    function deleteStory(id){
+
+      stories =
+        stories.filter(
+          story =>
+            story.id !== id
+        );
+
+      if(
+        currentStoryId === id
+      ){
+
+        currentStoryId =
+          null;
+
+        conversation =
+          [];
+
+        resetChat();
+
+      }
+
+      saveStories();
+
+    }
+
+
+    function renderCurrentStory(){
+
+      chat.innerHTML =
+        "";
+
+      if(!conversation.length){
+
+        chat.appendChild(
+          welcome
+        );
+
+        welcome.style.display =
+          "flex";
+
+        return;
+
+      }
+
+      welcome.style.display =
+        "none";
+
+      conversation.forEach(
+        message => {
+
+          addMessage(
+            message.role,
+            message.content,
+            false
+          );
+
+        }
+      );
+
+      scrollToBottom();
+
+    }
+
+
+    /* =====================================================
+       CHAT
+    ===================================================== */
+
+    async function sendMessage(){
+
+      if(isThinking){
+        return;
+      }
+
+      const message =
+        input.value.trim();
+
+      if(!message){
+        return;
+      }
+
+      if(!currentUser){
+
+        showToast(
+          "Entre na sua conta primeiro."
+        );
+
+        return;
+      }
+
+      if(credits <= 0){
+
+        openModal(
+          "plansModal"
+        );
+
+        showToast(
+          "Seus créditos acabaram."
+        );
+
+        return;
+
+      }
+
+      isThinking = true;
+
+      sendButton.disabled =
+        true;
+
+      input.value =
+        "";
+
+      autoResize();
+
+      ensureStory();
+
+      welcome.style.display =
+        "none";
+
+      conversation.push({
+        role:"user",
+        content:message
+      });
+
+      /*
+        A RIMAK aprende sinais relevantes da conversa.
+        O backend deverá transformar esse contexto em
+        memória persistente real.
+      */
+      learnFromUserMessage(
+        message
+      );
+
+      addMessage(
+        "user",
+        message
+      );
+
+      const thinking =
+        addThinking();
+
+      try{
+
+        let session = null;
+
+        const refreshed =
+          await supabaseClient.auth.refreshSession();
+
+        if(
+          refreshed.data?.session
+        ){
+
+          session =
+            refreshed.data.session;
+
+        }else{
+
+          const currentSession =
+            await supabaseClient.auth.getSession();
+
+          session =
+            currentSession.data?.session ||
+            null;
+
+        }
+
+        if(
+          !session?.access_token
+        ){
+
+          throw new Error(
+            "Sessão expirada. Entre novamente."
+          );
+
+        }
+
+        const response =
+          await fetch(
+            "/api/chat",
+            {
+              method:"POST",
+
+              headers:{
+                "Content-Type":
+                  "application/json",
+
+                "Authorization":
+                                    `Bearer ${session.access_token}`
+              },
+
+              body:
+                JSON.stringify({
+
+                  message,
+
+                  history:
+                    conversation.slice(
+                      0,
+                      -1
+                    ),
+
+                  language:
+                    (loadSettings().language || "pt-BR"),
+
+                  plan:
+                    "free",
+
+                  auraContext:
+                    buildRIMAKContext()
+
+                })
+
+            }
+          );
+
+        const data =
+          await response
+            .json()
+            .catch(
+              () => ({})
+            );
+
+        if(!response.ok){
+
+          if(
+            response.status === 401
+          ){
+
+            throw new Error(
+              "A autenticação da RIMAK foi recusada pelo servidor. Tente entrar novamente."
+            );
+
+          }
+
+          if(
+            response.status === 402
+          ){
+
+            if(
+              typeof data.credits ===
+              "number"
+            ){
+
+              credits =
+                data.credits;
+
+            }else{
+
+              await loadCredits();
+
+            }
+
+            updateCreditsUI();
+
+            openModal(
+              "plansModal"
+            );
+
+            throw new Error(
+              data.error ||
+              "Seus créditos acabaram."
+            );
+
+          }
+
+          throw new Error(
+            data.error ||
+            "Erro na API."
+          );
+
+        }
+
+        if(
+          typeof data.credits ===
+          "number"
+        ){
+
+          credits =
+            data.credits;
+
+          updateCreditsUI();
+
+        }else{
+
+          await loadCredits();
+
+        }
+
+        /*
+          Se o backend futuramente retornar memórias
+          aprendidas de forma estruturada, elas podem
+          ser incorporadas aqui sem alterar o visual.
+        */
+
+        if(
+          data.memory &&
+          typeof data.memory === "object"
+        ){
+
+          if(
+            Array.isArray(
+              data.memory.preferences
+            )
+          ){
+
+            auraMemory.preferences =
+              data.memory.preferences.slice(
+                0,
+                20
+              );
+
+          }
+
+          if(
+            Array.isArray(
+              data.memory.importantPeople
+            )
+          ){
+
+            auraMemory.importantPeople =
+              data.memory.importantPeople.slice(
+                0,
+                20
+              );
+
+          }
+
+          if(
+            Array.isArray(
+              data.memory.goals
+            )
+          ){
+
+            auraMemory.goals =
+              data.memory.goals.slice(
+                0,
+                20
+              );
+
+          }
+
+          if(
+            Array.isArray(
+              data.memory.importantFacts
+            )
+          ){
+
+            auraMemory.importantFacts =
+              data.memory.importantFacts.slice(
+                0,
+                20
+              );
+
+          }
+
+          if(
+            Array.isArray(
+              data.memory.emotionalPatterns
+            )
+          ){
+
+            auraMemory.emotionalPatterns =
+              data.memory.emotionalPatterns.slice(
+                0,
+                20
+              );
+
+          }
+
+          saveRIMAKMemory();
+
+        }
+
+        const reply =
+          String(
+            data.reply || ""
+          );
+
+        thinking.remove();
+
+        if(!reply){
+
+          throw new Error(
+            "A RIMAK não retornou uma resposta."
+          );
+
+        }
+
+        conversation.push({
+          role:"assistant",
+          content:reply
+        });
+
+        await streamRIMAK(
+          reply,
+          Array.isArray(data.sources) ? data.sources : []
+        );
+
+        saveCurrentConversation();
+
+      }catch(error){
+
+        console.error(error);
+
+        if(
+          thinking &&
+          thinking.isConnected
+        ){
+
+          thinking.remove();
+
+        }
+
+        addMessage(
+          "aura",
+          error?.message ||
+          "Não consegui responder agora. Tente novamente em alguns instantes."
+        );
+
+      }finally{
+
+        isThinking = false;
+
+        sendButton.disabled =
+          false;
+
+        input.focus();
+
+      }
+
+    }
+
+
+    function addMessage(
+      role,
+      text,
+      shouldScroll=true
+    ){
+
+      const wrapper =
+        document.createElement(
+          "div"
+        );
+
+      wrapper.className =
+        "message " +
+        (
+          role === "user"
+            ? "user"
+            : "aura"
+        );
+
+      const content =
+        document.createElement(
+          "div"
+        );
+
+      content.className =
+        "message-content";
+
+      if(role !== "user"){
+
+        const label =
+          document.createElement(
+            "div"
+          );
+
+        label.className =
+          "aura-label";
+
+        label.textContent =
+          "RIMAK";
+
+        content.appendChild(
+          label
+        );
+
+      }
+
+      const bubble =
+        document.createElement(
+          "div"
+        );
+
+      bubble.className =
+        "bubble";
+
+      if(role === "user"){
+        bubble.textContent = String(text || "");
+      }else{
+        bubble.innerHTML = renderMarkdown(text);
+      }
+
+      content.appendChild(
+        bubble
+      );
+
+      wrapper.appendChild(
+        content
+      );
+
+      chat.appendChild(
+        wrapper
+      );
+
+      if(shouldScroll){
+
+        scrollToBottom();
+
+      }
+
+      return wrapper;
+
+    }
+
+
+    function addThinking(){
+
+      const element =
+        document.createElement(
+          "div"
+        );
+
+      element.className =
+        "thinking";
+
+      element.innerHTML =
+        `
+          <div class="thinking-symbol" aria-hidden="true">
+            <div class="thinking-orbit"></div>
+            <div class="thinking-orbit thinking-orbit-two"></div>
+            <div class="thinking-core"></div>
+          </div>
+          <span>RIMAK está pensando<span class="thinking-dots" aria-hidden="true">...</span></span>
+        `;
+
+      chat.appendChild(
+        element
+      );
+
+      scrollToBottom();
+
+      return element;
+
+    }
+
+
+    async function streamRIMAK(text, sources = []){
+
+      const wrapper =
+        document.createElement(
+          "div"
+        );
+
+      wrapper.className =
+        "message aura";
+
+      const content =
+        document.createElement(
+          "div"
+        );
+
+      content.className =
+        "message-content";
+
+      const label =
+        document.createElement(
+          "div"
+        );
+
+      label.className =
+        "aura-label";
+
+      label.textContent =
+        "RIMAK";
+
+      const bubble =
+        document.createElement(
+          "div"
+        );
+
+      bubble.className =
+        "bubble";
+
+      content.appendChild(
+        label
+      );
+
+      content.appendChild(
+        bubble
+      );
+
+      wrapper.appendChild(
+        content
+      );
+
+      chat.appendChild(
+        wrapper
+      );
+
+      const words =
+        String(text)
+          .split(/(\s+)/);
+
+      let output = "";
+
+      for(
+        let i=0;
+        i<words.length;
+        i++
+      ){
+
+        output +=
+          words[i];
+
+        bubble.innerHTML =
+          renderMarkdown(output);
+
+        if(
+          i % 3 === 0
+        ){
+
+          scrollToBottom();
+
+          await sleep(
+            18
+          );
+
+        }
+
+      }
+
+      if(Array.isArray(sources) && sources.length){
+        const sourceBox=document.createElement("div");
+        sourceBox.className="aura-sources";
+        const title=document.createElement("div");
+        title.className="aura-sources-title";
+        title.textContent="FONTES";
+        sourceBox.appendChild(title);
+        sources.slice(0,5).forEach(source=>{
+          if(!source?.url)return;
+          const link=document.createElement("a");
+          link.className="aura-source";
+          link.href=source.url;
+          link.target="_blank";
+          link.rel="noopener noreferrer";
+          link.textContent=source.title || source.url;
+          sourceBox.appendChild(link);
+        });
+        if(sourceBox.children.length>1) content.appendChild(sourceBox);
+      }
+
+      scrollToBottom();
+
+    }
+
+
+    function sleep(ms){
+
+      return new Promise(
+        resolve =>
+          setTimeout(
+            resolve,
+            ms
+          )
+      );
+
+    }
+
+
+    function resetChat(){
+
+      conversation = [];
+
+      currentStoryId =
+        null;
+
+      chat.innerHTML =
+        "";
+
+      welcome.style.display =
+        "flex";
+
+      chat.appendChild(
+        welcome
+      );
+
+    }
+
+
+    function scrollToBottom(){
+
+      requestAnimationFrame(
+        () => {
+
+          chat.scrollTop =
+            chat.scrollHeight;
+
+        }
+      );
+
+    }
+
+
+    /* =====================================================
+       MENU
+    ===================================================== */
+
+    const sideMenu =
+      document.getElementById(
+        "sideMenu"
+      );
+
+    const menuOverlay =
+      document.getElementById(
+        "menuOverlay"
+      );
+
+
+    function openMenu(){
+
+      sideMenu.classList.add(
+        "open"
+      );
+
+      menuOverlay.classList.add(
+        "open"
+      );
+
+    }
+
+
+    function closeMenu(){
+
+      sideMenu.classList.remove(
+        "open"
+      );
+
+      menuOverlay.classList.remove(
+        "open"
+      );
+
+    }
+
+
+    document.getElementById(
+      "menuButton"
+    ).addEventListener(
+      "click",
+      openMenu
+    );
+
+    document.getElementById(
+      "closeMenu"
+    ).addEventListener(
+      "click",
+      closeMenu
+    );
+
+    menuOverlay.addEventListener(
+      "click",
+      closeMenu
+    );
+
+
+    document.getElementById(
+      "newChatButton"
+    ).addEventListener(
+      "click",
+      () => {
+        createStory();
+      }
+    );
+
+
+    document.getElementById(
+      "historyButton"
+    ).addEventListener(
+      "click",
+      () => {
+
+        renderHistory();
+
+        showToast(
+          "Histórico atualizado."
+        );
+
+      }
+    );
+
+
+    document.getElementById(
+      "creditsMenuButton"
+    ).addEventListener(
+      "click",
+      () => {
+
+        closeMenu();
+
+        openModal(
+          "creditsModal"
+        );
+
+      }
+    );
+
+
+    document.getElementById(
+      "plansMenuButton"
+    ).addEventListener(
+      "click",
+      () => {
+
+        closeMenu();
+                openModal(
+          "plansModal"
+        );
+
+      }
+    );
+
+
+    document.getElementById(
+      "settingsButton"
+    ).addEventListener(
+      "click",
+      () => {
+
+        closeMenu();
+
+        openModal(
+          "settingsModal"
+        );
+
+      }
+    );
+
+
+    document.getElementById(
+      "supportButton"
+    ).addEventListener(
+      "click",
+      () => {
+
+        closeMenu();
+
+        openModal(
+          "supportModal"
+        );
+
+      }
+    );
+
+
+    document.getElementById(
+      "logoutButton"
+    ).addEventListener(
+      "click",
+      logout
+    );
+
+
+    document.getElementById(
+      "creditButton"
+    ).addEventListener(
+      "click",
+      () => {
+
+        updateCreditsUI();
+
+        openModal(
+          "creditsModal"
+        );
+
+      }
+    );
+
+
+    /* =====================================================
+       MODALS
+    ===================================================== */
+
+    function openModal(id){
+
+      const modal =
+        document.getElementById(
+          id
+        );
+
+      if(modal){
+
+        modal.classList.add(
+          "open"
+        );
+
+      }
+
+    }
+
+
+    function closeModal(id){
+
+      const modal =
+        document.getElementById(
+          id
+        );
+
+      if(modal){
+
+        modal.classList.remove(
+          "open"
+        );
+
+      }
+
+    }
+
+
+    document
+      .querySelectorAll(
+        "[data-close]"
+      )
+      .forEach(
+        button => {
+
+          button.addEventListener(
+            "click",
+            () => {
+
+              closeModal(
+                button.dataset.close
+              );
+
+            }
+          );
+
+        }
+      );
+
+
+    document
+      .querySelectorAll(
+        ".modal-overlay"
+      )
+      .forEach(
+        overlay => {
+
+          overlay.addEventListener(
+            "click",
+            event => {
+
+              if(
+                event.target ===
+                overlay
+              ){
+
+                overlay.classList.remove(
+                  "open"
+                );
+
+              }
+
+            }
+          );
+
+        }
+      );
+
+
+    document.getElementById(
+      "creditsPlansButton"
+    ).addEventListener(
+      "click",
+      () => {
+
+        closeModal(
+          "creditsModal"
+        );
+
+        openModal(
+          "plansModal"
+        );
+
+      }
+    );
+
+
+    let checkoutBrickController=null;
+    let checkoutPlan=null;
+
+    const RIMAK_LANGS={
+      "pt-BR":{
+        authSub:"Sua inteligência pessoal que lembra de você.",email:"Seu e-mail",password:"Sua senha",login:"Entrar",signup:"Criar conta",noAccount:"Ainda não tenho uma conta.",hasAccount:"Já tenho uma conta.",credits:"créditos",newChat:"Nova conversa",aura:"RIMAK",history:"Histórico",creditsTitle:"Créditos",plans:"Planos",app:"Aplicativo",settings:"Configurações",support:"Suporte",conversations:"Conversas",account:"CONTA",logout:"Sair da conta",welcome:"Uma inteligência pessoal que lembra de você, entende seu momento e aprende com o tempo.",idea:"Criar uma ideia",project:"Planejar um projeto",learn:"Aprender algo",money:"Ideias para ganhar dinheiro",placeholder:"Converse com a RIMAK...",note:"A RIMAK pode cometer erros. Verifique informações importantes.",creditsModal:"Seus créditos",creditsText:"Os créditos representam a capacidade da RIMAK de realizar diferentes tipos de ações. Você recebe uma nova quantidade todos os dias. Os créditos não acumulam.",available:"créditos disponíveis hoje",normal:"Mensagem normal",web:"Pesquisa na web",story:"História ou cena longa",viewPlans:"Ver planos",plansTitle:"Planos RIMAK",plansText:"Escolha o nível de experiência que combina com a forma como você quer usar a RIMAK. Todos os planos recebem novos créditos diariamente.",free:"Grátis",perDay:"créditos por dia",proButton:"Assinar Pro",ultraButton:"Assinar Ultra",settingsTitle:"Configurações",dark:"Tema escuro",darkDesc:"Use uma interface escura e confortável.",animations:"Animações",animationsDesc:"Movimentos suaves da interface.",personal:"Personalização da RIMAK",personalDesc:"A RIMAK aprende com suas conversas para personalizar a experiência.",language:"Idioma",languageDesc:"Escolha o idioma da interface e das respostas.",supportTitle:"Suporte",supportText:"Encontrou um problema ou tem uma sugestão? Descreva o que aconteceu e envie para nossa equipe.",supportPlaceholder:"Descreva o problema...",supportButton:"Enviar para o suporte",thinking:"RIMAK está pensando",sources:"FONTES",payment:"Formas de pagamento",copyPix:"Copiar Pix"},
+      "en-US":{
+        authSub:"Your personal intelligence that remembers you.",email:"Your email",password:"Your password",login:"Sign in",signup:"Create account",noAccount:"I don't have an account yet.",hasAccount:"I already have an account.",credits:"credits",newChat:"New conversation",aura:"RIMAK",history:"History",creditsTitle:"Credits",plans:"Plans",app:"App",settings:"Settings",support:"Support",conversations:"Conversations",account:"ACCOUNT",logout:"Sign out",welcome:"A personal intelligence that remembers you, understands your moment, and learns over time.",idea:"Create an idea",project:"Plan a project",learn:"Learn something",money:"Ideas to make money",placeholder:"Talk to RIMAK...",note:"RIMAK can make mistakes. Verify important information.",creditsModal:"Your credits",creditsText:"Credits represent RIMAK's capacity to perform different types of actions. You receive a new amount every day. Credits do not roll over.",available:"credits available today",normal:"Regular message",web:"Web research",story:"Long story or scene",viewPlans:"View plans",plansTitle:"RIMAK Plans",plansText:"Choose the experience level that fits how you want to use RIMAK. All plans receive new credits daily.",free:"Free",perDay:"credits per day",proButton:"Subscribe Pro",ultraButton:"Subscribe Ultra",settingsTitle:"Settings",dark:"Dark theme",darkDesc:"Use a dark and comfortable interface.",animations:"Animations",animationsDesc:"Smooth interface motion.",personal:"RIMAK personalization",personalDesc:"RIMAK learns from your conversations to personalize your experience.",language:"Language",languageDesc:"Choose the interface and response language.",supportTitle:"Support",supportText:"Found a problem or have a suggestion? Describe what happened and send it to our team.",supportPlaceholder:"Describe the problem...",supportButton:"Send to support",thinking:"RIMAK is thinking",sources:"SOURCES",payment:"Payment methods",copyPix:"Copy Pix"},
+      "es-ES":{
+        authSub:"Tu inteligencia personal que te recuerda.",email:"Tu correo electrónico",password:"Tu contraseña",login:"Entrar",signup:"Crear cuenta",noAccount:"Todavía no tengo una cuenta.",hasAccount:"Ya tengo una cuenta.",credits:"créditos",newChat:"Nueva conversación",aura:"RIMAK",history:"Historial",creditsTitle:"Créditos",plans:"Planes",app:"Aplicación",settings:"Configuración",support:"Soporte",conversations:"Conversaciones",account:"CUENTA",logout:"Cerrar sesión",welcome:"Una inteligencia personal que te recuerda, entiende tu momento y aprende con el tiempo.",idea:"Crear una idea",project:"Planificar un proyecto",learn:"Aprender algo",money:"Ideas para ganar dinero",placeholder:"Habla con RIMAK...",note:"RIMAK puede cometer errores. Verifica la información importante.",creditsModal:"Tus créditos",creditsText:"Los créditos representan la capacidad de RIMAK para realizar diferentes acciones. Recibes una nueva cantidad cada día. Los créditos no se acumulan.",available:"créditos disponibles hoy",normal:"Mensaje normal",web:"Búsqueda web",story:"Historia o escena larga",viewPlans:"Ver planes",plansTitle:"Planes de RIMAK",plansText:"Elige el nivel de experiencia que se adapte a cómo quieres usar RIMAK. Todos los planes reciben nuevos créditos diariamente.",free:"Gratis",perDay:"créditos al día",proButton:"Suscribirse Pro",ultraButton:"Suscribirse Ultra",settingsTitle:"Configuración",dark:"Tema oscuro",darkDesc:"Usa una interfaz oscura y cómoda.",animations:"Animaciones",animationsDesc:"Movimientos suaves de la interfaz.",personal:"Personalización de RIMAK",personalDesc:"RIMAK aprende de tus conversaciones para personalizar la experiencia.",language:"Idioma",languageDesc:"Elige el idioma de la interfaz y de las respuestas.",supportTitle:"Soporte",supportText:"¿Encontraste un problema o tienes una sugerencia? Describe lo ocurrido y envíalo a nuestro equipo.",supportPlaceholder:"Describe el problema...",supportButton:"Enviar al soporte",thinking:"RIMAK está pensando",sources:"FUENTES",payment:"Formas de pago",copyPix:"Copiar Pix"}
+    };
+    function applyLanguage(lang){
+      const t=RIMAK_LANGS[lang]||RIMAK_LANGS["pt-BR"];
+      document.documentElement.lang=lang;
+      const set=(sel,key)=>{const el=document.querySelector(sel);if(!el||t[key]==null)return;if(key==="placeholder")el.placeholder=t[key];else el.textContent=t[key];};
+      set("#authSubtitle","authSub");set("#authEmail","email");set("#authPassword","password");set("#authButton","login");
+      const sw=document.getElementById("authSwitch");if(sw)sw.innerHTML=(authMode==="login"?t.noAccount+" <span>"+t.signup+"</span>":t.hasAccount+" <span>"+t.login+"</span>");
+      [[".credit-label","credits"],["#newChatButton span:last-child","newChat"],["#historyButton span:last-child","history"],["#creditsMenuButton span:last-child","creditsTitle"],["#plansMenuButton span:last-child","plans"],["#settingsButton span:last-child","settings"],["#supportButton span:last-child","support"],[".history-title","conversations"],[".account-label","account"],["#logoutButton","logout"],[".welcome-subtitle","welcome"],[".suggestion:nth-child(1)","idea"],[".suggestion:nth-child(2)","project"],[".suggestion:nth-child(3)","learn"],[".suggestion:nth-child(4)","money"],["#messageInput","placeholder"],[".composer-note","note"],["#creditsModal .modal-title","creditsModal"],["#creditsModal .modal-text","creditsText"],["#modalCreditsCount + div","available"],["#creditsPlansButton","viewPlans"],["#plansModal .modal-title","plansTitle"],["#plansModal .modal-text","plansText"],["#settingsModal .modal-title","settingsTitle"],["#supportModal .modal-title","supportTitle"],["#supportModal .modal-text","supportText"],["#supportText","supportPlaceholder"],["#supportSendButton","supportButton"],[".checkout-method-label","payment"],["#pixCopyButton","copyPix"]].forEach(([s,k])=>set(s,k));
+      set("#settingsModal .setting-row:nth-of-type(1) .setting-name","dark");set("#settingsModal .setting-row:nth-of-type(1) .setting-desc","darkDesc");set("#settingsModal .setting-row:nth-of-type(2) .setting-name","animations");set("#settingsModal .setting-row:nth-of-type(2) .setting-desc","animationsDesc");set("#settingsModal .setting-row:nth-of-type(3) .setting-name","personal");set("#settingsModal .setting-row:nth-of-type(3) .setting-desc","personalDesc");set("#settingsModal .setting-row:nth-of-type(4) .setting-name","language");set("#settingsModal .setting-row:nth-of-type(4) .setting-desc","languageDesc");
+      const plans=document.querySelectorAll("#plansModal .plan-card");if(plans.length){set("#plansModal .plan-card:nth-child(1) .plan-price","free");plans.forEach((p,i)=>{const d=p.querySelector(".plan-desc");if(d&&i<3)d.innerHTML="<strong>"+(i===0?20:i===1?50:150)+" "+t.perDay+"</strong>";});}
+      const pbtn=document.getElementById("proPlanButton"),ubtn=document.getElementById("ultraPlanButton");if(pbtn)pbtn.textContent=t.proButton;if(ubtn)ubtn.textContent=t.ultraButton;
+      const labels=document.querySelectorAll(".thinking");labels.forEach(el=>{const span=el.querySelector("span");if(span)span.firstChild.textContent=t.thinking;});
+      document.querySelectorAll(".aura-sources-title").forEach(el=>el.textContent=t.sources);
+    }
+    const settingsKey = () => currentUser ? "aura_settings_" + currentUser.id : "aura_settings";
+    function loadSettings(){let saved={};try{saved=JSON.parse(localStorage.getItem(settingsKey())||"{}");}catch{} const settings={dark:saved.dark!==false,animations:saved.animations!==false,personalization:saved.personalization!==false,language:saved.language||"pt-BR"};[["darkModeToggle","dark"],["animationsToggle","animations"],["personalizationToggle","personalization"]].forEach(([id,name])=>{const el=document.getElementById(id);if(el)el.classList.toggle("on",!!settings[name]);});const select=document.getElementById("languageSelect");if(select)select.value=settings.language;document.documentElement.classList.toggle("no-aura-animations",!settings.animations);document.documentElement.classList.toggle("aura-light-mode",!settings.dark);applyLanguage(settings.language);return settings;}
+    function saveSetting(name,value){const settings=loadSettings();settings[name]=value;localStorage.setItem(settingsKey(),JSON.stringify(settings));loadSettings();}
+    function bindSettings(){[["darkModeToggle","dark"],["animationsToggle","animations"],["personalizationToggle","personalization"]].forEach(([id,name])=>{const el=document.getElementById(id);if(!el||el.dataset.bound)return;el.dataset.bound="1";el.addEventListener("click",()=>{saveSetting(name,!el.classList.contains("on"));showToast(loadSettings().language==="en-US"?"Settings saved.":loadSettings().language==="es-ES"?"Configuración guardada.":"Configuração salva.");});});const select=document.getElementById("languageSelect");if(select&&!select.dataset.bound){select.dataset.bound="1";select.addEventListener("change",e=>{saveSetting("language",e.target.value);showToast(loadSettings().language==="en-US"?"Language saved.":loadSettings().language==="es-ES"?"Idioma guardado.":"Idioma salvo.");});}loadSettings();}
+    bindSettings();
+
+    async function openCheckout(plan){
+      if(!currentUser){showToast("Entre na sua conta primeiro.");return;}
+      const sessionResult=await supabaseClient.auth.getSession();const session=sessionResult.data?.session;
+      if(!session?.access_token){showToast("Sessão expirada. Entre novamente.");return;}
+      checkoutPlan=plan;document.getElementById("checkoutPlanLabel").textContent=plan==="pro"?"PRO — R$ 11,99/mês":"ULTRA — R$ 29,99/mês";document.getElementById("checkoutStatus").textContent="";document.getElementById("checkoutOverlay").classList.add("open");
+      try{if(checkoutBrickController){checkoutBrickController.unmount();checkoutBrickController=null;}const keyResponse=await fetch("/api/checkout-config");const keyData=await keyResponse.json().catch(()=>({}));if(!keyResponse.ok||!keyData.public_key)throw new Error(keyData.error||"Chave pública do Mercado Pago não configurada.");const mp=new MercadoPago(keyData.public_key,{locale:"pt-BR"});const builder=mp.bricks();const amount=plan==="pro"?11.99:29.99;
+        checkoutBrickController=await builder.create("payment","paymentBrick_container",{initialization:{amount},customization:{paymentMethods:{creditCard:"all",debitCard:"all",bankTransfer:"pix",ticket:"all",mercadoPago:"all"},visual:{theme:"dark"}},callbacks:{onReady:()=>{},onError:error=>{console.error("Mercado Pago Payment Brick:",error);document.getElementById("checkoutStatus").textContent="Não foi possível carregar o pagamento.";},onSubmit:async(formData)=>{const status=document.getElementById("checkoutStatus");status.textContent="Processando pagamento...";const response=await fetch("/api/payment",{method:"POST",headers:{"Content-Type":"application/json","Authorization":`Bearer ${session.access_token}`},body:JSON.stringify({plan,payment:formData})});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.error||"Não foi possível processar o pagamento.");status.textContent=data.status==="approved"?"Pagamento aprovado. Seu plano foi ativado.":"Pix gerado. Pague pelo QR Code ou Pix Copia e Cola.";if(data.qr_code||data.qr_code_base64){const box=document.getElementById("pixResult"),qr=document.getElementById("pixQr"),code=document.getElementById("pixCode");box.classList.add("show");if(data.qr_code_base64)qr.src="data:image/png;base64,"+data.qr_code_base64;else qr.style.display="none";code.textContent=data.qr_code||"";document.getElementById("pixCopyButton").onclick=async()=>{try{await navigator.clipboard.writeText(data.qr_code||"");showToast("Pix copiado.");}catch{showToast("Não foi possível copiar automaticamente.");}};}showToast(data.status==="approved"?"Plano "+plan.toUpperCase()+" ativado.":"Pix gerado.");if(data.status==="approved"){closeCheckout();await loadCredits();}}}});      
+      }catch(error){console.error("Checkout:",error);document.getElementById("checkoutStatus").textContent=error?.message||"Erro ao abrir pagamento.";showToast(error?.message||"Erro ao abrir pagamento.");}
+    }
+
+    function closeCheckout(){
+      const overlay=document.getElementById("checkoutOverlay");
+      overlay.classList.remove("open");
+      if(checkoutBrickController){checkoutBrickController.unmount();checkoutBrickController=null;}
+      checkoutPlan=null;
+    }
+
+    document.getElementById("checkoutClose").addEventListener("click",closeCheckout);
+    document.getElementById("checkoutOverlay").addEventListener("click",(event)=>{
+      if(event.target.id==="checkoutOverlay")closeCheckout();
+    });
+    document.getElementById("proPlanButton").addEventListener("click",()=>openCheckout("pro"));
+    document.getElementById("ultraPlanButton").addEventListener("click",()=>openCheckout("ultra"));
+
+    document.getElementById("supportSendButton").addEventListener("click", async () => {
+      const text = document.getElementById("supportText").value.trim();
+      const status = document.getElementById("supportStatus");
+
+      if(!text){
+        showToast("Escreva uma mensagem primeiro.");
+        return;
+      }
+
+      const sessionResult = await supabaseClient.auth.getSession();
+      const session = sessionResult.data?.session;
+
+      if(!session?.access_token){
+        showToast("Sessão expirada. Entre novamente.");
+        return;
+      }
+
+      const button = document.getElementById("supportSendButton");
+      button.disabled = true;
+      button.textContent = "Enviando...";
+      if(status) status.textContent = "";
+
+      try{
+        const response = await fetch("/api/chat",{
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json",
+            "Authorization":`Bearer ${session.access_token}`
+          },
+          body:JSON.stringify({
+            action:"support",
+            subject:"Solicitação de suporte RIMAK",
+            message:text
+          })
+        });
+
+        const data = await response.json().catch(()=>({}));
+
+        if(!response.ok){
+          throw new Error(data.error || "Não foi possível enviar o chamado.");
+        }
+
+        document.getElementById("supportText").value = "";
+        if(status) status.textContent = "Chamado enviado. Nossa equipe poderá acompanhar sua solicitação.";
+        showToast("Chamado enviado para o suporte.");
+      }catch(error){
+        console.error("Support:",error);
+        if(status) status.textContent = error?.message || "Erro ao enviar.";
+        showToast(error?.message || "Erro ao enviar suporte.");
+      }finally{
+        button.disabled = false;
+        button.textContent = "Enviar para o suporte";
       }
     });
-  }catch(e){
-    console.error("Checkout:",e);
-    $("checkoutStatus").textContent=e.message||"Não foi possível abrir o pagamento.";
-  }
-}
-function closeCheckout(){if(state.brick){state.brick.unmount();state.brick=null}$("paymentBrick").innerHTML="";$("checkoutModal").classList.remove("open")}
-$("checkoutClose").onclick=closeCheckout;$("checkoutModal").onclick=e=>{if(e.target.id==="checkoutModal")closeCheckout()};$("proBtn").onclick=()=>openCheckout("pro");$("ultraBtn").onclick=()=>openCheckout("ultra");
-function init(){applySettings();supabase.auth.getSession().then(({data})=>{if(data?.session?.user)enterApp(data.session.user)}).catch(()=>showAuth())}
-init();
-</script>
+
+
+    /* =====================================================
+       INPUT
+    ===================================================== */
+
+    function autoResize(){
+
+      input.style.height =
+        "auto";
+
+      input.style.height =
+        Math.min(
+          input.scrollHeight,
+          150
+        ) +
+        "px";
+
+    }
+
+
+    input.addEventListener(
+      "input",
+      autoResize
+    );
+
+
+    input.addEventListener(
+      "keydown",
+      event => {
+
+        if(
+          event.key === "Enter" &&
+          !event.shiftKey
+        ){
+
+          event.preventDefault();
+
+          sendMessage();
+
+        }
+
+      }
+    );
+
+
+    sendButton.addEventListener(
+      "click",
+      sendMessage
+    );
+
+
+    /* =====================================================
+       SUGGESTIONS
+    ===================================================== */
+
+    document
+      .querySelectorAll(
+        ".suggestion"
+      )
+      .forEach(
+        button => {
+
+          button.addEventListener(
+            "click",
+            () => {
+
+              input.value =
+                button.dataset.prompt;
+
+              autoResize();
+
+              sendMessage();
+
+            }
+          );
+
+        }
+      );
+
+
+    /* =====================================================
+       HELPERS
+    ===================================================== */
+
+    function renderMarkdown(value){
+      const lines=String(value||"").replace(/\r/g,"").split("\n");
+      let html="",listType=null;
+      const close=()=>{if(listType){html+=`</${listType}>`;listType=null;}};
+      for(const raw of lines){
+        const line=raw.trimEnd();
+        if(!line.trim()){close();continue;}
+        const m=line.match(/^\s*[-*]\s+(.+)$/)||line.match(/^\s*\d+[.)]\s+(.+)$/);
+        if(m){
+          const type=/^\s*[-*]/.test(line)?"ul":"ol";
+          if(listType!==type){close();html+=`<${type}>`;listType=type;}
+          html+=`<li>${formatInlineMarkdown(m[1])}</li>`;continue;
+        }
+        close();
+        const h=line.match(/^\s*(#{1,3})\s+(.+)$/);
+        html+=h?`<h${h[1].length}>${formatInlineMarkdown(h[2])}</h${h[1].length}>`:`<p>${formatInlineMarkdown(line)}</p>`;
+      }
+      close();return html||"<p></p>";
+    }
+    function formatInlineMarkdown(value){
+      let s=escapeHTML(value),links=[];
+      s=s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,(_,label,url)=>{
+        const token=`@@LINK${links.length}@@`;
+        links.push(`<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`);return token;
+      });
+      s=s.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>").replace(/__([^_]+)__/g,"<strong>$1</strong>");
+      s=s.replace(/\*([^*]+)\*/g,"<em>$1</em>").replace(/_([^_]+)_/g,"<em>$1</em>");
+      links.forEach((link,i)=>{s=s.replace(`@@LINK${i}@@`,link);});return s;
+    }
+
+    function escapeHTML(value){
+
+      return String(value || "")
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+        .replace(
+          /</g,
+          "&lt;"
+        )
+        .replace(
+          />/g,
+          "&gt;"
+        )
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+        .replace(
+          /'/g,
+          "&#039;"
+        );
+
+    }
+
+
+    /* =====================================================
+       INIT
+    ===================================================== */
+
+    loadSettings();
+    checkSession();
+
+
+  </script>
+
 </body>
 </html>
