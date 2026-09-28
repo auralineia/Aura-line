@@ -295,18 +295,11 @@ async function saveMemory(
       }
     }
 
-    if (!userToken) return false;
-
-    const response = await fetch(
-      `${url}/rest/v1/aura_memories`,
+    const response = await supabaseRest(
+      "aura_memories",
       {
         method: "POST",
-        headers: {
-          apikey: anonKey,
-          Authorization: `Bearer ${userToken}`,
-          "Content-Type": "application/json",
-          Prefer: "return=minimal"
-        },
+        headers: { Prefer: "return=minimal" },
         body: JSON.stringify({
           user_id: userId,
           memory: clean,
