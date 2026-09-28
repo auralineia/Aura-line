@@ -329,6 +329,55 @@
     .mini-symbol .orbit,.mini-symbol .orb{position:relative;inset:auto;width:5px;height:17px;border-radius:2px;background:var(--pink);transform:skewX(-18deg);box-shadow:0 0 10px rgba(255,79,163,.45);animation:rimak-bar 1.5s ease-in-out infinite}
     .mini-symbol .orbit{height:23px;animation-delay:-.3s}.mini-symbol .orb{height:12px;background:#fff;animation-delay:-.6s}
 
+    /* RIMAK signature logo */
+    .rimak-logo{
+      position:relative;
+      width:44px;
+      height:44px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:5px;
+      filter:drop-shadow(0 0 12px rgba(255,79,163,.28));
+    }
+    .rimak-logo span{
+      display:block;
+      width:7px;
+      height:30px;
+      border-radius:3px;
+      background:linear-gradient(180deg,#ffb4d9 0%,var(--pink) 48%,#b978ff 100%);
+      transform:skewX(-18deg);
+      box-shadow:0 0 12px rgba(255,79,163,.38);
+      animation:rimak-logo-float 1.8s ease-in-out infinite;
+    }
+    .rimak-logo span:nth-child(2){
+      height:38px;
+      animation-delay:-.28s;
+    }
+    .rimak-logo span:nth-child(3){
+      height:22px;
+      background:linear-gradient(180deg,#fff 0%,#ffb4d9 45%,var(--pink) 100%);
+      animation-delay:-.56s;
+    }
+    @keyframes rimak-logo-float{
+      0%,100%{transform:skewX(-18deg) translateY(3px) scaleY(.92);opacity:.72}
+      50%{transform:skewX(-18deg) translateY(-3px) scaleY(1.06);opacity:1}
+    }
+
+    .thinking .rimak-logo{
+      width:28px;
+      height:28px;
+      gap:3px;
+      flex:0 0 28px;
+    }
+    .thinking .rimak-logo span{
+      width:4px;
+      height:19px;
+    }
+    .thinking .rimak-logo span:nth-child(2){height:24px}
+    .thinking .rimak-logo span:nth-child(3){height:14px}
+    
+
     .credit-pill{
       height:40px;
       min-width:76px;
