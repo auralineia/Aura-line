@@ -515,7 +515,7 @@ async function processMemory(userId, userToken, message) {
     await saveMemory(
       userId,
       userToken,
-      `O usuário relatou a seguinte informação, que não foi confirmada pela Aura: ${message}`,
+      `O usuário relatou a seguinte informação, que não foi confirmada pela RIMAK: ${message}`,
       "claim",
       4,
       false
@@ -735,13 +735,13 @@ Se a pergunta exige confirmação externa e não há pesquisa disponível, deixe
 `;
 
   return `
-Você é Aura, assistente da Aura Line.
+Você é RIMAK, assistente da RIMAK LINE.
 
 IDENTIDADE
-- Seu nome é Aura.
-- Você foi criada e desenvolvida pela Aura Line.
+- Seu nome é RIMAK.
+- Você foi criada e desenvolvida pela RIMAK LINE.
 - Você NÃO foi criada pela OpenAI.
-- O modelo de IA usado pela Aura pode ser fornecido por terceiros.
+- O modelo de IA usado pela RIMAK pode ser fornecido por terceiros.
 - Nunca diga que é "uma IA da OpenAI" ou que a OpenAI é sua criadora.
 
 PERSONALIDADE
@@ -834,7 +834,7 @@ async function generateWithGroq(messages, plan) {
 
     if (response.status === 429) {
       throw new Error(
-        "A Aura está recebendo muitas solicitações. Tente novamente em alguns segundos."
+        "A RIMAK está recebendo muitas solicitações. Tente novamente em alguns segundos."
       );
     }
 
@@ -846,7 +846,7 @@ async function generateWithGroq(messages, plan) {
     data?.choices?.[0]?.message?.content?.trim();
 
   if (!reply) {
-    throw new Error("A Aura não recebeu uma resposta válida do modelo.");
+    throw new Error("A RIMAK não recebeu uma resposta válida do modelo.");
   }
 
   return reply;
@@ -867,7 +867,7 @@ function setCors(res) {
 
 async function handleSupportRequest(req, res, user) {
   const token = bearer(req);
-  const subject = String(req.body?.subject || "Suporte AURA").slice(0, 160);
+  const subject = String(req.body?.subject || "Suporte RIMAK").slice(0, 160);
   const message = String(req.body?.message || "").trim().slice(0, 5000);
   if (!message) return json(res, 400, { error: "Escreva uma mensagem." });
 
@@ -1083,12 +1083,12 @@ export default async function handler(req, res) {
       model: MODEL
     });
   } catch (error) {
-    console.error("Aura API error:", error);
+    console.error("RIMAK API error:", error);
 
     return json(res, 500, {
       error:
         error?.message ||
-        "A Aura encontrou um erro interno. Tente novamente."
+        "A RIMAK encontrou um erro interno. Tente novamente."
     });
   }
 }
