@@ -1,0 +1,50 @@
+name: Rebrand RIMAK
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  rebrand:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply RIMAK branding
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          files = [Path("index.html"), Path("api/chat.js")]
+
+          for path in files:
+              if not path.exists():
+                  continue
+              text = path.read_text(encoding="utf-8")
+
+              replacements = [
+                  ("AURA LINE", "RIMAK LINE"),
+                  ("Aura Line", "RIMAK LINE"),
+                  ("AURA", "RIMAK"),
+                  ("Aura", "RIMAK"),
+              ]
+
+              for old, new in replacements:
+                  text = text.replace(old, new)
+
+              path.write_text(text, encoding="utf-8")
+          PY
+
+          if git diff --quiet; then
+            echo "No branding changes needed."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html api/chat.js
+          git commit -m "Rebrand AURA to RIMAK LINE"
+          git push
