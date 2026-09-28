@@ -2394,6 +2394,8 @@
       }
     );
 
+    applyLanguage(loadSettings().language);
+
 
     /* =====================================================
        AUTH
@@ -4479,7 +4481,7 @@
     function applyLanguage(lang){
       const t=AURA_LANGS[lang]||AURA_LANGS["pt-BR"];
       document.documentElement.lang=lang;
-      const set=(sel,key)=>{const el=document.querySelector(sel);if(el&&t[key]!=null)el.textContent=t[key];};
+      const set=(sel,key)=>{const el=document.querySelector(sel);if(!el||t[key]==null)return;if(key==="placeholder")el.placeholder=t[key];else el.textContent=t[key];};
       set("#authSubtitle","authSub");set("#authEmail","email");set("#authPassword","password");set("#authButton","login");
       const sw=document.getElementById("authSwitch");if(sw)sw.innerHTML=(authMode==="login"?t.noAccount+" <span>"+t.signup+"</span>":t.hasAccount+" <span>"+t.login+"</span>");
       [[".credit-label","credits"],["#newChatButton span:last-child","newChat"],["#historyButton span:last-child","history"],["#creditsMenuButton span:last-child","creditsTitle"],["#plansMenuButton span:last-child","plans"],["#settingsButton span:last-child","settings"],["#supportButton span:last-child","support"],[".history-title","conversations"],[".account-label","account"],["#logoutButton","logout"],[".welcome-subtitle","welcome"],[".suggestion:nth-child(1)","idea"],[".suggestion:nth-child(2)","project"],[".suggestion:nth-child(3)","learn"],[".suggestion:nth-child(4)","money"],["#messageInput","placeholder"],[".composer-note","note"],["#creditsModal .modal-title","creditsModal"],["#creditsModal .modal-text","creditsText"],["#modalCreditsCount + div","available"],["#creditsPlansButton","viewPlans"],["#plansModal .modal-title","plansTitle"],["#plansModal .modal-text","plansText"],["#settingsModal .modal-title","settingsTitle"],["#supportModal .modal-title","supportTitle"],["#supportModal .modal-text","supportText"],["#supportText","supportPlaceholder"],["#supportSendButton","supportButton"],[".checkout-method-label","payment"],["#pixCopyButton","copyPix"]].forEach(([s,k])=>set(s,k));
@@ -4492,7 +4494,7 @@
     const settingsKey = () => currentUser ? "aura_settings_" + currentUser.id : "aura_settings";
     function loadSettings(){let saved={};try{saved=JSON.parse(localStorage.getItem(settingsKey())||"{}");}catch{} const settings={dark:saved.dark!==false,animations:saved.animations!==false,personalization:saved.personalization!==false,language:saved.language||"pt-BR"};[["darkModeToggle","dark"],["animationsToggle","animations"],["personalizationToggle","personalization"]].forEach(([id,name])=>{const el=document.getElementById(id);if(el)el.classList.toggle("on",!!settings[name]);});const select=document.getElementById("languageSelect");if(select)select.value=settings.language;document.documentElement.classList.toggle("no-aura-animations",!settings.animations);document.documentElement.classList.toggle("aura-light-mode",!settings.dark);applyLanguage(settings.language);return settings;}
     function saveSetting(name,value){const settings=loadSettings();settings[name]=value;localStorage.setItem(settingsKey(),JSON.stringify(settings));loadSettings();}
-    function bindSettings(){[["darkModeToggle","dark"],["animationsToggle","animations"],["personalizationToggle","personalization"]].forEach(([id,name])=>{const el=document.getElementById(id);if(!el||el.dataset.bound)return;el.dataset.bound="1";el.addEventListener("click",()=>{saveSetting(name,!el.classList.contains("on"));showToast(AURA_LANGS[loadSettings().language]?.settings+" saved.");});});const select=document.getElementById("languageSelect");if(select&&!select.dataset.bound){select.dataset.bound="1";select.addEventListener("change",e=>{saveSetting("language",e.target.value);showToast("Idioma salvo.");});}loadSettings();}
+    function bindSettings(){[["darkModeToggle","dark"],["animationsToggle","animations"],["personalizationToggle","personalization"]].forEach(([id,name])=>{const el=document.getElementById(id);if(!el||el.dataset.bound)return;el.dataset.bound="1";el.addEventListener("click",()=>{saveSetting(name,!el.classList.contains("on"));showToast(loadSettings().language==="en-US"?"Settings saved.":loadSettings().language==="es-ES"?"Configuración guardada.":"Configuração salva.");});});const select=document.getElementById("languageSelect");if(select&&!select.dataset.bound){select.dataset.bound="1";select.addEventListener("change",e=>{saveSetting("language",e.target.value);showToast(loadSettings().language==="en-US"?"Language saved.":loadSettings().language==="es-ES"?"Idioma guardado.":"Idioma salvo.");});}loadSettings();}
     bindSettings();
 
     async function openCheckout(plan){
