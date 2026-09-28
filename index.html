@@ -1181,11 +1181,32 @@
     const SUPABASE_KEY =
       "sb_publishable_nCCjJPHoTODWLHvwTWN_AA_J8JivYaE";
 
-    const supabaseClient =
-      window.supabase.createClient(
+    let supabaseClient = null;
+
+    function getSupabaseClient(){
+      if(supabaseClient) return supabaseClient;
+
+      if(!window.supabase || typeof window.supabase.createClient !== "function"){
+        throw new Error("O serviço de autenticação não carregou. Recarregue a página e tente novamente.");
+      }
+
+      supabaseClient = window.supabase.createClient(
         SUPABASE_URL,
-        SUPABASE_KEY
+        SUPABASE_KEY,
+        {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+            storageKey: "rimak-auth"
+          }
+        }
       );
+
+      return supabaseClient;
+    }
+
+    getSupabaseClient();
 
 
     /* =====================================================
@@ -1344,38 +1365,59 @@
 
     authForm.addEventListener("submit", handleAuth);
 
-
     async function handleAuth(event){
-      if(event) event.preventDefault();
-      const email=authEmail.value.trim();
-      const password=authPassword.value;
-      if(!email||!password){authMessage.textContent="Preencha e-mail e senha.";return;}
+      event.preventDefault();
+
+      const email = authEmail.value.trim().toLowerCase();
+      const password = authPassword.value;
+
+      if(!email || !password){
+        authMessage.className="auth-error";
+        authMessage.textContent="Preencha e-mail e senha.";
+        return;
+      }
+
       authButton.disabled=true;
       authMessage.className="auth-error";
-      authMessage.textContent="Aguarde...";
+      authMessage.textContent="Entrando...";
+
       try{
-        let result;
-        if(authMode==="signup"){
-          const response=await fetch(SUPABASE_URL+"/auth/v1/signup",{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY},body:JSON.stringify({email,password})});
-          result=await response.json();
-          if(!response.ok) throw new Error(result?.msg||result?.message||result?.error_description||"Não foi possível criar a conta.");
-          if(result?.access_token&&result?.refresh_token){
-            await supabaseClient.auth.setSession({access_token:result.access_token,refresh_token:result.refresh_token});
-            currentUser=result.user||null;
+        const client = getSupabaseClient();
+
+        if(authMode === "signup"){
+          const { data, error } = await client.auth.signUp({
+            email,
+            password
+          });
+
+          if(error) throw error;
+
+          if(data?.session && data?.user){
+            currentUser = data.user;
             await showApp();
           }else{
             authMessage.className="auth-error auth-success";
             authMessage.textContent="Conta criada. Verifique seu e-mail para confirmar.";
           }
-        }else{
-          const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-          if(error) throw error;
-          if(!data?.session) throw new Error("O servidor não retornou uma sessão válida.");
-          currentUser=data.user||data.session.user;
-          await showApp();
+          return;
         }
+
+        const { data, error } = await client.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if(error) throw error;
+
+        if(!data?.session || !data?.user){
+          throw new Error("Login realizado, mas a sessão não foi criada.");
+        }
+
+        currentUser = data.user;
+        await showApp();
+
       }catch(error){
-        console.error("RIMAK AUTH:",error);
+        console.error("RIMAK AUTH:", error);
         authMessage.className="auth-error";
         authMessage.textContent=translateAuthError(error?.message);
       }finally{
@@ -1461,7 +1503,7 @@
     }
 
 
-    supabaseClient.auth.onAuthStateChange(
+    getSupabaseClient().auth.onAuthStateChange(
       async (event,session) => {
 
         if(session){
