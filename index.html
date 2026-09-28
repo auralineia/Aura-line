@@ -1239,7 +1239,60 @@
     .settings-select{min-width:150px;max-width:175px;height:38px;padding:0 10px;border:1px solid rgba(255,255,255,.09);border-radius:11px;outline:none;background:#111117;color:rgba(255,255,255,.82);font-size:11px;}
     .settings-select option{background:#111117;color:white;}
     .no-aura-animations *, .no-aura-animations *::before, .no-aura-animations *::after{animation:none !important;transition:none !important;}
-    .aura-light-mode{--bg:#f4f4f6;--panel:#fff;--panel2:#f7f7f9;--text:rgba(0,0,0,.86);--muted:rgba(0,0,0,.48);--faint:rgba(0,0,0,.22);--line:rgba(0,0,0,.09);--line2:rgba(0,0,0,.14);}
+    .aura-light-mode{
+      --bg:#f6f6f8;--bg2:#ededf1;--panel:#ffffff;--panel2:#f8f8fa;
+      --white:#111118;--text:rgba(15,15,22,.90);--muted:rgba(15,15,22,.56);--faint:rgba(15,15,22,.30);
+      --line:rgba(15,15,22,.10);--line2:rgba(15,15,22,.16);
+    }
+    .aura-light-mode html,.aura-light-mode body{color:#111118;}
+    .aura-light-mode .app{background:radial-gradient(circle at 50% -20%,rgba(255,79,163,.09),transparent 36%),radial-gradient(circle at 100% 100%,rgba(155,124,255,.06),transparent 30%),var(--bg);}
+    .aura-light-mode .app::before{opacity:.025;background-image:linear-gradient(rgba(0,0,0,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.18) 1px,transparent 1px);}
+    .aura-light-mode .topbar{background:linear-gradient(to bottom,rgba(246,246,248,.97),rgba(246,246,248,.80),transparent);}
+    .aura-light-mode .top-action,.aura-light-mode .credit-pill{background:rgba(0,0,0,.035);color:rgba(15,15,22,.72);border-color:var(--line);}
+    .aura-light-mode .hamburger span{background:rgba(15,15,22,.72);}
+    .aura-light-mode .credit-label{color:rgba(15,15,22,.42);}
+    .aura-light-mode .menu-overlay,.aura-light-mode .modal-overlay,.aura-light-mode .checkout-overlay{background:rgba(20,20,25,.35);}
+    .aura-light-mode .side-menu{background:radial-gradient(circle at 20% 0%,rgba(255,79,163,.10),transparent 34%),#fff;box-shadow:25px 0 80px rgba(0,0,0,.16);}
+    .aura-light-mode .menu-item{color:rgba(15,15,22,.62);}
+    .aura-light-mode .menu-item:hover{background:rgba(0,0,0,.045);color:#111118;}
+    .aura-light-mode .menu-icon{color:rgba(15,15,22,.40);}
+    .aura-light-mode .menu-section-title,.aura-light-mode .history-title{color:rgba(15,15,22,.38);}
+    .aura-light-mode .new-chat{background:linear-gradient(135deg,rgba(0,0,0,.035),rgba(255,79,163,.07));color:#111118;border-color:var(--line2);}
+    .aura-light-mode .history-item:hover,.aura-light-mode .history-item.active{background:rgba(0,0,0,.045);border-color:var(--line);}
+    .aura-light-mode .history-name{color:rgba(15,15,22,.82);}
+    .aura-light-mode .history-date,.aura-light-mode .history-empty,.aura-light-mode .account-label{color:rgba(15,15,22,.40);}
+    .aura-light-mode .account-card{background:rgba(0,0,0,.025);border-color:var(--line);}
+    .aura-light-mode .account-email{color:rgba(15,15,22,.66);}
+    .aura-light-mode .logout-button{color:rgba(210,45,100,.82);}
+    .aura-light-mode .hero-ring{background:linear-gradient(#f6f6f8,#f6f6f8) padding-box,conic-gradient(from 205deg,transparent,var(--pink),#ffb1d6,var(--purple),transparent,var(--pink)) border-box;}
+    .aura-light-mode .welcome-subtitle{color:rgba(15,15,22,.56);}
+    .aura-light-mode .suggestion{background:rgba(0,0,0,.025);color:rgba(15,15,22,.62);border-color:var(--line);}
+    .aura-light-mode .suggestion:hover{color:#111118;background:rgba(255,79,163,.07);}
+    .aura-light-mode .aura-label,.aura-light-mode .thinking{color:rgba(15,15,22,.42);}
+    .aura-light-mode .message.user .bubble{color:rgba(15,15,22,.90);background:linear-gradient(135deg,rgba(0,0,0,.055),rgba(0,0,0,.025));border-color:var(--line2);}
+    .aura-light-mode .message.aura .bubble{color:rgba(15,15,22,.88);background:linear-gradient(135deg,rgba(0,0,0,.025),rgba(255,79,163,.025));border-color:var(--line);}
+    .aura-light-mode .composer{background:linear-gradient(to top,#f6f6f8 48%,rgba(246,246,248,.93) 75%,transparent);}
+    .aura-light-mode #messageInput{background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(245,245,248,.96));color:#111118;border-color:var(--line2);box-shadow:0 15px 45px rgba(0,0,0,.08),inset 0 1px 0 rgba(255,255,255,.8);}
+    .aura-light-mode #messageInput::placeholder{color:rgba(15,15,22,.40);}
+    .aura-light-mode #sendButton{background:#111118;color:#fff;box-shadow:0 12px 32px rgba(0,0,0,.16);}
+    .aura-light-mode .composer-note{color:rgba(15,15,22,.38);}
+    .aura-light-mode .modal,.aura-light-mode .checkout-modal{background:radial-gradient(circle at 20% 0%,rgba(255,79,163,.08),transparent 38%),#fff;border-color:var(--line2);box-shadow:0 30px 100px rgba(0,0,0,.20);color:#111118;}
+    .aura-light-mode .modal-text,.aura-light-mode .plan-desc,.aura-light-mode .setting-desc{color:rgba(15,15,22,.56);}
+    .aura-light-mode .plan-card{background:rgba(0,0,0,.025);border-color:var(--line);}
+    .aura-light-mode .plan-card.pro{background:rgba(255,79,163,.055);}
+    .aura-light-mode .modal-close,.aura-light-mode .checkout-close{background:rgba(0,0,0,.045);color:rgba(15,15,22,.62);}
+    .aura-light-mode .modal-button,.aura-light-mode .pix-copy{background:#111118;color:#fff;}
+    .aura-light-mode .toggle{background:rgba(0,0,0,.12);}
+    .aura-light-mode .settings-select{background:#fff;color:#111118;border-color:var(--line2);}
+    .aura-light-mode .settings-select option{background:#fff;color:#111118;}
+    .aura-light-mode .checkout-method-label,.aura-light-mode .checkout-note,.aura-light-mode .checkout-status{color:rgba(15,15,22,.48);}
+    .aura-light-mode .toast{background:rgba(255,255,255,.97);color:rgba(15,15,22,.86);border-color:var(--line2);box-shadow:0 20px 60px rgba(0,0,0,.16);}
+    .aura-light-mode .auth-input{background:rgba(255,255,255,.82);color:#111118;border-color:var(--line2);}
+    .aura-light-mode .auth-input::placeholder{color:rgba(15,15,22,.38);}
+    .aura-light-mode .auth-button{background:#111118;color:#fff;}
+    .aura-light-mode .auth-switch{color:rgba(15,15,22,.56);}
+    .aura-light-mode .auth-screen-placeholder{}
+
     .checkout-methods{display:grid;gap:10px;margin-top:8px;}
     .checkout-method-label{font-size:10px;letter-spacing:1.5px;color:rgba(255,255,255,.3);text-transform:uppercase;}
     #paymentBrick_container{min-height:180px;}
@@ -4415,10 +4468,31 @@
     let checkoutBrickController=null;
     let checkoutPlan=null;
 
+    const AURA_LANGS={
+      "pt-BR":{
+        authSub:"Sua inteligência pessoal que lembra de você.",email:"Seu e-mail",password:"Sua senha",login:"Entrar",signup:"Criar conta",noAccount:"Ainda não tenho uma conta.",hasAccount:"Já tenho uma conta.",credits:"créditos",newChat:"Nova conversa",aura:"Aura",history:"Histórico",creditsTitle:"Créditos",plans:"Planos",app:"Aplicativo",settings:"Configurações",support:"Suporte",conversations:"Conversas",account:"CONTA",logout:"Sair da conta",welcome:"Uma inteligência pessoal que lembra de você, entende seu momento e aprende com o tempo.",idea:"Criar uma ideia",project:"Planejar um projeto",learn:"Aprender algo",money:"Ideias para ganhar dinheiro",placeholder:"Converse com a Aura...",note:"A Aura pode cometer erros. Verifique informações importantes.",creditsModal:"Seus créditos",creditsText:"Os créditos representam a capacidade da Aura de realizar diferentes tipos de ações. Você recebe uma nova quantidade todos os dias. Os créditos não acumulam.",available:"créditos disponíveis hoje",normal:"Mensagem normal",web:"Pesquisa na web",story:"História ou cena longa",viewPlans:"Ver planos",plansTitle:"Planos Aura",plansText:"Escolha o nível de experiência que combina com a forma como você quer usar a Aura. Todos os planos recebem novos créditos diariamente.",free:"Grátis",perDay:"créditos por dia",proButton:"Assinar Pro",ultraButton:"Assinar Ultra",settingsTitle:"Configurações",dark:"Tema escuro",darkDesc:"Use uma interface escura e confortável.",animations:"Animações",animationsDesc:"Movimentos suaves da interface.",personal:"Personalização da Aura",personalDesc:"A Aura aprende com suas conversas para personalizar a experiência.",language:"Idioma",languageDesc:"Escolha o idioma da interface e das respostas.",supportTitle:"Suporte",supportText:"Encontrou um problema ou tem uma sugestão? Descreva o que aconteceu e envie para nossa equipe.",supportPlaceholder:"Descreva o problema...",supportButton:"Enviar para o suporte",thinking:"Aura está pensando",sources:"FONTES",payment:"Formas de pagamento",copyPix:"Copiar Pix"},
+      "en-US":{
+        authSub:"Your personal intelligence that remembers you.",email:"Your email",password:"Your password",login:"Sign in",signup:"Create account",noAccount:"I don't have an account yet.",hasAccount:"I already have an account.",credits:"credits",newChat:"New conversation",aura:"Aura",history:"History",creditsTitle:"Credits",plans:"Plans",app:"App",settings:"Settings",support:"Support",conversations:"Conversations",account:"ACCOUNT",logout:"Sign out",welcome:"A personal intelligence that remembers you, understands your moment, and learns over time.",idea:"Create an idea",project:"Plan a project",learn:"Learn something",money:"Ideas to make money",placeholder:"Talk to Aura...",note:"Aura can make mistakes. Verify important information.",creditsModal:"Your credits",creditsText:"Credits represent Aura's capacity to perform different types of actions. You receive a new amount every day. Credits do not roll over.",available:"credits available today",normal:"Regular message",web:"Web research",story:"Long story or scene",viewPlans:"View plans",plansTitle:"Aura Plans",plansText:"Choose the experience level that fits how you want to use Aura. All plans receive new credits daily.",free:"Free",perDay:"credits per day",proButton:"Subscribe Pro",ultraButton:"Subscribe Ultra",settingsTitle:"Settings",dark:"Dark theme",darkDesc:"Use a dark and comfortable interface.",animations:"Animations",animationsDesc:"Smooth interface motion.",personal:"Aura personalization",personalDesc:"Aura learns from your conversations to personalize your experience.",language:"Language",languageDesc:"Choose the interface and response language.",supportTitle:"Support",supportText:"Found a problem or have a suggestion? Describe what happened and send it to our team.",supportPlaceholder:"Describe the problem...",supportButton:"Send to support",thinking:"Aura is thinking",sources:"SOURCES",payment:"Payment methods",copyPix:"Copy Pix"},
+      "es-ES":{
+        authSub:"Tu inteligencia personal que te recuerda.",email:"Tu correo electrónico",password:"Tu contraseña",login:"Entrar",signup:"Crear cuenta",noAccount:"Todavía no tengo una cuenta.",hasAccount:"Ya tengo una cuenta.",credits:"créditos",newChat:"Nueva conversación",aura:"Aura",history:"Historial",creditsTitle:"Créditos",plans:"Planes",app:"Aplicación",settings:"Configuración",support:"Soporte",conversations:"Conversaciones",account:"CUENTA",logout:"Cerrar sesión",welcome:"Una inteligencia personal que te recuerda, entiende tu momento y aprende con el tiempo.",idea:"Crear una idea",project:"Planificar un proyecto",learn:"Aprender algo",money:"Ideas para ganar dinero",placeholder:"Habla con Aura...",note:"Aura puede cometer errores. Verifica la información importante.",creditsModal:"Tus créditos",creditsText:"Los créditos representan la capacidad de Aura para realizar diferentes acciones. Recibes una nueva cantidad cada día. Los créditos no se acumulan.",available:"créditos disponibles hoy",normal:"Mensaje normal",web:"Búsqueda web",story:"Historia o escena larga",viewPlans:"Ver planes",plansTitle:"Planes de Aura",plansText:"Elige el nivel de experiencia que se adapte a cómo quieres usar Aura. Todos los planes reciben nuevos créditos diariamente.",free:"Gratis",perDay:"créditos al día",proButton:"Suscribirse Pro",ultraButton:"Suscribirse Ultra",settingsTitle:"Configuración",dark:"Tema oscuro",darkDesc:"Usa una interfaz oscura y cómoda.",animations:"Animaciones",animationsDesc:"Movimientos suaves de la interfaz.",personal:"Personalización de Aura",personalDesc:"Aura aprende de tus conversaciones para personalizar la experiencia.",language:"Idioma",languageDesc:"Elige el idioma de la interfaz y de las respuestas.",supportTitle:"Soporte",supportText:"¿Encontraste un problema o tienes una sugerencia? Describe lo ocurrido y envíalo a nuestro equipo.",supportPlaceholder:"Describe el problema...",supportButton:"Enviar al soporte",thinking:"Aura está pensando",sources:"FUENTES",payment:"Formas de pago",copyPix:"Copiar Pix"}
+    };
+    function applyLanguage(lang){
+      const t=AURA_LANGS[lang]||AURA_LANGS["pt-BR"];
+      document.documentElement.lang=lang;
+      const set=(sel,key)=>{const el=document.querySelector(sel);if(el&&t[key]!=null)el.textContent=t[key];};
+      set("#authSubtitle","authSub");set("#authEmail","email");set("#authPassword","password");set("#authButton","login");
+      const sw=document.getElementById("authSwitch");if(sw)sw.innerHTML=(authMode==="login"?t.noAccount+" <span>"+t.signup+"</span>":t.hasAccount+" <span>"+t.login+"</span>");
+      [[".credit-label","credits"],["#newChatButton span:last-child","newChat"],["#historyButton span:last-child","history"],["#creditsMenuButton span:last-child","creditsTitle"],["#plansMenuButton span:last-child","plans"],["#settingsButton span:last-child","settings"],["#supportButton span:last-child","support"],[".history-title","conversations"],[".account-label","account"],["#logoutButton","logout"],[".welcome-subtitle","welcome"],[".suggestion:nth-child(1)","idea"],[".suggestion:nth-child(2)","project"],[".suggestion:nth-child(3)","learn"],[".suggestion:nth-child(4)","money"],["#messageInput","placeholder"],[".composer-note","note"],["#creditsModal .modal-title","creditsModal"],["#creditsModal .modal-text","creditsText"],["#modalCreditsCount + div","available"],["#creditsPlansButton","viewPlans"],["#plansModal .modal-title","plansTitle"],["#plansModal .modal-text","plansText"],["#settingsModal .modal-title","settingsTitle"],["#supportModal .modal-title","supportTitle"],["#supportModal .modal-text","supportText"],["#supportText","supportPlaceholder"],["#supportSendButton","supportButton"],[".checkout-method-label","payment"],["#pixCopyButton","copyPix"]].forEach(([s,k])=>set(s,k));
+      set("#settingsModal .setting-row:nth-of-type(1) .setting-name","dark");set("#settingsModal .setting-row:nth-of-type(1) .setting-desc","darkDesc");set("#settingsModal .setting-row:nth-of-type(2) .setting-name","animations");set("#settingsModal .setting-row:nth-of-type(2) .setting-desc","animationsDesc");set("#settingsModal .setting-row:nth-of-type(3) .setting-name","personal");set("#settingsModal .setting-row:nth-of-type(3) .setting-desc","personalDesc");set("#settingsModal .setting-row:nth-of-type(4) .setting-name","language");set("#settingsModal .setting-row:nth-of-type(4) .setting-desc","languageDesc");
+      const plans=document.querySelectorAll("#plansModal .plan-card");if(plans.length){set("#plansModal .plan-card:nth-child(1) .plan-price","free");plans.forEach((p,i)=>{const d=p.querySelector(".plan-desc");if(d&&i<3)d.innerHTML="<strong>"+(i===0?20:i===1?50:150)+" "+t.perDay+"</strong>";});}
+      const pbtn=document.getElementById("proPlanButton"),ubtn=document.getElementById("ultraPlanButton");if(pbtn)pbtn.textContent=t.proButton;if(ubtn)ubtn.textContent=t.ultraButton;
+      const labels=document.querySelectorAll(".thinking");labels.forEach(el=>{const span=el.querySelector("span");if(span)span.firstChild.textContent=t.thinking;});
+      document.querySelectorAll(".aura-sources-title").forEach(el=>el.textContent=t.sources);
+    }
     const settingsKey = () => currentUser ? "aura_settings_" + currentUser.id : "aura_settings";
-    function loadSettings(){let saved={};try{saved=JSON.parse(localStorage.getItem(settingsKey())||"{}");}catch{} const settings={dark:saved.dark!==false,animations:saved.animations!==false,personalization:saved.personalization!==false,language:saved.language||"pt-BR"};[["darkModeToggle","dark"],["animationsToggle","animations"],["personalizationToggle","personalization"]].forEach(([id,name])=>{const el=document.getElementById(id);if(el)el.classList.toggle("on",!!settings[name]);});const select=document.getElementById("languageSelect");if(select)select.value=settings.language;document.documentElement.classList.toggle("no-aura-animations",!settings.animations);document.documentElement.classList.toggle("aura-light-mode",!settings.dark);return settings;}
+    function loadSettings(){let saved={};try{saved=JSON.parse(localStorage.getItem(settingsKey())||"{}");}catch{} const settings={dark:saved.dark!==false,animations:saved.animations!==false,personalization:saved.personalization!==false,language:saved.language||"pt-BR"};[["darkModeToggle","dark"],["animationsToggle","animations"],["personalizationToggle","personalization"]].forEach(([id,name])=>{const el=document.getElementById(id);if(el)el.classList.toggle("on",!!settings[name]);});const select=document.getElementById("languageSelect");if(select)select.value=settings.language;document.documentElement.classList.toggle("no-aura-animations",!settings.animations);document.documentElement.classList.toggle("aura-light-mode",!settings.dark);applyLanguage(settings.language);return settings;}
     function saveSetting(name,value){const settings=loadSettings();settings[name]=value;localStorage.setItem(settingsKey(),JSON.stringify(settings));loadSettings();}
-    function bindSettings(){[["darkModeToggle","dark"],["animationsToggle","animations"],["personalizationToggle","personalization"]].forEach(([id,name])=>{const el=document.getElementById(id);if(!el||el.dataset.bound)return;el.dataset.bound="1";el.addEventListener("click",()=>{saveSetting(name,!el.classList.contains("on"));showToast("Configuração salva.");});});const select=document.getElementById("languageSelect");if(select&&!select.dataset.bound){select.dataset.bound="1";select.addEventListener("change",e=>{saveSetting("language",e.target.value);showToast("Idioma salvo.");});}loadSettings();}
+    function bindSettings(){[["darkModeToggle","dark"],["animationsToggle","animations"],["personalizationToggle","personalization"]].forEach(([id,name])=>{const el=document.getElementById(id);if(!el||el.dataset.bound)return;el.dataset.bound="1";el.addEventListener("click",()=>{saveSetting(name,!el.classList.contains("on"));showToast(AURA_LANGS[loadSettings().language]?.settings+" saved.");});});const select=document.getElementById("languageSelect");if(select&&!select.dataset.bound){select.dataset.bound="1";select.addEventListener("change",e=>{saveSetting("language",e.target.value);showToast("Idioma salvo.");});}loadSettings();}
     bindSettings();
 
     async function openCheckout(plan){
@@ -4647,6 +4721,7 @@
 
     loadSettings();
     checkSession();
+
 
   </script>
 
