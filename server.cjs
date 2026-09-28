@@ -5,7 +5,7 @@ const { URL } = require("url");
 
 const PORT = Number(process.env.PORT || 3000);
 const ROOT = __dirname;
-const BACKEND = process.env.RIMAK_BACKEND_URL || "https://aura-line-s.vercel.app";
+const BACKEND = process.env.RIMAK_BACKEND_URL || "https://rimak.vercel.app";
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
