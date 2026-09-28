@@ -334,59 +334,32 @@ async function updateSubscription({
   externalReference,
   currentPeriodEnd
 }) {
-  const config =
-    planConfig(plan);
+  const config = planConfig(plan);
 
-  const response =
-    await supabaseRest(
-      "subscriptions",
-      {
-        method: "POST",
-        headers: {
-          Prefer: "resolution=merge-duplicates,return=minimal"
-        },
-        body: JSON.stringify({
-
-        headers: {
-          Prefer:
-            "return=minimal"
-        },
-
-        body: JSON.stringify({
-          plan:
-            plan || "free",
-
-          status,
-
-          amount:
-            config.amount,
-
-          daily_credits:
-            config.dailyCredits,
-
-          mercado_pago_subscription_id:
-            mercadoPagoId || null,
-
-          external_reference:
-            externalReference || null,
-
-          current_period_end:
-            currentPeriodEnd || null,
-
-          updated_at:
-            new Date().toISOString(),
-          user_id: userId
-        })
-      }
-    );
+  const response = await supabaseRest(
+    "subscriptions",
+    {
+      method: "POST",
+      headers: {
+        Prefer: "resolution=merge-duplicates,return=minimal"
+      },
+      body: JSON.stringify({
+        user_id: userId,
+        plan: plan || "free",
+        status,
+        amount: config.amount,
+        daily_credits: config.dailyCredits,
+        mercado_pago_subscription_id: mercadoPagoId || null,
+        external_reference: externalReference || null,
+        current_period_end: currentPeriodEnd || null,
+        updated_at: new Date().toISOString()
+      })
+    }
+  );
 
   if (!response.ok) {
-    const error =
-      await response.text();
-
-    throw new Error(
-      `Erro ao atualizar assinatura: ${error}`
-    );
+    const error = await response.text();
+    throw new Error(`Erro ao atualizar assinatura: ${error}`);
   }
 }
 
