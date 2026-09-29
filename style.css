@@ -3593,3 +3593,311 @@ body,.app{background:#08090a!important;color:var(--r-ice)!important}
 .reel-vignette{z-index:3!important;pointer-events:none!important}
 .matter-label{z-index:5!important}
 .reel-copy h2{letter-spacing:-.065em!important}
+
+/* =========================================================
+   RIMAK 2.2 — FULL VISUAL RESET
+   ========================================================= */
+
+:root{
+  --r-ice:#f2f2ed;
+  --r-black:#070809;
+  --r-burg:#702943;
+  --r-burg-light:#a85a78;
+}
+
+body{
+  background:#070809!important;
+  overflow:hidden!important;
+}
+.app{
+  background:#070809!important;
+}
+
+/* HEADER — clean, minimal, organic */
+.topbar{
+  height:72px!important;
+  background:linear-gradient(180deg,rgba(7,8,9,.96),rgba(7,8,9,.55),transparent)!important;
+  backdrop-filter:blur(20px)!important;
+}
+.brand-name{
+  color:#f2f2ed!important;
+  letter-spacing:6px!important;
+  font-size:10px!important;
+}
+
+/* A translucent matter mark instead of a conventional logo. */
+.brand-logo,.welcome-logo{
+  position:relative!important;
+  overflow:visible!important;
+}
+.brand-logo{
+  width:40px!important;height:40px!important;
+}
+.brand-logo .orbit,.welcome-logo .orbit{
+  width:32px!important;height:32px!important;
+  left:4px!important;top:4px!important;
+  border:1px solid rgba(242,242,237,.22)!important;
+  border-radius:48% 52% 59% 41% / 56% 42% 58% 44%!important;
+  background:
+    radial-gradient(circle at 32% 24%,rgba(255,255,255,.88) 0 5%,transparent 7%),
+    radial-gradient(circle at 66% 64%,rgba(112,41,67,.9) 0 18%,rgba(112,41,67,.45) 36%,transparent 64%),
+    radial-gradient(circle at 35% 35%,rgba(255,255,255,.28),transparent 43%),
+    rgba(240,241,237,.055)!important;
+  box-shadow:
+    inset -5px -6px 12px rgba(0,0,0,.6),
+    inset 4px 3px 8px rgba(255,255,255,.2),
+    0 8px 24px rgba(112,41,67,.2)!important;
+  backdrop-filter:blur(5px)!important;
+  animation:markMorph 6s ease-in-out infinite!important;
+}
+.brand-logo .orbit2,.welcome-logo .orbit2{
+  width:21px!important;height:21px!important;
+  left:10px!important;top:10px!important;
+  border-radius:60% 40% 44% 56% / 43% 61% 39% 57%!important;
+  background:radial-gradient(circle at 35% 30%,#fff,rgba(242,242,237,.3) 22%,rgba(112,41,67,.5) 62%,transparent 75%)!important;
+  filter:blur(1px)!important;
+  animation:markInner 4s ease-in-out infinite!important;
+}
+.brand-logo .orb,.welcome-logo .orb{
+  width:6px!important;height:6px!important;
+  left:17px!important;top:17px!important;
+  border-radius:50%!important;
+  background:#f2f2ed!important;
+  box-shadow:0 0 10px rgba(242,242,237,.9),0 0 22px rgba(168,90,120,.45)!important;
+  animation:markCore 2.8s ease-in-out infinite!important;
+}
+@keyframes markMorph{
+  0%,100%{border-radius:48% 52% 59% 41% / 56% 42% 58% 44%;transform:rotate(-5deg) scale(.96)}
+  25%{border-radius:36% 64% 47% 53% / 61% 39% 57% 43%;transform:rotate(7deg) scale(1.07)}
+  50%{border-radius:65% 35% 39% 61% / 45% 67% 33% 55%;transform:rotate(-9deg) scale(.92)}
+  75%{border-radius:43% 57% 64% 36% / 36% 55% 45% 64%;transform:rotate(6deg) scale(1.04)}
+}
+@keyframes markInner{50%{transform:translate(4px,-3px) rotate(30deg) scale(1.2)}}
+@keyframes markCore{50%{transform:scale(1.45)}}
+
+/* SIDEBAR */
+.side-menu{
+  background:
+    radial-gradient(circle at 10% 0,rgba(112,41,67,.12),transparent 35%),
+    rgba(7,8,9,.97)!important;
+  border-right:1px solid rgba(242,242,237,.08)!important;
+}
+.menu-brand-name{color:#f2f2ed!important;letter-spacing:5px!important}
+.mini-symbol{
+  width:34px!important;height:34px!important;
+}
+.mini-symbol .orbit{
+  left:3px!important;top:3px!important;width:28px!important;height:28px!important;
+  border-radius:48% 52% 59% 41% / 56% 42% 58% 44%!important;
+  background:
+    radial-gradient(circle at 32% 24%,#f2f2ed 0 5%,transparent 7%),
+    radial-gradient(circle at 66% 64%,#702943 0 22%,#171013 62%,#070809 100%)!important;
+  box-shadow:inset -5px -5px 10px rgba(0,0,0,.55),inset 3px 3px 7px rgba(255,255,255,.14)!important;
+  animation:markMorph 6s ease-in-out infinite!important;
+}
+.mini-symbol .orb{
+  left:12px!important;top:12px!important;width:9px!important;height:9px!important;
+  background:#f2f2ed!important;box-shadow:0 0 12px rgba(242,242,237,.8)!important;
+}
+.menu-item:hover,.menu-item.active{
+  background:rgba(112,41,67,.1)!important;
+  color:#f2f2ed!important;
+}
+
+/* AUTH */
+#authScreen{
+  background:
+    radial-gradient(circle at 50% 35%,rgba(112,41,67,.14),transparent 34%),
+    #070809!important;
+}
+.auth-box{
+  background:rgba(10,11,12,.78)!important;
+  border-color:rgba(242,242,237,.1)!important;
+  box-shadow:0 40px 120px rgba(0,0,0,.65)!important;
+}
+.auth-title{color:#f2f2ed!important;letter-spacing:7px!important}
+.auth-button{
+  background:linear-gradient(135deg,#f2f2ed,#d7dad7 55%,#702943)!important;
+  color:#090a0b!important;
+}
+
+/* =========================================================
+   THE EXPERIENCE — one continuous living scene
+   ========================================================= */
+.chat{
+  padding:72px 0 120px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  background:#070809!important;
+}
+.reel-experience{
+  position:relative!important;
+  width:100%!important;
+  height:500svh!important;
+  min-height:500svh!important;
+  padding:0!important;
+  margin:0!important;
+  overflow:visible!important;
+  isolation:isolate!important;
+  background:#070809!important;
+}
+.reel-sticky{
+  position:sticky!important;
+  top:0!important;
+  width:100%!important;
+  height:calc(100svh - 72px)!important;
+  margin:0!important;
+  z-index:1!important;
+  overflow:hidden!important;
+  background:transparent!important;
+}
+#matterCanvas{
+  position:absolute!important;
+  inset:0!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  z-index:1!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+.reel-vignette{
+  position:absolute!important;
+  inset:0!important;
+  z-index:2!important;
+  pointer-events:none!important;
+  background:radial-gradient(circle at 50% 50%,transparent 0 24%,rgba(0,0,0,.04) 58%,rgba(0,0,0,.16) 100%)!important;
+}
+.matter-label{
+  z-index:8!important;
+  top:10%!important;
+  color:rgba(242,242,237,.42)!important;
+  mix-blend-mode:normal!important;
+}
+.matter-label i{background:#702943!important}
+
+/* Pages occupy the same viewport as the matter, one per scroll segment. */
+.reel-pages{
+  position:absolute!important;
+  inset:0!important;
+  z-index:5!important;
+  pointer-events:none!important;
+}
+.reel-page{
+  position:absolute!important;
+  inset:0!important;
+  height:100%!important;
+  min-height:100%!important;
+  padding:10% 8%!important;
+  display:flex!important;
+  align-items:flex-end!important;
+  opacity:0!important;
+  visibility:hidden!important;
+  transform:translate3d(0,28px,0)!important;
+  transition:opacity .55s ease,transform .7s cubic-bezier(.16,1,.3,1),visibility 0s linear .55s!important;
+  pointer-events:none!important;
+}
+.reel-page.is-current{
+  opacity:1!important;
+  visibility:visible!important;
+  transform:none!important;
+  transition:opacity .55s ease,transform .7s cubic-bezier(.16,1,.3,1),visibility 0s!important;
+}
+.reel-page::before{display:none!important}
+.reel-page-meta{
+  top:8%!important;
+  color:rgba(242,242,237,.42)!important;
+}
+.reel-copy{
+  max-width:410px!important;
+  margin:0!important;
+  padding-bottom:10%!important;
+  pointer-events:auto!important;
+}
+.reel-copy h2{
+  font-size:clamp(48px,7vw,94px)!important;
+  line-height:.88!important;
+  letter-spacing:-.065em!important;
+  color:#f2f2ed!important;
+  text-shadow:0 8px 40px rgba(0,0,0,.16)!important;
+}
+.reel-copy h2 em{color:#a85a78!important}
+.reel-copy p{
+  color:rgba(242,242,237,.56)!important;
+  font-size:13px!important;
+  line-height:1.75!important;
+}
+.reel-page:nth-child(2) .reel-copy h2,
+.reel-page:nth-child(3) .reel-copy h2,
+.reel-page:nth-child(4) .reel-copy h2{
+  color:#121416!important;
+  text-shadow:none!important;
+}
+.reel-page:nth-child(2) .reel-copy p,
+.reel-page:nth-child(3) .reel-copy p,
+.reel-page:nth-child(4) .reel-copy p{
+  color:rgba(18,20,22,.62)!important;
+}
+.reel-page:nth-child(2) .reel-eyebrow,
+.reel-page:nth-child(3) .reel-eyebrow,
+.reel-page:nth-child(4) .reel-eyebrow{
+  color:rgba(18,20,22,.44)!important;
+}
+.reel-action{
+  background:rgba(18,20,22,.07)!important;
+  border-color:rgba(18,20,22,.15)!important;
+  color:#121416!important;
+  box-shadow:none!important;
+}
+.reel-action b{background:#121416!important;color:#f2f2ed!important}
+.reel-page:nth-child(5) .reel-copy{margin-left:auto!important;margin-right:auto!important;text-align:center!important}
+.reel-scroll-note{color:rgba(242,242,237,.3)!important}
+
+/* tool strip is part of the final scene */
+.reel-tool-strip{
+  position:absolute!important;
+  top:500svh!important;
+  left:8%!important;right:8%!important;
+  z-index:10!important;
+  padding:28px 0 60px!important;
+}
+.reel-tool{
+  background:rgba(242,242,237,.035)!important;
+  border-color:rgba(242,242,237,.1)!important;
+}
+.reel-tool:hover{border-color:rgba(112,41,67,.45)!important}
+
+/* Composer stays elegant and doesn't hide the matter. */
+.composer{
+  background:linear-gradient(to top,#070809 25%,rgba(7,8,9,.86) 65%,transparent)!important;
+}
+.composer-inner{
+  background:rgba(10,11,12,.84)!important;
+  border-color:rgba(242,242,237,.1)!important;
+  backdrop-filter:blur(24px)!important;
+}
+#sendButton{
+  background:linear-gradient(135deg,#f2f2ed,#d8dcda 55%,#702943)!important;
+  color:#090a0b!important;
+}
+
+/* Modals */
+.modal-overlay,.checkout-overlay{background:rgba(3,4,5,.78)!important;backdrop-filter:blur(22px)!important}
+.modal,.checkout-modal{
+  background:linear-gradient(145deg,rgba(242,242,237,.045),rgba(112,41,67,.045)),#0b0c0d!important;
+  border-color:rgba(242,242,237,.09)!important;
+}
+.modal-button,.checkout-button{
+  background:linear-gradient(135deg,#f2f2ed,#d8dcda 55%,#702943)!important;
+  color:#090a0b!important;
+}
+
+/* Mobile: matter is intentionally large and centered. */
+@media(max-width:700px){
+  .chat{padding-top:68px!important}
+  .reel-sticky{height:calc(100svh - 68px)!important}
+  .reel-copy{max-width:84vw!important;padding-bottom:15%!important}
+  .reel-copy h2{font-size:clamp(44px,13vw,68px)!important}
+  .reel-copy p{max-width:330px!important;font-size:12px!important}
+  .matter-label{top:9%!important}
+}
