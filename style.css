@@ -2877,3 +2877,17 @@ body{
   .aura-symbol .orbit,.aura-symbol .orbit2,.aura-symbol .orb,
   .core-glass,.core-halo,.core-light,.core-shine{animation:none!important}
 }
+
+/* Final shell geometry: the cinematic pages own the viewport. */
+.chat{
+  position:absolute!important;
+  inset:0!important;
+  padding:68px 0 125px!important;
+  scroll-padding-top:68px!important;
+}
+@media(max-width:900px){
+  .chat{
+    padding:62px 0 125px!important;
+    scroll-padding-top:62px!important;
+  }
+}
