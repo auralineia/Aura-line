@@ -1438,10 +1438,17 @@
 
       loadStories();
 
-      await loadCredits();
+      // Login must never remain blocked by credits/history/network calls.
+      // Render the app immediately, then hydrate credits in the background.
+      Promise.race([
+        Promise.resolve().then(() => loadCredits()),
+        new Promise(resolve => setTimeout(resolve, 5000))
+      ]).catch(error => {
+        console.warn("RIMAK: créditos carregando em segundo plano:", error);
+      });
 
       setTimeout(() => {
-        input.focus();
+        input?.focus();
       },150);
 
     }
