@@ -294,7 +294,7 @@ function updateReel(){
 }
 window.addEventListener("scroll",updateReel,{passive:true});
 $("#enterChat").onclick=()=>document.getElementById("conversation")?.scrollIntoView({behavior:"smooth"});
-$$("[data-prompt]").forEach(b=>b.onclick=()=>{$("#input").value=b.dataset.prompt;$("#input").focus();$("#chat").scrollTo({top:$("#reel").offsetHeight,behavior:"smooth"})});
+$("[data-prompt]").forEach(b=>b.onclick=()=>{$("#input").value=b.dataset.prompt;$("#input").focus();window.scrollTo({top:document.getElementById("conversation")?.offsetTop||0,behavior:"smooth"})});
 $("#animations").onchange=e=>document.documentElement.style.setProperty("--anim",e.target.checked?"1":"0");
 
 boot();updateReel();
@@ -315,9 +315,18 @@ vec3 N(vec3 p,float q){float e=.0012;return normalize(vec3(S(p+vec3(e,0,0),q)-S(
 void main(){vec2 uv=(gl_FragCoord.xy-.5*uRes)/min(uRes.x,uRes.y);vec3 ro=vec3(0,0,2.25),rd=normalize(vec3(uv,-1.8)),p,tpos=ro;float t=0.,d=0.;bool hit=false;for(int j=0;j<100;j++){tpos=ro+rd*t;d=S(tpos,uProgress);if(d<.0015){hit=true;break;}t+=max(d*.72,.0025);if(t>4.5)break;}vec3 col=vec3(0);if(hit){vec3 n=N(tpos,uProgress),v=normalize(ro-tpos),l=normalize(vec3(-.62,.82,1.0)),l2=normalize(vec3(.72,.15,.52)),h=normalize(l+v);
 float diff=max(dot(n,l),0.),diff2=max(dot(n,l2),0.),spec=pow(max(dot(n,h),0.),150.),fr=pow(1.-max(dot(n,v),0.),3.2);
 float stage=clamp((uProgress-2.2)/1.0,0.,1.);
-vec3 chrome=vec3(.012,.014,.017)+vec3(.12,.15,.16)*diff+vec3(.055,.035,.05)*diff2+vec3(.72,.8,.82)*spec+vec3(.38,.46,.48)*fr;
-vec3 holo=vec3(.12,.08,.18)+vec3(.02,.42,.48)*sin(uProgress*1.8+tpos.y*3.0)+vec3(.38,.04,.28)*sin(uProgress*.9+tpos.x*4.0);
-col=mix(chrome,holo,stage*.72);
+float rim=pow(max(1.-dot(n,v),0.),5.0);
+float spec2=pow(max(dot(n,normalize(l2+v)),0.),70.0);
+vec3 studio=vec3(.008,.01,.012);
+studio+=vec3(.18,.21,.22)*diff;
+studio+=vec3(.075,.05,.065)*diff2;
+studio+=vec3(.82,.88,.88)*spec;
+studio+=vec3(.28,.32,.34)*spec2;
+studio+=vec3(.5,.56,.58)*fr;
+studio+=vec3(.18,.22,.24)*rim;
+vec3 chrome=studio;
+vec3 holo=vec3(.16,.07,.2)+vec3(.025,.44,.52)*sin(uProgress*1.8+tpos.y*3.2)+vec3(.42,.025,.28)*sin(uProgress*.9+tpos.x*4.2);
+col=mix(chrome,holo,stage*.58);
 float grid=abs(sin(tpos.x*22.0))+abs(sin(tpos.y*22.0))+abs(sin(tpos.z*22.0));
 float wire=smoothstep(2.72,2.98,grid);
 float wireStage=smoothstep(3.15,4.05,uProgress)*(1.0-smoothstep(4.25,4.9,uProgress));
