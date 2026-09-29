@@ -1137,34 +1137,83 @@
 
         }else{
 
-          const { data, error } =
-            await Promise.race([
-              supabaseClient.auth.signInWithPassword({
-                email,
-                password
-              }),
-              new Promise((_, reject) =>
-                setTimeout(
-                  () => reject(new Error("LOGIN_TIMEOUT")),
-                  12000
-                )
-              )
-            ]);
+          // Use the Supabase Auth REST endpoint directly here.
+          // This avoids a stalled client-side auth promise on mobile browsers.
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 10000);
 
-          if(error){
-            throw error;
+          let response;
+          let authPayload;
+
+          try{
+            response = await fetch(
+              SUPABASE_URL + "/auth/v1/token?grant_type=password",
+              {
+                method:"POST",
+                headers:{
+                  "Content-Type":"application/json",
+                  "apikey":SUPABASE_KEY
+                },
+                body:JSON.stringify({
+                  email,
+                  password
+                }),
+                signal:controller.signal
+              }
+            );
+
+            const raw = await response.text();
+
+            try{
+              authPayload = raw ? JSON.parse(raw) : {};
+            }catch{
+              authPayload = {};
+            }
+          }catch(fetchError){
+            if(fetchError?.name === "AbortError"){
+              throw new Error("LOGIN_TIMEOUT");
+            }
+            throw fetchError;
+          }finally{
+            clearTimeout(timeout);
           }
 
-          if(!data?.session?.user){
+          if(!response.ok){
+            const message =
+              authPayload?.error_description ||
+              authPayload?.msg ||
+              authPayload?.message ||
+              "Falha na autenticação.";
+            throw new Error(message);
+          }
+
+          if(
+            !authPayload?.access_token ||
+            !authPayload?.refresh_token ||
+            !authPayload?.user
+          ){
             throw new Error(
-              "O login foi aceito, mas o servidor não criou uma sessão."
+              "O servidor de autenticação não retornou uma sessão válida."
             );
           }
 
-          currentUser =
-            data.session.user;
+          const { error: sessionError } =
+            await supabaseClient.auth.setSession({
+              access_token:authPayload.access_token,
+              refresh_token:authPayload.refresh_token
+            });
 
-          // Never block authentication on UI hydration.
+          if(sessionError){
+            throw sessionError;
+          }
+
+          currentUser = authPayload.user;
+
+          // Authentication is complete; UI hydration cannot block entry.
+          authScreen.style.display = "none";
+          app.style.display = "block";
+          document.body.classList.remove("auth-active");
+
           showApp().catch(error =>
             console.error("RIMAK SHOW APP:", error)
           );
