@@ -3369,3 +3369,227 @@ body,.app{
   .brand-logo .orbit2,.welcome-logo .orbit2,.mini-symbol .orbit2,
   .brand-logo .orb,.welcome-logo .orb,.mini-symbol .orb{animation:none!important}
 }
+
+/* =========================================================
+   RIMAK HOTFIX — scene stack + organic identity
+   ========================================================= */
+
+/* The 3D layer must remain visible behind the active copy. */
+.reel-experience{
+  min-height:500svh!important;
+  overflow:visible!important;
+  background:var(--reel-bg,#05070a)!important;
+}
+.reel-sticky{
+  position:sticky!important;
+  top:0!important;
+  height:100svh!important;
+  margin:0!important;
+  z-index:4!important;
+  overflow:hidden!important;
+}
+.reel-pages{
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  width:100%!important;
+  height:auto!important;
+  margin-top:-100svh!important;
+  z-index:6!important;
+  pointer-events:none!important;
+}
+.reel-page{
+  position:sticky!important;
+  top:0!important;
+  height:100svh!important;
+  min-height:100svh!important;
+  width:100%!important;
+  padding:8% 8%!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  opacity:0!important;
+  transform:translate3d(0,35px,0) scale(.985)!important;
+  pointer-events:none!important;
+  transition:opacity .55s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1)!important;
+  overflow:hidden!important;
+}
+.reel-page::before{display:none!important}
+.reel-page.is-current{
+  opacity:1!important;
+  transform:none!important;
+  pointer-events:auto!important;
+}
+.reel-copy{pointer-events:auto!important}
+.reel-page-meta{z-index:10!important}
+
+/* The old color identity is gone: RIMAK is ice + ink + burgundy. */
+:root{
+  --r-ice:#f0f1ed;
+  --r-ink:#0b0c0d;
+  --r-burg:#681f38;
+  --r-burg2:#8c3656;
+  --r-blue:transparent;
+}
+body,.app{background:#08090a!important;color:var(--r-ice)!important}
+
+/* Organic RIMAK mark — no cyan/blue. */
+.aura-symbol{
+  position:relative!important;
+  width:86px!important;
+  height:86px!important;
+  margin:0 auto 24px!important;
+  display:block!important;
+}
+.aura-symbol .orbit,
+.aura-symbol .orbit2{
+  position:absolute!important;
+  width:70px!important;
+  height:70px!important;
+  left:8px!important;
+  top:8px!important;
+  border-radius:58% 42% 64% 36% / 39% 61% 39% 61%!important;
+  background:
+    radial-gradient(circle at 30% 23%,rgba(255,255,255,.9),transparent 11%),
+    radial-gradient(circle at 64% 34%,rgba(240,241,237,.55),transparent 25%),
+    radial-gradient(circle at 36% 76%,#8c3656 0 16%,#681f38 38%,#171012 72%,#090a0b 100%)!important;
+  box-shadow:
+    inset -10px -12px 22px rgba(0,0,0,.55),
+    inset 8px 7px 16px rgba(255,255,255,.12),
+    0 18px 50px rgba(104,31,56,.28)!important;
+  border:1px solid rgba(240,241,237,.12)!important;
+  transform:none!important;
+  animation:rimakOrganic 5.8s ease-in-out infinite!important;
+}
+.aura-symbol .orbit2{
+  width:50px!important;
+  height:50px!important;
+  left:19px!important;
+  top:18px!important;
+  background:
+    radial-gradient(circle at 35% 25%,#fff,transparent 8%),
+    radial-gradient(circle at 60% 55%,rgba(240,241,237,.78),transparent 23%),
+    radial-gradient(circle at 40% 70%,#8c3656,transparent 56%)!important;
+  filter:blur(1.5px)!important;
+  opacity:.72!important;
+  animation:rimakOrganicInner 4.1s ease-in-out infinite reverse!important;
+}
+.aura-symbol .orb{
+  position:absolute!important;
+  width:18px!important;
+  height:18px!important;
+  left:34px!important;
+  top:34px!important;
+  border-radius:56% 44% 63% 37% / 42% 58% 42% 58%!important;
+  background:#f0f1ed!important;
+  box-shadow:0 0 20px rgba(240,241,237,.9),0 0 42px rgba(140,54,86,.42)!important;
+  transform:none!important;
+  animation:rimakOrganicCore 3.1s ease-in-out infinite!important;
+}
+@keyframes rimakOrganic{
+  0%,100%{border-radius:58% 42% 64% 36% / 39% 61% 39% 61%;transform:rotate(-8deg) scale(.96)}
+  25%{border-radius:38% 62% 46% 54% / 60% 40% 58% 42%;transform:rotate(5deg) scale(1.05)}
+  50%{border-radius:68% 32% 37% 63% / 46% 65% 35% 54%;transform:rotate(-13deg) scale(.92)}
+  75%{border-radius:45% 55% 67% 33% / 35% 53% 47% 65%;transform:rotate(8deg) scale(1.04)}
+}
+@keyframes rimakOrganicInner{
+  0%,100%{transform:translate(0,0) scale(.82) rotate(0)}
+  50%{transform:translate(9px,-6px) scale(1.18) rotate(25deg)}
+}
+@keyframes rimakOrganicCore{
+  0%,100%{transform:scale(.72) rotate(0)}
+  50%{transform:scale(1.3) rotate(-25deg)}
+}
+
+/* Header logo uses the same living mark, scaled down. */
+.brand-logo{
+  width:40px!important;
+  height:40px!important;
+  flex:0 0 40px!important;
+  transform:none!important;
+  margin:0!important;
+}
+.brand-logo .orbit{
+  width:34px!important;height:34px!important;left:3px!important;top:3px!important;
+}
+.brand-logo .orbit2{
+  width:24px!important;height:24px!important;left:8px!important;top:8px!important;
+}
+.brand-logo .orb{
+  width:9px!important;height:9px!important;left:15px!important;top:15px!important;
+}
+.welcome-logo{
+  width:86px!important;height:86px!important;transform:none!important;
+  margin:0 auto 24px!important;
+}
+
+/* Sidebar mark has no blue either. */
+.mini-symbol{
+  width:34px!important;height:34px!important;position:relative!important;
+}
+.mini-symbol .orbit{
+  left:2px!important;top:2px!important;width:30px!important;height:30px!important;
+  border-radius:58% 42% 64% 36% / 39% 61% 39% 61%!important;
+  background:radial-gradient(circle at 35% 25%,#f0f1ed,transparent 12%),radial-gradient(circle at 42% 72%,#8c3656,#681f38 48%,#0b0c0d 82%)!important;
+  animation:rimakOrganic 5.8s ease-in-out infinite!important;
+}
+.mini-symbol .orb{
+  left:13px!important;top:13px!important;width:9px!important;height:9px!important;
+  border-radius:50%!important;background:#f0f1ed!important;
+  box-shadow:0 0 13px rgba(240,241,237,.8)!important;
+  animation:rimakOrganicCore 3.1s ease-in-out infinite!important;
+}
+
+/* Login follows the same black / ice / burgundy world. */
+#authScreen{
+  background:
+    radial-gradient(45% 45% at 50% 35%,rgba(140,54,86,.13),transparent 72%),
+    radial-gradient(38% 38% at 30% 78%,rgba(240,241,237,.035),transparent 72%),
+    #08090a!important;
+}
+.auth-title{color:#f0f1ed!important}
+.auth-subtitle{color:rgba(240,241,237,.43)!important}
+.auth-input{
+  background:rgba(240,241,237,.035)!important;
+  border-color:rgba(240,241,237,.1)!important;
+  color:#f0f1ed!important;
+}
+.auth-input:focus{
+  border-color:rgba(140,54,86,.72)!important;
+  box-shadow:0 0 0 3px rgba(140,54,86,.1)!important;
+}
+.auth-button{
+  background:linear-gradient(135deg,#f0f1ed 0%,#dfe3e1 46%,#8c3656 100%)!important;
+  color:#090a0b!important;
+}
+.auth-switch,.auth-subtitle{color:rgba(240,241,237,.45)!important}
+.auth-switch span{color:#b76a85!important}
+
+/* Fix light scenes: text stays dark and the 3D object remains visible. */
+.reel-page:nth-child(n) .reel-copy h2{color:#f0f1ed!important}
+.reel-page:nth-child(2) .reel-copy h2,
+.reel-page:nth-child(3) .reel-copy h2,
+.reel-page:nth-child(4) .reel-copy h2{color:#0b1114!important}
+.reel-page:nth-child(2) .reel-copy p,
+.reel-page:nth-child(3) .reel-copy p,
+.reel-page:nth-child(4) .reel-copy p{color:rgba(11,17,20,.64)!important}
+.reel-page:nth-child(2) .reel-eyebrow,
+.reel-page:nth-child(3) .reel-eyebrow,
+.reel-page:nth-child(4) .reel-eyebrow{color:rgba(11,17,20,.45)!important}
+.reel-page:nth-child(2) .reel-action,
+.reel-page:nth-child(3) .reel-action,
+.reel-page:nth-child(4) .reel-action{
+  background:rgba(11,17,20,.07)!important;
+  border-color:rgba(11,17,20,.16)!important;
+  color:#0b1114!important;
+}
+.reel-page:nth-child(2) .reel-action b,
+.reel-page:nth-child(3) .reel-action b,
+.reel-page:nth-child(4) .reel-action b{background:#0b1114!important;color:#f0f1ed!important}
+
+/* Make the 3D matter visually dominant. */
+#matterCanvas{z-index:2!important}
+.reel-vignette{z-index:3!important;pointer-events:none!important}
+.matter-label{z-index:5!important}
+.reel-copy h2{letter-spacing:-.065em!important}
