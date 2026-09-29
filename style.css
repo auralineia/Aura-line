@@ -2266,3 +2266,614 @@
 .setting-toggle.on{
   background:linear-gradient(90deg,#74bfe7,#732944)!important;
 }
+
+/* =========================================================
+   RIMAK — FULL ORGANIC REDESIGN / REEL MODE
+   No legacy visual language. The experience is built around
+   one living material that morphs between pages.
+   ========================================================= */
+
+:root{
+  --rimak-blue:#8fd3f1;
+  --rimak-blue-deep:#477f9e;
+  --rimak-burgundy:#722943;
+  --rimak-ice:#edf4f5;
+  --rimak-black:#05070a;
+}
+
+/* ---------- GLOBAL SHELL ---------- */
+body{
+  background:#05070a!important;
+  color:var(--rimak-ice)!important;
+}
+.app{
+  background:#05070a!important;
+}
+.topbar{
+  height:68px!important;
+  border-bottom:1px solid rgb(237 244 245 / .07)!important;
+  background:linear-gradient(180deg,rgb(5 7 10 / .98),rgb(5 7 10 / .76),transparent)!important;
+  backdrop-filter:blur(24px)!important;
+  z-index:80!important;
+}
+.brand{
+  gap:10px!important;
+}
+.brand-name{
+  font-weight:600!important;
+  letter-spacing:5px!important;
+  color:#edf4f5!important;
+}
+.credit-pill{
+  border:1px solid rgb(143 211 241 / .18)!important;
+  border-radius:999px!important;
+  background:
+    radial-gradient(circle at 20% 0%,rgb(143 211 241 / .12),transparent 60%),
+    linear-gradient(135deg,rgb(237 244 245 / .055),rgb(114 41 67 / .055))!important;
+  color:rgb(237 244 245 / .78)!important;
+  box-shadow:inset 0 1px 0 rgb(255 255 255 / .06),0 8px 35px rgb(0 0 0 / .18)!important;
+  transition:transform .35s,border-color .35s,box-shadow .35s!important;
+}
+.credit-pill:hover{
+  transform:translateY(-2px)!important;
+  border-color:rgb(143 211 241 / .45)!important;
+  box-shadow:0 12px 38px rgb(72 128 159 / .12)!important;
+}
+.credit-dot{
+  width:7px!important;height:7px!important;
+  border-radius:50%!important;
+  background:linear-gradient(135deg,var(--rimak-ice),var(--rimak-blue),var(--rimak-burgundy))!important;
+  box-shadow:0 0 13px rgb(143 211 241 / .8)!important;
+}
+
+/* ---------- ORGANIC RIMAK MARK: no circles / no rings ---------- */
+.aura-symbol{
+  position:relative!important;
+  border:0!important;
+  background:none!important;
+  overflow:visible!important;
+}
+.aura-symbol .orbit,
+.aura-symbol .orbit2,
+.aura-symbol .orb{
+  border:0!important;
+  box-shadow:none!important;
+  animation:none!important;
+}
+.aura-symbol .orbit{
+  background:
+    radial-gradient(circle at 27% 18%,rgb(255 255 255 / .95),transparent 7%),
+    radial-gradient(circle at 65% 34%,rgb(143 211 241 / .92),transparent 33%),
+    radial-gradient(circle at 36% 75%,rgb(114 41 67 / .94),transparent 46%),
+    linear-gradient(132deg,#e9f2f4 0%,#8fd3f1 38%,#416f88 58%,#722943 100%)!important;
+  border-radius:61% 39% 56% 44% / 44% 57% 43% 56%!important;
+  transform-origin:50% 50%!important;
+  animation:rimakMarkMorph 5.8s ease-in-out infinite!important;
+  box-shadow:
+    inset -8px -10px 18px rgb(0 0 0 / .26),
+    inset 5px 4px 12px rgb(255 255 255 / .22),
+    0 9px 28px rgb(72 128 159 / .18)!important;
+}
+.aura-symbol .orbit2{
+  background:
+    radial-gradient(circle at 35% 28%,rgb(255 255 255 / .45),transparent 8%),
+    radial-gradient(circle,rgb(143 211 241 / .26),rgb(114 41 67 / .2) 58%,transparent 75%)!important;
+  border-radius:42% 58% 38% 62% / 62% 39% 61% 38%!important;
+  transform-origin:center!important;
+  animation:rimakMarkInner 4.4s ease-in-out infinite reverse!important;
+  filter:blur(1px)!important;
+}
+.aura-symbol .orb{
+  background:radial-gradient(circle at 32% 27%,#fff 0 9%,#e7f0f3 25%,#8fd3f1 58%,#722943 100%)!important;
+  border-radius:63% 37% 58% 42% / 42% 61% 39% 58%!important;
+  animation:rimakMarkPulse 3.1s ease-in-out infinite!important;
+  box-shadow:0 0 20px rgb(237 244 245 / .75),0 0 36px rgb(143 211 241 / .36)!important;
+}
+.aura-symbol::after{
+  content:""!important;
+  position:absolute!important;
+  width:18%!important;height:12%!important;
+  left:23%!important;top:18%!important;
+  border-radius:50%!important;
+  background:rgb(255 255 255 / .7)!important;
+  filter:blur(5px)!important;
+  animation:rimakMarkGlint 4s ease-in-out infinite!important;
+}
+@keyframes rimakMarkMorph{
+  0%,100%{border-radius:61% 39% 56% 44% / 44% 57% 43% 56%;transform:rotate(-3deg) scale(1)}
+  20%{border-radius:38% 62% 49% 51% / 61% 39% 56% 44%;transform:rotate(8deg) scale(1.07)}
+  45%{border-radius:69% 31% 38% 62% / 47% 63% 37% 53%;transform:rotate(-10deg) scale(.96)}
+  70%{border-radius:44% 56% 65% 35% / 35% 49% 51% 65%;transform:rotate(7deg) scale(1.05)}
+}
+@keyframes rimakMarkInner{
+  0%,100%{transform:translate(0,0) rotate(0) scale(.94)}
+  50%{transform:translate(12%, -7%) rotate(-17deg) scale(1.12)}
+}
+@keyframes rimakMarkPulse{
+  0%,100%{transform:scale(.82) rotate(0);opacity:.68}
+  50%{transform:scale(1.2) rotate(18deg);opacity:1}
+}
+@keyframes rimakMarkGlint{
+  0%,100%{transform:translate(0,0) scale(.65);opacity:.16}
+  50%{transform:translate(90%,20%) scale(1.1);opacity:.7}
+}
+.brand-logo{
+  width:36px!important;height:30px!important;
+  flex:0 0 36px!important;
+}
+.brand-logo .orbit{left:3px!important;top:4px!important;width:30px!important;height:22px!important}
+.brand-logo .orbit2{left:9px!important;top:7px!important;width:23px!important;height:17px!important}
+.brand-logo .orb{left:15px!important;top:10px!important;width:10px!important;height:10px!important}
+.brand-logo::after{display:none!important}
+
+/* ---------- AUTH: same identity from the first pixel ---------- */
+#authScreen{
+  background:
+    radial-gradient(55% 45% at 50% 35%,rgb(143 211 241 / .10),transparent 70%),
+    radial-gradient(40% 35% at 25% 80%,rgb(114 41 67 / .13),transparent 70%),
+    #05070a!important;
+}
+.auth-box{
+  width:min(440px,calc(100vw - 32px))!important;
+  padding:42px 30px 28px!important;
+  border:1px solid rgb(237 244 245 / .09)!important;
+  border-radius:38px!important;
+  background:
+    linear-gradient(145deg,rgb(237 244 245 / .055),rgb(114 41 67 / .035)),
+    rgb(5 7 10 / .7)!important;
+  box-shadow:0 45px 120px rgb(0 0 0 / .58),inset 0 1px 0 rgb(255 255 255 / .07)!important;
+  backdrop-filter:blur(30px)!important;
+}
+.auth-title{
+  letter-spacing:8px!important;
+  font-weight:650!important;
+  color:var(--rimak-ice)!important;
+}
+.auth-subtitle{color:rgb(237 244 245 / .45)!important}
+.auth-input{
+  border:1px solid rgb(237 244 245 / .09)!important;
+  border-radius:18px!important;
+  background:rgb(237 244 245 / .035)!important;
+  color:var(--rimak-ice)!important;
+}
+.auth-input:focus{
+  border-color:rgb(143 211 241 / .5)!important;
+  box-shadow:0 0 0 3px rgb(143 211 241 / .08),0 0 35px rgb(143 211 241 / .08)!important;
+}
+.auth-button{
+  border-radius:18px!important;
+  border:0!important;
+  background:linear-gradient(125deg,#edf4f5 0%,#8fd3f1 53%,#722943 100%)!important;
+  color:#071015!important;
+  box-shadow:0 16px 45px rgb(143 211 241 / .13)!important;
+}
+.auth-switch{color:rgb(237 244 245 / .42)!important}
+.auth-switch span{color:var(--rimak-blue)!important}
+
+/* ---------- SIDEBAR: organic glass, including open/active states ---------- */
+.side-menu{
+  background:
+    radial-gradient(80% 40% at 0 0,rgb(143 211 241 / .11),transparent 72%),
+    radial-gradient(75% 45% at 100% 70%,rgb(114 41 67 / .12),transparent 72%),
+    rgb(5 7 10 / .92)!important;
+  border-right:1px solid rgb(237 244 245 / .09)!important;
+  box-shadow:35px 0 110px rgb(0 0 0 / .55)!important;
+  backdrop-filter:blur(32px) saturate(135%)!important;
+}
+.menu-header{border-bottom:1px solid rgb(237 244 245 / .07)!important}
+.menu-brand-name{letter-spacing:5px!important;color:var(--rimak-ice)!important}
+.new-chat{
+  border:1px solid rgb(143 211 241 / .18)!important;
+  border-radius:18px!important;
+  background:linear-gradient(135deg,rgb(143 211 241 / .08),rgb(114 41 67 / .06))!important;
+}
+.new-chat-icon,.menu-icon{color:var(--rimak-blue)!important}
+.menu-item{
+  border-radius:16px!important;
+  border:1px solid transparent!important;
+  color:rgb(237 244 245 / .55)!important;
+}
+.menu-item:hover,.menu-item.active{
+  border-color:rgb(143 211 241 / .12)!important;
+  background:linear-gradient(100deg,rgb(143 211 241 / .09),rgb(114 41 67 / .045))!important;
+  color:var(--rimak-ice)!important;
+}
+.account-card{
+  border:1px solid rgb(237 244 245 / .08)!important;
+  border-radius:22px!important;
+  background:linear-gradient(145deg,rgb(237 244 245 / .045),rgb(114 41 67 / .045))!important;
+}
+.account-avatar{
+  background:linear-gradient(135deg,#8fd3f1,#722943)!important;
+  box-shadow:0 0 30px rgb(143 211 241 / .16)!important;
+}
+
+/* ---------- THE EXPERIENCE IS THE PRODUCT ---------- */
+.chat{
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  -webkit-overflow-scrolling:touch!important;
+  overscroll-behavior-y:contain!important;
+  background:#05070a!important;
+}
+.rimak-cinematic{
+  position:relative!important;
+  display:block!important;
+  height:auto!important;
+  min-height:calc(100svh - 68px)!important;
+  overflow:visible!important;
+  isolation:isolate!important;
+  background:#05070a!important;
+}
+.rimak-cinematic .cinematic-noise,
+.rimak-cinematic .cinematic-grid{
+  pointer-events:none!important;
+}
+.rimak-hero-stage,
+.cinematic-section,
+.final-section,
+.rimak-tool-hub{
+  min-height:calc(100svh - 68px)!important;
+  height:calc(100svh - 68px)!important;
+  position:relative!important;
+  overflow:hidden!important;
+}
+
+/* Each page has its own material/color, like the reference video. */
+.rimak-hero-stage{
+  background:
+    radial-gradient(45% 65% at 50% 50%,rgb(143 211 241 / .08),transparent 70%),
+    radial-gradient(30% 40% at 80% 20%,rgb(114 41 67 / .08),transparent 75%),
+    #05070a!important;
+}
+.rimak-cinematic .cinematic-section:nth-of-type(3){
+  background:
+    radial-gradient(35% 55% at 52% 50%,rgb(0 0 0 / .09),transparent 72%),
+    linear-gradient(180deg,#edf4f5,#e6eef0)!important;
+  color:#172027!important;
+}
+.rimak-cinematic .cinematic-section:nth-of-type(4){
+  background:
+    radial-gradient(45% 55% at 52% 52%,rgb(143 211 241 / .28),transparent 70%),
+    linear-gradient(145deg,#dceef5,#f1f5f4)!important;
+  color:#172027!important;
+}
+.rimak-cinematic .cinematic-section:nth-of-type(5){
+  background:
+    radial-gradient(40% 50% at 50% 45%,rgb(114 41 67 / .18),transparent 68%),
+    linear-gradient(145deg,#f0e5e9,#edf4f5)!important;
+  color:#172027!important;
+}
+.rimak-cinematic .final-section{
+  background:
+    radial-gradient(50% 60% at 50% 45%,rgb(143 211 241 / .12),transparent 70%),
+    #070a0e!important;
+}
+
+/* Hide the old decorative tech rings completely. */
+.hero-orbit,
+.core-ring,
+.core-particle{
+  display:none!important;
+}
+.rimak-core{
+  width:clamp(260px,31vw,430px)!important;
+  height:clamp(260px,31vw,430px)!important;
+  right:9%!important;
+  top:50%!important;
+  z-index:5!important;
+  transform-style:preserve-3d!important;
+  will-change:transform!important;
+}
+
+/* The object itself: a glossy digital material. */
+.core-halo{
+  position:absolute!important;
+  inset:0!important;
+  border-radius:50%!important;
+  background:radial-gradient(circle,rgb(143 211 241 / .18),rgb(114 41 67 / .06) 44%,transparent 72%)!important;
+  filter:blur(35px)!important;
+  animation:rimakAuraBreathe 4.5s ease-in-out infinite!important;
+}
+.core-glass{
+  inset:8%!important;
+  border:0!important;
+  overflow:visible!important;
+  background:
+    radial-gradient(circle at 28% 19%,rgb(255 255 255 / .96),transparent 7%),
+    radial-gradient(circle at 65% 31%,rgb(190 230 246 / .85),transparent 25%),
+    radial-gradient(circle at 36% 72%,rgb(114 41 67 / .9),transparent 42%),
+    radial-gradient(circle at 72% 70%,rgb(255 255 255 / .18),transparent 21%),
+    linear-gradient(135deg,#dcecf2 0%,#8fd3f1 36%,#3d667b 57%,#722943 100%)!important;
+  box-shadow:
+    inset -30px -36px 65px rgb(0 0 0 / .48),
+    inset 18px 12px 38px rgb(255 255 255 / .2),
+    0 30px 80px rgb(0 0 0 / .25),
+    0 0 80px rgb(143 211 241 / .2)!important;
+  transform-style:preserve-3d!important;
+  animation:rimakMatter 7s cubic-bezier(.45,.05,.55,.95) infinite!important;
+  transition:
+    border-radius 1.15s cubic-bezier(.65,.05,.35,1),
+    clip-path 1.15s cubic-bezier(.65,.05,.35,1),
+    background 1.15s ease,
+    box-shadow 1.15s ease!important;
+}
+.core-glass::before{
+  content:""!important;
+  position:absolute!important;
+  inset:3%!important;
+  border-radius:inherit!important;
+  background:
+    conic-gradient(from 210deg,transparent 0 23%,rgb(255 255 255 / .38) 28%,transparent 34% 58%,rgb(143 211 241 / .3) 65%,transparent 72%)!important;
+  filter:blur(3px)!important;
+  mix-blend-mode:screen!important;
+  animation:rimakSpecular 5s linear infinite!important;
+}
+.core-glass::after{
+  content:""!important;
+  position:absolute!important;
+  inset:15%!important;
+  border-radius:inherit!important;
+  background:
+    radial-gradient(ellipse at 30% 28%,rgb(255 255 255 / .34),transparent 15%),
+    radial-gradient(ellipse at 67% 64%,rgb(0 0 0 / .18),transparent 30%)!important;
+  filter:blur(8px)!important;
+  mix-blend-mode:screen!important;
+  animation:rimakLiquid 5.6s ease-in-out infinite alternate!important;
+}
+.core-liquid-cut{display:none!important}
+.core-shine{
+  position:absolute!important;
+  inset:0!important;
+  border-radius:inherit!important;
+  background:linear-gradient(115deg,transparent 34%,rgb(255 255 255 / .25) 48%,transparent 61%)!important;
+  filter:blur(6px)!important;
+  mix-blend-mode:screen!important;
+  animation:rimakSweep 4.8s ease-in-out infinite!important;
+}
+.core-light{
+  width:50%!important;height:45%!important;
+  left:25%!important;top:24%!important;
+  background:radial-gradient(circle,rgb(238 248 250 / .7),rgb(143 211 241 / .16) 42%,transparent 74%)!important;
+  filter:blur(30px)!important;
+  animation:rimakInternal 4.3s ease-in-out infinite!important;
+}
+.core-mark{opacity:0!important}
+
+@keyframes rimakAuraBreathe{
+  0%,100%{transform:scale(.82);opacity:.5}
+  50%{transform:scale(1.08);opacity:.95}
+}
+@keyframes rimakMatter{
+  0%,100%{border-radius:50% 50% 48% 52% / 52% 48% 52% 48%;transform:translateZ(30px) rotate(-3deg) scale(1)}
+  16%{border-radius:39% 61% 49% 51% / 62% 38% 56% 44%;transform:translateZ(55px) rotate(8deg) scale(1.035)}
+  34%{border-radius:68% 32% 36% 64% / 46% 64% 36% 54%;transform:translateZ(72px) rotate(-10deg) scale(.965)}
+  53%{border-radius:42% 58% 65% 35% / 35% 52% 48% 65%;transform:translateZ(48px) rotate(13deg) scale(1.06)}
+  73%{border-radius:61% 39% 44% 56% / 59% 41% 68% 32%;transform:translateZ(65px) rotate(-7deg) scale(.98)}
+  88%{border-radius:47% 53% 59% 41% / 43% 65% 35% 57%;transform:translateZ(42px) rotate(5deg) scale(1.025)}
+}
+@keyframes rimakSpecular{to{transform:rotate(360deg)}}
+@keyframes rimakLiquid{
+  from{transform:translate3d(-5%,-2%,0) scale(.9) rotate(-7deg);opacity:.42}
+  to{transform:translate3d(8%,6%,0) scale(1.08) rotate(11deg);opacity:.8}
+}
+@keyframes rimakSweep{
+  0%,100%{transform:translateX(-20%) rotate(-8deg);opacity:.16}
+  50%{transform:translateX(18%) rotate(8deg);opacity:.78}
+}
+@keyframes rimakInternal{
+  0%,100%{transform:translate3d(-10px,-7px,80px) scale(.75);opacity:.16}
+  50%{transform:translate3d(16px,13px,100px) scale(1.16);opacity:.38}
+}
+
+/* Scene 0 — glossy black/ice sphere */
+#rimakExperience[data-scene="0"] .core-glass{
+  border-radius:50%!important;
+  background:
+    radial-gradient(circle at 31% 20%,#fff,transparent 6%),
+    radial-gradient(circle at 67% 32%,rgb(237 244 245 / .6),transparent 17%),
+    radial-gradient(circle at 36% 75%,rgb(114 41 67 / .32),transparent 32%),
+    linear-gradient(145deg,#dce7ea 0%,#566872 28%,#0b1014 58%,#020304 100%)!important;
+  box-shadow:inset -35px -42px 70px rgb(0 0 0 / .82),inset 16px 12px 35px rgb(255 255 255 / .17),0 35px 90px rgb(0 0 0 / .5)!important;
+}
+
+/* Scene 1 — the reference's black organic blob */
+#rimakExperience[data-scene="1"] .core-glass{
+  border-radius:27% 73% 38% 62% / 60% 35% 65% 40%!important;
+  background:
+    radial-gradient(circle at 28% 20%,#fff,transparent 5%),
+    radial-gradient(circle at 63% 30%,rgb(237 244 245 / .45),transparent 17%),
+    linear-gradient(135deg,#b9c8cd 0%,#36434a 28%,#080b0d 62%,#020304 100%)!important;
+  box-shadow:inset -40px -45px 70px rgb(0 0 0 / .8),inset 15px 10px 28px rgb(255 255 255 / .14),0 35px 100px rgb(0 0 0 / .42)!important;
+  clip-path:polygon(12% 35%,22% 15%,44% 8%,64% 18%,85% 12%,96% 34%,87% 57%,94% 77%,70% 90%,47% 82%,25% 92%,7% 70%)!important;
+}
+
+/* Scene 2 — iridescent liquid jewel */
+#rimakExperience[data-scene="2"] .core-glass{
+  border-radius:34% 66% 40% 60% / 58% 38% 62% 42%!important;
+  background:
+    radial-gradient(circle at 26% 19%,rgb(255 255 255 / .9),transparent 5%),
+    radial-gradient(circle at 64% 31%,rgb(115 220 255 / .95),transparent 27%),
+    radial-gradient(circle at 34% 71%,rgb(93 27 142 / .95),transparent 31%),
+    radial-gradient(circle at 72% 68%,rgb(216 77 164 / .8),transparent 29%),
+    linear-gradient(140deg,#eef6f7 0%,#73c8e8 30%,#4d4c93 55%,#8e3266 82%,#722943 100%)!important;
+  box-shadow:inset -30px -35px 55px rgb(24 8 35 / .4),inset 18px 12px 30px rgb(255 255 255 / .22),0 30px 80px rgb(74 137 172 / .28)!important;
+}
+
+/* Scene 3 — soft computational organism / flower */
+#rimakExperience[data-scene="3"] .core-glass{
+  border-radius:43% 57% 53% 47% / 63% 42% 58% 37%!important;
+  background:
+    repeating-radial-gradient(circle at 48% 52%,transparent 0 16px,rgb(114 41 67 / .12) 17px 19px),
+    radial-gradient(circle at 50% 50%,rgb(237 244 245 / .85),rgb(143 211 241 / .35) 34%,rgb(114 41 67 / .42) 67%,transparent 76%)!important;
+  border:1px solid rgb(237 244 245 / .3)!important;
+  box-shadow:0 0 70px rgb(143 211 241 / .18),inset 0 0 45px rgb(255 255 255 / .12)!important;
+  filter:saturate(.8)!important;
+}
+
+/* Scene 4 — final polished white/ice form */
+#rimakExperience[data-scene="4"] .core-glass{
+  border-radius:48% 52% 45% 55% / 56% 43% 57% 44%!important;
+  background:
+    radial-gradient(circle at 28% 20%,#fff,transparent 8%),
+    radial-gradient(circle at 63% 40%,rgb(143 211 241 / .72),transparent 29%),
+    radial-gradient(circle at 38% 72%,rgb(114 41 67 / .36),transparent 28%),
+    linear-gradient(145deg,#f5f9fa,#c8dbe2 48%,#7295a5 70%,#722943 100%)!important;
+  box-shadow:inset -28px -30px 52px rgb(0 0 0 / .28),inset 17px 11px 30px rgb(255 255 255 / .38),0 35px 90px rgb(72 128 159 / .22)!important;
+}
+
+/* ---------- PAGE CONTENT: less "dashboard", more editorial ---------- */
+.section-copy{
+  z-index:6!important;
+}
+.section-copy h3{
+  letter-spacing:-.045em!important;
+  line-height:.95!important;
+}
+.cinematic-section:nth-of-type(3) .section-copy,
+.cinematic-section:nth-of-type(4) .section-copy,
+.cinematic-section:nth-of-type(5) .section-copy{
+  color:#162229!important;
+}
+.cinematic-section:nth-of-type(3) .cinematic-kicker,
+.cinematic-section:nth-of-type(4) .cinematic-kicker,
+.cinematic-section:nth-of-type(5) .cinematic-kicker{
+  color:rgb(22 34 41 / .55)!important;
+}
+.floating-interface{
+  border-radius:0!important;
+  border:1px solid rgb(22 34 41 / .12)!important;
+  background:rgb(255 255 255 / .3)!important;
+  box-shadow:0 35px 90px rgb(20 30 35 / .14)!important;
+  backdrop-filter:blur(18px)!important;
+}
+.fi-top{border-bottom-color:rgb(22 34 41 / .09)!important}
+.fi-top,.fi-title,.fi-input,.metric-row,.result-card{color:#17252b!important}
+.fi-input,.search-line{background:rgb(22 34 41 / .035)!important;border-color:rgb(22 34 41 / .1)!important}
+.fi-progress span{background:linear-gradient(90deg,#477f9e,#8fd3f1,#722943)!important}
+.result-card{border-color:rgb(22 34 41 / .09)!important;background:rgb(255 255 255 / .38)!important}
+
+/* ---------- COMPOSER: not the old chat box ---------- */
+.composer{
+  background:linear-gradient(180deg,transparent,rgb(5 7 10 / .92) 35%,rgb(5 7 10 / .98))!important;
+  border-top:0!important;
+  z-index:90!important;
+}
+.composer-inner{
+  border:1px solid rgb(237 244 245 / .1)!important;
+  border-radius:24px!important;
+  background:
+    linear-gradient(145deg,rgb(237 244 245 / .055),rgb(114 41 67 / .035)),
+    rgb(5 7 10 / .84)!important;
+  box-shadow:0 20px 60px rgb(0 0 0 / .35),inset 0 1px 0 rgb(255 255 255 / .06)!important;
+  backdrop-filter:blur(25px)!important;
+}
+.composer-inner:focus-within{
+  border-color:rgb(143 211 241 / .3)!important;
+  box-shadow:0 20px 65px rgb(0 0 0 / .38),0 0 45px rgb(143 211 241 / .06)!important;
+}
+.composer textarea{color:var(--rimak-ice)!important}
+.composer textarea::placeholder{color:rgb(237 244 245 / .32)!important}
+#sendButton{
+  border-radius:17px!important;
+  background:linear-gradient(135deg,#edf4f5,#8fd3f1 52%,#722943)!important;
+  color:#061016!important;
+  box-shadow:0 8px 28px rgb(143 211 241 / .13)!important;
+}
+.composer-note{color:rgb(237 244 245 / .25)!important}
+
+/* ---------- ALL MODALS / CREDITS / PLANS / SETTINGS ---------- */
+.modal-overlay,.checkout-overlay{
+  background:rgb(2 4 7 / .72)!important;
+  backdrop-filter:blur(24px)!important;
+}
+.modal,.checkout-modal{
+  border:1px solid rgb(237 244 245 / .1)!important;
+  border-radius:32px!important;
+  background:
+    radial-gradient(80% 50% at 20% 0,rgb(143 211 241 / .08),transparent 72%),
+    radial-gradient(70% 50% at 100% 100%,rgb(114 41 67 / .08),transparent 72%),
+    rgb(6 9 12 / .92)!important;
+  box-shadow:0 45px 120px rgb(0 0 0 / .62),inset 0 1px 0 rgb(255 255 255 / .07)!important;
+  backdrop-filter:blur(30px) saturate(130%)!important;
+}
+.modal-title,.checkout-title,.plan-name,.setting-name{color:var(--rimak-ice)!important}
+.modal-text,.plan-desc,.setting-desc{color:rgb(237 244 245 / .48)!important}
+.modal-close,.checkout-close{
+  border-radius:50%!important;
+  background:rgb(237 244 245 / .06)!important;
+  color:rgb(237 244 245 / .7)!important;
+}
+.modal-button,.plan-button,.checkout-button{
+  border:0!important;
+  border-radius:17px!important;
+  background:linear-gradient(125deg,#edf4f5,#8fd3f1 55%,#722943)!important;
+  color:#071015!important;
+}
+.plan-card,.setting-row{
+  border:1px solid rgb(237 244 245 / .08)!important;
+  border-radius:22px!important;
+  background:linear-gradient(145deg,rgb(237 244 245 / .045),rgb(114 41 67 / .035))!important;
+}
+.plan-card.pro{
+  border-color:rgb(143 211 241 / .22)!important;
+  box-shadow:0 0 50px rgb(143 211 241 / .05)!important;
+}
+.toggle.on{
+  background:linear-gradient(90deg,#8fd3f1,#722943)!important;
+}
+
+/* The old welcome is not part of the new product. */
+.welcome{display:none!important}
+
+/* ---------- MOBILE: preserve the whole experience ---------- */
+@media(max-width:900px){
+  .topbar{height:62px!important}
+  .rimak-cinematic{min-height:calc(100svh - 62px)!important}
+  .rimak-hero-stage,.cinematic-section,.final-section,.rimak-tool-hub{
+    min-height:calc(100svh - 62px)!important;
+    height:calc(100svh - 62px)!important;
+  }
+  .rimak-core{
+    width:245px!important;height:245px!important;
+    left:50%!important;right:auto!important;
+    top:36%!important;
+    transform-origin:center!important;
+  }
+  .hero-copy{
+    left:8%!important;right:8%!important;
+    bottom:11%!important;
+    max-width:none!important;
+  }
+  .hero-copy h2{font-size:clamp(38px,11vw,58px)!important}
+  .hero-copy p{max-width:330px!important}
+  .cinematic-section{
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:flex-end!important;
+    padding:0 8% 13%!important;
+  }
+  .cinematic-section .section-copy{
+    max-width:100%!important;
+    margin:0 0 22px!important;
+  }
+  .floating-interface{
+    position:relative!important;
+    inset:auto!important;
+    width:100%!important;
+    max-width:420px!important;
+    transform:none!important;
+    margin:0 auto!important;
+  }
+  .section-index{
+    top:10%!important;
+    right:8%!important;
+    left:auto!important;
+  }
+}
+
+/* No motion reduction should break layout. */
+@media(prefers-reduced-motion:reduce){
+  .aura-symbol .orbit,.aura-symbol .orbit2,.aura-symbol .orb,
+  .core-glass,.core-halo,.core-light,.core-shine{animation:none!important}
+}
