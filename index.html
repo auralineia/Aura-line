@@ -3497,243 +3497,226 @@
 
 
 \n
-<script src="https://cdn.jsdelivr.net/npm/three@0.176.0/build/three.min.js"></script>
 <script>
-/* RIMAK — TRUE 3D MATTER ENGINE */
+/* RIMAK — ORGANIC MATTER ENGINE
+   Dependency-free canvas renderer. Designed to survive mobile/WebView/CSP.
+*/
 (function(){
   const chat=document.getElementById('chat');
   const exp=document.getElementById('rimakExperience');
   const canvas=document.getElementById('matterCanvas');
-  if(!chat||!exp||!canvas||!window.THREE) return;
+  if(!chat||!exp||!canvas) return;
 
-  const THREE=window.THREE;
-  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.7));
-  renderer.setSize(window.innerWidth,window.innerHeight,false);
-  renderer.outputColorSpace=THREE.SRGBColorSpace;
-  renderer.toneMapping=THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure=1.15;
+  const ctx=canvas.getContext('2d',{alpha:true});
+  if(!ctx) return;
 
-  const scene=new THREE.Scene();
-  const camera=new THREE.PerspectiveCamera(30,window.innerWidth/window.innerHeight,.1,100);
-  camera.position.set(0,0,7);
+  const pages=[...exp.querySelectorAll('.reel-page')];
+  let dpr=Math.min(window.devicePixelRatio||1,2);
+  let W=0,H=0;
+  let target=0,progress=0;
+  let pointerX=.5,pointerY=.5;
+  let targetX=.5,targetY=.5;
+  let t=0,lastScroll=chat.scrollTop,velocity=0;
 
-  const group=new THREE.Group();
-  scene.add(group);
-
-  const geo=new THREE.IcosahedronGeometry(2.15,5);
-  geo.computeVertexNormals();
-  const pos=geo.attributes.position;
-  const base=new Float32Array(pos.array);
-  const temp=new Float32Array(pos.array.length);
-
-  const material=new THREE.MeshPhysicalMaterial({
-    color:0xe7eef1,
-    roughness:.13,
-    metalness:.38,
-    clearcoat:1,
-    clearcoatRoughness:.08,
-    iridescence:.55,
-    iridescenceIOR:1.45,
-    transmission:.04,
-    thickness:.55,
-    transparent:true,
-    opacity:1
-  });
-  const blob=new THREE.Mesh(geo,material);
-  blob.rotation.order='YXZ';
-  group.add(blob);
-
-  // Secondary shell produces the "liquid inside liquid" feel.
-  const shellGeo=new THREE.IcosahedronGeometry(2.21,4);
-  const shellMat=new THREE.MeshBasicMaterial({color:0x8fd3f1,transparent:true,opacity:.09,wireframe:true});
-  const shell=new THREE.Mesh(shellGeo,shellMat);
-  group.add(shell);
-
-  const key=new THREE.DirectionalLight(0xdff3ff,4.2);
-  key.position.set(3,4,5);
-  scene.add(key);
-  const fill=new THREE.PointLight(0x6ebee7,10,18);
-  fill.position.set(-4,-2,4);
-  scene.add(fill);
-  const burgundy=new THREE.PointLight(0x722943,12,15);
-  burgundy.position.set(3,-3,2);
-  scene.add(burgundy);
-  scene.add(new THREE.AmbientLight(0x9fb2ba,.55));
-
-  const pageNodes=[...exp.querySelectorAll('.reel-page')];
-
-  let targetProgress=0;
-  let smoothProgress=0;
-  let lastScroll=chat.scrollTop;
-  let velocity=0;
-  let pointerX=0,pointerY=0;
-  let currentScene=0;
-
-  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-  const lerp=(a,b,t)=>a+(b-a)*t;
-  const smoothstep=t=>t*t*(3-2*t);
-
-  function hash(n){
-    return Math.sin(n*127.1)*43758.5453%1;
-  }
-
-  function shape(sceneIndex,x,y,z,time){
-    const len=Math.sqrt(x*x+y*y+z*z)||1;
-    const nx=x/len,ny=y/len,nz=z/len;
-    const a=Math.atan2(ny,nx);
-    const band=Math.sin((nx*2.8+ny*1.9+nz*3.2)+time*.52);
-    const detail=Math.sin(nx*7.2+ny*5.1+nz*6.8+time*.38);
-    let r=1;
-
-    if(sceneIndex===0){
-      r=1+.025*band+.012*detail;
-    }else if(sceneIndex===1){
-      const pinch=Math.cos(a*3.0+0.7)*.12;
-      r=1+.17*band+.08*detail+pinch*(.55+nz*.35);
-      r*=1+.06*Math.sin(a*2.0+time*.4);
-    }else if(sceneIndex===2){
-      const lobes=Math.cos(a*2.0-ny*4.0)*.15;
-      r=1+.12*band+.16*Math.max(0,lobes)+.05*detail;
-      r*=1+.11*nz;
-    }else if(sceneIndex===3){
-      const flower=Math.sin(a*5.0+nz*2.5)*.16;
-      r=1+.1*band+flower+.07*detail;
-      r*=.94+.13*Math.cos((nx+ny+nz)*2.2+time*.3);
-    }else{
-      const soft=Math.sin(a*2.0+ny*3.0+time*.2)*.06;
-      r=1+.07*band+.04*detail+soft;
-    }
-    return r;
-  }
-
-  const sceneColors=[
-    new THREE.Color('#e8eff2'),
-    new THREE.Color('#111417'),
-    new THREE.Color('#79c7e8'),
-    new THREE.Color('#722943'),
-    new THREE.Color('#dfecef')
+  const scenes=[
+    {bg:'#07080a', a:'#f2f2ed', b:'#8c3656', glow:'#f4e9ed', mode:0},
+    {bg:'#eeeae8', a:'#f8faf7', b:'#702943', glow:'#ffffff', mode:1},
+    {bg:'#dcecf1', a:'#eef8fa', b:'#5e94aa', glow:'#ffffff', mode:2},
+    {bg:'#eadde2', a:'#f9f1f4', b:'#6d2945', glow:'#fff7fa', mode:3},
+    {bg:'#08090b', a:'#f3f4ef', b:'#8c3656', glow:'#f4e9ed', mode:4}
   ];
 
-  function applyScenePalette(s,t){
-    const a=sceneColors[Math.min(s,4)];
-    const b=sceneColors[Math.min(s+1,4)];
-    material.color.copy(a).lerp(b,t);
-    material.emissive.setRGB(.015,.02,.022);
-    shellMat.color.copy(a).lerp(b,t);
-    fill.color.copy(sceneColors[(s+2)%5]);
-    burgundy.color.copy(sceneColors[(s+3)%5]);
+  function resize(){
+    const r=canvas.getBoundingClientRect();
+    W=Math.max(1,r.width); H=Math.max(1,r.height);
+    dpr=Math.min(window.devicePixelRatio||1,2);
+    canvas.width=Math.round(W*dpr); canvas.height=Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
   }
+  resize();
+  addEventListener('resize',resize,{passive:true});
 
-  function setPages(progress){
-    pageNodes.forEach((node,i)=>{
-      const d=Math.abs(progress*4-i);
-      const active=d<.62;
-      node.classList.toggle('is-current',active);
-      node.style.setProperty('--page-distance',Math.min(d,1));
-      node.style.setProperty('--page-direction',velocity>=0?1:-1);
-    });
-  }
+  function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+  function lerp(a,b,n){return a+(b-a)*n;}
+  function ease(n){return n*n*(3-2*n);}
 
-  function updateProgress(){
-    const rect=exp.getBoundingClientRect();
-    const range=Math.max(exp.offsetHeight-chat.clientHeight,1);
-    targetProgress=clamp((-rect.top)/range,0,1);
+  function readScroll(){
+    const max=Math.max(1,chat.scrollHeight-chat.clientHeight);
+    // Experience begins at scroll position 0 in the new home screen.
+    target=clamp(chat.scrollTop/max,0,1);
     const delta=chat.scrollTop-lastScroll;
-    velocity=lerp(velocity,delta,.35);
+    velocity=lerp(velocity,delta,.28);
     lastScroll=chat.scrollTop;
   }
-
-  chat.addEventListener('scroll',updateProgress,{passive:true});
-  updateProgress();
+  chat.addEventListener('scroll',readScroll,{passive:true});
+  readScroll();
 
   exp.addEventListener('pointermove',e=>{
     const r=exp.getBoundingClientRect();
-    pointerX=clamp((e.clientX-r.left)/Math.max(r.width,1)*2-1,-1,1);
-    pointerY=clamp((e.clientY-r.top)/Math.max(r.height,1)*2-1,-1,1);
+    targetX=clamp((e.clientX-r.left)/Math.max(1,r.width),0,1);
+    targetY=clamp((e.clientY-r.top)/Math.max(1,r.height),0,1);
   },{passive:true});
+  exp.addEventListener('pointerleave',()=>{targetX=.5;targetY=.5},{passive:true});
 
-  function resize(){
-    const w=window.innerWidth,h=window.innerHeight;
-    renderer.setSize(w,h,false);
-    camera.aspect=w/h;
-    camera.updateProjectionMatrix();
+  function blobPath(cx,cy,rx,ry,scene,tt,rot,points=120){
+    const pts=[];
+    for(let i=0;i<points;i++){
+      const a=i/points*Math.PI*2;
+      const n1=Math.sin(a*(2+scene*.7)+tt*.55);
+      const n2=Math.sin(a*(5+scene)+tt*.37+1.8);
+      const n3=Math.cos(a*7-tt*.24);
+      let deform=1;
+      if(scene===0) deform=1+.025*n1+.018*n2;
+      if(scene===1) deform=1+.15*n1+.075*n2;
+      if(scene===2) deform=1+.11*n1+.12*Math.max(0,Math.cos(a*2+tt*.2))+.045*n3;
+      if(scene===3) deform=1+.12*Math.sin(a*5+tt*.35)+.07*n2;
+      if(scene===4) deform=1+.05*n1+.045*n3;
+      const ca=Math.cos(a+rot),sa=Math.sin(a+rot);
+      pts.push([cx+ca*rx*deform,cy+sa*ry*deform]);
+    }
+    return pts;
   }
-  addEventListener('resize',resize);
 
-  const clock=new THREE.Clock();
+  function pathFill(points){
+    ctx.beginPath();
+    ctx.moveTo(points[0][0],points[0][1]);
+    for(let i=1;i<points.length;i++){
+      const p=points[i], q=points[(i+1)%points.length];
+      ctx.quadraticCurveTo(p[0],p[1],(p[0]+q[0])/2,(p[1]+q[1])/2);
+    }
+    const p=points[0];ctx.quadraticCurveTo(p[0],p[1],p[0][0],p[0][1]);
+    ctx.closePath();
+  }
+
+  function drawMatter(scene,morph){
+    const s0=scenes[scene], s1=scenes[Math.min(scene+1,scenes.length-1)];
+    const cx=W*(.5+lerp(.04,-.04,pointerX-.5));
+    const cy=H*(.52+lerp(.035,-.035,pointerY-.5));
+    const base=Math.min(W,H)*(W<700?.22:.25);
+    const breathing=1+Math.sin(t*1.35)*.018+Math.sin(t*.63)*.012;
+    const rx=base*1.08*breathing,ry=base*.94*breathing;
+
+    // Atmospheric aura
+    const aura=ctx.createRadialGradient(cx,cy,0,cx,cy,base*2.0);
+    aura.addColorStop(0,scene===1||scene===2?'rgba(112,41,67,.09)':'rgba(143,215,244,.055)');
+    aura.addColorStop(.45,'rgba(255,255,255,.018)');
+    aura.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=aura;ctx.fillRect(0,0,W,H);
+
+    const pts0=blobPath(cx,cy,rx,ry,scene,t,0);
+    const pts1=blobPath(cx,cy,rx,ry,Math.min(scene+1,4),t+.5,.1);
+    const pts=[];
+    for(let i=0;i<pts0.length;i++) pts.push([
+      lerp(pts0[i][0],pts1[i][0],morph),
+      lerp(pts0[i][1],pts1[i][1],morph)
+    ]);
+
+    // soft shadow
+    ctx.save();
+    ctx.filter='blur(22px)';
+    ctx.translate(0,base*.09);
+    pathFill(pts);
+    ctx.fillStyle='rgba(0,0,0,.20)';ctx.fill();
+    ctx.restore();
+
+    // Outer translucent shell
+    const shell=ctx.createRadialGradient(cx-base*.25,cy-base*.3,base*.05,cx,cy,base*1.18);
+    shell.addColorStop(0,s0.glow);
+    shell.addColorStop(.22,s0.a);
+    shell.addColorStop(.56,s0.b);
+    shell.addColorStop(.78,'rgba(20,16,20,.78)');
+    shell.addColorStop(1,'rgba(4,5,6,.95)');
+    pathFill(pts);ctx.fillStyle=shell;ctx.fill();
+
+    // glass highlight layer
+    ctx.save();
+    ctx.globalAlpha=.82;
+    const hi=ctx.createRadialGradient(cx-base*.28,cy-base*.36,0,cx-base*.1,cy-base*.12,base*.82);
+    hi.addColorStop(0,'rgba(255,255,255,.78)');
+    hi.addColorStop(.12,'rgba(255,255,255,.25)');
+    hi.addColorStop(.42,'rgba(255,255,255,.035)');
+    hi.addColorStop(1,'rgba(255,255,255,0)');
+    pathFill(pts);ctx.fillStyle=hi;ctx.fill();
+    ctx.restore();
+
+    // Burgundy liquid pocket that slowly moves inside.
+    ctx.save();
+    ctx.globalCompositeOperation='screen';
+    const bx=cx+Math.sin(t*.45)*base*.25, by=cy+Math.cos(t*.34)*base*.25;
+    const burg=ctx.createRadialGradient(bx,by,0,bx,by,base*.78);
+    burg.addColorStop(0,'rgba(184,102,132,.42)');
+    burg.addColorStop(.28,'rgba(112,41,67,.32)');
+    burg.addColorStop(.7,'rgba(112,41,67,.05)');
+    burg.addColorStop(1,'rgba(112,41,67,0)');
+    pathFill(pts);ctx.fillStyle=burg;ctx.fill();
+    ctx.restore();
+
+    // Fine rim
+    pathFill(pts);
+    ctx.strokeStyle='rgba(245,247,243,.34)';
+    ctx.lineWidth=1;
+    ctx.stroke();
+
+    // floating internal core
+    const coreX=cx+Math.sin(t*.72)*base*.12;
+    const coreY=cy+Math.cos(t*.53)*base*.09;
+    const core=ctx.createRadialGradient(coreX-base*.04,coreY-base*.05,0,coreX,coreY,base*.24);
+    core.addColorStop(0,'rgba(255,255,255,.96)');
+    core.addColorStop(.12,'rgba(245,248,246,.7)');
+    core.addColorStop(.42,'rgba(140,54,86,.24)');
+    core.addColorStop(1,'rgba(140,54,86,0)');
+    ctx.fillStyle=core;ctx.beginPath();ctx.arc(coreX,coreY,base*.24,0,Math.PI*2);ctx.fill();
+
+    // A few liquid "satellites" make the material feel alive.
+    for(let i=0;i<4;i++){
+      const a=t*(.18+i*.035)+i*Math.PI/2;
+      const px=cx+Math.cos(a)*base*(.72+.08*Math.sin(t+i));
+      const py=cy+Math.sin(a)*base*(.72+.08*Math.cos(t+i));
+      const rr=base*(.018+.008*Math.sin(t*1.4+i));
+      ctx.fillStyle=i%2?'rgba(140,54,86,.42)':'rgba(240,241,237,.42)';
+      ctx.beginPath();ctx.arc(px,py,rr,0,Math.PI*2);ctx.fill();
+    }
+  }
+
+  function applyScene(scene,morph){
+    const a=scenes[scene],b=scenes[Math.min(scene+1,4)];
+    const bg=document.createElement('canvas'); // never painted; only color interpolation below
+    const mix=(c1,c2,t)=>{const A=parseInt(c1.slice(1),16),B=parseInt(c2.slice(1),16);
+      const r=Math.round(((A>>16)&255)*(1-t)+((B>>16)&255)*t);
+      const g=Math.round(((A>>8)&255)*(1-t)+((B>>8)&255)*t);
+      const bl=Math.round((A&255)*(1-t)+(B&255)*t);
+      return '#'+[r,g,bl].map(v=>v.toString(16).padStart(2,'0')).join('');
+    };
+    exp.style.setProperty('--reel-bg',mix(a.bg,b.bg,morph));
+  }
 
   function tick(){
-    const time=clock.getElapsedTime();
-    smoothProgress=lerp(smoothProgress,targetProgress,reduced?.35:.105);
-    const travel=smoothProgress*4;
-    const s0=Math.floor(travel);
-    const sceneIndex=clamp(s0,0,4);
-    const morph=smoothstep(clamp(travel-s0,0,1));
-    currentScene=sceneIndex;
+    t+=.016;
+    progress=lerp(progress,target,.09);
+    pointerX=lerp(pointerX,targetX,.055);
+    pointerY=lerp(pointerY,targetY,.055);
 
-    setPages(smoothProgress);
+    const travel=progress*4;
+    const scene=clamp(Math.floor(travel),0,4);
+    const morph=ease(clamp(travel-scene,0,1));
+    pages.forEach((p,i)=>{
+      const dist=Math.abs(travel-i);
+      const active=dist<.58;
+      p.classList.toggle('is-current',active);
+      p.style.setProperty('--scene-depth',Math.min(1,dist));
+    });
 
-    const wave=Math.sin(time*1.15);
-    const wave2=Math.cos(time*.73);
-    const direction=velocity>=0?1:-1;
-
-    for(let i=0;i<pos.count;i++){
-      const j=i*3;
-      const x=base[j],y=base[j+1],z=base[j+2];
-      const r0=shape(sceneIndex,x,y,z,time);
-      const r1=shape(Math.min(sceneIndex+1,4),x,y,z,time+.45);
-      const r=lerp(r0,r1,morph);
-      const len=Math.sqrt(x*x+y*y+z*z)||1;
-      const nx=x/len,ny=y/len,nz=z/len;
-      const breathing=1+wave*.018+wave2*.012;
-      temp[j]=nx*len*r*breathing;
-      temp[j+1]=ny*len*r*breathing;
-      temp[j+2]=nz*len*r*breathing;
-    }
-    pos.array.set(temp);
-    pos.needsUpdate=true;
-    geo.computeVertexNormals();
-
-    group.rotation.y=lerp(group.rotation.y, pointerX*.18+time*.12+velocity*.018*direction,.08);
-    group.rotation.x=lerp(group.rotation.x,pointerY*.12+velocity*.012*direction,.08);
-    blob.rotation.z=Math.sin(time*.4)*.06+velocity*.01;
-
-    const scale=1+Math.sin(time*.8)*.018;
-    group.scale.setScalar(scale);
-    group.position.x=lerp(group.position.x,pointerX*.18,.08);
-    group.position.y=lerp(group.position.y,pointerY*.12,.08);
-
-    applyScenePalette(sceneIndex,morph);
-
-    // Scene atmosphere follows the same material.
-    const bgA=['#05070a','#f3f6f7','#dff1f7','#eadce2','#05070a'][sceneIndex];
-    exp.style.setProperty('--reel-bg',bgA);
-    exp.style.setProperty('--matter-progress',smoothProgress.toFixed(4));
-
-    renderer.render(scene,camera);
+    // paint a full scene background
+    const sc=scenes[scene], next=scenes[Math.min(scene+1,4)];
+    ctx.clearRect(0,0,W,H);
+    const bg=ctx.createLinearGradient(0,0,W,H);
+    bg.addColorStop(0,sc.bg);bg.addColorStop(1,next.bg);
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    drawMatter(scene,morph);
+    applyScene(scene,morph);
     requestAnimationFrame(tick);
   }
-
   tick();
-
-  function runPrompt(id,prompt){
-    const input=document.getElementById('messageInput');
-    if(!input) return;
-    input.value=prompt;
-    input.dispatchEvent(new Event('input',{bubbles:true}));
-    input.focus();
-    chat.scrollTo({top:chat.scrollTop+chat.clientHeight*.72,behavior:'smooth'});
-  }
-
-  document.getElementById('reelCreateButton')?.addEventListener('click',()=>runPrompt('create','RIMAK, quero criar uma apresentação profissional.'));
-  document.getElementById('reelResearchButton')?.addEventListener('click',()=>runPrompt('research','RIMAK, quero pesquisar e comparar informações importantes.'));
-  document.getElementById('reelTransformButton')?.addEventListener('click',()=>runPrompt('transform','RIMAK, quero transformar um arquivo ou conteúdo.'));
-  document.getElementById('reelChatButton')?.addEventListener('click',()=>chat.scrollTo({top:chat.scrollHeight,behavior:'smooth'}));
-  exp.querySelectorAll('[data-tool-prompt]').forEach(btn=>btn.addEventListener('click',()=>{
-    runPrompt('tool',btn.getAttribute('data-tool-prompt')||'');
-  }));
 })();
 </script>
 
