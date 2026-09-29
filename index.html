@@ -115,7 +115,10 @@ const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
 const state={user:null,session:null,credits:20,mode:"login",busy:false,history:[],thinking:false};
 
-function saveSession(){state.session?localStorage.setItem(STORE,JSON.stringify(state.session)):localStorage.removeItem(STORE)}
+function saveSession(){
+  if(!state.session){localStorage.removeItem(STORE);return}
+  localStorage.setItem(STORE,JSON.stringify({...state.session,user:state.user}))
+}
 function readSession(){try{return JSON.parse(localStorage.getItem(STORE)||"null")}catch{return null}}
 function msg(text,ok=false){const el=$("#authMsg");el.textContent=text||"";el.className="auth-msg"+(ok?" ok":"")}
 function authError(text){
@@ -133,11 +136,14 @@ async function authRequest(action,payload={}){
  return d;
 }
 async function refresh(){
- if(!state.session?.refresh_token) return false;
+ if(!state.session?.refresh_token)return false;
  try{
   const d=await authRequest("auth_refresh",{refresh_token:state.session.refresh_token});
   if(!d.session)return false;
-  state.session=d.session;state.user=d.user||state.user;saveSession();return true;
+  state.session=d.session;
+  state.user=d.user||state.user;
+  saveSession();
+  return true;
  }catch{return false}
 }
 async function enterApp(){
@@ -148,22 +154,33 @@ async function enterApp(){
 }
 async function boot(){
  const saved=readSession();
- if(!saved){return}
+ if(!saved?.access_token)return;
  state.session=saved;
+ state.user=saved.user||null;
+
+ let valid=false;
  try{
-  const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+saved.access_token},body:JSON.stringify({action:"ping"})});
-  if(!r.ok)throw new Error();
-  state.user={id:saved.user_id||null,email:saved.email||null};
- }catch{
+  const r=await fetch("/api/chat",{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":"Bearer "+saved.access_token
+    },
+    body:JSON.stringify({action:"auth_user"})
+  });
+  valid=r.ok;
+  if(r.ok){
+    const d=await r.json().catch(()=>({}));
+    state.user=d.user||state.user;
+    saveSession();
+  }
+ }catch{}
+
+ if(!valid){
   const ok=await refresh();
-  if(!ok){state.session=null;saveSession();return}
+  if(!ok){state.session=null;state.user=null;saveSession();return}
  }
- if(!state.user?.email){
-  try{
-   const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+state.session.access_token},body:JSON.stringify({action:"user"})});
-   const d=await r.json();state.user=d.user||null;
-  }catch{}
- }
+
  if(state.user)await enterApp();
 }
 $("#authSwitch").onclick=()=>{
