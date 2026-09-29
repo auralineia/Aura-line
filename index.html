@@ -10,7 +10,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://sdk.mercadopago.com/js/v2"></script>
 
-  <link rel="stylesheet" href="/style.css?v=20260929-reel3">
+  <link rel="stylesheet" href="/style.css?v=20260929-matter">
 
 </head>
 
@@ -306,174 +306,81 @@
       <!-- =====================================================
            RIMAK 2.0 — CINEMATIC EXPERIENCE
       ===================================================== -->
-      <section class="rimak-cinematic" id="rimakExperience" aria-label="Experiência RIMAK">
-        <div class="cinematic-noise"></div>
-        <div class="cinematic-grid"></div>
+      
+<section class="rimak-cinematic reel-experience" id="rimakExperience" aria-label="RIMAK">
+  <div class="reel-sticky">
+    <div class="reel-vignette"></div>
+    <canvas id="matterCanvas" aria-hidden="true"></canvas>
+    <div class="matter-label"><span>RIMAK</span><i></i><small>living intelligence</small></div>
+  </div>
 
-        <div class="rimak-hero-stage" data-cinematic-stage>
-          <div class="hero-orbit orbit-a"></div>
-          <div class="hero-orbit orbit-b"></div>
-          <div class="hero-orbit orbit-c"></div>
+  <div class="reel-pages">
+    <article class="reel-page is-current" data-scene-index="0">
+      <div class="reel-page-meta"><span>01</span><i></i><span>ORIGIN</span></div>
+      <div class="reel-copy reel-copy-left">
+        <span class="reel-eyebrow">RIMAK / 01</span>
+        <h2>Uma inteligência<br><em>viva.</em></h2>
+        <p>Não é uma caixa de conversa. É uma matéria digital que muda com o que você faz.</p>
+        <div class="reel-scroll-note"><span></span> arraste para transformar</div>
+      </div>
+    </article>
 
-          <div class="rimak-core" id="rimakCore" aria-hidden="true">
-            <div class="core-halo"></div>
-            <div class="core-ring ring-one"></div>
-            <div class="core-ring ring-two"></div>
-            <div class="core-ring ring-three"></div>
-            <div class="core-glass">
-              <div class="core-liquid-cut cut-one"></div>
-              <div class="core-liquid-cut cut-two"></div>
-              <div class="core-liquid-cut cut-three"></div>
-              <div class="core-shine"></div>
-            </div>
-            <div class="core-light"></div>
-            <div class="core-mark">✦</div>
-            <span class="core-particle p1"></span>
-            <span class="core-particle p2"></span>
-            <span class="core-particle p3"></span>
-            <span class="core-particle p4"></span>
-          </div>
+    <article class="reel-page" data-scene-index="1">
+      <div class="reel-page-meta"><span>02</span><i></i><span>FORM</span></div>
+      <div class="reel-copy reel-copy-right dark-copy">
+        <span class="reel-eyebrow">RIMAK / 02</span>
+        <h2>Ela muda<br><em>de forma.</em></h2>
+        <p>Cada movimento atravessa a matéria. Para baixo, ela se transforma. Para cima, ela volta.</p>
+        <button class="reel-action" id="reelCreateButton" type="button">Criar com RIMAK <b>↗</b></button>
+      </div>
+    </article>
 
-          <div class="hero-copy">
-            <div class="cinematic-kicker"><span></span> RIMAK 2.0</div>
-            <h2>Uma IA que<br><em>se transforma</em> com você.</h2>
-            <p>A RIMAK não precisa ficar presa a uma caixa de conversa. Ela pode criar a interface certa para resolver o que você precisa.</p>
-            <button class="cinematic-cta" id="cinematicStartButton" type="button">
-              <span>Explorar a RIMAK</span><b>↘</b>
-            </button>
-          </div>
+    <article class="reel-page" data-scene-index="2">
+      <div class="reel-page-meta dark-meta"><span>03</span><i></i><span>MATTER</span></div>
+      <div class="reel-copy reel-copy-left dark-copy">
+        <span class="reel-eyebrow">RIMAK / 03</span>
+        <h2>Uma resposta<br><em>ganha forma.</em></h2>
+        <p>Pesquisa vira painel. Dados viram ferramenta. Uma ideia deixa de ser texto e começa a existir.</p>
+        <button class="reel-action" id="reelResearchButton" type="button">Pesquisar <b>↗</b></button>
+      </div>
+    </article>
 
-          <div class="scroll-cue"><span></span><small>role para explorar</small></div>
-        </div>
+    <article class="reel-page" data-scene-index="3">
+      <div class="reel-page-meta dark-meta"><span>04</span><i></i><span>FLOW</span></div>
+      <div class="reel-copy reel-copy-right dark-copy">
+        <span class="reel-eyebrow">RIMAK / 04</span>
+        <h2>Informação<br><em>se move.</em></h2>
+        <p>A interface acompanha a tarefa. O visual muda junto. A experiência deixa de parecer uma ferramenta estática.</p>
+        <button class="reel-action" id="reelTransformButton" type="button">Transformar <b>↗</b></button>
+      </div>
+    </article>
 
-        <div class="cinematic-section" data-cinematic-section>
-          <div class="section-index">01 / 04</div>
-          <div class="section-copy">
-            <div class="cinematic-kicker"><span></span> CRIAR</div>
-            <h3>Da ideia para uma experiência.</h3>
-            <p>A RIMAK entende seu objetivo e transforma a resposta em uma ferramenta visual, não apenas em texto.</p>
-          </div>
-          <div class="floating-interface create-interface">
-            <div class="fi-top"><span>RIMAK / CRIAR</span><i>●</i></div>
-            <div class="fi-title">O que vamos criar?</div>
-            <div class="fi-input">Uma apresentação para minha empresa <b>↗</b></div>
-            <div class="fi-chips"><span>Slides</span><span>Imagens</span><span>Roteiro</span></div>
-            <div class="fi-progress"><span></span></div>
-          </div>
-        </div>
+    <article class="reel-page" data-scene-index="4">
+      <div class="reel-page-meta"><span>05</span><i></i><span>RIMAK</span></div>
+      <div class="reel-copy reel-copy-center">
+        <span class="reel-eyebrow">RIMAK / 05</span>
+        <h2>Você move.<br><em>Ela responde.</em></h2>
+        <p>Uma nova camada da RIMAK começa aqui.</p>
+        <button class="reel-action reel-action-light" id="reelChatButton" type="button">Conversar com a RIMAK <b>→</b></button>
+      </div>
+    </article>
+  </div>
 
-        <div class="cinematic-section section-reverse" data-cinematic-section>
-          <div class="section-index">02 / 04</div>
-          <div class="section-copy">
-            <div class="cinematic-kicker"><span></span> RESOLVER</div>
-            <h3>Interfaces que aparecem quando você precisa.</h3>
-            <p>Planejamento, cálculos, análise e decisões podem ganhar dashboards e controles interativos dentro da própria RIMAK.</p>
-          </div>
-          <div class="floating-interface finance-interface">
-            <div class="fi-top"><span>ANÁLISE FINANCEIRA</span><b>RIMAK</b></div>
-            <div class="metric-row"><strong>R$ 48.650</strong><span>+12,4%</span></div>
-            <div class="mini-chart"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-            <div class="metric-grid"><span><small>Investimentos</small><b>R$ 12.800</b></span><span><small>Metas</small><b>78%</b></span></div>
-          </div>
-        </div>
-
-        <div class="cinematic-section" data-cinematic-section>
-          <div class="section-index">03 / 04</div>
-          <div class="section-copy">
-            <div class="cinematic-kicker"><span></span> PESQUISAR</div>
-            <h3>Informação ganha forma.</h3>
-            <p>Pesquisas, comparações e dados podem virar painéis navegáveis, filtros e visualizações em tempo real.</p>
-          </div>
-          <div class="floating-interface search-interface">
-            <div class="fi-top"><span>PESQUISA RIMAK</span><span class="live-dot">LIVE</span></div>
-            <div class="search-line">Compare os melhores notebooks para trabalhar com IA <b>⌕</b></div>
-            <div class="result-card"><span class="result-icon">01</span><div><b>MacBook Pro</b><small>Desempenho · Bateria · IA</small></div><strong>9.6</strong></div>
-            <div class="result-card"><span class="result-icon">02</span><div><b>Notebook Creator</b><small>GPU · Tela · Expansão</small></div><strong>9.2</strong></div>
-          </div>
-        </div>
-
-        <div class="cinematic-section final-section" data-cinematic-section>
-          <div class="section-index">04 / 04</div>
-          <div class="section-copy centered-copy">
-            <div class="cinematic-kicker"><span></span> TRANSFORMAR</div>
-            <h3>Você pede.<br><em>A RIMAK constrói.</em></h3>
-            <p>Esse é o próximo passo da RIMAK: uma inteligência que responde, pesquisa, cria e transforma ideias em experiências reais.</p>
-            <button class="cinematic-cta primary" id="openToolsButton" type="button"><span>Conhecer as ferramentas</span><b>→</b></button>
-          </div>
-        </div>
-
-        <div class="rimak-tool-hub" id="rimakToolHub">
-          <div class="hub-header">
-            <div><div class="cinematic-kicker"><span></span> RIMAK TOOLS</div><h3>O que você quer resolver?</h3></div>
-            <p>Escolha uma experiência ou simplesmente converse com a RIMAK.</p>
-          </div>
-          <div class="tool-cards">
-            <button class="tool-card" data-tool-prompt="RIMAK, quero criar uma apresentação profissional. Me ajude a estruturar e montar o conteúdo." type="button"><span class="tool-icon">✦</span><strong>Criar</strong><small>Conteúdo, imagens, apresentações e ideias.</small><b>↗</b></button>
-            <button class="tool-card" data-tool-prompt="RIMAK, quero resolver uma tarefa complexa. Faça as perguntas necessárias e crie uma interface para me ajudar." type="button"><span class="tool-icon">◈</span><strong>Resolver</strong><small>Cálculos, planejamento, análise e decisões.</small><b>↗</b></button>
-            <button class="tool-card" data-tool-prompt="RIMAK, quero pesquisar um assunto e comparar as informações mais importantes." type="button"><span class="tool-icon">⌕</span><strong>Pesquisar</strong><small>Web, produtos, notícias e informações.</small><b>↗</b></button>
-            <button class="tool-card" data-tool-prompt="RIMAK, quero transformar um arquivo ou conteúdo em algo mais útil. Me mostre as opções." type="button"><span class="tool-icon">◇</span><strong>Transformar</strong><small>PDFs, documentos, imagens e dados.</small><b>↗</b></button>
-          </div>
-        </div>
-      </section>
+  <div class="reel-tool-strip" id="rimakToolHub">
+    <button type="button" class="reel-tool" data-tool-prompt="RIMAK, quero criar uma apresentação profissional.">
+      <span>CREATE</span><strong>criar</strong><b>↗</b>
+    </button>
+    <button type="button" class="reel-tool" data-tool-prompt="RIMAK, quero pesquisar um assunto e comparar as informações mais importantes.">
+      <span>SEARCH</span><strong>pesquisar</strong><b>↗</b>
+    </button>
+    <button type="button" class="reel-tool" data-tool-prompt="RIMAK, quero transformar um arquivo ou conteúdo.">
+      <span>TRANSFORM</span><strong>transformar</strong><b>↗</b>
+    </button>
+  </div>
+</section>
 
 
-      <section
-        class="welcome"
-        id="welcome"
-      >
-
-        <div class="hero-symbol" aria-label="RIMAK">
-          <div class="aura-symbol welcome-logo" aria-hidden="true">
-            <div class="orbit"></div>
-            <div class="orbit2"></div>
-            <div class="orb"></div>
-          </div>
-        </div>
-
-        <h1 class="welcome-title">
-          RIMAK
-        </h1>
-
-        <p class="welcome-subtitle">
-          Uma inteligência pessoal que lembra de você,
-          entende seu momento e aprende com o tempo.
-        </p>
-
-        <div class="suggestions">
-
-          <button
-            class="suggestion"
-            data-prompt="Me ajude a criar uma ideia"
-          >
-            Criar uma ideia
-          </button>
-
-          <button
-            class="suggestion"
-            data-prompt="Me ajude a planejar meu próximo projeto"
-          >
-            Planejar um projeto
-          </button>
-
-          <button
-            class="suggestion"
-            data-prompt="Quero aprender algo novo hoje"
-          >
-            Aprender algo
-          </button>
-
-          <button
-            class="suggestion"
-            data-prompt="Me dê ideias criativas para ganhar dinheiro"
-          >
-            Ideias para ganhar dinheiro
-          </button>
-
-        </div>
-
-      </section>
-
-    </main>
+      </main>
 
 
     <!-- COMPOSER -->
@@ -3589,244 +3496,246 @@
   </script>
 
 
+\n
+<script src="https://cdn.jsdelivr.net/npm/three@0.176.0/build/three.min.js"></script>
 <script>
-/* =========================================================
-   RIMAK 2.0 — LIVING MOTION ENGINE v3
-   - real vertical scrolling on touch devices
-   - continuous organic morphing
-   - scroll direction feeds the motion
-   - scene atmosphere changes in both directions
-   ========================================================= */
-(function(){
-  const cinematic=document.getElementById('rimakExperience');
-  const chat=document.getElementById('chat');
-  const core=document.getElementById('rimakCore');
-  const hero=cinematic?.querySelector('.rimak-hero-stage');
-  const sections=[...(cinematic?.querySelectorAll('[data-cinematic-section]')||[])];
-  const start=document.getElementById('cinematicStartButton');
-  const tools=document.getElementById('openToolsButton');
-  const hub=document.getElementById('rimakToolHub');
-  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(!cinematic || !chat || !core) return;
-
-  // Make the visual experience itself the scroll surface on iOS.
-  chat.style.overflowY='auto';
-  chat.style.webkitOverflowScrolling='touch';
-  chat.style.touchAction='pan-y';
-  cinematic.style.overflow='visible';
-  cinematic.style.height='auto';
-  cinematic.style.minHeight='max-content';
-
-  let targetScroll=chat.scrollTop;
-  let smoothScroll=targetScroll;
-  let lastScroll=targetScroll;
-  let velocity=0;
-  let pointerX=0;
-  let pointerY=0;
-  let raf=0;
-  const startTime=performance.now();
-
-  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
-  const lerp=(a,b,t)=>a+(b-a)*t;
-  const colors=[
-    [73,160,216],
-    [222,232,237],
-    [102,31,57],
-    [73,160,216],
-    [222,232,237]
-  ];
-
-  function setAtmosphere(progress){
-    const p=clamp(progress,0,1)*(colors.length-1);
-    const i=Math.min(Math.floor(p),colors.length-2);
-    const t=p-i;
-    const a=colors[i],b=colors[i+1];
-    const c=a.map((v,k)=>Math.round(lerp(v,b[k],t)));
-    const glow=c.map(v=>Math.round(lerp(v,255,.18)));
-    cinematic.style.setProperty('--scene-rgb',c.join(' '));
-    cinematic.style.setProperty('--scene-glow',glow.join(' '));
-    cinematic.style.setProperty('--scene-progress',progress.toFixed(4));
-  }
-
-  function onPointer(e){
-    const r=cinematic.getBoundingClientRect();
-    pointerX=clamp(((e.clientX-r.left)/Math.max(r.width,1)-.5)*2,-1,1);
-    pointerY=clamp(((e.clientY-r.top)/Math.max(r.height,1)-.5)*2,-1,1);
-  }
-
-  cinematic.addEventListener('pointermove',onPointer,{passive:true});
-  cinematic.addEventListener('pointerleave',()=>{
-    pointerX*=.35; pointerY*=.35;
-  },{passive:true});
-
-  // Wheel + touch scrolling both update the same target, so reversing direction
-  // reverses the visual state rather than only moving it forward.
-  chat.addEventListener('scroll',()=>{
-    targetScroll=chat.scrollTop;
-    const delta=targetScroll-lastScroll;
-    velocity=clamp(delta,-90,90);
-    lastScroll=targetScroll;
-  },{passive:true});
-
-  function goTo(el){
-    if(!el) return;
-    const top=el.getBoundingClientRect().top-chat.getBoundingClientRect().top+chat.scrollTop-12;
-    chat.scrollTo({top,behavior:'smooth'});
-  }
-  start?.addEventListener('click',()=>goTo(sections[0]));
-  tools?.addEventListener('click',()=>goTo(hub));
-
-  sections.forEach(s=>s.addEventListener('pointerenter',()=>s.classList.add('pointer-active'),{passive:true}));
-
-  const reveal=new IntersectionObserver(entries=>{
-    entries.forEach(entry=>{
-      if(entry.isIntersecting) entry.target.classList.add('is-visible');
-    });
-  },{root:chat,threshold:.12});
-  sections.forEach(s=>reveal.observe(s));
-
-  cinematic.querySelectorAll('[data-tool-prompt]').forEach(card=>{
-    card.addEventListener('click',()=>{
-      const input=document.getElementById('messageInput');
-      if(!input) return;
-      input.value=card.getAttribute('data-tool-prompt')||'';
-      input.dispatchEvent(new Event('input',{bubbles:true}));
-      input.focus();
-      const composer=document.querySelector('.composer');
-      composer?.classList.add('cinematic-composer-focus');
-      setTimeout(()=>composer?.classList.remove('cinematic-composer-focus'),900);
-      // Keep the user in the living cinematic scene while the prompt is prepared.
-      chat.scrollTo({top:Math.min(chat.scrollTop+chat.clientHeight*.55,chat.scrollHeight),behavior:'smooth'});
-    });
-  });
-
-  function animate(now){
-    const t=(now-startTime)/1000;
-    smoothScroll=lerp(smoothScroll,targetScroll,reduced?.32:.13);
-    velocity*=.86;
-
-    const maxScroll=Math.max(chat.scrollHeight-chat.clientHeight,1);
-    const progress=clamp(smoothScroll/maxScroll,0,1);
-    setAtmosphere(progress);
-
-    // Continuous "breathing" + deformation even when the page is still.
-    const breathe=Math.sin(t*1.18);
-    const breathe2=Math.sin(t*1.72+1.8);
-    const drift=Math.cos(t*.64);
-    const curl=Math.sin(t*.47+2.4);
-
-    if(!reduced){
-      const heroP=hero?clamp(smoothScroll/Math.max(hero.offsetHeight,1),0,1):progress;
-      const scale=1-heroP*.10+Math.abs(velocity)*.0008;
-      const x=pointerX*7+drift*3.2;
-      const y=-pointerY*5+breathe*4.4+heroP*36+velocity*.20;
-      const rx=pointerY*-8+breathe2*3.5+velocity*.085;
-      const ry=pointerX*11+drift*5+velocity*.13;
-      const rz=curl*4+velocity*.055;
-
-      core.style.setProperty('--float-x',x.toFixed(2)+'px');
-      core.style.setProperty('--float-y',y.toFixed(2)+'px');
-      core.style.setProperty('--float-rx',rx.toFixed(2)+'deg');
-      core.style.setProperty('--float-ry',ry.toFixed(2)+'deg');
-      core.style.setProperty('--float-rz',rz.toFixed(2)+'deg');
-      core.style.setProperty('--liquid-pulse',(1+breathe*.035).toFixed(3));
-      core.style.setProperty('--liquid-bias',(breathe2*12).toFixed(2)+'deg');
-      core.style.setProperty('--scroll-force',velocity.toFixed(2));
-      core.style.setProperty('--scroll-scale',scale.toFixed(4));
-      core.style.transform=
-        'translate3d(var(--core-base-x,0%),calc(-50% + var(--float-y)),0) '+
-        'translateX(var(--float-x)) '+
-        'rotateX(var(--float-rx)) rotateY(var(--float-ry)) rotateZ(var(--float-rz)) '+
-        'scale(var(--scroll-scale))';
-    }
-
-    cinematic.style.setProperty('--scroll-y',smoothScroll.toFixed(2)+'px');
-
-    const active=Math.min(sections.length-1,Math.round(progress*Math.max(sections.length-1,1)));
-    sections.forEach((section,i)=>section.classList.toggle('scene-active',i===active));
-
-    velocity*=.94;
-    raf=requestAnimationFrame(animate);
-  }
-
-  setAtmosphere(0);
-  raf=requestAnimationFrame(animate);
-  window.addEventListener('beforeunload',()=>cancelAnimationFrame(raf),{once:true});
-})();
-</script>\n<script>
-/* =========================================================
-   RIMAK REEL ENGINE — MATTER TRANSITIONS
-   One material, multiple forms. Scene changes are reversible.
-   ========================================================= */
+/* RIMAK — TRUE 3D MATTER ENGINE */
 (function(){
   const chat=document.getElementById('chat');
   const exp=document.getElementById('rimakExperience');
-  const core=document.getElementById('rimakCore');
-  if(!chat||!exp||!core) return;
+  const canvas=document.getElementById('matterCanvas');
+  if(!chat||!exp||!canvas||!window.THREE) return;
 
-  const pages=[...exp.querySelectorAll('.rimak-hero-stage,.cinematic-section,.rimak-tool-hub')];
-  let current=0, last=0, direction=1;
-  let target=0, smooth=0;
-  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const THREE=window.THREE;
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.7));
+  renderer.setSize(window.innerWidth,window.innerHeight,false);
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.15;
 
-  function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(30,window.innerWidth/window.innerHeight,.1,100);
+  camera.position.set(0,0,7);
 
-  function update(){
-    target=chat.scrollTop;
-    const delta=target-last;
-    if(Math.abs(delta)>0.15) direction=delta>0?1:-1;
-    last=target;
-    smooth += (target-smooth)*.12;
+  const group=new THREE.Group();
+  scene.add(group);
 
-    let nearest=0, nearestDist=Infinity;
-    pages.forEach((page,i)=>{
-      const r=page.getBoundingClientRect();
-      const d=Math.abs((r.top+r.height*.5)-(window.innerHeight*.5));
-      if(d<nearestDist){nearestDist=d;nearest=i;}
-    });
-    current=nearest;
+  const geo=new THREE.IcosahedronGeometry(2.15,5);
+  geo.computeVertexNormals();
+  const pos=geo.attributes.position;
+  const base=new Float32Array(pos.array);
+  const temp=new Float32Array(pos.array.length);
 
-    const max=Math.max(pages.length-1,1);
-    const progress=clamp(current/max,0,1);
-    exp.dataset.scene=String(Math.min(4,Math.round(progress*4)));
-    exp.style.setProperty('--page-progress',progress.toFixed(3));
-    exp.style.setProperty('--page-direction',direction);
-    exp.style.setProperty('--matter-speed',Math.min(2,Math.abs(delta)/8).toFixed(3));
+  const material=new THREE.MeshPhysicalMaterial({
+    color:0xe7eef1,
+    roughness:.13,
+    metalness:.38,
+    clearcoat:1,
+    clearcoatRoughness:.08,
+    iridescence:.55,
+    iridescenceIOR:1.45,
+    transmission:.04,
+    thickness:.55,
+    transparent:true,
+    opacity:1
+  });
+  const blob=new THREE.Mesh(geo,material);
+  blob.rotation.order='YXZ';
+  group.add(blob);
 
-    // The material leans with the direction of travel.
-    if(!reduce){
-      const tilt=clamp(delta*0.09,-8,8);
-      core.style.setProperty('--direction-tilt',tilt.toFixed(2)+'deg');
-    }
+  // Secondary shell produces the "liquid inside liquid" feel.
+  const shellGeo=new THREE.IcosahedronGeometry(2.21,4);
+  const shellMat=new THREE.MeshBasicMaterial({color:0x8fd3f1,transparent:true,opacity:.09,wireframe:true});
+  const shell=new THREE.Mesh(shellGeo,shellMat);
+  group.add(shell);
 
-    requestAnimationFrame(update);
+  const key=new THREE.DirectionalLight(0xdff3ff,4.2);
+  key.position.set(3,4,5);
+  scene.add(key);
+  const fill=new THREE.PointLight(0x6ebee7,10,18);
+  fill.position.set(-4,-2,4);
+  scene.add(fill);
+  const burgundy=new THREE.PointLight(0x722943,12,15);
+  burgundy.position.set(3,-3,2);
+  scene.add(burgundy);
+  scene.add(new THREE.AmbientLight(0x9fb2ba,.55));
+
+  const pageNodes=[...exp.querySelectorAll('.reel-page')];
+
+  let targetProgress=0;
+  let smoothProgress=0;
+  let lastScroll=chat.scrollTop;
+  let velocity=0;
+  let pointerX=0,pointerY=0;
+  let currentScene=0;
+
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const lerp=(a,b,t)=>a+(b-a)*t;
+  const smoothstep=t=>t*t*(3-2*t);
+
+  function hash(n){
+    return Math.sin(n*127.1)*43758.5453%1;
   }
 
-  // Force a real snap-like full-page rhythm without taking control away from touch.
-  let snapping=false;
-  let snapTimer;
-  chat.addEventListener('scroll',()=>{
-    clearTimeout(snapTimer);
-    snapTimer=setTimeout(()=>{
-      if(snapping||Math.abs(last-target)>3) return;
-      const viewport=chat.clientHeight;
-      if(viewport<400) return;
-      const idx=Math.round(chat.scrollTop/Math.max(viewport-4,1));
-      const destination=clamp(idx,0,pages.length-1)*Math.max(viewport-4,1);
-      snapping=true;
-      chat.scrollTo({top:destination,behavior:'smooth'});
-      setTimeout(()=>snapping=false,650);
-    },140);
+  function shape(sceneIndex,x,y,z,time){
+    const len=Math.sqrt(x*x+y*y+z*z)||1;
+    const nx=x/len,ny=y/len,nz=z/len;
+    const a=Math.atan2(ny,nx);
+    const band=Math.sin((nx*2.8+ny*1.9+nz*3.2)+time*.52);
+    const detail=Math.sin(nx*7.2+ny*5.1+nz*6.8+time*.38);
+    let r=1;
+
+    if(sceneIndex===0){
+      r=1+.025*band+.012*detail;
+    }else if(sceneIndex===1){
+      const pinch=Math.cos(a*3.0+0.7)*.12;
+      r=1+.17*band+.08*detail+pinch*(.55+nz*.35);
+      r*=1+.06*Math.sin(a*2.0+time*.4);
+    }else if(sceneIndex===2){
+      const lobes=Math.cos(a*2.0-ny*4.0)*.15;
+      r=1+.12*band+.16*Math.max(0,lobes)+.05*detail;
+      r*=1+.11*nz;
+    }else if(sceneIndex===3){
+      const flower=Math.sin(a*5.0+nz*2.5)*.16;
+      r=1+.1*band+flower+.07*detail;
+      r*=.94+.13*Math.cos((nx+ny+nz)*2.2+time*.3);
+    }else{
+      const soft=Math.sin(a*2.0+ny*3.0+time*.2)*.06;
+      r=1+.07*band+.04*detail+soft;
+    }
+    return r;
+  }
+
+  const sceneColors=[
+    new THREE.Color('#e8eff2'),
+    new THREE.Color('#111417'),
+    new THREE.Color('#79c7e8'),
+    new THREE.Color('#722943'),
+    new THREE.Color('#dfecef')
+  ];
+
+  function applyScenePalette(s,t){
+    const a=sceneColors[Math.min(s,4)];
+    const b=sceneColors[Math.min(s+1,4)];
+    material.color.copy(a).lerp(b,t);
+    material.emissive.setRGB(.015,.02,.022);
+    shellMat.color.copy(a).lerp(b,t);
+    fill.color.copy(sceneColors[(s+2)%5]);
+    burgundy.color.copy(sceneColors[(s+3)%5]);
+  }
+
+  function setPages(progress){
+    pageNodes.forEach((node,i)=>{
+      const d=Math.abs(progress*4-i);
+      const active=d<.62;
+      node.classList.toggle('is-current',active);
+      node.style.setProperty('--page-distance',Math.min(d,1));
+      node.style.setProperty('--page-direction',velocity>=0?1:-1);
+    });
+  }
+
+  function updateProgress(){
+    const rect=exp.getBoundingClientRect();
+    const range=Math.max(exp.offsetHeight-chat.clientHeight,1);
+    targetProgress=clamp((-rect.top)/range,0,1);
+    const delta=chat.scrollTop-lastScroll;
+    velocity=lerp(velocity,delta,.35);
+    lastScroll=chat.scrollTop;
+  }
+
+  chat.addEventListener('scroll',updateProgress,{passive:true});
+  updateProgress();
+
+  exp.addEventListener('pointermove',e=>{
+    const r=exp.getBoundingClientRect();
+    pointerX=clamp((e.clientX-r.left)/Math.max(r.width,1)*2-1,-1,1);
+    pointerY=clamp((e.clientY-r.top)/Math.max(r.height,1)*2-1,-1,1);
   },{passive:true});
 
-  // Clicking the living object/scene changes its material too.
-  core.addEventListener('click',()=>{
-    const next=(Number(exp.dataset.scene||0)+1)%5;
-    exp.dataset.scene=String(next);
-  });
+  function resize(){
+    const w=window.innerWidth,h=window.innerHeight;
+    renderer.setSize(w,h,false);
+    camera.aspect=w/h;
+    camera.updateProjectionMatrix();
+  }
+  addEventListener('resize',resize);
 
-  update();
+  const clock=new THREE.Clock();
+
+  function tick(){
+    const time=clock.getElapsedTime();
+    smoothProgress=lerp(smoothProgress,targetProgress,reduced?.35:.105);
+    const travel=smoothProgress*4;
+    const s0=Math.floor(travel);
+    const sceneIndex=clamp(s0,0,4);
+    const morph=smoothstep(clamp(travel-s0,0,1));
+    currentScene=sceneIndex;
+
+    setPages(smoothProgress);
+
+    const wave=Math.sin(time*1.15);
+    const wave2=Math.cos(time*.73);
+    const direction=velocity>=0?1:-1;
+
+    for(let i=0;i<pos.count;i++){
+      const j=i*3;
+      const x=base[j],y=base[j+1],z=base[j+2];
+      const r0=shape(sceneIndex,x,y,z,time);
+      const r1=shape(Math.min(sceneIndex+1,4),x,y,z,time+.45);
+      const r=lerp(r0,r1,morph);
+      const len=Math.sqrt(x*x+y*y+z*z)||1;
+      const nx=x/len,ny=y/len,nz=z/len;
+      const breathing=1+wave*.018+wave2*.012;
+      temp[j]=nx*len*r*breathing;
+      temp[j+1]=ny*len*r*breathing;
+      temp[j+2]=nz*len*r*breathing;
+    }
+    pos.array.set(temp);
+    pos.needsUpdate=true;
+    geo.computeVertexNormals();
+
+    group.rotation.y=lerp(group.rotation.y, pointerX*.18+time*.12+velocity*.018*direction,.08);
+    group.rotation.x=lerp(group.rotation.x,pointerY*.12+velocity*.012*direction,.08);
+    blob.rotation.z=Math.sin(time*.4)*.06+velocity*.01;
+
+    const scale=1+Math.sin(time*.8)*.018;
+    group.scale.setScalar(scale);
+    group.position.x=lerp(group.position.x,pointerX*.18,.08);
+    group.position.y=lerp(group.position.y,pointerY*.12,.08);
+
+    applyScenePalette(sceneIndex,morph);
+
+    // Scene atmosphere follows the same material.
+    const bgA=['#05070a','#f3f6f7','#dff1f7','#eadce2','#05070a'][sceneIndex];
+    exp.style.setProperty('--reel-bg',bgA);
+    exp.style.setProperty('--matter-progress',smoothProgress.toFixed(4));
+
+    renderer.render(scene,camera);
+    requestAnimationFrame(tick);
+  }
+
+  tick();
+
+  function runPrompt(id,prompt){
+    const input=document.getElementById('messageInput');
+    if(!input) return;
+    input.value=prompt;
+    input.dispatchEvent(new Event('input',{bubbles:true}));
+    input.focus();
+    chat.scrollTo({top:chat.scrollTop+chat.clientHeight*.72,behavior:'smooth'});
+  }
+
+  document.getElementById('reelCreateButton')?.addEventListener('click',()=>runPrompt('create','RIMAK, quero criar uma apresentação profissional.'));
+  document.getElementById('reelResearchButton')?.addEventListener('click',()=>runPrompt('research','RIMAK, quero pesquisar e comparar informações importantes.'));
+  document.getElementById('reelTransformButton')?.addEventListener('click',()=>runPrompt('transform','RIMAK, quero transformar um arquivo ou conteúdo.'));
+  document.getElementById('reelChatButton')?.addEventListener('click',()=>chat.scrollTo({top:chat.scrollHeight,behavior:'smooth'}));
+  exp.querySelectorAll('[data-tool-prompt]').forEach(btn=>btn.addEventListener('click',()=>{
+    runPrompt('tool',btn.getAttribute('data-tool-prompt')||'');
+  }));
 })();
 </script>
+
 </body>
 </html>
