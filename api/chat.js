@@ -1126,6 +1126,58 @@ async function authGateway(action, body, req) {
       }
     };
   }
+
+  if (action === "auth_user") {
+    const auth =
+      req.headers?.authorization ||
+      req.headers?.Authorization ||
+      "";
+
+    const accessToken = auth.startsWith("Bearer ")
+      ? auth.slice(7).trim()
+      : "";
+
+    if (!accessToken) {
+      return { status: 401, body: { error: "Sessão ausente." } };
+    }
+
+    const response = await call(
+      "/auth/v1/user",
+      {
+        headers: {
+          Authorization: "Bearer " + accessToken
+        }
+      }
+    );
+
+    const raw = await response.text();
+    let data = {};
+    try { data = raw ? JSON.parse(raw) : {}; } catch {}
+
+    if (!response.ok) {
+      return {
+        status: response.status,
+        body: {
+          error:
+            data.error_description ||
+            data.msg ||
+            data.message ||
+            "Sessão inválida."
+        }
+      };
+    }
+
+    return {
+      status: 200,
+      body: {
+        user: data?.id ? {
+          id: data.id,
+          email: data.email || null,
+          created_at: data.created_at || null
+        } : null
+      }
+    };
+  }
 }
 
 export default async function handler(req, res) {
