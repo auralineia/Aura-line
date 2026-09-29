@@ -46,7 +46,18 @@ body{overscroll-behavior-y:auto!important;-webkit-overflow-scrolling:touch!impor
 .matter-wrap{width:min(48vw,360px)!important;height:min(48vw,360px)!important;z-index:5!important;transform:translate3d(var(--mx,0),var(--my,0),0) scale(var(--scale,1));transition:transform .08s linear}.matter-canvas{filter:drop-shadow(0 26px 38px rgba(0,0,0,.42))!important}.matter-glow{width:46%!important;height:46%!important;background:rgba(180,224,238,.12)!important;filter:blur(42px)!important}
 .copy{left:11vw!important;right:11vw!important;bottom:11vh!important;max-width:480px!important;z-index:8!important;color:#fff!important}.copy .kicker{font-size:9px!important;letter-spacing:.24em!important;color:rgba(255,255,255,.44)!important}.copy h1,.copy h2{font-size:clamp(34px,8vw,70px)!important;line-height:.94!important;letter-spacing:-.045em!important;margin:10px 0 13px!important}.copy p{font-size:13px!important;line-height:1.55!important;color:rgba(255,255,255,.5)!important;max-width:360px!important}.copy em{font-style:normal;color:rgba(194,231,241,.9)!important}
 @media(max-width:600px){.topline{left:20px;right:20px}.progress{left:20px;right:20px}.matter-wrap{width:54vw!important;height:54vw!important}.copy{bottom:9vh!important}.copy h1,.copy h2{font-size:clamp(34px,9.5vw,48px)!important}.side{display:none}}
-</style>
+<style id="rimak-scroll-emergency">
+html,body{width:100%!important;height:100%!important;overflow:hidden!important}
+body{position:relative!important}
+#app{position:fixed!important;inset:0!important;height:100%!important;display:block!important}
+#chat{position:absolute!important;inset:0!important;width:100%!important;height:100dvh!important;min-height:0!important;overflow-y:scroll!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important}
+#chat .matter-canvas,#chat .matter-wrap,#chat .sticky{pointer-events:none!important}
+#chat .copy,#chat .topline,#chat .progress{pointer-events:none!important}
+#reel{height:900vh!important;min-height:900vh!important}
+.sticky{position:sticky!important;top:0!important;height:100dvh!important}
+#conversation{pointer-events:auto!important}
+.app.hidden{display:block!important}
+</style></style>
 </head>
 <body>
 <section id="auth" class="auth">
