@@ -221,90 +221,50 @@ const gl=canvas.getContext("webgl",{alpha:true,antialias:true,premultipliedAlpha
 const V="attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}";
 const F=`precision highp float;
 uniform vec2 R; uniform float Q;
-float sphere(vec3 p,float r){return length(p)-r;}
-float blob(vec3 p){
- float a=atan(p.z,p.x),r=.55+.12*sin(3.*a+.5)+.055*sin(7.*a-1.2);
- return length(vec2(length(p.xz)-r,p.y*.9))-.16;
+
+float sdSphere(vec3 p,float r){return length(p)-r;}
+float sdRoundBox(vec3 p,vec3 b,float r){vec3 q=abs(p)-b;return length(max(q,0.0))+min(max(q.x,max(q.y,q.z)),0.0)-r;}
+float organic(vec3 p){float a=atan(p.z,p.x);float r=.50+.10*sin(3.0*a+.7)+.055*sin(7.0*a-1.0);p.y+=.10*sin(2.0*a);return length(vec2(length(p.xz)-r,p.y))-.16;}
+float folded(vec3 p){float a=atan(p.z,p.x);float r=.50+.14*cos(2.0*a)-.065*cos(5.0*a);p.y+=.10*sin(3.0*a);p.z+=.035*sin(8.0*a+p.y*3.0);return length(vec2(length(p.xz)-r,p.y*.92))-.125;}
+float softBlob(vec3 p){float d=length(p)-.48;d+=.075*sin(4.0*p.x+Q)*sin(3.0*p.y-.8)*sin(5.0*p.z+.3);return d;}
+float wireOrganic(vec3 p){float a=atan(p.z,p.x);float r=.52+.075*sin(6.0*a)+.04*sin(11.0*a);return length(vec2(length(p.xz)-r,p.y*.72))-.07;}
+float droplet(vec3 p){p.y+=.06;float sc=1.0-.20*p.y;p.xz/=max(sc,.72);return length(p)-.43;}
+vec3 warp(vec3 p,float q){float a=q*.55;float ca=cos(a),sa=sin(a);p.xz=mat2(ca,-sa,sa,ca)*p.xz;float b=q*.18,cb=cos(b),sb=sin(b);p.xy=mat2(cb,-sb,sb,cb)*p.xy;return p;}
+float stageShape(vec3 p,float i){
+ if(i<.5)return sdSphere(p,.46);
+ if(i<1.5)return organic(p);
+ if(i<2.5)return folded(p);
+ if(i<3.5)return softBlob(p);
+ if(i<4.5)return wireOrganic(p);
+ if(i<5.5)return droplet(p);
+ if(i<6.5)return sdRoundBox(p,vec3(.42,.18,.30),.18);
+ return sdSphere(p,.46);
 }
-float folded(vec3 p){
- p.y*=.92;
- float a=atan(p.z,p.x),r=.53+.16*cos(2.*a)-.08*cos(5.*a);
- p.y+=.11*sin(3.*a);
- return length(vec2(length(p.xz)-r,p.y))-.13;
-}
-float soft(vec3 p){
- float d=length(p)-.5;
- d+=.09*sin(5.*p.x+1.2)*sin(4.*p.y-.4)*sin(4.*p.z+.7);
- return d;
-}
-float ring(vec3 p){
- float a=atan(p.z,p.x),r=.53+.10*sin(6.*a)+.045*sin(11.*a);
- return length(vec2(length(p.xz)-r,p.y*.78))-.095;
-}
-float flattened(vec3 p){
- p.y*=1.65; p.x*=.92;
- return length(p)-.55;
-}
-float form(vec3 p,float q){
- float k=floor(q),f=smoothstep(.04,.96,fract(q));
- float a,b;
- if(k<1.){a=sphere(p,.46);b=blob(p);}
- else if(k<2.){a=blob(p);b=folded(p);}
- else if(k<3.){a=folded(p);b=soft(p);}
- else if(k<4.){a=soft(p);b=ring(p);}
- else if(k<5.){a=ring(p);b=flattened(p);}
- else if(k<6.){a=flattened(p);b=blob(p);}
- else {a=blob(p);b=sphere(p,.46);}
- return mix(a,b,f);
-}
-vec3 normal(vec3 p,float q){
- float e=.0012;
- return normalize(vec3(
-  form(p+vec3(e,0,0),q)-form(p-vec3(e,0,0),q),
-  form(p+vec3(0,e,0),q)-form(p-vec3(0,e,0),q),
-  form(p+vec3(0,0,e),q)-form(p-vec3(0,0,e),q)));
-}
+float form(vec3 p,float q){p=warp(p,q);float k=floor(q);float f=smoothstep(0.0,1.0,fract(q));return mix(stageShape(p,k),stageShape(p,min(k+1.0,7.0)),f);}
+vec3 normal(vec3 p,float q){float e=.001;return normalize(vec3(form(p+vec3(e,0,0),q)-form(p-vec3(e,0,0),q),form(p+vec3(0,e,0),q)-form(p-vec3(0,e,0),q),form(p+vec3(0,0,e),q)-form(p-vec3(0,0,e),q)));}
 void main(){
  vec2 uv=(gl_FragCoord.xy-.5*R)/min(R.x,R.y);
- vec3 ro=vec3(0.,0.,2.35),rd=normalize(vec3(uv,-1.72)),p=ro;
- float t=0.,d=0.; bool hit=false;
- for(int j=0;j<110;j++){
-  p=ro+rd*t; d=form(p,Q);
-  if(d<.0012){hit=true;break;}
-  t+=max(d*.68,.0022); if(t>4.5)break;
- }
+ vec3 ro=vec3(0,0,2.45),rd=normalize(vec3(uv,-1.75)),p;
+ float t=0.,d=0.;bool hit=false;
+ for(int j=0;j<110;j++){p=ro+rd*t;d=form(p,Q);if(d<.001){hit=true;break;}t+=max(d*.38,.0012);if(t>5.)break;}
  if(!hit){gl_FragColor=vec4(0);return;}
  vec3 n=normal(p,Q),v=normalize(ro-p);
- vec3 l1=normalize(vec3(-.65,.82,1.0)),l2=normalize(vec3(.75,.2,.55)),l3=normalize(vec3(-.15,-.65,.7));
+ vec3 l1=normalize(vec3(-.7,.8,1)),l2=normalize(vec3(.75,.25,.45)),l3=normalize(vec3(-.15,-.65,.7));
  float d1=max(dot(n,l1),0.),d2=max(dot(n,l2),0.),d3=max(dot(n,l3),0.);
- float s1=pow(max(dot(n,normalize(l1+v)),0.),125.);
- float s2=pow(max(dot(n,normalize(l2+v)),0.),65.);
- float fres=pow(1.-max(dot(n,v),0.),3.5);
- float phase=mod(Q,7.);
- vec3 c=vec3(.012,.014,.016);
- c+=vec3(.17,.20,.21)*d1+vec3(.08,.035,.07)*d2+vec3(.035,.08,.10)*d3;
- c+=vec3(.95,.97,.95)*s1+vec3(.35,.42,.45)*s2+vec3(.42,.48,.50)*fres;
- if(phase>2.3&&phase<3.6){
-   vec3 purple=vec3(.20,.05,.28),cyan=vec3(.02,.32,.38);
-   c=mix(c,purple+.55*cyan*(.5+.5*sin(p.y*7.+Q*2.)),.48);
- }
- if(phase>3.2&&phase<4.7){
-   float g=abs(sin(p.x*25.))+.75*abs(sin(p.y*25.))+.65*abs(sin(p.z*25.));
-   float lines=smoothstep(1.95,2.25,g);
-   c=mix(c,vec3(.84,.83,.73),lines*.82);
- }
- if(phase>4.0&&phase<5.8){
-   vec3 cream=vec3(.82,.80,.68);
-   c=mix(c,cream,.28+.18*fres);
- }
- gl_FragColor=vec4(c,1.);
+ float sp1=pow(max(dot(n,normalize(l1+v)),0.),120.),sp2=pow(max(dot(n,normalize(l2+v)),0.),55.),fr=pow(1.-max(dot(n,v),0.),3.2);
+ float ph=mod(Q,8.);
+ vec3 c=vec3(.018,.020,.022)+vec3(.18,.21,.22)*d1+vec3(.08,.035,.075)*d2+vec3(.035,.08,.10)*d3+vec3(.95,.97,.95)*sp1+vec3(.35,.42,.45)*sp2+vec3(.38,.45,.50)*fr;
+ if(ph>2.6&&ph<4.05){float ir=.5+.5*sin(p.x*4.+p.y*7.+Q*1.8);c=mix(c,mix(vec3(.34,.05,.45),vec3(.02,.52,.38),ir),.65);}
+ if(ph>3.85&&ph<5.2){float g=abs(sin(p.x*30.))+abs(sin(p.y*30.))+abs(sin(p.z*30.));c=mix(c,vec3(.86,.85,.78),smoothstep(1.8,2.7,g)*.8);}
+ if(ph>5.0&&ph<6.6)c=mix(c,vec3(.84,.82,.71),.42);
+ gl_FragColor=vec4(c,1);
 }`;
-function shader(t,s){const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);return x}
+function shader(t,src){const x=gl.createShader(t);gl.shaderSource(x,src);gl.compileShader(x);return x}
 const P=gl.createProgram();gl.attachShader(P,shader(gl.VERTEX_SHADER,V));gl.attachShader(P,shader(gl.FRAGMENT_SHADER,F));gl.linkProgram(P);gl.useProgram(P);
 const B=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,B);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
 const A=gl.getAttribLocation(P,"a");gl.enableVertexAttribArray(A);gl.vertexAttribPointer(A,2,gl.FLOAT,false,0,0);
 const uR=gl.getUniformLocation(P,"R"),uQ=gl.getUniformLocation(P,"Q");let q=0;
-function resize(){const d=Math.min(devicePixelRatio||1,1.5),w=Math.max(1,Math.floor(canvas.clientWidth*d)),h=Math.max(1,Math.floor(canvas.clientHeight*d));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h)}}
+function resize(){const d=Math.min(devicePixelRatio||1,1.15),w=Math.max(1,Math.floor(canvas.clientWidth*d)),h=Math.max(1,Math.floor(canvas.clientHeight*d));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h)}}
 function frame(){resize();gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);gl.uniform2f(uR,canvas.width,canvas.height);gl.uniform1f(uQ,q);gl.drawArrays(gl.TRIANGLES,0,3);requestAnimationFrame(frame)}
 window.rimakMatter={setProgress(v){q=Math.max(0,Math.min(7,v))}};frame();
 })();</script></body></html>
