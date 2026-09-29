@@ -1863,3 +1863,406 @@
 @media(max-width:900px){
   .rimak-core{--core-base-x:50%}
 }
+
+
+/* =========================================================
+   RIMAK — LIVING ORGANIC IDENTITY
+   ========================================================= */
+
+/* Real scroll surface — especially important on iPhone */
+.chat{
+  touch-action:pan-y;
+  overscroll-behavior-y:contain;
+  overflow-x:hidden;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.rimak-cinematic{
+  height:max-content;
+  min-height:max-content;
+  overflow:visible;
+  touch-action:pan-y;
+}
+
+/* Replace the old round/linear emblem with an organic animated mark */
+.aura-symbol{
+  --logo-blue:#72bfe8;
+  --logo-ice:#e5eef2;
+  --logo-burgundy:#722943;
+  position:relative;
+  width:150px!important;
+  height:88px!important;
+  margin:0 auto 22px!important;
+  display:block!important;
+  filter:drop-shadow(0 18px 42px rgb(73 160 216 / .14));
+}
+.aura-symbol .orbit,
+.aura-symbol .orbit2,
+.aura-symbol .orb{
+  position:absolute!important;
+  inset:auto!important;
+  border:0!important;
+  animation:none!important;
+  transform-origin:center!important;
+}
+.aura-symbol .orbit{
+  left:14%!important;
+  top:17%!important;
+  width:72%!important;
+  height:66%!important;
+  border-radius:58% 42% 63% 37% / 38% 62% 36% 64%!important;
+  background:
+    radial-gradient(circle at 30% 24%,rgb(255 255 255 / .92),transparent 8%),
+    radial-gradient(circle at 68% 34%,rgb(114 191 232 / .95),transparent 34%),
+    radial-gradient(circle at 42% 72%,rgb(114 41 67 / .9),transparent 48%),
+    linear-gradient(135deg,#dfe9ee,#7dc6ea 46%,#742b49 100%)!important;
+  box-shadow:
+    inset -18px -20px 28px rgb(0 0 0 / .22),
+    inset 10px 8px 20px rgb(255 255 255 / .18),
+    0 0 34px rgb(73 160 216 / .22),
+    0 0 55px rgb(114 41 67 / .14)!important;
+  animation:rimakLogoMorph 7s ease-in-out infinite!important;
+}
+.aura-symbol .orbit2{
+  left:27%!important;
+  top:30%!important;
+  width:54%!important;
+  height:48%!important;
+  border-radius:43% 57% 39% 61% / 61% 38% 62% 39%!important;
+  background:
+    radial-gradient(circle at 35% 25%,rgb(255 255 255 / .58),transparent 9%),
+    radial-gradient(circle at 50% 50%,rgb(114 191 232 / .42),rgb(114 41 67 / .28) 54%,transparent 72%)!important;
+  filter:blur(2px);
+  mix-blend-mode:screen;
+  opacity:.92!important;
+  animation:rimakLogoInner 5.2s ease-in-out infinite reverse!important;
+}
+.aura-symbol .orb{
+  left:40%!important;
+  top:39%!important;
+  width:22%!important;
+  height:22%!important;
+  border-radius:61% 39% 58% 42% / 43% 57% 41% 59%!important;
+  background:radial-gradient(circle at 35% 30%,#fff 0 10%,#dce9ef 28%,#7bbfe5 56%,#702942 100%)!important;
+  box-shadow:0 0 18px rgb(226 238 244 / .82),0 0 42px rgb(73 160 216 / .5),0 0 58px rgb(114 41 67 / .22)!important;
+  animation:rimakLogoPulse 3.6s ease-in-out infinite!important;
+}
+.aura-symbol::after{
+  content:"";
+  position:absolute;
+  width:18%;
+  height:13%;
+  left:24%;
+  top:23%;
+  border-radius:50%;
+  background:rgb(255 255 255 / .7);
+  filter:blur(7px);
+  mix-blend-mode:screen;
+  animation:rimakLogoGlint 4.1s ease-in-out infinite;
+}
+@keyframes rimakLogoMorph{
+  0%,100%{border-radius:58% 42% 63% 37% / 38% 62% 36% 64%;transform:rotate(-2deg) scale(1)}
+  18%{border-radius:35% 65% 51% 49% / 62% 38% 58% 42%;transform:rotate(7deg) scale(1.05)}
+  42%{border-radius:66% 34% 41% 59% / 48% 63% 37% 52%;transform:rotate(-9deg) scale(.97)}
+  68%{border-radius:41% 59% 68% 32% / 34% 47% 53% 66%;transform:rotate(5deg) scale(1.06)}
+}
+@keyframes rimakLogoInner{
+  0%,100%{transform:translate3d(0,0,0) rotate(0deg) scale(.95)}
+  50%{transform:translate3d(10px,-5px,0) rotate(-12deg) scale(1.08)}
+}
+@keyframes rimakLogoPulse{
+  0%,100%{transform:scale(.84) rotate(0deg);opacity:.72}
+  50%{transform:scale(1.18) rotate(15deg);opacity:1}
+}
+@keyframes rimakLogoGlint{
+  0%,100%{transform:translate3d(0,0,0) scale(.7);opacity:.18}
+  50%{transform:translate3d(22px,5px,0) scale(1.1);opacity:.75}
+}
+
+/* Login page */
+#authScreen{
+  background:
+    radial-gradient(70% 55% at 50% 17%,rgb(73 160 216 / .13),transparent 72%),
+    radial-gradient(55% 45% at 25% 78%,rgb(114 41 67 / .12),transparent 74%),
+    #07090c;
+}
+.auth-box{
+  position:relative;
+  padding:38px 28px 30px;
+  border:1px solid rgb(226 235 239 / .1);
+  border-radius:34px;
+  background:
+    linear-gradient(145deg,rgb(226 235 239 / .06),rgb(114 41 67 / .035)),
+    rgb(5 8 11 / .48);
+  box-shadow:
+    0 35px 100px rgb(0 0 0 / .48),
+    inset 0 1px 0 rgb(255 255 255 / .08),
+    0 0 70px rgb(73 160 216 / .06);
+  backdrop-filter:blur(28px) saturate(125%);
+}
+.auth-title{
+  color:var(--ice);
+  letter-spacing:8px;
+  text-shadow:0 0 24px rgb(73 160 216 / .2);
+}
+.auth-subtitle{
+  color:rgb(226 235 239 / .48);
+}
+.auth-input{
+  border-color:rgb(226 235 239 / .1)!important;
+  background:rgb(226 235 239 / .035)!important;
+  box-shadow:inset 0 1px 0 rgb(255 255 255 / .04);
+}
+.auth-input:focus{
+  border-color:rgb(114 191 232 / .5)!important;
+  box-shadow:0 0 0 3px rgb(73 160 216 / .09),0 0 32px rgb(73 160 216 / .08)!important;
+}
+.auth-button{
+  background:linear-gradient(135deg,#dfe9ee,#8fc9e8 52%,#713049)!important;
+  color:#071016!important;
+  box-shadow:0 14px 40px rgb(73 160 216 / .16)!important;
+}
+.auth-switch span{color:#87caeb!important}
+
+/* Header identity */
+.topbar{
+  background:linear-gradient(to bottom,rgb(5 8 11 / .97),rgb(5 8 11 / .72),transparent);
+}
+.brand-name{
+  color:var(--ice);
+  letter-spacing:4px;
+  text-shadow:0 0 20px rgb(73 160 216 / .12);
+}
+.brand-logo{
+  width:42px!important;
+  height:30px!important;
+  margin:0!important;
+  flex:0 0 42px!important;
+  transform:none!important;
+  filter:drop-shadow(0 7px 18px rgb(73 160 216 / .18));
+}
+.brand-logo .orbit{
+  left:0!important;
+  top:3px!important;
+  width:38px!important;
+  height:25px!important;
+}
+.brand-logo .orbit2{
+  left:8px!important;
+  top:7px!important;
+  width:28px!important;
+  height:18px!important;
+}
+.brand-logo .orb{
+  left:16px!important;
+  top:9px!important;
+  width:12px!important;
+  height:12px!important;
+}
+.brand-logo::after{left:6px!important;top:4px!important;width:8px!important;height:5px!important}
+
+/* Living hero object: remove "tech ring" dominance and make the body fluid */
+.rimak-core{
+  --core-base-x:0%;
+  width:clamp(245px,34vw,430px);
+  height:clamp(245px,34vw,430px);
+  filter:
+    drop-shadow(0 15px 55px rgb(var(--scene-rgb) / .19))
+    drop-shadow(0 0 100px rgb(114 41 67 / .12));
+}
+.core-ring{display:none!important}
+.core-glass{
+  inset:14%!important;
+  border-radius:58% 42% 64% 36% / 35% 62% 38% 65%!important;
+  background:
+    radial-gradient(circle at 24% 18%,rgb(255 255 255 / .95),transparent 7%),
+    radial-gradient(circle at 60% 35%,rgb(140 204 232 / .88),transparent 30%),
+    radial-gradient(circle at 37% 72%,rgb(115 37 64 / .86),transparent 41%),
+    radial-gradient(circle at 74% 75%,rgb(255 255 255 / .16),transparent 22%),
+    linear-gradient(135deg,#e7eff2 0%,#72bfe8 38%,#466d86 58%,#722943 100%)!important;
+  border:1px solid rgb(255 255 255 / .24)!important;
+  box-shadow:
+    inset -28px -32px 58px rgb(0 0 0 / .45),
+    inset 18px 13px 42px rgb(255 255 255 / .16),
+    0 0 70px rgb(var(--scene-rgb) / .28),
+    0 0 120px rgb(114 41 67 / .16)!important;
+  transform-origin:50% 50%;
+  will-change:transform,border-radius,background;
+  animation:rimakLivingBody 8s ease-in-out infinite;
+}
+.core-glass::before,
+.core-glass::after{
+  content:"";
+  position:absolute;
+  pointer-events:none;
+  border-radius:inherit;
+}
+.core-glass::before{
+  inset:7%;
+  background:
+    radial-gradient(circle at 28% 24%,rgb(255 255 255 / .58),transparent 6%),
+    radial-gradient(circle at 64% 48%,rgb(255 255 255 / .11),transparent 28%);
+  filter:blur(4px);
+  mix-blend-mode:screen;
+  transform:translate3d(-2%,-1%,0) scale(1.03);
+  animation:rimakLiquidHighlight 6s ease-in-out infinite;
+}
+.core-glass::after{
+  inset:18%;
+  background:
+    radial-gradient(ellipse at 55% 35%,rgb(255 255 255 / .2),transparent 28%),
+    radial-gradient(ellipse at 44% 70%,rgb(0 0 0 / .15),transparent 36%);
+  filter:blur(12px);
+  mix-blend-mode:soft-light;
+  animation:rimakLiquidShadow 7s ease-in-out infinite reverse;
+}
+.core-liquid-cut{
+  position:absolute;
+  border-radius:61% 39% 55% 45% / 47% 54% 46% 53%;
+  pointer-events:none;
+  mix-blend-mode:screen;
+  filter:blur(3px);
+}
+.cut-one{
+  width:54%;height:42%;right:7%;top:18%;
+  background:radial-gradient(circle at 25% 50%,rgb(255 255 255 / .35),rgb(126 203 236 / .2) 38%,transparent 74%);
+  animation:rimakCutOne 5.8s ease-in-out infinite;
+}
+.cut-two{
+  width:47%;height:37%;left:8%;bottom:13%;
+  background:radial-gradient(circle at 55% 42%,rgb(114 41 67 / .5),transparent 72%);
+  mix-blend-mode:multiply;
+  animation:rimakCutTwo 6.8s ease-in-out infinite reverse;
+}
+.cut-three{
+  width:35%;height:28%;right:18%;bottom:8%;
+  background:radial-gradient(circle,rgb(255 255 255 / .26),transparent 70%);
+  animation:rimakCutThree 4.8s ease-in-out infinite;
+}
+.core-shine{
+  position:absolute;
+  inset:8%;
+  border-radius:inherit;
+  background:linear-gradient(128deg,transparent 36%,rgb(255 255 255 / .18) 47%,transparent 58%);
+  filter:blur(5px);
+  mix-blend-mode:screen;
+  animation:rimakShineSweep 5.2s ease-in-out infinite;
+}
+@keyframes rimakLivingBody{
+  0%,100%{
+    border-radius:58% 42% 64% 36% / 35% 62% 38% 65%;
+    transform:translateZ(36px) rotate(-2deg) scale(1);
+  }
+  15%{
+    border-radius:39% 61% 47% 53% / 62% 38% 57% 43%;
+    transform:translateZ(56px) rotate(7deg) scale(1.035);
+  }
+  32%{
+    border-radius:67% 33% 38% 62% / 49% 59% 41% 51%;
+    transform:translateZ(68px) rotate(-10deg) scale(.97);
+  }
+  50%{
+    border-radius:43% 57% 67% 33% / 37% 48% 52% 63%;
+    transform:translateZ(48px) rotate(12deg) scale(1.055);
+  }
+  72%{
+    border-radius:63% 37% 45% 55% / 58% 42% 68% 32%;
+    transform:translateZ(60px) rotate(-6deg) scale(.985);
+  }
+  88%{
+    border-radius:50% 50% 60% 40% / 41% 66% 34% 59%;
+    transform:translateZ(44px) rotate(4deg) scale(1.03);
+  }
+}
+@keyframes rimakLiquidHighlight{
+  0%,100%{transform:translate3d(-2%,-1%,0) rotate(-4deg) scale(.94);opacity:.48}
+  50%{transform:translate3d(12%,7%,0) rotate(13deg) scale(1.08);opacity:.85}
+}
+@keyframes rimakLiquidShadow{
+  0%,100%{transform:translate3d(7%,3%,0) rotate(4deg) scale(.95);opacity:.42}
+  50%{transform:translate3d(-10%,-4%,0) rotate(-12deg) scale(1.1);opacity:.7}
+}
+@keyframes rimakCutOne{
+  0%,100%{transform:translate3d(0,0,40px) rotate(0deg) scale(.92)}
+  50%{transform:translate3d(-9%,-5%,70px) rotate(18deg) scale(1.12)}
+}
+@keyframes rimakCutTwo{
+  0%,100%{transform:translate3d(0,0,20px) rotate(0deg) scale(1)}
+  50%{transform:translate3d(10%,7%,48px) rotate(-16deg) scale(.86)}
+}
+@keyframes rimakCutThree{
+  0%,100%{transform:translate3d(0,0,60px) scale(.8);opacity:.25}
+  50%{transform:translate3d(-13%,-9%,90px) scale(1.15);opacity:.68}
+}
+@keyframes rimakShineSweep{
+  0%,100%{transform:translateX(-12%) rotate(-8deg);opacity:.25}
+  50%{transform:translateX(18%) rotate(8deg);opacity:.78}
+}
+.core-light{
+  width:48%!important;
+  height:38%!important;
+  left:26%!important;
+  top:24%!important;
+  background:radial-gradient(circle,rgb(226 240 246 / .65),rgb(var(--scene-rgb) / .2) 42%,transparent 74%)!important;
+  filter:blur(28px)!important;
+  animation:rimakInternalGlow 4.6s ease-in-out infinite!important;
+}
+@keyframes rimakInternalGlow{
+  0%,100%{transform:translate3d(-10px,-5px,72px) scale(.82);opacity:.18}
+  50%{transform:translate3d(17px,12px,90px) scale(1.14);opacity:.34}
+}
+.core-mark{
+  opacity:.12;
+  font-size:22px;
+  color:#f4fafc;
+  text-shadow:0 0 18px rgb(226 240 246 / .9),0 0 42px rgb(114 41 67 / .6);
+}
+
+/* Panels and clickable states should feel like the same product */
+.modal-overlay,
+.checkout-overlay{
+  background:rgb(2 5 8 / .7)!important;
+  backdrop-filter:blur(20px)!important;
+}
+.modal,
+.checkout-modal{
+  border:1px solid rgb(226 235 239 / .1)!important;
+  border-radius:28px!important;
+  background:
+    linear-gradient(145deg,rgb(226 235 239 / .08),rgb(114 41 67 / .045)),
+    rgb(7 10 14 / .9)!important;
+  box-shadow:
+    0 35px 110px rgb(0 0 0 / .58),
+    inset 0 1px 0 rgb(255 255 255 / .07),
+    0 0 70px rgb(73 160 216 / .05)!important;
+  backdrop-filter:blur(28px) saturate(130%);
+}
+.modal-title,.plan-name,.setting-name{
+  color:var(--ice)!important;
+}
+.modal-text,.plan-desc,.setting-desc{
+  color:rgb(226 235 239 / .48)!important;
+}
+.modal-button,
+.plan-button,
+.checkout-button{
+  background:linear-gradient(135deg,#e4edf0,#8cc9e8 55%,#702943)!important;
+  color:#071016!important;
+  border-color:transparent!important;
+  box-shadow:0 12px 32px rgb(73 160 216 / .12)!important;
+}
+.modal-close{
+  background:rgb(226 235 239 / .055)!important;
+  color:rgb(226 235 239 / .74)!important;
+}
+.plan-card,.setting-row{
+  border-color:rgb(226 235 239 / .08)!important;
+  background:linear-gradient(145deg,rgb(226 235 239 / .045),rgb(114 41 67 / .03))!important;
+}
+.plan-card:hover{
+  border-color:rgb(114 191 232 / .3)!important;
+  transform:translateY(-3px);
+}
+.setting-toggle.on{
+  background:linear-gradient(90deg,#74bfe7,#732944)!important;
+}
