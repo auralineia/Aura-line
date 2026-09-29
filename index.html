@@ -1137,75 +1137,30 @@
 
         }else{
 
-          // Use the Supabase Auth REST endpoint directly here.
-          // This avoids a stalled client-side auth promise on mobile browsers.
-          const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 10000);
+          const { data, error } = await Promise.race([
+            supabaseClient.auth.signInWithPassword({
+              email,
+              password
+            }),
+            new Promise((_, reject) =>
+              setTimeout(
+                () => reject(new Error("LOGIN_TIMEOUT")),
+                12000
+              )
+            )
+          ]);
 
-          let response;
-          let authPayload;
-
-          try{
-            response = await fetch(
-              SUPABASE_URL + "/auth/v1/token?grant_type=password",
-              {
-                method:"POST",
-                headers:{
-                  "Content-Type":"application/json",
-                  "apikey":SUPABASE_KEY
-                },
-                body:JSON.stringify({
-                  email,
-                  password
-                }),
-                signal:controller.signal
-              }
-            );
-
-            const raw = await response.text();
-
-            try{
-              authPayload = raw ? JSON.parse(raw) : {};
-            }catch{
-              authPayload = {};
-            }
-          }catch(fetchError){
-            if(fetchError?.name === "AbortError"){
-              throw new Error("LOGIN_TIMEOUT");
-            }
-            throw fetchError;
-          }finally{
-            clearTimeout(timeout);
+          if(error){
+            throw error;
           }
 
-          if(!response.ok){
-            const message =
-              authPayload?.error_description ||
-              authPayload?.msg ||
-              authPayload?.message ||
-              "Falha na autenticação.";
-            throw new Error(message);
-          }
-
-          if(
-            !authPayload?.access_token ||
-            !authPayload?.refresh_token ||
-            !authPayload?.user
-          ){
+          if(!data?.session?.user){
             throw new Error(
               "O servidor de autenticação não retornou uma sessão válida."
             );
           }
 
-          const { error: sessionError } =
-            await supabaseClient.auth.setSession({
-              access_token:authPayload.access_token,
-              refresh_token:authPayload.refresh_token
-            });
-
-          if(sessionError){
-            throw sessionError;
-          }
+          currentUser = data.user || data.session.user;
 
           currentUser = authPayload.user;
 
