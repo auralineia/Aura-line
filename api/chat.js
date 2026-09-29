@@ -979,6 +979,155 @@ async function handleMercadoPagoWebhook(req, res) {
   return json(res, 200, { received: true });
 }
 
+async function authGateway(action, body, req) {
+  const url = process.env.SUPABASE_URL || "https://yaymzsaibjfjnnqizdon.supabase.co";
+  const anonKey =
+    process.env.SUPABASE_ANON_KEY ||
+    process.env.SUPABASE_PUBLISHABLE_KEY ||
+    "sb_publishable_k3Ss9dpF7E8oMdZJO5PKdQ_RVs3FVJB";
+
+  async function call(path, options = {}) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 12000);
+    try {
+      return await fetch(url.replace(/\/+$/, "") + path, {
+        ...options,
+        signal: controller.signal,
+        headers: {
+          apikey: anonKey,
+          "Content-Type": "application/json",
+          ...(options.headers || {})
+        }
+      });
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  if (action === "auth_login" || action === "auth_signup") {
+    const email = String(body.email || "").trim().toLowerCase();
+    const password = String(body.password || "");
+    if (!email || !password) {
+      return { status: 400, body: { error: "Preencha e-mail e senha." } };
+    }
+    const path = action === "auth_login"
+      ? "/auth/v1/token?grant_type=password"
+      : "/auth/v1/signup";
+
+    const payload = action === "auth_login"
+      ? { email, password }
+      : {
+          email,
+          password,
+          options: {
+            email_redirect_to:
+              String(req.headers?.origin || "") + "/"
+          }
+        };
+
+    const response = await call(path, {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+    const raw = await response.text();
+    let data = {};
+    try { data = raw ? JSON.parse(raw) : {}; } catch {}
+
+    if (!response.ok) {
+      return {
+        status: response.status,
+        body: {
+          error:
+            data.error_description ||
+            data.msg ||
+            data.message ||
+            "Não foi possível continuar."
+        }
+      };
+    }
+
+    if (action === "auth_signup" && !data.access_token) {
+      return {
+        status: 200,
+        body: {
+          user: data.user ? {
+            id: data.user.id,
+            email: data.user.email || null
+          } : null,
+          session: null
+        }
+      };
+    }
+
+    return {
+      status: 200,
+      body: {
+        user: data.user ? {
+          id: data.user.id,
+          email: data.user.email || null,
+          created_at: data.user.created_at || null
+        } : null,
+        session: data.access_token ? {
+          access_token: data.access_token,
+          refresh_token: data.refresh_token,
+          expires_in: data.expires_in,
+          expires_at: data.expires_at,
+          token_type: data.token_type || "bearer"
+        } : null
+      }
+    };
+  }
+
+  if (action === "auth_refresh") {
+    const refreshToken = String(body.refresh_token || "");
+    if (!refreshToken) {
+      return { status: 400, body: { error: "Sessão expirada." } };
+    }
+
+    const response = await call(
+      "/auth/v1/token?grant_type=refresh_token",
+      {
+        method: "POST",
+        body: JSON.stringify({ refresh_token: refreshToken })
+      }
+    );
+
+    const raw = await response.text();
+    let data = {};
+    try { data = raw ? JSON.parse(raw) : {}; } catch {}
+
+    if (!response.ok) {
+      return {
+        status: response.status,
+        body: {
+          error:
+            data.error_description ||
+            data.msg ||
+            data.message ||
+            "Sessão expirada."
+        }
+      };
+    }
+
+    return {
+      status: 200,
+      body: {
+        user: data.user ? {
+          id: data.user.id,
+          email: data.user.email || null
+        } : null,
+        session: {
+          access_token: data.access_token,
+          refresh_token: data.refresh_token || refreshToken,
+          expires_in: data.expires_in,
+          expires_at: data.expires_at,
+          token_type: data.token_type || "bearer"
+        }
+      }
+    };
+  }
+}
+
 export default async function handler(req, res) {
   setCors(res);
 
@@ -994,6 +1143,11 @@ export default async function handler(req, res) {
 
   try {
     const action = String(req.body?.action || "").toLowerCase();
+
+    if (action === "auth_login" || action === "auth_signup" || action === "auth_refresh") {
+      const result = await authGateway(action, req.body || {}, req);
+      return json(res, result.status, result.body);
+    }
 
     if (action === "mercadopago_webhook") {
       return await handleMercadoPagoWebhook(req, res);
