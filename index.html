@@ -3584,80 +3584,154 @@
   </script>
 
 
-<script>
-/* =========================================================
-   RIMAK 2.0 — CINEMATIC INTERACTIONS
+<script>\n/* =========================================================
+   RIMAK 2.0 — CINEMATIC MOTION ENGINE v2
+   Bidirectional scroll + continuous morphing core + scene color
    ========================================================= */
 (function(){
-  const cinematic = document.getElementById('rimakExperience');
+  const cinematic=document.getElementById('rimakExperience');
   if(!cinematic) return;
-  const core = document.getElementById('rimakCore');
-  const sections = cinematic.querySelectorAll('[data-cinematic-section]');
-  const start = document.getElementById('cinematicStartButton');
-  const tools = document.getElementById('openToolsButton');
-  const hub = document.getElementById('rimakToolHub');
 
-  if(core && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    cinematic.addEventListener('pointermove', function(e){
-      const r = cinematic.getBoundingClientRect();
-      const x = ((e.clientX-r.left)/r.width-.5)*2;
-      const y = ((e.clientY-r.top)/r.height-.5)*2;
-      core.style.setProperty('--ry', (x*10)+'deg');
-      core.style.setProperty('--rx', (-y*8)+'deg');
-    }, {passive:true});
-    cinematic.addEventListener('pointerleave', function(){
-      core.style.setProperty('--ry','0deg');
-      core.style.setProperty('--rx','0deg');
-    }, {passive:true});
+  const chat=document.getElementById('chat');
+  const core=document.getElementById('rimakCore');
+  const hero=cinematic.querySelector('.rimak-hero-stage');
+  const sections=[...cinematic.querySelectorAll('[data-cinematic-section]')];
+  const start=document.getElementById('cinematicStartButton');
+  const tools=document.getElementById('openToolsButton');
+  const hub=document.getElementById('rimakToolHub');
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let lastScroll=chat ? chat.scrollTop : 0;
+  let scrollVelocity=0;
+  let smoothScroll=lastScroll;
+  let targetScroll=lastScroll;
+  let pointerX=0, pointerY=0;
+  let raf=0;
+  const startTime=performance.now();
+
+  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+  const lerp=(a,b,t)=>a+(b-a)*t;
+  const mix=(a,b,t)=>Math.round(lerp(a,b,t));
+  const sceneColors=[
+    [78,166,220],   // light blue
+    [226,234,238],  // icy white
+    [108,35,63],    // burgundy
+    [78,166,220],
+    [226,234,238]
+  ];
+
+  function sceneAt(progress){
+    const p=clamp(progress,0,1)*(sceneColors.length-1);
+    const i=Math.floor(p), t=p-i;
+    const a=sceneColors[i], b=sceneColors[Math.min(i+1,sceneColors.length-1)];
+    return a.map((v,k)=>mix(v,b[k],t));
   }
 
-  const reveal = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
+  function setScene(progress){
+    const [r,g,b]=sceneAt(progress);
+    const glow=[mix(r,255,.28),mix(g,255,.22),mix(b,255,.18)];
+    cinematic.style.setProperty('--scene-rgb',r+' '+g+' '+b);
+    cinematic.style.setProperty('--scene-glow',glow.map(v=>Math.round(v)).join(' '));
+    cinematic.style.setProperty('--scene-progress',progress.toFixed(4));
+  }
+
+  function pointerHandler(e){
+    const r=cinematic.getBoundingClientRect();
+    pointerX=clamp(((e.clientX-r.left)/r.width-.5)*2,-1,1);
+    pointerY=clamp(((e.clientY-r.top)/r.height-.5)*2,-1,1);
+  }
+
+  if(!reduced){
+    cinematic.addEventListener('pointermove',pointerHandler,{passive:true});
+    cinematic.addEventListener('pointerleave',()=>{pointerX*=.45;pointerY*=.45;},{passive:true});
+  }
+
+  const reveal=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
       if(entry.isIntersecting) entry.target.classList.add('is-visible');
     });
-  }, {root:document.getElementById('chat'), threshold:.2});
-  sections.forEach(function(s){ reveal.observe(s); });
+  },{root:chat,threshold:.16});
+  sections.forEach(s=>reveal.observe(s));
 
   function goTo(el){
-    if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+    if(!el||!chat) return;
+    const top=el.getBoundingClientRect().top-chat.getBoundingClientRect().top+chat.scrollTop-10;
+    chat.scrollTo({top,behavior:'smooth'});
   }
-  start && start.addEventListener('click', function(){ goTo(sections[0]); });
-  tools && tools.addEventListener('click', function(){ goTo(hub); });
+  start?.addEventListener('click',()=>goTo(sections[0]));
+  tools?.addEventListener('click',()=>goTo(hub));
 
-  cinematic.querySelectorAll('[data-tool-prompt]').forEach(function(card){
-    card.addEventListener('click', function(){
+  cinematic.querySelectorAll('[data-tool-prompt]').forEach(card=>{
+    card.addEventListener('click',()=>{
       const input=document.getElementById('messageInput');
       if(!input) return;
-      input.value=card.getAttribute('data-tool-prompt') || '';
+      input.value=card.getAttribute('data-tool-prompt')||'';
       input.dispatchEvent(new Event('input',{bubbles:true}));
       input.focus();
       const composer=document.querySelector('.composer');
-      if(composer) composer.classList.add('cinematic-composer-focus');
-      setTimeout(function(){ if(composer) composer.classList.remove('cinematic-composer-focus'); },900);
-      document.getElementById('chat')?.scrollTo({top:document.getElementById('chat').scrollHeight,behavior:'smooth'});
+      composer?.classList.add('cinematic-composer-focus');
+      setTimeout(()=>composer?.classList.remove('cinematic-composer-focus'),900);
+      chat?.scrollTo({top:chat.scrollHeight,behavior:'smooth'});
     });
   });
 
-  let ticking=false;
-  const chat=document.getElementById('chat');
   if(chat){
-    chat.addEventListener('scroll',function(){
-      if(ticking) return;
-      ticking=true;
-      requestAnimationFrame(function(){
-        const y=chat.scrollTop;
-        const hero=cinematic.querySelector('.rimak-hero-stage');
-        if(hero && core){
-          const progress=Math.min(y/Math.max(hero.offsetHeight,1),1);
-          core.style.setProperty('--scroll-scale',String(1-progress*.16));
-          core.style.transform='translateY(calc(-50% + '+(progress*35)+'px)) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(var(--scroll-scale,1))';
-        }
-        ticking=false;
-      });
+    chat.addEventListener('scroll',()=>{
+      const now=chat.scrollTop;
+      const delta=now-lastScroll;
+      scrollVelocity=clamp(delta,-80,80);
+      lastScroll=now;
+      targetScroll=now;
     },{passive:true});
   }
-})();
-</script>
 
-</body>
+  function frame(now){
+    const elapsed=(now-startTime)/1000;
+    smoothScroll=lerp(smoothScroll,targetScroll,.12);
+    scrollVelocity*=.84;
+
+    const maxScroll=chat ? Math.max(chat.scrollHeight-chat.clientHeight,1) : 1;
+    const progress=clamp(smoothScroll/maxScroll,0,1);
+    setScene(progress);
+
+    const wave1=Math.sin(elapsed*1.35);
+    const wave2=Math.cos(elapsed*.82);
+    const wave3=Math.sin(elapsed*.58+1.2);
+    const scrollTurn=(smoothScroll*.018);
+    const directionKick=scrollVelocity*.22;
+
+    if(core&&!reduced){
+      const heroProgress=hero ? clamp(smoothScroll/Math.max(hero.offsetHeight,1),0,1) : progress;
+      const scale=1-heroProgress*.22;
+      const x=pointerX*7+wave2*3.5;
+      const y=pointerY*-6+wave1*4+heroProgress*38+directionKick;
+      const rx=pointerY*-7+wave3*4+scrollVelocity*.08;
+      const ry=pointerX*10+Math.sin(elapsed*.7)*5+scrollVelocity*.12;
+      const rz=wave1*3+scrollVelocity*.05;
+      const morph=50+Math.sin(elapsed*.9)*8+Math.sin(elapsed*1.7)*4+heroProgress*18;
+      core.style.setProperty('--morph',morph.toFixed(2)+'%');
+      core.style.setProperty('--float-x',x.toFixed(2)+'px');
+      core.style.setProperty('--float-y',y.toFixed(2)+'px');
+      core.style.setProperty('--float-rx',rx.toFixed(2)+'deg');
+      core.style.setProperty('--float-ry',ry.toFixed(2)+'deg');
+      core.style.setProperty('--float-rz',rz.toFixed(2)+'deg');
+      core.style.setProperty('--scroll-scale',scale.toFixed(4));
+      core.style.setProperty('--scroll-direction',scrollVelocity.toFixed(2));
+      core.style.transform='translate3d(calc(-50% + var(--float-x)),calc(-50% + var(--float-y)),0) rotateX(var(--float-rx)) rotateY(var(--float-ry)) rotateZ(var(--float-rz)) scale(var(--scroll-scale))';
+    }
+
+    cinematic.style.setProperty('--scroll-y',smoothScroll.toFixed(2)+'px');
+    cinematic.style.setProperty('--motion-time',elapsed.toFixed(3));
+
+    const currentIndex=Math.min(sections.length-1,Math.round(progress*Math.max(sections.length-1,1)));
+    sections.forEach((section,i)=>section.classList.toggle('scene-active',i===currentIndex));
+
+    raf=requestAnimationFrame(frame);
+  }
+
+  setScene(0);
+  if(!reduced) raf=requestAnimationFrame(frame);
+
+  window.addEventListener('beforeunload',()=>cancelAnimationFrame(raf),{once:true});
+})();\n</script>\n</body>
 </html>
