@@ -1461,7 +1461,7 @@
     let authShowing = false;
 
     supabaseClient.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
 
         if(!session?.user){
           return;
@@ -1471,14 +1471,18 @@
           return;
         }
 
+        // Do not await Supabase work inside this callback.
+        // Awaiting showApp() here can deadlock setSession() on mobile.
         authShowing = true;
+        currentUser = session.user;
 
-        try{
-          currentUser = session.user;
-          await showApp();
-        }finally{
-          authShowing = false;
-        }
+        setTimeout(() => {
+          showApp()
+            .catch(error => console.error("RIMAK SHOW APP:", error))
+            .finally(() => {
+              authShowing = false;
+            });
+        }, 0);
 
       }
     );
