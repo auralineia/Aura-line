@@ -3901,3 +3901,48 @@ body{
   .reel-copy p{max-width:330px!important;font-size:12px!important}
   .matter-label{top:9%!important}
 }
+
+
+/* RIMAK V3 — clean visual system, isolated from legacy cinematic CSS */
+.rimak-v3{--r3-bg:#07080a;--r3-fg:#f1f2ee;--r3-muted:rgba(241,242,238,.55);--r3-burg:#702943;position:relative!important;width:100%;height:500svh;min-height:500svh;overflow:visible!important;background:var(--r3-bg)!important;transition:background .35s ease;isolation:isolate}
+.r3-track{position:relative;width:100%;height:500svh}
+.r3-stage{position:sticky;top:0;height:100svh;min-height:520px;overflow:hidden;background:var(--r3-bg);transition:background .35s ease}
+.r3-matter{position:absolute;inset:0;width:100%;height:100%;z-index:2;display:block;pointer-events:none}
+.r3-top-label{position:absolute;z-index:5;top:82px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;font:600 9px/1 system-ui,sans-serif;letter-spacing:5px;color:var(--r3-fg);white-space:nowrap;opacity:.8}
+.r3-top-label i{width:22px;height:1px;background:#702943;display:block}
+.r3-top-label small{font-size:7px;letter-spacing:2px;opacity:.55}
+.r3-scene{position:absolute;inset:0;z-index:4;opacity:0;visibility:hidden;transform:translateY(28px);transition:opacity .55s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1),visibility 0s linear .55s;color:var(--r3-fg);pointer-events:none}
+.r3-scene.is-active{opacity:1;visibility:visible;transform:none;transition:opacity .55s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1),visibility 0s}
+.r3-meta{position:absolute;top:122px;left:8%;display:flex;align-items:center;gap:9px;font:600 8px/1 system-ui,sans-serif;letter-spacing:3px;opacity:.48;color:var(--r3-fg)}
+.r3-meta i{width:24px;height:1px;background:#702943}
+.r3-copy{position:absolute;left:8%;bottom:12%;max-width:420px;color:var(--r3-fg)}
+.r3-copy small{font:600 9px/1 system-ui,sans-serif;letter-spacing:3px;opacity:.48}
+.r3-copy h1{margin:14px 0 18px;font:500 clamp(48px,7vw,92px)/.86 system-ui,sans-serif;letter-spacing:-.065em}
+.r3-copy h1 em{font-style:normal;color:#702943}
+.r3-copy p{max-width:360px;margin:0;color:var(--r3-muted);font:400 13px/1.65 system-ui,sans-serif}
+.r3-button{margin-top:25px;border:1px solid currentColor;border-radius:999px;padding:11px 15px;background:rgba(255,255,255,.08);color:var(--r3-fg);font:600 11px system-ui,sans-serif;display:inline-flex;align-items:center;gap:12px;backdrop-filter:blur(12px)}
+.r3-button b{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:var(--r3-fg);color:#111;font-size:13px}
+.r3-scroll-hint{position:absolute;z-index:6;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:9px;color:var(--r3-fg);opacity:.4;font:500 8px system-ui,sans-serif;letter-spacing:2px;text-transform:uppercase}
+.r3-scroll-hint span{width:1px;height:28px;background:currentColor;position:relative;overflow:hidden}
+.r3-scroll-hint span:after{content:"";position:absolute;left:0;top:-8px;width:1px;height:8px;background:#702943;animation:r3line 1.6s ease-in-out infinite}
+@keyframes r3line{0%{transform:translateY(0)}100%{transform:translateY(36px)}}
+.r3-no-webgl .r3-matter{display:none}
+.r3-no-webgl:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,rgba(112,41,67,.45),transparent 22%),radial-gradient(circle at 42% 35%,rgba(170,215,230,.3),transparent 34%);pointer-events:none}
+.rimak-v3 .r3-scene:nth-child(4) .r3-copy,.rimak-v3 .r3-scene:nth-child(5) .r3-copy{left:auto;right:8%;text-align:right}
+.rimak-v3 .r3-scene:nth-child(4) .r3-copy p,.rimak-v3 .r3-scene:nth-child(5) .r3-copy p{margin-left:auto}
+.rimak-v3 .r3-scene:nth-child(3) .r3-copy{color:#101518}
+.rimak-v3 .r3-scene:nth-child(3) .r3-meta{color:#101518}
+.rimak-v3 .r3-scene:nth-child(3) .r3-copy p{color:rgba(16,21,24,.58)}
+.rimak-v3 .r3-scene:nth-child(3) .r3-copy small{color:#101518}
+.rimak-v3 .r3-scene:nth-child(3) .r3-button{color:#101518}
+@media(max-width:700px){
+ .rimak-v3{height:500svh;min-height:500svh}
+ .r3-stage{height:100svh}
+ .r3-top-label{top:78px}
+ .r3-meta{top:112px;left:7%}
+ .r3-copy{left:7%;right:7%;bottom:13%;max-width:none}
+ .r3-copy h1{font-size:clamp(44px,13vw,70px)}
+ .r3-copy p{font-size:12px;max-width:310px}
+ .rimak-v3 .r3-scene:nth-child(4) .r3-copy,.rimak-v3 .r3-scene:nth-child(5) .r3-copy{left:7%;right:7%;text-align:left}
+ .rimak-v3 .r3-scene:nth-child(4) .r3-copy p,.rimak-v3 .r3-scene:nth-child(5) .r3-copy p{margin-left:0}
+}
