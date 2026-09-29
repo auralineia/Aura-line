@@ -1858,3 +1858,8 @@
   .rimak-cinematic{transition:none}
   .core-glass,.core-halo,.core-light,.core-mark,.ring-one,.ring-two,.ring-three{animation:none!important}
 }
+
+.rimak-core{--core-base-x:0%}
+@media(max-width:900px){
+  .rimak-core{--core-base-x:50%}
+}
