@@ -296,17 +296,65 @@
            RIMAK 2.0 — CINEMATIC EXPERIENCE
       ===================================================== -->
       
-<section class="rimak-v3" id="rimakExperience" aria-label="RIMAK">
-  <div class="r3-track"><div class="r3-stage">
-    <canvas class="r3-matter" id="matterCanvas" aria-hidden="true"></canvas>
-    <div class="r3-top-label"><span>RIMAK</span><i></i><small>living intelligence</small></div>
-    <div class="r3-scene is-active" data-index="0"><div class="r3-meta">01 <i></i> ORIGIN</div><div class="r3-copy"><small>RIMAK / 01</small><h1>Você move.<br><em>Ela responde.</em></h1><p>Uma inteligência que não precisa ficar parada.</p></div></div>
-    <div class="r3-scene" data-index="1"><div class="r3-meta">02 <i></i> FORM</div><div class="r3-copy"><small>RIMAK / 02</small><h1>Ela muda<br><em>de forma.</em></h1><p>A matéria acompanha o movimento. Desça. Suba. Ela volta.</p></div></div>
-    <div class="r3-scene" data-index="2"><div class="r3-meta">03 <i></i> CREATE</div><div class="r3-copy"><small>RIMAK / 03</small><h1>Ideias<br><em>ganham corpo.</em></h1><p>Uma conversa pode virar uma interface, um painel ou uma ferramenta.</p><button class="r3-button" id="reelCreateButton" type="button">Criar com a RIMAK <b>↗</b></button></div></div>
-    <div class="r3-scene" data-index="3"><div class="r3-meta">04 <i></i> DISCOVER</div><div class="r3-copy"><small>RIMAK / 04</small><h1>Informação<br><em>se transforma.</em></h1><p>Pesquisa, dados e arquivos deixam de ser apenas texto.</p><button class="r3-button" id="reelResearchButton" type="button">Pesquisar <b>↗</b></button></div></div>
-    <div class="r3-scene" data-index="4"><div class="r3-meta">05 <i></i> RIMAK</div><div class="r3-copy"><small>RIMAK / 05</small><h1>Uma interface<br><em>viva.</em></h1><p>O visual acompanha o que você está fazendo.</p><button class="r3-button" id="reelChatButton" type="button">Conversar com a RIMAK <b>→</b></button></div></div>
-    <div class="r3-scroll-hint"><span></span><small>arraste para explorar</small></div>
-  </div></div>
+<section class="rimak-v4" id="rimakExperience" aria-label="RIMAK">
+  <div class="r4-sticky">
+    <div class="r4-world">
+      <div class="r4-matter" aria-hidden="true">
+        <div class="r4-shadow"></div>
+        <div class="r4-shell r4-shell-back"></div>
+        <div class="r4-shell r4-shell-main">
+          <div class="r4-liquid r4-liquid-a"></div>
+          <div class="r4-liquid r4-liquid-b"></div>
+          <div class="r4-highlight"></div>
+          <div class="r4-core"></div>
+        </div>
+        <div class="r4-glow"></div>
+      </div>
+    </div>
+
+    <div class="r4-brandmark r3-logo" aria-hidden="true"><span class="r3-logo-matter"></span></div>
+    <div class="r4-topline"><span>RIMAK</span><i></i><small>living intelligence</small></div>
+
+    <div class="r4-scenes">
+      <div class="r4-scene is-active" data-index="0">
+        <span class="r4-eyebrow">RIMAK / 01</span>
+        <h1>Uma inteligência<br><em>viva.</em></h1>
+        <p>Ela não fica parada. Ela se transforma com você.</p>
+        <div class="r4-hint"><span></span> arraste para explorar</div>
+      </div>
+      <div class="r4-scene" data-index="1">
+        <span class="r4-eyebrow">RIMAK / 02</span>
+        <h1>Ela muda<br><em>de forma.</em></h1>
+        <p>Uma matéria digital que responde ao seu movimento.</p>
+      </div>
+      <div class="r4-scene" data-index="2">
+        <span class="r4-eyebrow">RIMAK / 03</span>
+        <h1>Ideias<br><em>ganham corpo.</em></h1>
+        <p>Crie interfaces, organize informações e transforme conteúdo.</p>
+        <button class="r4-button" id="reelCreateButton" type="button">Criar com a RIMAK <b>↗</b></button>
+      </div>
+      <div class="r4-scene" data-index="3">
+        <span class="r4-eyebrow">RIMAK / 04</span>
+        <h1>Informação<br><em>se move.</em></h1>
+        <p>Pesquisa e dados deixam de ser apenas texto.</p>
+        <button class="r4-button" id="reelResearchButton" type="button">Pesquisar <b>↗</b></button>
+      </div>
+      <div class="r4-scene" data-index="4">
+        <span class="r4-eyebrow">RIMAK / 05</span>
+        <h1>Uma interface<br><em>viva.</em></h1>
+        <p>O visual muda junto com o que você está fazendo.</p>
+        <button class="r4-button" id="reelTransformButton" type="button">Transformar <b>↗</b></button>
+      </div>
+      <div class="r4-scene" data-index="5">
+        <span class="r4-eyebrow">RIMAK / 06</span>
+        <h1>Você move.<br><em>Ela responde.</em></h1>
+        <p>Agora converse com a RIMAK.</p>
+        <button class="r4-button r4-button-dark" id="reelChatButton" type="button">Conversar com a RIMAK <b>→</b></button>
+      </div>
+    </div>
+
+    <div class="r4-progress"><span></span></div>
+  </div>
 </section>
 
 
@@ -3458,5 +3506,136 @@ requestAnimationFrame(loop);
 })();
 </script>
 
-</body>
+<script>
+/* RIMAK V4 — deterministic organic matter controller */
+(function(){
+  const chat=document.getElementById('chat');
+  const root=document.getElementById('rimakExperience');
+  if(!chat||!root)return;
+
+  const scenes=[...root.querySelectorAll('.r4-scene')];
+  const matter=root.querySelector('.r4-matter');
+  const shell=root.querySelector('.r4-shell-main');
+  const back=root.querySelector('.r4-shell-back');
+  const liqA=root.querySelector('.r4-liquid-a');
+  const liqB=root.querySelector('.r4-liquid-b');
+  const core=root.querySelector('.r4-core');
+  const highlight=root.querySelector('.r4-highlight');
+  const shadow=root.querySelector('.r4-shadow');
+  const progressBar=root.querySelector('.r4-progress span');
+
+  let target=0,progress=0,tx=0.5,ty=0.5,px=0.5,py=0.5;
+  let last=0,velocity=0,t=0;
+
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const lerp=(a,b,n)=>a+(b-a)*n;
+  const ease=n=>n*n*(3-2*n);
+
+  function read(){
+    const chatRect=chat.getBoundingClientRect();
+    const rootRect=root.getBoundingClientRect();
+    const start=rootRect.top-chatRect.top+chat.scrollTop;
+    const range=Math.max(1,root.offsetHeight-chat.clientHeight);
+    target=clamp((chat.scrollTop-start)/range,0,1);
+    velocity=chat.scrollTop-last;
+    last=chat.scrollTop;
+  }
+  chat.addEventListener('scroll',read,{passive:true});
+  read();
+
+  root.addEventListener('pointermove',e=>{
+    const r=root.getBoundingClientRect();
+    tx=clamp((e.clientX-r.left)/Math.max(r.width,1),0,1);
+    ty=clamp((e.clientY-r.top)/Math.max(r.height,1),0,1);
+  },{passive:true});
+  root.addEventListener('pointerleave',()=>{tx=.5;ty=.5},{passive:true});
+
+  // Six distinct organic forms. The browser interpolates between them.
+  const forms=[
+    {rx:50,ry:47,br:'50% 50% 48% 52% / 53% 47% 53% 47%',rot:-5,sx:1,sy:1,skew:0},
+    {rx:54,ry:43,br:'32% 68% 58% 42% / 66% 34% 61% 39%',rot:8,sx:1.07,sy:.88,skew:-4},
+    {rx:48,ry:54,br:'66% 34% 42% 58% / 38% 63% 37% 62%',rot:-12,sx:.92,sy:1.08,skew:7},
+    {rx:57,ry:45,br:'38% 62% 72% 28% / 48% 55% 45% 52%',rot:11,sx:1.1,sy:.84,skew:-8},
+    {rx:46,ry:58,br:'72% 28% 36% 64% / 37% 64% 36% 63%',rot:-7,sx:.89,sy:1.12,skew:9},
+    {rx:52,ry:50,br:'45% 55% 62% 38% / 57% 41% 59% 43%',rot:4,sx:1.02,sy:1.02,skew:-3}
+  ];
+
+  const colors=[
+    ['#081015','#8fd7f4','#702943','#f0f4f1'],
+    ['#101418','#a6dff4','#6b2742','#f4f7f4'],
+    ['#e9f1f3','#8fd7f4','#702943','#ffffff'],
+    ['#ecdee4','#94d2ee','#702943','#fff8fa'],
+    ['#dcecf2','#8fd7f4','#6d2744','#f2f6f4'],
+    ['#090d10','#96d9f2','#7a2e4c','#f1f3ef']
+  ];
+
+  function blendForm(a,b,m){
+    return {
+      rx:lerp(a.rx,b.rx,m), ry:lerp(a.ry,b.ry,m),
+      br:m<.5?a.br:b.br,
+      rot:lerp(a.rot,b.rot,m),
+      sx:lerp(a.sx,b.sx,m), sy:lerp(a.sy,b.sy,m), skew:lerp(a.skew,b.skew,m)
+    };
+  }
+
+  function frame(){
+    t+=.016;
+    progress=lerp(progress,target,.105);
+    px=lerp(px,tx,.055); py=lerp(py,ty,.055);
+
+    const travel=progress*(forms.length-1);
+    const index=Math.min(forms.length-2,Math.floor(travel));
+    const m=ease(clamp(travel-index,0,1));
+    const f=blendForm(forms[index],forms[index+1],m);
+    const col=colors[Math.min(index,colors.length-2)];
+    const nxt=colors[Math.min(index+1,colors.length-1)];
+    const c=(a,b)=>a;
+    root.style.setProperty('--r4-bg',m<.5?col[0]:nxt[0]);
+    root.style.setProperty('--r4-blue',m<.5?col[1]:nxt[1]);
+    root.style.setProperty('--r4-burg',m<.5?col[2]:nxt[2]);
+    root.style.setProperty('--r4-ice',m<.5?col[3]:nxt[3]);
+
+    const floatX=(px-.5)*18;
+    const floatY=(py-.5)*12;
+    const breathe=Math.sin(t*1.25)*2.2;
+    const wobble=Math.sin(t*.7)*1.8;
+    const speed=clamp(Math.abs(velocity),0,65);
+    const impulse=velocity*.045;
+
+    shell.style.borderRadius=f.br;
+    shell.style.transform='translate3d('+floatX+'px,'+(floatY+breathe)+'px,0) rotate('+f.rot+'deg) skew('+f.skew+'deg) scale('+f.sx+','+f.sy+')';
+    back.style.borderRadius=f.br;
+    back.style.transform='translate3d('+(floatX*.55+10)+'px,'+(floatY*.45+10)+'px,0) rotate('+(f.rot-9)+'deg) scale('+(f.sx*.94)+','+(f.sy*.96)+')';
+
+    liqA.style.transform='translate3d('+(Math.sin(t*.55)*f.rx*.18)+'px,'+(Math.cos(t*.42)*f.ry*.12)+'px,0) rotate('+(wobble+speed*.12)+'deg) scale('+(1+m*.08)+')';
+    liqB.style.transform='translate3d('+(Math.cos(t*.44)*f.rx*.13)+'px,'+(Math.sin(t*.5)*f.14*f.ry)+'px,0) rotate('+(-wobble+impulse)+'deg) scale('+(1.04-m*.06)+')';
+    core.style.transform='translate3d('+(Math.sin(t*.72)*f.rx*.07)+'px,'+(Math.cos(t*.61)*f.ry*.07)+'px,0) scale('+(1+Math.sin(t*1.1)*.06)+')';
+    highlight.style.transform='translate3d('+(Math.cos(t*.35)*8)+'px,'+(Math.sin(t*.47)*6)+'px,0) rotate('+(-12+f.rot)+'deg)';
+    shadow.style.transform='translate3d('+(floatX*.45)+'px,'+(22+Math.abs(floatY)*.18)+'px,0) scale('+(1.08+Math.abs(velocity)*.002)+',.72)';
+
+    const scene=Math.round(travel);
+    scenes.forEach((el,i)=>{
+      const d=Math.abs(travel-i);
+      el.classList.toggle('is-active',d<.62);
+    });
+    progressBar.style.transform='scaleX('+progress+')';
+
+    requestAnimationFrame(frame);
+  }
+  frame();
+
+  function runPrompt(prompt){
+    const input=document.getElementById('messageInput');
+    if(!input)return;
+    input.value=prompt;
+    input.dispatchEvent(new Event('input',{bubbles:true}));
+    input.focus();
+    chat.scrollTo({top:chat.scrollTop+chat.clientHeight*.65,behavior:'smooth'});
+  }
+  document.getElementById('reelCreateButton')?.addEventListener('click',()=>runPrompt('RIMAK, quero criar uma apresentação profissional.'));
+  document.getElementById('reelResearchButton')?.addEventListener('click',()=>runPrompt('RIMAK, quero pesquisar e comparar informações importantes.'));
+  document.getElementById('reelTransformButton')?.addEventListener('click',()=>runPrompt('RIMAK, quero transformar um arquivo ou conteúdo.'));
+  document.getElementById('reelChatButton')?.addEventListener('click',()=>chat.scrollTo({top:chat.scrollHeight,behavior:'smooth'}));
+})();
+</script>\n</body>
 </html>
