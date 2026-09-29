@@ -3753,5 +3753,80 @@
   raf=requestAnimationFrame(animate);
   window.addEventListener('beforeunload',()=>cancelAnimationFrame(raf),{once:true});
 })();
-</script>\n</body>
+</script>\n<script>
+/* =========================================================
+   RIMAK REEL ENGINE — MATTER TRANSITIONS
+   One material, multiple forms. Scene changes are reversible.
+   ========================================================= */
+(function(){
+  const chat=document.getElementById('chat');
+  const exp=document.getElementById('rimakExperience');
+  const core=document.getElementById('rimakCore');
+  if(!chat||!exp||!core) return;
+
+  const pages=[...exp.querySelectorAll('.rimak-hero-stage,.cinematic-section,.rimak-tool-hub')];
+  let current=0, last=0, direction=1;
+  let target=0, smooth=0;
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+
+  function update(){
+    target=chat.scrollTop;
+    const delta=target-last;
+    if(Math.abs(delta)>0.15) direction=delta>0?1:-1;
+    last=target;
+    smooth += (target-smooth)*.12;
+
+    let nearest=0, nearestDist=Infinity;
+    pages.forEach((page,i)=>{
+      const r=page.getBoundingClientRect();
+      const d=Math.abs((r.top+r.height*.5)-(window.innerHeight*.5));
+      if(d<nearestDist){nearestDist=d;nearest=i;}
+    });
+    current=nearest;
+
+    const max=Math.max(pages.length-1,1);
+    const progress=clamp(current/max,0,1);
+    exp.dataset.scene=String(Math.min(4,Math.round(progress*4)));
+    exp.style.setProperty('--page-progress',progress.toFixed(3));
+    exp.style.setProperty('--page-direction',direction);
+    exp.style.setProperty('--matter-speed',Math.min(2,Math.abs(delta)/8).toFixed(3));
+
+    // The material leans with the direction of travel.
+    if(!reduce){
+      const tilt=clamp(delta*0.09,-8,8);
+      core.style.setProperty('--direction-tilt',tilt.toFixed(2)+'deg');
+    }
+
+    requestAnimationFrame(update);
+  }
+
+  // Force a real snap-like full-page rhythm without taking control away from touch.
+  let snapping=false;
+  let snapTimer;
+  chat.addEventListener('scroll',()=>{
+    clearTimeout(snapTimer);
+    snapTimer=setTimeout(()=>{
+      if(snapping||Math.abs(last-target)>3) return;
+      const viewport=chat.clientHeight;
+      if(viewport<400) return;
+      const idx=Math.round(chat.scrollTop/Math.max(viewport-4,1));
+      const destination=clamp(idx,0,pages.length-1)*Math.max(viewport-4,1);
+      snapping=true;
+      chat.scrollTo({top:destination,behavior:'smooth'});
+      setTimeout(()=>snapping=false,650);
+    },140);
+  },{passive:true});
+
+  // Clicking the living object/scene changes its material too.
+  core.addEventListener('click',()=>{
+    const next=(Number(exp.dataset.scene||0)+1)%5;
+    exp.dataset.scene=String(next);
+  });
+
+  update();
+})();
+</script>
+</body>
 </html>
