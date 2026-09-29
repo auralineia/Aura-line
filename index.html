@@ -1386,66 +1386,41 @@
     }
 
 
-    let authShowing = false;
-
-    supabaseClient.auth.onAuthStateChange(
-      async (event, session) => {
-
-        if(!session?.user){
-          return;
-        }
-
-        if(authShowing){
-          return;
-        }
-
-        authShowing = true;
-
-        try{
-          currentUser = session.user;
-          await showApp();
-        }finally{
-          authShowing = false;
-        }
-
-      }
-    );
-
-
     async function showApp(){
 
-      authScreen.style.display =
-        "none";
-
-      app.style.display =
-        "block";
+      authScreen.style.display = "none";
+      app.style.display = "block";
+      document.body.classList.remove("auth-active");
 
       if(!currentUser){
+        try{
+          const { data } = await supabaseClient.auth.getUser();
+          currentUser = data?.user || null;
+        }catch(error){
+          console.warn("RIMAK: sessão do usuário não pôde ser carregada:", error);
+        }
+      }
 
-        const {
-          data
-        } =
-          await supabaseClient.auth.getUser();
-
-        currentUser =
-          data?.user || null;
-
+      if(!currentUser){
+        authScreen.style.display = "flex";
+        app.style.display = "none";
+        document.body.classList.add("auth-active");
+        return;
       }
 
       loadRIMAKMemory();
-
       updateAccountUI();
-
       loadStories();
 
-      await loadCredits();
+      // A entrada na RIMAK nunca depende de créditos/rede secundária.
+      Promise.resolve()
+        .then(() => loadCredits())
+        .catch(error => console.warn("RIMAK: créditos em segundo plano:", error));
 
       setTimeout(() => {
-        input.focus();
+        input?.focus();
       },150);
-
     }
-
 
     /* =====================================================
        ACCOUNT
