@@ -32,15 +32,18 @@ box-shadow:inset 0 0 0 1px rgba(255,255,255,.25),0 0 90px rgba(143,215,244,.12);
 .modal{position:fixed;z-index:80;inset:0;display:none;place-items:center;padding:18px;background:rgba(0,0,0,.58);backdrop-filter:blur(12px)}.modal.open{display:grid}.modal-box{width:min(680px,95vw);max-height:88vh;overflow:auto;border:1px solid var(--line);border-radius:28px;background:#101216;padding:24px}.modal-head{display:flex;justify-content:space-between;align-items:center}.close{background:none;color:#fff;font-size:28px;cursor:pointer}.plan{padding:18px;border:1px solid var(--line);border-radius:18px;margin-top:12px;background:rgba(255,255,255,.03)}.plan strong{display:block;font-size:26px;margin:5px 0}.support textarea{width:100%;height:140px;margin-top:12px;padding:14px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:#fff;outline:0}
 @media(max-width:700px){.auth-card{padding:28px 20px 22px}.auth-logo{width:128px;height:128px}.auth-title{font-size:34px}.copy{left:7vw;right:7vw;bottom:15vh}.copy h1,.copy h2{font-size:clamp(44px,13vw,70px)}.matter{width:68vw}.composer{bottom:10px}.top{padding:12px}.brand{font-size:13px}}
 <style id="rimak-reference-overrides">
-html,body{height:100%;overflow:hidden}#app{position:fixed!important;inset:0!important}
-#chat{position:absolute!important;inset:0!important;height:100dvh!important;overflow-y:scroll!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;overscroll-behavior-y:contain!important}
-#reel{height:820vh!important;min-height:820vh!important;position:relative!important}
-.sticky{height:100dvh!important;min-height:100dvh!important;background:var(--scene,#0a0b0d)!important}
+html,body{min-height:100%;height:auto!important;overflow-x:hidden!important;overflow-y:auto!important}
+body{overscroll-behavior-y:auto!important;-webkit-overflow-scrolling:touch!important}
+#app{position:relative!important;inset:auto!important;min-height:100vh!important}
+#chat{position:relative!important;inset:auto!important;height:auto!important;min-height:100vh!important;overflow:visible!important;touch-action:auto!important;overscroll-behavior:auto!important}
+#reel{height:900vh!important;min-height:900vh!important;position:relative!important}
+#topbar,.topbar,.composer,#composer,.chat-composer{display:none!important}
+.sticky{position:sticky!important;top:0!important;height:100svh!important;min-height:100svh!important;background:var(--scene,#0a0b0d)!important;overflow:hidden!important}
 .sticky:before{background:radial-gradient(circle at 50% 48%,rgba(255,255,255,.055),transparent 30%),radial-gradient(circle at 50% 58%,rgba(122,196,220,.08),transparent 34%)!important}
 .topline{position:absolute;top:22px;left:26px;right:26px;z-index:15;display:flex;justify-content:space-between;font:600 10px/1 Arial,sans-serif;letter-spacing:.22em;color:rgba(255,255,255,.72)}
 .progress{position:absolute!important;left:26px;right:26px;top:48px;height:1px;background:rgba(255,255,255,.14);z-index:15}.progress i{display:block;height:100%;width:0;background:#fff}
 .editorial-grid{position:absolute;inset:0;z-index:4;pointer-events:none}.side{position:absolute;top:50%;display:flex;align-items:center;gap:10px;transform:translateY(-50%) rotate(-90deg);font:600 8px/1 Arial,sans-serif;letter-spacing:.24em;color:rgba(255,255,255,.38)}.side.left{left:-26px}.side.right{right:-26px;flex-direction:row-reverse}.sideLine{width:34px;height:1px;background:rgba(255,255,255,.25)}
-.matter-wrap{width:min(56vw,310px)!important;height:min(56vw,310px)!important;z-index:5!important}.matter-canvas{filter:drop-shadow(0 26px 38px rgba(0,0,0,.42))!important}.matter-glow{width:46%!important;height:46%!important;background:rgba(180,224,238,.12)!important;filter:blur(42px)!important}
+.matter-wrap{width:min(48vw,360px)!important;height:min(48vw,360px)!important;z-index:5!important;transform:translate3d(var(--mx,0),var(--my,0),0) scale(var(--scale,1));transition:transform .08s linear}.matter-canvas{filter:drop-shadow(0 26px 38px rgba(0,0,0,.42))!important}.matter-glow{width:46%!important;height:46%!important;background:rgba(180,224,238,.12)!important;filter:blur(42px)!important}
 .copy{left:11vw!important;right:11vw!important;bottom:11vh!important;max-width:480px!important;z-index:8!important;color:#fff!important}.copy .kicker{font-size:9px!important;letter-spacing:.24em!important;color:rgba(255,255,255,.44)!important}.copy h1,.copy h2{font-size:clamp(34px,8vw,70px)!important;line-height:.94!important;letter-spacing:-.045em!important;margin:10px 0 13px!important}.copy p{font-size:13px!important;line-height:1.55!important;color:rgba(255,255,255,.5)!important;max-width:360px!important}.copy em{font-style:normal;color:rgba(194,231,241,.9)!important}
 @media(max-width:600px){.topline{left:20px;right:20px}.progress{left:20px;right:20px}.matter-wrap{width:54vw!important;height:54vw!important}.copy{bottom:9vh!important}.copy h1,.copy h2{font-size:clamp(34px,9.5vw,48px)!important}.side{display:none}}
 </style>
@@ -267,15 +270,30 @@ $$("[data-plan]").forEach(b=>b.onclick=async()=>{const plan=b.dataset.plan;try{c
 
 const stages=[{bg:"#090a0c",accent:"#dceef3"},{bg:"#f0efeb",accent:"#7d2948"},{bg:"#e8e7e3",accent:"#8bcfeb"},{bg:"#0b0d10",accent:"#bfe8f5"},{bg:"#f1eeea",accent:"#7d2948"},{bg:"#e6eaeb",accent:"#8bcfeb"},{bg:"#080a0c",accent:"#dceef3"},{bg:"#f2efeb",accent:"#7d2948"}];
 function updateReel(){
- const chat=$("#chat"),max=Math.max(1,chat.scrollHeight-chat.clientHeight),p=Math.max(0,Math.min(1,chat.scrollTop/max)),travel=p*(stages.length-1),i=Math.min(stages.length-1,Math.floor(travel)),f=Math.min(1,travel-i),a=stages[i],b=stages[Math.min(i+1,stages.length-1)];
+ const reel=$("#reel");
+ const rect=reel.getBoundingClientRect();
+ const max=Math.max(1,reel.offsetHeight-window.innerHeight);
+ const p=Math.max(0,Math.min(1,-rect.top/max));
+ const travel=p*(stages.length-1),i=Math.min(stages.length-1,Math.floor(travel)),f=Math.min(1,travel-i);
+ const a=stages[i],b=stages[Math.min(i+1,stages.length-1)];
  const mix=(x,y,t)=>Math.round(parseInt(x,16)+(parseInt(y,16)-parseInt(x,16))*t).toString(16).padStart(2,"0");
- const ca=a.bg.slice(1),cb=b.bg.slice(1),bg="#"+mix(ca.slice(0,2),cb.slice(0,2),f)+mix(ca.slice(2,4),cb.slice(2,4),f)+mix(ca.slice(4),cb.slice(4),f);
- const root=$("#sticky");root.style.setProperty("--scene",bg);root.style.setProperty("--accent",f<.5?a.accent:b.accent);$("#progress i").style.width=(p*100)+"%";$("#sceneIndex").textContent=String(i+1).padStart(2,"0")+" / 08";
- const wrap=$("#matterWrap");wrap.style.setProperty("--scale",(1+Math.sin(p*Math.PI)*.08));wrap.style.setProperty("--mx",(Math.sin(p*5.2)*7)+"px");wrap.style.setProperty("--my",(Math.sin(p*7.1)*5)+"px");
- if(window.rimakMatter)window.rimakMatter.setProgress(travel);$$(".copy").forEach((el,k)=>el.classList.toggle("active",Math.abs(travel-k)<.56));
+ const ca=a.bg.slice(1),cb=b.bg.slice(1);
+ const bg="#"+mix(ca.slice(0,2),cb.slice(0,2),f)+mix(ca.slice(2,4),cb.slice(2,4),f)+mix(ca.slice(4),cb.slice(4),f);
+ const root=$("#sticky");
+ root.style.setProperty("--scene",bg);
+ root.style.setProperty("--accent",f<.5?a.accent:b.accent);
+ root.dataset.light=(parseInt(bg.slice(1),16)>0x888888)?"1":"0";
+ $("#progress i").style.width=(p*100)+"%";
+ $("#sceneIndex").textContent=String(i+1).padStart(2,"0")+" / 08";
+ const wrap=$("#matterWrap");
+ wrap.style.setProperty("--scale",(0.9+Math.sin(p*Math.PI)*.12));
+ wrap.style.setProperty("--mx",(Math.sin(p*4.5)*12)+"px");
+ wrap.style.setProperty("--my",(Math.sin(p*6.5)*8)+"px");
+ if(window.rimakMatter)window.rimakMatter.setProgress(travel);
+ $$(".copy").forEach((el,k)=>el.classList.toggle("active",Math.abs(travel-k)<.48));
 }
-$("#chat").addEventListener("scroll",updateReel,{passive:true});
-$("#enterChat").onclick=()=>$("#chat").scrollTo({top:$("#chat").scrollHeight,behavior:"smooth"});
+window.addEventListener("scroll",updateReel,{passive:true});
+$("#enterChat").onclick=()=>document.getElementById("conversation")?.scrollIntoView({behavior:"smooth"});
 $$("[data-prompt]").forEach(b=>b.onclick=()=>{$("#input").value=b.dataset.prompt;$("#input").focus();$("#chat").scrollTo({top:$("#reel").offsetHeight,behavior:"smooth"})});
 $("#animations").onchange=e=>document.documentElement.style.setProperty("--anim",e.target.checked?"1":"0");
 
@@ -308,4 +326,16 @@ col=mix(col,vec3(.9,.86,.68),wire*wireStage*.8);}gl_FragColor=vec4(col,hit?1.:0.
 function make(t,s){const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);return x}const pr=gl.createProgram();gl.attachShader(pr,make(gl.VERTEX_SHADER,vs));gl.attachShader(pr,make(gl.FRAGMENT_SHADER,fs));gl.linkProgram(pr);gl.useProgram(pr);const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);const loc=gl.getAttribLocation(pr,"p");gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);const ur=gl.getUniformLocation(pr,"uRes"),up=gl.getUniformLocation(pr,"uProgress");let progress=0;
 function resize(){const d=Math.min(devicePixelRatio||1,1.5),w=Math.max(1,Math.floor(canvas.clientWidth*d)),h=Math.max(1,Math.floor(canvas.clientHeight*d));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h)}}function draw(){resize();gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);gl.uniform2f(ur,canvas.width,canvas.height);gl.uniform1f(up,progress);gl.drawArrays(gl.TRIANGLES,0,3);requestAnimationFrame(draw)}window.rimakMatter={setProgress(v){progress=Math.max(0,Math.min(7,v))}};requestAnimationFrame(draw)})();
 </script></body>
-</html>
+</html><style id="rimak-clean-shell">
+#conversation{min-height:100vh!important}
+#conversation>*{max-width:1100px;margin-left:auto;margin-right:auto}
+.reel .copy{opacity:0;transform:translateY(18px);transition:opacity .25s ease,transform .35s ease}
+.reel .copy.active{opacity:1;transform:translateY(0)}
+#sticky[data-light="1"] .topline,#sticky[data-light="1"] .side,#sticky[data-light="1"] .copy .kicker{color:rgba(18,20,22,.55)!important}
+#sticky[data-light="1"] .progress{background:rgba(18,20,22,.16)!important}
+#sticky[data-light="1"] .progress i{background:#111!important}
+#sticky[data-light="1"] .copy{color:#111!important}
+#sticky[data-light="1"] .copy p{color:rgba(18,20,22,.52)!important}
+#sticky[data-light="1"] .copy em{color:#8b3151!important}
+@media(max-width:600px){#reel{height:1000vh!important}.matter-wrap{width:62vw!important;height:62vw!important}.copy{left:8vw!important;right:8vw!important}}
+</style>
