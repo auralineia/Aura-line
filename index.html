@@ -3717,7 +3717,7 @@
       core.style.setProperty('--float-rz',rz.toFixed(2)+'deg');
       core.style.setProperty('--scroll-scale',scale.toFixed(4));
       core.style.setProperty('--scroll-direction',scrollVelocity.toFixed(2));
-      core.style.transform='translate3d(calc(-50% + var(--float-x)),calc(-50% + var(--float-y)),0) rotateX(var(--float-rx)) rotateY(var(--float-ry)) rotateZ(var(--float-rz)) scale(var(--scroll-scale))';
+      core.style.transform='translate3d(var(--core-base-x,0%),calc(-50% + var(--float-y)),0) translateX(var(--float-x)) rotateX(var(--float-rx)) rotateY(var(--float-ry)) rotateZ(var(--float-rz)) scale(var(--scroll-scale))';
     }
 
     cinematic.style.setProperty('--scroll-y',smoothScroll.toFixed(2)+'px');
