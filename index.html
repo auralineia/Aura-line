@@ -296,64 +296,132 @@
            RIMAK 2.0 — CINEMATIC EXPERIENCE
       ===================================================== -->
       
-<section class="rimak-v4" id="rimakExperience" aria-label="RIMAK">
-  <div class="r4-sticky">
-    <div class="r4-world">
-      <div class="r4-matter" aria-hidden="true">
-        <div class="r4-shadow"></div>
-        <div class="r4-shell r4-shell-back"></div>
-        <div class="r4-shell r4-shell-main">
-          <div class="r4-liquid r4-liquid-a"></div>
-          <div class="r4-liquid r4-liquid-b"></div>
-          <div class="r4-highlight"></div>
-          <div class="r4-core"></div>
-        </div>
-        <div class="r4-glow"></div>
+<section class="rimak-reel" id="rimakExperience" aria-label="RIMAK">
+  <div class="reel-sticky">
+
+    <nav class="reel-nav">
+      <button class="reel-menu" id="reelMenuButton" aria-label="Abrir menu"><span></span><span></span></button>
+      <div class="reel-wordmark">RIMAK</div>
+      <div class="reel-nav-right">
+        <button class="reel-nav-link" id="reelCreditsButton">créditos <b id="reelCreditsCount">20</b></button>
+        <button class="reel-dot" id="reelMenuDot" aria-label="Menu">•••</button>
       </div>
+    </nav>
+
+    <div class="reel-progress"><span></span></div>
+
+    <div class="reel-copy reel-copy-0 is-active">
+      <div class="reel-kicker">RIMAK / 01</div>
+      <h1>Inteligência<br><em>em movimento.</em></h1>
+      <p>Uma matéria digital que acompanha cada movimento seu.</p>
+      <span class="reel-scroll">role para explorar <i>↓</i></span>
     </div>
 
-    <div class="r4-brandmark r3-logo" aria-hidden="true"><span class="r3-logo-matter"></span></div>
-    <div class="r4-topline"><span>RIMAK</span><i></i><small>living intelligence</small></div>
-
-    <div class="r4-scenes">
-      <div class="r4-scene is-active" data-index="0">
-        <span class="r4-eyebrow">RIMAK / 01</span>
-        <h1>Uma inteligência<br><em>viva.</em></h1>
-        <p>Ela não fica parada. Ela se transforma com você.</p>
-        <div class="r4-hint"><span></span> arraste para explorar</div>
-      </div>
-      <div class="r4-scene" data-index="1">
-        <span class="r4-eyebrow">RIMAK / 02</span>
-        <h1>Ela muda<br><em>de forma.</em></h1>
-        <p>Uma matéria digital que responde ao seu movimento.</p>
-      </div>
-      <div class="r4-scene" data-index="2">
-        <span class="r4-eyebrow">RIMAK / 03</span>
-        <h1>Ideias<br><em>ganham corpo.</em></h1>
-        <p>Crie interfaces, organize informações e transforme conteúdo.</p>
-        <button class="r4-button" id="reelCreateButton" type="button">Criar com a RIMAK <b>↗</b></button>
-      </div>
-      <div class="r4-scene" data-index="3">
-        <span class="r4-eyebrow">RIMAK / 04</span>
-        <h1>Informação<br><em>se move.</em></h1>
-        <p>Pesquisa e dados deixam de ser apenas texto.</p>
-        <button class="r4-button" id="reelResearchButton" type="button">Pesquisar <b>↗</b></button>
-      </div>
-      <div class="r4-scene" data-index="4">
-        <span class="r4-eyebrow">RIMAK / 05</span>
-        <h1>Uma interface<br><em>viva.</em></h1>
-        <p>O visual muda junto com o que você está fazendo.</p>
-        <button class="r4-button" id="reelTransformButton" type="button">Transformar <b>↗</b></button>
-      </div>
-      <div class="r4-scene" data-index="5">
-        <span class="r4-eyebrow">RIMAK / 06</span>
-        <h1>Você move.<br><em>Ela responde.</em></h1>
-        <p>Agora converse com a RIMAK.</p>
-        <button class="r4-button r4-button-dark" id="reelChatButton" type="button">Conversar com a RIMAK <b>→</b></button>
-      </div>
+    <div class="reel-copy reel-copy-1">
+      <div class="reel-kicker">RIMAK / 02</div>
+      <h2>Ela muda<br><em>de forma.</em></h2>
+      <p>A mesma inteligência. Uma nova forma a cada momento.</p>
     </div>
 
-    <div class="r4-progress"><span></span></div>
+    <div class="reel-copy reel-copy-2">
+      <div class="reel-kicker">RIMAK / 03</div>
+      <h2>Crie<br><em>qualquer coisa.</em></h2>
+      <p>Interfaces, ideias, documentos e experiências saem do texto e ganham corpo.</p>
+      <button class="reel-cta" id="reelCreateButton">Criar com a RIMAK <span>↗</span></button>
+    </div>
+
+    <div class="reel-copy reel-copy-3">
+      <div class="reel-kicker">RIMAK / 04</div>
+      <h2>Pesquisa<br><em>ganha vida.</em></h2>
+      <p>Informação organizada como uma experiência, não como uma lista de resultados.</p>
+      <button class="reel-cta" id="reelResearchButton">Pesquisar <span>↗</span></button>
+    </div>
+
+    <div class="reel-copy reel-copy-4">
+      <div class="reel-kicker">RIMAK / 05</div>
+      <h2>Transforme<br><em>o que você tem.</em></h2>
+      <p>Arquivos e conteúdo podem virar algo novo.</p>
+      <button class="reel-cta" id="reelTransformButton">Transformar <span>↗</span></button>
+    </div>
+
+    <div class="reel-copy reel-copy-5">
+      <div class="reel-kicker">RIMAK / 06</div>
+      <h2>Uma inteligência<br><em>que parece viva.</em></h2>
+      <p>Não é uma tela parada. É uma experiência que responde a você.</p>
+    </div>
+
+    <div class="reel-matter-wrap" aria-hidden="true">
+      <svg class="reel-matter" viewBox="0 0 600 600" role="presentation">
+        <defs>
+          <radialGradient id="rMatterDark" cx="30%" cy="23%" r="78%">
+            <stop offset="0" stop-color="#ffffff"/>
+            <stop offset=".055" stop-color="#dcecf2"/>
+            <stop offset=".16" stop-color="#6e8b98"/>
+            <stop offset=".42" stop-color="#1c252a"/>
+            <stop offset=".7" stop-color="#090d10"/>
+            <stop offset="1" stop-color="#020304"/>
+          </radialGradient>
+          <radialGradient id="rMatterLight" cx="28%" cy="22%" r="80%">
+            <stop offset="0" stop-color="#ffffff"/>
+            <stop offset=".14" stop-color="#eaf8fc"/>
+            <stop offset=".34" stop-color="#8fd7f4"/>
+            <stop offset=".62" stop-color="#702943"/>
+            <stop offset=".9" stop-color="#311420"/>
+            <stop offset="1" stop-color="#0b0b0d"/>
+          </radialGradient>
+          <radialGradient id="rSpec" cx="35%" cy="25%" r="75%">
+            <stop offset="0" stop-color="white" stop-opacity=".96"/>
+            <stop offset=".18" stop-color="#dff6ff" stop-opacity=".42"/>
+            <stop offset=".55" stop-color="#8fd7f4" stop-opacity=".08"/>
+            <stop offset="1" stop-color="white" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="rRim" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#ffffff" stop-opacity=".72"/>
+            <stop offset=".28" stop-color="#8fd7f4" stop-opacity=".12"/>
+            <stop offset=".72" stop-color="#702943" stop-opacity=".58"/>
+            <stop offset="1" stop-color="#ffffff" stop-opacity=".06"/>
+          </linearGradient>
+          <filter id="rGoo" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="17" result="blur"/>
+            <feColorMatrix in="blur" mode="matrix" values="
+              1 0 0 0 0
+              0 1 0 0 0
+              0 0 1 0 0
+              0 0 0 25 -11" result="goo"/>
+            <feComposite in="goo" in2="SourceGraphic" operator="atop"/>
+          </filter>
+          <filter id="rBlur"><feGaussianBlur stdDeviation="18"/></filter>
+        </defs>
+
+        <ellipse class="reel-ground" cx="300" cy="470" rx="130" ry="24" fill="#000" opacity=".24" filter="url(#rBlur)"/>
+
+        <g class="reel-blob" filter="url(#rGoo)">
+          <ellipse class="blob b0" cx="300" cy="300" rx="145" ry="145"/>
+          <ellipse class="blob b1" cx="300" cy="300" rx="90" ry="90"/>
+          <ellipse class="blob b2" cx="300" cy="300" rx="72" ry="72"/>
+          <ellipse class="blob b3" cx="300" cy="300" rx="64" ry="64"/>
+          <ellipse class="blob b4" cx="300" cy="300" rx="58" ry="58"/>
+          <ellipse class="blob b5" cx="300" cy="300" rx="45" ry="45"/>
+        </g>
+
+        <ellipse class="reel-rim" cx="300" cy="300" rx="145" ry="145" fill="none" stroke="url(#rRim)" stroke-width="3" opacity=".55"/>
+        <ellipse class="reel-spec" cx="250" cy="235" rx="86" ry="62" fill="url(#rSpec)" opacity=".85"/>
+        <ellipse class="reel-spec-2" cx="365" cy="370" rx="42" ry="28" fill="#702943" opacity=".18" filter="url(#rBlur)"/>
+        <circle class="reel-orbit" cx="300" cy="300" r="172" fill="none" stroke="#8fd7f4" stroke-opacity=".11" stroke-width="1"/>
+        <circle class="reel-orbit-2" cx="300" cy="300" r="188" fill="none" stroke="#702943" stroke-opacity=".1" stroke-width="1"/>
+      </svg>
+    </div>
+
+    <div class="reel-center-label">RIMAK <span>AI</span></div>
+
+    <div class="reel-side-note">SCROLL / 06</div>
+
+    <div class="reel-end">
+      <div class="reel-end-word">RIMAK</div>
+      <p>Agora, converse com ela.</p>
+      <button class="reel-end-button" id="reelChatButton">Entrar na RIMAK <span>→</span></button>
+    </div>
+
   </div>
 </section>
 
@@ -3506,136 +3574,149 @@ requestAnimationFrame(loop);
 })();
 </script>
 
-<script>
-/* RIMAK V4 — deterministic organic matter controller */
+\n<script>
+/* RIMAK REEL ENGINE — scroll is the timeline */
 (function(){
   const chat=document.getElementById('chat');
   const root=document.getElementById('rimakExperience');
   if(!chat||!root)return;
 
-  const scenes=[...root.querySelectorAll('.r4-scene')];
-  const matter=root.querySelector('.r4-matter');
-  const shell=root.querySelector('.r4-shell-main');
-  const back=root.querySelector('.r4-shell-back');
-  const liqA=root.querySelector('.r4-liquid-a');
-  const liqB=root.querySelector('.r4-liquid-b');
-  const core=root.querySelector('.r4-core');
-  const highlight=root.querySelector('.r4-highlight');
-  const shadow=root.querySelector('.r4-shadow');
-  const progressBar=root.querySelector('.r4-progress span');
+  const sticky=root.querySelector('.reel-sticky');
+  const matter=root.querySelector('.reel-matter-wrap');
+  const svg=root.querySelector('.reel-matter');
+  const blobs=[...root.querySelectorAll('.blob')];
+  const copies=[...root.querySelectorAll('.reel-copy')];
+  const progressEl=root.querySelector('.reel-progress span');
+  const center=root.querySelector('.reel-center-label');
+  const end=root.querySelector('.reel-end');
+  const ground=root.querySelector('.reel-ground');
+  const spec=root.querySelector('.reel-spec');
+  const spec2=root.querySelector('.reel-spec-2');
+  const rim=root.querySelector('.reel-rim');
+  const orbit=root.querySelector('.reel-orbit');
+  const orbit2=root.querySelector('.reel-orbit-2');
 
-  let target=0,progress=0,tx=0.5,ty=0.5,px=0.5,py=0.5;
-  let last=0,velocity=0,t=0;
+  let p=0,tp=0,last=0,mouseX=0,mouseY=0,mx=.5,my=.5;
+  const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+  const lerp=(a,b,t)=>a+(b-a)*t;
+  const smooth=t=>t*t*(3-2*t);
 
-  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-  const lerp=(a,b,n)=>a+(b-a)*n;
-  const ease=n=>n*n*(3-2*n);
+  const stages=[
+    {bg:'#050607',fg:'#eef3f1',accent:'#8fd7f4',form:[
+      [300,300,145,145],[300,300,90,90],[300,300,72,72],[300,300,64,64],[300,300,58,58],[300,300,45,45]
+    ]},
+    {bg:'#eef2f1',fg:'#15191b',accent:'#702943',form:[
+      [295,300,155,92],[350,290,92,66],[252,335,78,62],[325,350,72,48],[270,255,62,48],[380,315,46,38]
+    ]},
+    {bg:'#f2eee9',fg:'#17191b',accent:'#702943',form:[
+      [300,302,145,112],[240,315,76,62],[355,286,86,58],[290,365,92,52],[375,360,55,42],[225,265,48,38]
+    ]},
+    {bg:'#e8e5df',fg:'#16191b',accent:'#8fd7f4',form:[
+      [300,300,126,130],[235,295,72,88],[370,300,72,84],[305,382,92,54],[258,375,58,42],[382,355,42,32]
+    ]},
+    {bg:'#f0eeee',fg:'#17191b',accent:'#702943',form:[
+      [300,300,132,92],[235,295,68,45],[372,290,78,49],[290,370,88,45],[365,365,55,35],[250,365,46,32]
+    ]},
+    {bg:'#090b0d',fg:'#f2f5f2',accent:'#8fd7f4',form:[
+      [300,300,118,118],[350,300,64,72],[250,300,64,72],[300,360,74,48],[300,240,64,42],[375,350,42,28]
+    ]},
+    {bg:'#f3f0ec',fg:'#15191b',accent:'#702943',form:[
+      [300,300,128,72],[355,285,78,52],[245,315,76,48],[315,355,74,44],[275,250,56,38],[380,335,42,28]
+    ]}
+  ];
+
+  function setCss(name,value){root.style.setProperty(name,value)}
+  function colorMix(a,b,t){
+    const pa=a.match(/[0-9a-f]{2}/gi).map(x=>parseInt(x,16)),pb=b.match(/[0-9a-f]{2}/gi).map(x=>parseInt(x,16));
+    return '#'+pa.map((v,i)=>Math.round(lerp(v,pb[i],t)).toString(16).padStart(2,'0')).join('');
+  }
 
   function read(){
-    const chatRect=chat.getBoundingClientRect();
-    const rootRect=root.getBoundingClientRect();
-    const start=rootRect.top-chatRect.top+chat.scrollTop;
-    const range=Math.max(1,root.offsetHeight-chat.clientHeight);
-    target=clamp((chat.scrollTop-start)/range,0,1);
-    velocity=chat.scrollTop-last;
-    last=chat.scrollTop;
+    const max=Math.max(1,chat.scrollHeight-chat.clientHeight);
+    tp=clamp(chat.scrollTop/max);
   }
   chat.addEventListener('scroll',read,{passive:true});
   read();
 
   root.addEventListener('pointermove',e=>{
     const r=root.getBoundingClientRect();
-    tx=clamp((e.clientX-r.left)/Math.max(r.width,1),0,1);
-    ty=clamp((e.clientY-r.top)/Math.max(r.height,1),0,1);
+    mx=clamp((e.clientX-r.left)/Math.max(r.width,1));
+    my=clamp((e.clientY-r.top)/Math.max(r.height,1));
   },{passive:true});
-  root.addEventListener('pointerleave',()=>{tx=.5;ty=.5},{passive:true});
+  root.addEventListener('pointerleave',()=>{mx=.5;my=.5},{passive:true});
 
-  // Six distinct organic forms. The browser interpolates between them.
-  const forms=[
-    {rx:50,ry:47,br:'50% 50% 48% 52% / 53% 47% 53% 47%',rot:-5,sx:1,sy:1,skew:0},
-    {rx:54,ry:43,br:'32% 68% 58% 42% / 66% 34% 61% 39%',rot:8,sx:1.07,sy:.88,skew:-4},
-    {rx:48,ry:54,br:'66% 34% 42% 58% / 38% 63% 37% 62%',rot:-12,sx:.92,sy:1.08,skew:7},
-    {rx:57,ry:45,br:'38% 62% 72% 28% / 48% 55% 45% 52%',rot:11,sx:1.1,sy:.84,skew:-8},
-    {rx:46,ry:58,br:'72% 28% 36% 64% / 37% 64% 36% 63%',rot:-7,sx:.89,sy:1.12,skew:9},
-    {rx:52,ry:50,br:'45% 55% 62% 38% / 57% 41% 59% 43%',rot:4,sx:1.02,sy:1.02,skew:-3}
-  ];
+  function tick(){
+    p=lerp(p,tp,.12);
+    mouseX=lerp(mouseX,mx,.045); mouseY=lerp(mouseY,my,.045);
 
-  const colors=[
-    ['#081015','#8fd7f4','#702943','#f0f4f1'],
-    ['#101418','#a6dff4','#6b2742','#f4f7f4'],
-    ['#e9f1f3','#8fd7f4','#702943','#ffffff'],
-    ['#ecdee4','#94d2ee','#702943','#fff8fa'],
-    ['#dcecf2','#8fd7f4','#6d2744','#f2f6f4'],
-    ['#090d10','#96d9f2','#7a2e4c','#f1f3ef']
-  ];
+    const travel=p*6;
+    const si=Math.min(5,Math.floor(travel));
+    const f=smooth(clamp(travel-si));
+    const a=stages[si],b=stages[si+1]||stages[si];
 
-  function blendForm(a,b,m){
-    return {
-      rx:lerp(a.rx,b.rx,m), ry:lerp(a.ry,b.ry,m),
-      br:m<.5?a.br:b.br,
-      rot:lerp(a.rot,b.rot,m),
-      sx:lerp(a.sx,b.sx,m), sy:lerp(a.sy,b.sy,m), skew:lerp(a.skew,b.skew,m)
-    };
-  }
+    setCss('--reel-bg',colorMix(a.bg,b.bg,f));
+    setCss('--reel-fg',colorMix(a.fg,b.fg,f));
+    setCss('--reel-accent',colorMix(a.accent,b.accent,f));
 
-  function frame(){
-    t+=.016;
-    progress=lerp(progress,target,.105);
-    px=lerp(px,tx,.055); py=lerp(py,ty,.055);
-
-    const travel=progress*(forms.length-1);
-    const index=Math.min(forms.length-2,Math.floor(travel));
-    const m=ease(clamp(travel-index,0,1));
-    const f=blendForm(forms[index],forms[index+1],m);
-    const col=colors[Math.min(index,colors.length-2)];
-    const nxt=colors[Math.min(index+1,colors.length-1)];
-    const c=(a,b)=>a;
-    root.style.setProperty('--r4-bg',m<.5?col[0]:nxt[0]);
-    root.style.setProperty('--r4-blue',m<.5?col[1]:nxt[1]);
-    root.style.setProperty('--r4-burg',m<.5?col[2]:nxt[2]);
-    root.style.setProperty('--r4-ice',m<.5?col[3]:nxt[3]);
-
-    const floatX=(px-.5)*18;
-    const floatY=(py-.5)*12;
-    const breathe=Math.sin(t*1.25)*2.2;
-    const wobble=Math.sin(t*.7)*1.8;
-    const speed=clamp(Math.abs(velocity),0,65);
-    const impulse=velocity*.045;
-
-    shell.style.borderRadius=f.br;
-    shell.style.transform='translate3d('+floatX+'px,'+(floatY+breathe)+'px,0) rotate('+f.rot+'deg) skew('+f.skew+'deg) scale('+f.sx+','+f.sy+')';
-    back.style.borderRadius=f.br;
-    back.style.transform='translate3d('+(floatX*.55+10)+'px,'+(floatY*.45+10)+'px,0) rotate('+(f.rot-9)+'deg) scale('+(f.sx*.94)+','+(f.sy*.96)+')';
-
-    liqA.style.transform='translate3d('+(Math.sin(t*.55)*f.rx*.18)+'px,'+(Math.cos(t*.42)*f.ry*.12)+'px,0) rotate('+(wobble+speed*.12)+'deg) scale('+(1+m*.08)+')';
-    liqB.style.transform='translate3d('+(Math.cos(t*.44)*f.rx*.13)+'px,'+(Math.sin(t*.5)*f.14*f.ry)+'px,0) rotate('+(-wobble+impulse)+'deg) scale('+(1.04-m*.06)+')';
-    core.style.transform='translate3d('+(Math.sin(t*.72)*f.rx*.07)+'px,'+(Math.cos(t*.61)*f.ry*.07)+'px,0) scale('+(1+Math.sin(t*1.1)*.06)+')';
-    highlight.style.transform='translate3d('+(Math.cos(t*.35)*8)+'px,'+(Math.sin(t*.47)*6)+'px,0) rotate('+(-12+f.rot)+'deg)';
-    shadow.style.transform='translate3d('+(floatX*.45)+'px,'+(22+Math.abs(floatY)*.18)+'px,0) scale('+(1.08+Math.abs(velocity)*.002)+',.72)';
-
-    const scene=Math.round(travel);
-    scenes.forEach((el,i)=>{
-      const d=Math.abs(travel-i);
-      el.classList.toggle('is-active',d<.62);
+    const wobble=Math.sin(performance.now()*.0012)*2;
+    blobs.forEach((el,i)=>{
+      const x=lerp(a.form[i][0],b.form[i][0],f)+(mouseX-.5)*12;
+      const y=lerp(a.form[i][1],b.form[i][1],f)+(mouseY-.5)*9;
+      const rx=lerp(a.form[i][2],b.form[i][2],f);
+      const ry=lerp(a.form[i][3],b.form[i][3],f);
+      el.setAttribute('cx',x+wobble*(i%2?.35:.2));
+      el.setAttribute('cy',y+Math.cos(performance.now()*.001+i)*1.7);
+      el.setAttribute('rx',rx);
+      el.setAttribute('ry',ry);
+      el.setAttribute('fill',i===0 ? (si>=1&&si<=4?'url(#rMatterLight)':'url(#rMatterDark)') : (si>=1&&si<=4?'#8fd7f4':'#11181d'));
+      el.setAttribute('opacity',i===0?'1':String(.76-i*.07));
     });
-    progressBar.style.transform='scaleX('+progress+')';
 
-    requestAnimationFrame(frame);
+    const tilt=(mouseX-.5)*10;
+    matter.style.transform='translate3d(calc(-50% + '+((mouseX-.5)*22)+'px),calc(-50% + '+((mouseY-.5)*16)+'px),0) rotate('+tilt+'deg) scale('+(1+Math.sin(p*Math.PI)*.045)+')';
+    spec.setAttribute('cx',245+(mouseX-.5)*15);
+    spec.setAttribute('cy',230+(mouseY-.5)*10);
+    ground.setAttribute('rx',130+Math.sin(p*Math.PI)*30);
+    ground.setAttribute('opacity',String(.18+.12*Math.sin(p*Math.PI)));
+    rim.setAttribute('rx',145+Math.sin(p*Math.PI)*35);
+    rim.setAttribute('ry',145-Math.sin(p*Math.PI)*40);
+    orbit.setAttribute('r',172+Math.sin(p*Math.PI)*22);
+    orbit2.setAttribute('r',188-Math.sin(p*Math.PI)*18);
+    orbit.style.stroke=colorMix('#8fd7f4',a.accent,.5);
+    orbit2.style.stroke=a.accent;
+
+    progressEl.style.transform='scaleX('+p+')';
+    copies.forEach((el,i)=>{
+      const d=Math.abs(travel-i);
+      el.classList.toggle('is-active',d<.7);
+      el.style.setProperty('--copy-y',Math.max(-18,Math.min(18,(i-travel)*28))+'px');
+    });
+    center.style.opacity=p>.72?.34:1-p*.25;
+    end.style.opacity=p>.92?String((p-.92)/.08):'0';
+    end.style.transform='translateY('+(p>.92?(1-p)*30:35)+'px)';
+
+    root.style.setProperty('--reel-bright',String(.8+.2*Math.sin(p*Math.PI)));
+    requestAnimationFrame(tick);
   }
-  frame();
+  tick();
 
-  function runPrompt(prompt){
+  function prompt(text){
     const input=document.getElementById('messageInput');
     if(!input)return;
-    input.value=prompt;
+    input.value=text;
     input.dispatchEvent(new Event('input',{bubbles:true}));
     input.focus();
-    chat.scrollTo({top:chat.scrollTop+chat.clientHeight*.65,behavior:'smooth'});
+    chat.scrollTo({top:chat.scrollHeight,behavior:'smooth'});
   }
-  document.getElementById('reelCreateButton')?.addEventListener('click',()=>runPrompt('RIMAK, quero criar uma apresentação profissional.'));
-  document.getElementById('reelResearchButton')?.addEventListener('click',()=>runPrompt('RIMAK, quero pesquisar e comparar informações importantes.'));
-  document.getElementById('reelTransformButton')?.addEventListener('click',()=>runPrompt('RIMAK, quero transformar um arquivo ou conteúdo.'));
+  document.getElementById('reelCreateButton')?.addEventListener('click',()=>prompt('RIMAK, quero criar uma interface para uma ideia minha.'));
+  document.getElementById('reelResearchButton')?.addEventListener('click',()=>prompt('RIMAK, pesquise e organize estas informações para mim.'));
+  document.getElementById('reelTransformButton')?.addEventListener('click',()=>prompt('RIMAK, quero transformar este conteúdo em uma experiência visual.'));
   document.getElementById('reelChatButton')?.addEventListener('click',()=>chat.scrollTo({top:chat.scrollHeight,behavior:'smooth'}));
+  document.getElementById('reelMenuButton')?.addEventListener('click',()=>document.getElementById('menuButton')?.click());
+  document.getElementById('reelMenuDot')?.addEventListener('click',()=>document.getElementById('menuButton')?.click());
+  document.getElementById('reelCreditsButton')?.addEventListener('click',()=>document.getElementById('creditButton')?.click());
+  const cc=document.getElementById('creditsCount'),rc=document.getElementById('reelCreditsCount');
+  if(cc&&rc){new MutationObserver(()=>rc.textContent=cc.textContent).observe(cc,{childList:true,subtree:true,characterData:true});rc.textContent=cc.textContent}
 })();
 </script>\n</body>
 </html>
