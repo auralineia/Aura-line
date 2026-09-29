@@ -307,76 +307,17 @@
            RIMAK 2.0 — CINEMATIC EXPERIENCE
       ===================================================== -->
       
-<section class="rimak-cinematic reel-experience" id="rimakExperience" aria-label="RIMAK">
-  <div class="reel-sticky">
-    <div class="reel-vignette"></div>
-    <canvas id="matterCanvas" aria-hidden="true"></canvas>
-    <div class="matter-label"><span>RIMAK</span><i></i><small>living intelligence</small></div>
-  </div>
-
-  <div class="reel-pages">
-    <article class="reel-page is-current" data-scene-index="0">
-      <div class="reel-page-meta"><span>01</span><i></i><span>ORIGIN</span></div>
-      <div class="reel-copy reel-copy-left">
-        <span class="reel-eyebrow">RIMAK / 01</span>
-        <h2>Uma inteligência<br><em>viva.</em></h2>
-        <p>Não é uma caixa de conversa. É uma matéria digital que muda com o que você faz.</p>
-        <div class="reel-scroll-note"><span></span> arraste para transformar</div>
-      </div>
-    </article>
-
-    <article class="reel-page" data-scene-index="1">
-      <div class="reel-page-meta"><span>02</span><i></i><span>FORM</span></div>
-      <div class="reel-copy reel-copy-right dark-copy">
-        <span class="reel-eyebrow">RIMAK / 02</span>
-        <h2>Ela muda<br><em>de forma.</em></h2>
-        <p>Cada movimento atravessa a matéria. Para baixo, ela se transforma. Para cima, ela volta.</p>
-        <button class="reel-action" id="reelCreateButton" type="button">Criar com RIMAK <b>↗</b></button>
-      </div>
-    </article>
-
-    <article class="reel-page" data-scene-index="2">
-      <div class="reel-page-meta dark-meta"><span>03</span><i></i><span>MATTER</span></div>
-      <div class="reel-copy reel-copy-left dark-copy">
-        <span class="reel-eyebrow">RIMAK / 03</span>
-        <h2>Uma resposta<br><em>ganha forma.</em></h2>
-        <p>Pesquisa vira painel. Dados viram ferramenta. Uma ideia deixa de ser texto e começa a existir.</p>
-        <button class="reel-action" id="reelResearchButton" type="button">Pesquisar <b>↗</b></button>
-      </div>
-    </article>
-
-    <article class="reel-page" data-scene-index="3">
-      <div class="reel-page-meta dark-meta"><span>04</span><i></i><span>FLOW</span></div>
-      <div class="reel-copy reel-copy-right dark-copy">
-        <span class="reel-eyebrow">RIMAK / 04</span>
-        <h2>Informação<br><em>se move.</em></h2>
-        <p>A interface acompanha a tarefa. O visual muda junto. A experiência deixa de parecer uma ferramenta estática.</p>
-        <button class="reel-action" id="reelTransformButton" type="button">Transformar <b>↗</b></button>
-      </div>
-    </article>
-
-    <article class="reel-page" data-scene-index="4">
-      <div class="reel-page-meta"><span>05</span><i></i><span>RIMAK</span></div>
-      <div class="reel-copy reel-copy-center">
-        <span class="reel-eyebrow">RIMAK / 05</span>
-        <h2>Você move.<br><em>Ela responde.</em></h2>
-        <p>Uma nova camada da RIMAK começa aqui.</p>
-        <button class="reel-action reel-action-light" id="reelChatButton" type="button">Conversar com a RIMAK <b>→</b></button>
-      </div>
-    </article>
-  </div>
-
-  <div class="reel-tool-strip" id="rimakToolHub">
-    <button type="button" class="reel-tool" data-tool-prompt="RIMAK, quero criar uma apresentação profissional.">
-      <span>CREATE</span><strong>criar</strong><b>↗</b>
-    </button>
-    <button type="button" class="reel-tool" data-tool-prompt="RIMAK, quero pesquisar um assunto e comparar as informações mais importantes.">
-      <span>SEARCH</span><strong>pesquisar</strong><b>↗</b>
-    </button>
-    <button type="button" class="reel-tool" data-tool-prompt="RIMAK, quero transformar um arquivo ou conteúdo.">
-      <span>TRANSFORM</span><strong>transformar</strong><b>↗</b>
-    </button>
-  </div>
+<section class="rimak-v3" id="rimakExperience" aria-label="RIMAK">
+  <div class="r3-track"><div class="r3-stage">
+    <canvas class="r3-matter" id="matterCanvas" aria-hidden="true"></canvas>
+    <div class="r3-top-label"><span>RIMAK</span><i></i><small>living intelligence</small></div>
+    <div class="r3-scene is-active" data-index="0"><div class="r3-meta">01 <i></i> ORIGIN</div><div class="r3-copy"><small>RIMAK / 01</small><h1>Você move.<br><em>Ela responde.</em></h1><p>Uma inteligência que não precisa ficar parada.</p></div></div>
+    <div class="r3-scene" data-index="1"><div class="r3-meta">02 <i></i> FORM</div><div class="r3-copy"><small>RIMAK / 02</small><h1>Ela muda<br><em>de forma.</em></h1><p>A matéria acompanha o movimento. Desça. Suba. Ela volta.</p></div></div>
+    <div class="r3-scene" data-index="2"><div class="r3-meta">03 <i></i> CREATE</div><div class="r3-copy"><small>RIMAK / 03</small><h1>Ideias<br><em>ganham corpo.</em></h1><p>Uma conversa pode virar uma interface, um painel ou uma ferramenta.</p><button class="r3-button" id="reelCreateButton" type="button">Criar com a RIMAK <b>↗</b></button></div></div>
+    <div class="r3-scene" data-index="3"><div class="r3-meta">04 <i></i> DISCOVER</div><div class="r3-copy"><small>RIMAK / 04</small><h1>Informação<br><em>se transforma.</em></h1><p>Pesquisa, dados e arquivos deixam de ser apenas texto.</p><button class="r3-button" id="reelResearchButton" type="button">Pesquisar <b>↗</b></button></div></div>
+    <div class="r3-scene" data-index="4"><div class="r3-meta">05 <i></i> RIMAK</div><div class="r3-copy"><small>RIMAK / 05</small><h1>Uma interface<br><em>viva.</em></h1><p>O visual acompanha o que você está fazendo.</p><button class="r3-button" id="reelChatButton" type="button">Conversar com a RIMAK <b>→</b></button></div></div>
+    <div class="r3-scroll-hint"><span></span><small>arraste para explorar</small></div>
+  </div></div>
 </section>
 
 
