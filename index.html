@@ -1080,14 +1080,22 @@
         if(authMode === "signup"){
 
           const { data, error } =
-            await supabaseClient.auth.signUp({
-              email,
-              password,
-              options:{
-                emailRedirectTo:
-                  window.location.origin + "/"
-              }
-            });
+            await Promise.race([
+              supabaseClient.auth.signUp({
+                email,
+                password,
+                options:{
+                  emailRedirectTo:
+                    window.location.origin + "/"
+                }
+              }),
+              new Promise((_, reject) =>
+                setTimeout(
+                  () => reject(new Error("LOGIN_TIMEOUT")),
+                  12000
+                )
+              )
+            ]);
 
           if(error){
             throw error;
@@ -1130,10 +1138,18 @@
         }else{
 
           const { data, error } =
-            await supabaseClient.auth.signInWithPassword({
-              email,
-              password
-            });
+            await Promise.race([
+              supabaseClient.auth.signInWithPassword({
+                email,
+                password
+              }),
+              new Promise((_, reject) =>
+                setTimeout(
+                  () => reject(new Error("LOGIN_TIMEOUT")),
+                  12000
+                )
+              )
+            ]);
 
           if(error){
             throw error;
@@ -1148,7 +1164,10 @@
           currentUser =
             data.session.user;
 
-          await showApp();
+          // Never block authentication on UI hydration.
+          showApp().catch(error =>
+            console.error("RIMAK SHOW APP:", error)
+          );
 
         }
 
@@ -1253,6 +1272,10 @@
         )
       ){
         return "O cadastro por e-mail está desativado.";
+      }
+
+      if(text.includes("login_timeout")){
+        return "O servidor de login não respondeu em 12 segundos. O problema está na conexão com o Supabase, não na sua senha.";
       }
 
       if(
