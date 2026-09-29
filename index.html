@@ -3584,7 +3584,7 @@
       const p=points[i], q=points[(i+1)%points.length];
       ctx.quadraticCurveTo(p[0],p[1],(p[0]+q[0])/2,(p[1]+q[1])/2);
     }
-    const p=points[0];ctx.quadraticCurveTo(p[0],p[1],p[0][0],p[0][1]);
+    const p=points[0];ctx.quadraticCurveTo(p[0],p[1],p[0],p[1]);
     ctx.closePath();
   }
 
@@ -3680,7 +3680,7 @@
 
   function applyScene(scene,morph){
     const a=scenes[scene],b=scenes[Math.min(scene+1,4)];
-    const bg=document.createElement('canvas'); // never painted; only color interpolation below
+    // background is updated directly through CSS
     const mix=(c1,c2,t)=>{const A=parseInt(c1.slice(1),16),B=parseInt(c2.slice(1),16);
       const r=Math.round(((A>>16)&255)*(1-t)+((B>>16)&255)*t);
       const g=Math.round(((A>>8)&255)*(1-t)+((B>>8)&255)*t);
