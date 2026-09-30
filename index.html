@@ -193,7 +193,7 @@ $("#logout").onclick=()=>{state.session=null;state.user=null;saveSession();close
 $("#supportSend").onclick=async()=>{const text=$("#supportText").value.trim();if(!text)return;$("#supportSend").disabled=true;try{const r=await api("/api/chat",{method:"POST",body:JSON.stringify({action:"support",subject:"Suporte RIMAK",message:text})});const d=await r.json();$("#supportStatus").textContent=r.ok?"Chamado enviado.":"Erro: "+(d.error||"não foi possível enviar.")}catch{$("#supportStatus").textContent="Erro ao enviar."}finally{$("#supportSend").disabled=false}}
 $$("[data-plan]").forEach(b=>b.onclick=async()=>{const plan=b.dataset.plan;try{const r=await fetch("/api/checkout-config");const d=await r.json();if(!r.ok||!d.public_key)throw new Error("Pagamento indisponível no momento.");await new Promise((resolve,reject)=>{const s=document.createElement("script");s.src="https://sdk.mercadopago.com/js/v2";s.onload=resolve;s.onerror=reject;document.head.appendChild(s)});const mp=new MercadoPago(d.public_key,{locale:"pt-BR"});alert("Checkout conectado para "+plan.toUpperCase()+".");}catch(e){alert(e.message)}});
 
-const stages=[{bg:"#090a0c",accent:"#dceef3"},{bg:"#f0efeb",accent:"#7d2948"},{bg:"#e8e7e3",accent:"#8bcfeb"},{bg:"#0b0d10",accent:"#bfe8f5"},{bg:"#f1eeea",accent:"#7d2948"},{bg:"#e6eaeb",accent:"#8bcfeb"},{bg:"#080a0c",accent:"#dceef3"},{bg:"#f2efeb",accent:"#7d2948"}];
+const stages=[{bg:"#050506"},{bg:"#ebe8e2"},{bg:"#e8e4de"},{bg:"#ece8e1"},{bg:"#07080a"},{bg:"#030304"},{bg:"#050506"},{bg:"#efece7"}];
 function updateReel(){
  const reel=$("#reel"), rect=reel.getBoundingClientRect();
  const max=Math.max(1,reel.offsetHeight-window.innerHeight);
