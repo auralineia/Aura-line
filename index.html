@@ -69,7 +69,7 @@ h2.big{font-size:clamp(38px,8vw,116px);text-transform:uppercase;line-height:.94;
   <span class="tag rv">01 RIMAK</span>
   <h2 class="rv" style="--d:.08s">O maestro do seu ecossistema.</h2>
   <p class="rv" style="--d:.16s">Entenda, planeje, crie e coordene. A RIMAK é o ponto de partida para tudo.</p>
-  <a class="b rv" style="--d:.24s" href="#s2" onclick="if(window.rimakApp){rimakApp.openChat('rimak');return false}" ontouchend="if(window.rimakApp){rimakApp.openChat('rimak');return false}">Conversar com a RIMAK →</a>
+  <a class="b rv" style="--d:.24s" href="#s2" role="button" onclick="event.preventDefault();window.rimakApp.openChat('rimak');return false">Conversar com a RIMAK →</a>
   <div class="sts rv" style="--d:.3s"><div><b>24/7</b>execução</div><div><b data-n="6">06</b>agentes</div><div><b data-n="4">04</b>pilares</div><div><b data-n="1">01</b>assinatura</div></div>
 </div><div class="bars"></div></section>
 
@@ -92,7 +92,7 @@ h2.big{font-size:clamp(38px,8vw,116px);text-transform:uppercase;line-height:.94;
   <span class="tag rv">04 TEMPESTA</span>
   <h2 class="rv" style="--d:.08s">Entende. Sente. Adapta.</h2>
   <p class="rv" style="--d:.16s">Uma inteligência construída para compreender a interação humana. Mais que respostas, conexões.</p>
-  <a class="b rv" style="--d:.24s" href="#s5" onclick="if(window.rimakApp){rimakApp.openChat('tempesta');return false}" ontouchend="if(window.rimakApp){rimakApp.openChat('tempesta');return false}">Conversar com a TEMPESTA →</a>
+  <a class="b rv" style="--d:.24s" href="#s5" role="button" onclick="event.preventDefault();window.rimakApp.openChat('tempesta');return false">Conversar com a TEMPESTA →</a>
 </div></section>
 
 <section class="sc col" id="s5"><div class="tx">
@@ -167,7 +167,7 @@ document.querySelectorAll('.bars').forEach(b=>b.innerHTML=[...Array(26)].map((_,
 const IO=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const t=e.target;IO.unobserve(t);t.classList.add('in');t.querySelectorAll('[data-n]').forEach(c=>{const N=+c.dataset.n,t0=performance.now();(function u(n){const k=Math.min((n-t0)/1200,1);c.textContent=String(Math.round(N*k)).padStart(2,'0');if(k<1&&!RM)requestAnimationFrame(u)})(t0)})}),{threshold:.15});
 document.querySelectorAll('.rv').forEach(e=>IO.observe(e));
 </script>
-<script src="/rimak-functional.js?v=10"></script>
+<script src="/rimak-functional.js?v=11"></script>
 </body>
 </html>
 
