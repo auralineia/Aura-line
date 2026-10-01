@@ -66,13 +66,23 @@ async function authenticatedUser(req) {
   const token = bearer(req);
   if (!token) return null;
 
-  const { url, anonKey } = supabaseConfig();
+  // Validar a sessão usa apenas URL + chave pública do Supabase.
+  // A service role fica reservada às operações administrativas.
+  const url = (process.env.SUPABASE_URL || "").replace(/\/+$/, "");
+  const anonKey =
+    process.env.SUPABASE_ANON_KEY ||
+    process.env.SUPABASE_PUBLISHABLE_KEY;
+
+  if (!url || !anonKey) {
+    console.error("Auth config: SUPABASE_URL/ANON_KEY ausentes.");
+    return null;
+  }
 
   try {
-    const response = await fetch(`${url}/auth/v1/user`, {
+    const response = await fetch(url + "/auth/v1/user", {
       headers: {
         apikey: anonKey,
-        Authorization: `Bearer ${token}`
+        Authorization: "Bearer " + token
       }
     });
 
