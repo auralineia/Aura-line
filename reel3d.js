@@ -11,6 +11,8 @@ function init() {
 #sticky .topline,#sticky .progress,#sticky .editorial-grid,#sticky .matter-glow,#sticky .copy{display:none!important}
 #matterWrap{display:block!important;position:absolute!important;inset:0!important;z-index:1!important;pointer-events:none!important}
 #matterCanvas{display:block!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+#sticky .rk{display:block!important;visibility:visible!important;z-index:100!important;color:#8b8e94!important;opacity:1!important;text-shadow:0 1px 8px rgba(255,255,255,.8)}
+#sticky .rk.off{opacity:0!important}
 #sticky .copy .kicker{color:rgba(17,18,20,.5)!important}#sticky .copy p{color:rgba(17,18,20,.55)!important}#sticky .copy em{color:#7d2948!important}
 .rk{position:absolute;z-index:9;font:600 11px/1.3 ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.14em;color:#8b8e94;background:none;border:0;padding:6px;cursor:pointer;transition:opacity .2s cubic-bezier(.23,1,.32,1),color .2s}
 .rk:active{transform:scale(.96)}.rk.off{opacity:0;pointer-events:none}.rk.soft{cursor:default;pointer-events:none;color:#b9bcc2}
@@ -50,6 +52,7 @@ body.in-reel .top .brand{color:#111}body.in-reel .top .icon-btn,body.in-reel .to
   mk("01 RIMAK", "left:50%;top:36%;transform:translate(-50%,-50%)", () => openChat("rimak"));
   mk("02 AGENTES", "right:5%;top:55%", () => ag.classList.add("open")); mk("03 NEVERA", "left:52%;top:72%", () => openChat("nevera")); mk("04 TEMPESTA", "left:4%;top:64%", () => openChat("tempesta"));
   const greet = mk("", "left:6%;top:80%;font-weight:500"), hint = mk("Role para explorar ↓", "left:6%;top:83.5%;font-weight:500;cursor:default;pointer-events:none"), ctr = mk("", "left:6%;top:87%;font-weight:500;cursor:default;pointer-events:none");
+  [greet,hint,ctr].forEach(x=>{x.style.zIndex="101";x.style.display="block";x.style.visibility="visible";});
   const NAMES = ["RIMAK", "AGENTES", "NEVERA", "TEMPESTA", "RIMAK", "RIMAK", "RIMAK"];
   const first = () => { try { const s = window.state || {}; const m = s.user && s.user.user_metadata, n = m && (m.full_name || m.name); return n ? String(n).split(" ")[0] : ""; } catch (e) { return ""; } };
   function hud(t) {
