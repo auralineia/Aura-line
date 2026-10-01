@@ -730,8 +730,21 @@ function systemPrompt({
   plan,
   memories,
   researchText,
-  language
+  language,
+  mode = "rimak"
 }) {
+  const modeRules = {
+    tempesta: "Você é TEMPESTA. Você é uma inteligência separada da RIMAK, com identidade própria, focada em compreender a interação humana, contexto, emoções e adaptação conversacional. Não se apresente como RIMAK e não assuma o papel de maestro do ecossistema.",
+    nevera: "Você é NEVERA. Você é um sistema separado, focado em execução, automação, planejamento operacional e transformação de objetivos em ações. Não se apresente como RIMAK.",
+    "agent:research": "Você é o agente RESEARCH da RIMAK. Sua função é pesquisar, comparar fontes e organizar evidências.",
+    "agent:code": "Você é o agente CODE da RIMAK. Sua função é projetar, escrever, revisar e depurar código.",
+    "agent:writer": "Você é o agente WRITER da RIMAK. Sua função é criar e editar textos.",
+    "agent:designer": "Você é o agente DESIGNER da RIMAK. Sua função é estruturar experiências, interfaces e direção visual.",
+    "agent:analyst": "Você é o agente ANALYST da RIMAK. Sua função é analisar dados, cenários e métricas.",
+    "agent:marketing": "Você é o agente MARKETING da RIMAK. Sua função é planejar posicionamento, conteúdo e aquisição.",
+    rimak: "Você é RIMAK, o maestro do ecossistema RIMAK LINE. Coordene ideias, ferramentas e agentes quando isso for útil."
+  };
+  const identityRule = modeRules[mode] || modeRules.rimak;
   const researchRule = researchText
     ? `
 PESQUISA REALIZADA
@@ -750,7 +763,9 @@ Se a pergunta exige confirmação externa e não há pesquisa disponível, deixe
 Você é RIMAK, assistente da RIMAK LINE.
 
 IDENTIDADE
-- Seu nome é RIMAK.
+- Use esta identidade de modo: ${identityRule}
+- Quando o modo atual for RIMAK, seu nome é RIMAK.
+- Quando o modo atual for TEMPESTA, NEVERA ou um agente, preserve a identidade correspondente e não se apresente como RIMAK.
 - Você foi criada e desenvolvida pela RIMAK LINE.
 - Você NÃO foi criada pela OpenAI.
 - O modelo de IA usado pela RIMAK pode ser fornecido por terceiros.
@@ -805,10 +820,6 @@ async function generateWithOmniRoute(messages, plan) {
   const baseUrl = (process.env.OMNIROUTE_BASE_URL || "").replace(/\\/+$/, "");
   const model = process.env.OMNIROUTE_MODEL || "auto";
 
-  if (!key) {
-    throw new Error("OMNIROUTE_API_KEY não configurada.");
-  }
-
   if (!baseUrl) {
     throw new Error("OMNIROUTE_BASE_URL não configurada.");
   }
@@ -820,8 +831,8 @@ async function generateWithOmniRoute(messages, plan) {
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${key}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        ...(key ? { Authorization: `Bearer ${key}` } : {})
       },
       body: JSON.stringify({
         model,
@@ -1205,6 +1216,30 @@ export default async function handler(req, res) {
       return json(res, result.status, result.body);
     }
 
+    if (action === "account" || action === "omniroute_status") {
+      const user = await authenticatedUser(req);
+      if (!user) return json(res, 401, { error: "Sessão inválida ou expirada." });
+      if (action === "account") {
+        const subscription = await getSubscription(user.id);
+        const plan = normalizePlan(subscription);
+        let credits = 0;
+        try {
+          const balanceResponse = await supabaseRest(`credits?user_id=eq.${encodeURIComponent(user.id)}&select=balance&limit=1`);
+          const rows = await balanceResponse.json().catch(() => []);
+          credits = Number(rows?.[0]?.balance || 0);
+        } catch {}
+        return json(res, 200, { user: { id: user.id, email: user.email || null }, plan, planName: PLAN_CONFIG[plan].name, credits });
+      }
+      const baseUrl = (process.env.OMNIROUTE_BASE_URL || "").replace(/\\/+$/, "");
+      if (!baseUrl) return json(res, 200, { ok: false, configured: false });
+      try {
+        const health = await fetch(baseUrl + "/healthz", { signal: AbortSignal.timeout(4000) });
+        return json(res, 200, { ok: health.ok, configured: true, status: health.status });
+      } catch {
+        return json(res, 200, { ok: false, configured: true });
+      }
+    }
+
     if (action === "mercadopago_webhook") {
       return await handleMercadoPagoWebhook(req, res);
     }
@@ -1219,6 +1254,7 @@ export default async function handler(req, res) {
 
     const token = bearer(req);
     const body = req.body || {};
+    const mode = String(body.mode || "rimak").toLowerCase().slice(0, 40);
 
     if (String(body.action || "").toLowerCase() === "support") {
       return await handleSupportRequest(req, res, user);
@@ -1277,7 +1313,8 @@ export default async function handler(req, res) {
           plan,
           memories,
           researchText,
-          language: body.language || "pt-BR"
+          language: body.language || "pt-BR",
+          mode
         })
       },
       ...history,
@@ -1298,11 +1335,9 @@ export default async function handler(req, res) {
       plan
     );
 
-    await processMemory(
-      user.id,
-      token,
-      message
-    );
+    if (mode === "rimak" || mode.indexOf("agent:") === 0) {
+      await processMemory(user.id, token, message);
+    }
 
     return json(res, 200, {
       reply,

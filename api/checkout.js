@@ -60,7 +60,7 @@ export default async function handler(req, res) {
     if (!token) return json(res, 500, { error: "Mercado Pago não configurado no servidor." });
 
     const externalReference = user.id + ":" + plan;
-    const baseUrl = process.env.AURA_PUBLIC_URL || "https://aura-line-s.vercel.app";
+    const baseUrl = process.env.RIMAK_PUBLIC_URL || process.env.AURA_PUBLIC_URL || "https://rimak.vercel.app";
 
     const mpResponse = await fetch("https://api.mercadopago.com/preapproval", {
       method: "POST",
