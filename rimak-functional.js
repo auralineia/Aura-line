@@ -73,10 +73,7 @@ function bind(){
       topRight.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();accountPanel()}};
     }
   }
-  document.addEventListener("click",function(e){
-    var el=e.target && (e.target.closest ? e.target.closest("a,button,[role=button]") : null);
-    if(el && handle(el,e)){e.preventDefault();e.stopImmediatePropagation();}
-  },true);
+  // Liga os controles existentes diretamente, sem interceptação global em capture.
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",direct,{once:true}); else direct();
 }
 window.rimakApp={openChat:openChat,agents:agents,plans:plans,login:login,settings:settings,account:accountPanel,menu:function(){var a=$("#rkMenuAccount");a.textContent=state.user?(state.user.email||"Conta conectada"):"Acesse sua conta para sincronizar seus dados.";menu.classList.add("open")}};boot().catch(function(){});bind();
