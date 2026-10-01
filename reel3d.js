@@ -8,7 +8,7 @@ function init() {
   const css = document.createElement("style");
   css.textContent = `#sticky{background:#fff!important;color:#111!important}
 #sticky:before{background:radial-gradient(circle,rgba(0,0,0,.2) 1px,transparent 1.6px) 0 0/71px 57px,radial-gradient(circle,rgba(0,0,0,.14) 1px,transparent 1.6px) 23px 31px/113px 89px!important;opacity:.55}
-#sticky .topline,#sticky .progress,#sticky .editorial-grid,#sticky .matter-glow,#sticky .copy[data-step="0"]{display:none!important}
+#sticky .topline,#sticky .progress,#sticky .editorial-grid,#sticky .matter-glow,#sticky .copy{display:none!important}
 #sticky .copy .kicker{color:rgba(17,18,20,.5)!important}#sticky .copy p{color:rgba(17,18,20,.55)!important}#sticky .copy em{color:#7d2948!important}
 .rk{position:absolute;z-index:9;font:600 11px/1.3 ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.14em;color:#8b8e94;background:none;border:0;padding:6px;cursor:pointer;transition:opacity .2s cubic-bezier(.23,1,.32,1),color .2s}
 .rk:active{transform:scale(.96)}.rk.off{opacity:0;pointer-events:none}.rk.soft{cursor:default;pointer-events:none;color:#b9bcc2}
@@ -21,7 +21,8 @@ body.in-reel .top .brand{color:#111}body.in-reel .top .icon-btn,body.in-reel .to
 #rkAg button.a:active{transform:scale(.98)}#rkAg button.a b{display:block;font:600 12px ui-monospace,Menlo,monospace;letter-spacing:.16em}#rkAg button.a span{display:block;margin-top:5px;color:#6b6e74;font-size:14px}
 #rkAg .x{margin-top:18px;background:none;border:0;color:#6b6e74;cursor:pointer;font-size:14px}`;
   document.head.appendChild(css);
-  if (wrap) Object.assign(wrap.style, { left: "0", top: "-8%", width: "100%", height: "100%", transform: "none" });
+  reel.style.height = "480vh";
+  if (wrap) Object.assign(wrap.style, { left: "0", top: "-4%", width: "100%", height: "100%", transform: "none" });
 
   // ---------- HUD: rótulos clicáveis que levam às cenas ----------
   let MODE = "rimak";
@@ -43,9 +44,9 @@ body.in-reel .top .brand{color:#111}body.in-reel .top .icon-btn,body.in-reel .to
   }
   const goto = k => { const max = reel.offsetHeight - innerHeight; scrollTo({ top: reel.offsetTop + max * k / 7 + 4, behavior: "smooth" }); };
   const mk = (txt, css, k, cls) => { const b = document.createElement(k == null ? "div" : "button"); b.className = "rk " + (cls || ""); b.textContent = txt; b.style.cssText = css; if (k != null) b.onclick = () => typeof k === "function" ? k() : goto(k); st.appendChild(b); return b; };
-  mk("01 RIMAK", "left:50%;top:40%;transform:translate(-50%,-50%)", () => openChat("rimak"));
-  mk("02 AGENTES", "right:6%;top:49%", () => ag.classList.add("open")); mk("03 NEVERA", "left:58%;top:73%", () => openChat("nevera")); mk("04 TEMPESTA", "left:5%;top:59%", () => openChat("tempesta"));
-  const greet = mk("", "left:12%;top:80%;font-weight:500"), hint = mk("Role para explorar ↓", "right:8%;top:80%;font-weight:500;cursor:default;pointer-events:none"), ctr = mk("", "left:9%;top:83%;font-weight:500;cursor:default;pointer-events:none");
+  mk("01 RIMAK", "left:50%;top:36%;transform:translate(-50%,-50%)", () => openChat("rimak"));
+  mk("02 AGENTES", "right:5%;top:55%", () => ag.classList.add("open")); mk("03 NEVERA", "left:52%;top:72%", () => openChat("nevera")); mk("04 TEMPESTA", "left:4%;top:64%", () => openChat("tempesta"));
+  const greet = mk("", "left:6%;top:80%;font-weight:500"), hint = mk("Role para explorar ↓", "left:6%;top:83.5%;font-weight:500;cursor:default;pointer-events:none"), ctr = mk("", "left:6%;top:87%;font-weight:500;cursor:default;pointer-events:none");
   const NAMES = ["RIMAK", "AGENTES", "NEVERA", "TEMPESTA", "RIMAK", "RIMAK", "RIMAK"];
   const first = () => { try { const m = state.user && state.user.user_metadata, n = m && (m.full_name || m.name); return n ? String(n).split(" ")[0] : ""; } catch (e) { return ""; } };
   function hud(t) {
@@ -77,7 +78,7 @@ vec3 objectNormal=normalize(cross(P1-P0,P2-P0));if(dot(objectNormal,bp)<0.)objec
 vec3 objectTangent=vec3(tangent.xyz);
 #endif`).replace("#include <begin_vertex>", "vec3 transformed=P0;");
         s.fragmentShader = "uniform float uBF,uBM,uP;varying float vN;\n" + s.fragmentShader.replace("#include <dithering_fragment>",
-          "float bnd=abs(sin(vN*uBF+uP*.5));gl_FragColor.rgb*=mix(1.,mix(.14,1.,smoothstep(.3,.62,bnd)),uBM);\n#include <dithering_fragment>");
+          "float bnd=abs(sin(vN*uBF+uP*.5));gl_FragColor.rgb*=mix(1.,mix(.14,1.,smoothstep(.12,.85,bnd)),uBM);\n#include <dithering_fragment>");
       } else v = v.replace("#include <begin_vertex>", "vec3 transformed=normalize(position);transformed*=1.+dsp(transformed);");
       s.vertexShader = DISP + v;
     };
@@ -97,7 +98,7 @@ vec3 objectTangent=vec3(tangent.xyz);
   });
   scene.environment = pm.fromScene(env, .02).texture;
 
-  const solidMat = new THREE.MeshPhysicalMaterial({ color: "#b9c7e6", metalness: 1, roughness: .16, clearcoat: 1, clearcoatRoughness: .08, envMapIntensity: 1.2, transparent: true });
+  const solidMat = new THREE.MeshPhysicalMaterial({ color: "#a8b6d2", metalness: 1, roughness: .3, clearcoat: .7, clearcoatRoughness: .18, envMapIntensity: 1.05, transparent: true });
   const wireMat = new THREE.MeshBasicMaterial({ color: "#14161a", wireframe: true, transparent: true, opacity: 0 });
   const ptsMat = new THREE.PointsMaterial({ color: "#14161a", size: 1.8, sizeAttenuation: false, transparent: true, opacity: 0 });
   inject(solidMat, true); inject(wireMat, false); inject(ptsMat, false);
@@ -109,10 +110,9 @@ vec3 objectTangent=vec3(tangent.xyz);
 
   // fases: [relevo, escala, wire, pontos, cor, metal, rugosidade, faixas, freq. faixas]
   const K = [
-    [.21, 1, 0, 0, "#b9c7e6", 1, .16, 1, 5], [.27, 1.05, 0, 0, "#c4c0e8", 1, .14, 1, 7],
-    [.23, 1.05, 0, 0, "#a9d3e0", 1, .12, 1, 4], [.22, 1.05, 1, 1, "#b9c7e6", 1, .16, 0, 5],
-    [.14, 1.05, 0, 0, "#e3d3b4", 1, .2, .6, 6], [.25, 1.1, 0, 0, "#b9c7e6", 1, .16, 1, 9],
-    [.04, .45, 0, 0, "#dfe6f2", 1, .05, 0, 5], [.21, 1, 0, 0, "#b9c7e6", 1, .16, 1, 5]
+    [.26, 1, 0, 0, "#a8b6d2", 1, .3, 1, 3.4], [.3, 1.04, 0, 0, "#a8b6d2", 1, .3, 1, 3], [.27, 1.04, 0, 0, "#a8b6d2", 1, .3, 1, 4.2],
+    [.25, 1.04, 1, 1, "#a8b6d2", 1, .3, 0, 3.4], [.16, 1, 0, 0, "#b4bccc", 1, .3, .7, 2.6], [.29, 1.06, 0, 0, "#a8b6d2", 1, .3, 1, 3.8],
+    [.05, .5, 0, 0, "#c9d2e4", 1, .12, 0, 3], [.26, 1, 0, 0, "#a8b6d2", 1, .3, 1, 3.4]
   ];
   const c1 = new THREE.Color(), c2 = new THREE.Color(); let camZ = 10;
   function apply(q) {
@@ -126,7 +126,7 @@ vec3 objectTangent=vec3(tangent.xyz);
   function resize() {
     const w = canvas.clientWidth || 300, h = canvas.clientHeight || 300;
     renderer.setSize(w, h, false); cam.aspect = w / h;
-    camZ = 2.75 / (Math.tan(cam.fov * Math.PI / 360) * Math.min(1, cam.aspect));
+    camZ = 1.95 / (Math.tan(cam.fov * Math.PI / 360) * Math.min(1, cam.aspect));
     cam.position.z = camZ; cam.updateProjectionMatrix(); drawn = -1;
   }
   let target = 0, cur = 0, drawn = -1;
