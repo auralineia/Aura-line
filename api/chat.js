@@ -865,7 +865,7 @@ ${researchRule}
 
 async function generateWithOmniRoute(messages, plan) {
   const key = process.env.OMNIROUTE_API_KEY;
-  const baseUrl = (process.env.OMNIROUTE_BASE_URL || "").replace(/\\/+$/, "");
+  const baseUrl = (process.env.OMNIROUTE_BASE_URL || "").replace(/\/+$/, "");
   const model = process.env.OMNIROUTE_MODEL || "auto";
 
   if (!baseUrl) {
@@ -1283,7 +1283,7 @@ export default async function handler(req, res) {
           credits
         });
       }
-      const baseUrl = (process.env.OMNIROUTE_BASE_URL || "").replace(/\\/+$/, "");
+  const baseUrl = (process.env.OMNIROUTE_BASE_URL || "").replace(/\/+$/, "");
       if (!baseUrl) return json(res, 200, { ok: false, configured: false });
       try {
         const health = await fetch(baseUrl + "/healthz", { signal: AbortSignal.timeout(4000) });
