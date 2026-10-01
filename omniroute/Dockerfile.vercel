@@ -1,0 +1,6 @@
+FROM diegosouzapw/omniroute:latest
+
+ENV NODE_ENV=production
+ENV PORT=80
+ENV HOSTNAME=0.0.0.0
+ENV REQUIRE_API_KEY=false
