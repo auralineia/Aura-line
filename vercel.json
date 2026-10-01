@@ -17,8 +17,14 @@
       "runtime": "container",
       "entrypoint": "Dockerfile.vercel"
     }
-  }
-  ,"rewrites": [
+  },
+  "rewrites": [
+    { "source": "/api/chat", "destination": "/api/chat.js" },
+    { "source": "/api/checkout", "destination": "/api/checkout.js" },
+    { "source": "/api/checkout-config", "destination": "/api/checkout-config.js" },
+    { "source": "/api/mercadopago-webhook", "destination": "/api/mercadopago-webhook.js" },
+    { "source": "/api/payment", "destination": "/api/payment.js" },
+    { "source": "/api/subscribe", "destination": "/api/subscribe.js" },
     { "source": "/(.*)", "destination": { "service": "rimak" } }
   ]
 }
