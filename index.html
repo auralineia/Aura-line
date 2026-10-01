@@ -167,6 +167,6 @@ document.querySelectorAll('.bars').forEach(b=>b.innerHTML=[...Array(26)].map((_,
 const IO=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const t=e.target;IO.unobserve(t);t.classList.add('in');t.querySelectorAll('[data-n]').forEach(c=>{const N=+c.dataset.n,t0=performance.now();(function u(n){const k=Math.min((n-t0)/1200,1);c.textContent=String(Math.round(N*k)).padStart(2,'0');if(k<1&&!RM)requestAnimationFrame(u)})(t0)})}),{threshold:.15});
 document.querySelectorAll('.rv').forEach(e=>IO.observe(e));
 </script>
-<script src="/rimak-functional.js?v=2"></script>
+<script src="/rimak-functional.js?v=3"></script>
 </body>
 </html>
