@@ -38,6 +38,8 @@ $("#rkClose").onclick=closePanel;$("#rkMenuClose").onclick=closeMenu;menu.onclic
 function bind(){
   function handle(el,e){
     if(!el)return;
+    // Não interceptar botões dentro de formulários de login, cadastro ou chat.
+    if(el.closest && el.closest("form"))return false;
     var t=(el.textContent||"").replace(/\s+/g," ").trim().toLowerCase();
     var href=(el.getAttribute("href")||"").toLowerCase();
     if(t.indexOf("conversar com a rimak")>=0 || href==="#s2" && t.indexOf("conversar")>=0){e&&e.preventDefault();openChat("rimak");return true}
@@ -69,10 +71,6 @@ function bind(){
     }
   }
   document.addEventListener("click",function(e){
-    var el=e.target && (e.target.closest ? e.target.closest("a,button,[role=button]") : null);
-    if(el)handle(el,e);
-  },true);
-  document.addEventListener("pointerup",function(e){
     var el=e.target && (e.target.closest ? e.target.closest("a,button,[role=button]") : null);
     if(el)handle(el,e);
   },true);
