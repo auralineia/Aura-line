@@ -56,13 +56,20 @@ function bind(){
   }
   function direct(){
     document.querySelectorAll("a.b").forEach(function(el){
-      var href=(el.getAttribute("href")||"").toLowerCase();
       var t=(el.textContent||"").replace(/\s+/g," ").trim().toLowerCase();
-      if(href==="#s2" && t.indexOf("conversar com a rimak")>=0) el.onclick=function(e){handle(el,e)};
-      else if(href==="#s3" && t.indexOf("explorar agentes")>=0) el.onclick=function(e){handle(el,e)};
-      else if(href==="#s4" && t.indexOf("acessar nevera")>=0) el.onclick=function(e){handle(el,e)};
-      else if(href==="#s4" && t.indexOf("conversar com a tempesta")>=0) el.onclick=function(e){handle(el,e)};
-      else if(href==="#s0" && t.indexOf("conheça os planos")>=0) el.onclick=function(e){handle(el,e)};
+      if(t.indexOf("conversar com a rimak")>=0 || t.indexOf("conversar com a tempesta")>=0){
+        if(el.dataset.rkLaunchBound==="1")return;
+        el.dataset.rkLaunchBound="1";
+        el.removeAttribute("ontouchend");
+        el.onclick=function(e){
+          e.preventDefault();
+          e.stopPropagation();
+          openChat(t.indexOf("tempesta")>=0?"tempesta":"rimak");
+          return false;
+        };
+        el.setAttribute("role","button");
+        el.setAttribute("aria-label",t.indexOf("tempesta")>=0?"Conversar com a TEMPESTA":"Conversar com a RIMAK");
+      }
     });
     var topRight=document.querySelector(".nv span:last-child");
     if(topRight){
