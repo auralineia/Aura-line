@@ -75,7 +75,7 @@ function bind(){
   }
   document.addEventListener("click",function(e){
     var el=e.target && (e.target.closest ? e.target.closest("a,button,[role=button]") : null);
-    if(el)handle(el,e);
+    if(el && handle(el,e)){e.preventDefault();e.stopImmediatePropagation();}
   },true);
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",direct,{once:true}); else direct();
 }
