@@ -800,17 +800,23 @@ ${researchRule}
 `;
 }
 
-async function generateWithGroq(messages, plan) {
-  const key = process.env.GROQ_API_KEY;
+async function generateWithOmniRoute(messages, plan) {
+  const key = process.env.OMNIROUTE_API_KEY;
+  const baseUrl = (process.env.OMNIROUTE_BASE_URL || "").replace(/\\/+$/, "");
+  const model = process.env.OMNIROUTE_MODEL || "auto";
 
   if (!key) {
-    throw new Error("GROQ_API_KEY não configurada.");
+    throw new Error("OMNIROUTE_API_KEY não configurada.");
+  }
+
+  if (!baseUrl) {
+    throw new Error("OMNIROUTE_BASE_URL não configurada.");
   }
 
   const config = PLAN_CONFIG[plan] || PLAN_CONFIG.free;
 
   const response = await fetch(
-    "https://api.groq.com/openai/v1/chat/completions",
+    baseUrl + "/v1/chat/completions",
     {
       method: "POST",
       headers: {
@@ -818,11 +824,9 @@ async function generateWithGroq(messages, plan) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: MODEL,
+        model,
         messages,
         temperature: 0.6,
-        reasoning_effort: plan === "ultra" ? "medium" : "low",
-        include_reasoning: false,
         max_completion_tokens: config.maxCompletionTokens,
         top_p: 0.95
       })
@@ -842,7 +846,7 @@ async function generateWithGroq(messages, plan) {
       parsed?.error?.message ||
       parsed?.message ||
       raw ||
-      "Erro na Groq.";
+      "Erro no OmniRoute.";
 
     if (response.status === 413) {
       throw new Error(
@@ -864,7 +868,7 @@ async function generateWithGroq(messages, plan) {
     data?.choices?.[0]?.message?.content?.trim();
 
   if (!reply) {
-    throw new Error("A RIMAK não recebeu uma resposta válida do modelo.");
+    throw new Error("A RIMAK não recebeu uma resposta válida do OmniRoute.");
   }
 
   return reply;
@@ -1289,7 +1293,7 @@ export default async function handler(req, res) {
       }
     ];
 
-    const reply = await generateWithGroq(
+    const reply = await generateWithOmniRoute(
       messages,
       plan
     );
@@ -1310,7 +1314,7 @@ export default async function handler(req, res) {
           : null,
       researched: Boolean(researchText),
       sources: researchSources(research),
-      model: MODEL
+      model: process.env.OMNIROUTE_MODEL || "auto"
     });
   } catch (error) {
     console.error("RIMAK API error:", error);
