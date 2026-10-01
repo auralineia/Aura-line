@@ -2,17 +2,23 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "services": {
     "rimak": {
-      "root": "."
+      "root": ".",
+      "bindings": [
+        {
+          "type": "service",
+          "service": "omniroute",
+          "format": "url",
+          "env": "OMNIROUTE_BASE_URL"
+        }
+      ]
     },
     "omniroute": {
       "root": "omniroute/",
       "runtime": "container",
-      "entrypoint": "Dockerfile.vercel",
-      "bindings": []
+      "entrypoint": "Dockerfile.vercel"
     }
   },
   "rewrites": [
-    { "source": "/omniroute/(.*)", "destination": { "service": "omniroute" } },
     { "source": "/(.*)", "destination": { "service": "rimak" } }
   ]
 }
