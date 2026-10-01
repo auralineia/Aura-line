@@ -1104,7 +1104,9 @@ async function authGateway(action, body, req) {
             data.error_description ||
             data.msg ||
             data.message ||
-            "Não foi possível continuar."
+            data.error ||
+            data.code ||
+            "Supabase recusou a solicitação sem informar o motivo. Verifique a configuração de autenticação."
         }
       };
     }
