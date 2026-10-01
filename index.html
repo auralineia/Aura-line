@@ -30,7 +30,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
 h2{font:500 clamp(34px,4.4vw,62px)/1.02 var(--sans);letter-spacing:-.035em;margin-bottom:18px}
 h2.big{font-size:clamp(38px,8vw,116px);text-transform:uppercase;line-height:.94;letter-spacing:-.04em}
 .tx p{color:rgba(var(--fg),.64);max-width:40ch;margin-bottom:26px}.c p{margin-inline:auto}
-.b{display:inline-flex;gap:10px;align-items:center;padding:12px 18px;border:1px solid rgba(var(--fg),.4);background:none;color:inherit;font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:.25s;text-decoration:none}
+.b{position:relative;z-index:50;pointer-events:auto;display:inline-flex;gap:10px;align-items:center;padding:12px 18px;border:1px solid rgba(var(--fg),.4);background:none;color:inherit;font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:.25s;text-decoration:none}
 .b:hover{background:rgb(var(--fg));color:rgb(var(--bg))}
 :focus-visible{outline:2px solid #8fd6ff;outline-offset:3px}
 .hb{position:absolute;left:6vw;right:6vw;top:calc(100vh - 92px);display:flex;justify-content:space-between;font:400 11px var(--mono);color:rgba(var(--fg),.65)}
@@ -69,7 +69,7 @@ h2.big{font-size:clamp(38px,8vw,116px);text-transform:uppercase;line-height:.94;
   <span class="tag rv">01 RIMAK</span>
   <h2 class="rv" style="--d:.08s">O maestro do seu ecossistema.</h2>
   <p class="rv" style="--d:.16s">Entenda, planeje, crie e coordene. A RIMAK é o ponto de partida para tudo.</p>
-  <a class="b rv" style="--d:.24s" href="#s2">Conversar com a RIMAK →</a>
+  <a class="b rv" style="--d:.24s" href="#s2" onclick="if(window.rimakApp){rimakApp.openChat('rimak');return false}" ontouchend="if(window.rimakApp){rimakApp.openChat('rimak');return false}">Conversar com a RIMAK →</a>
   <div class="sts rv" style="--d:.3s"><div><b>24/7</b>execução</div><div><b data-n="6">06</b>agentes</div><div><b data-n="4">04</b>pilares</div><div><b data-n="1">01</b>assinatura</div></div>
 </div><div class="bars"></div></section>
 
@@ -77,7 +77,7 @@ h2.big{font-size:clamp(38px,8vw,116px);text-transform:uppercase;line-height:.94;
   <span class="tag rv">02 Agentes</span>
   <h2 class="rv" style="--d:.08s">Conhecimento em ação.</h2>
   <p class="rv" style="--d:.16s">Agentes especializados para cada necessidade. Pesquisam, analisam, criam, programam e muito mais.</p>
-  <a class="b rv" style="--d:.24s" href="#s3">Explorar agentes →</a>
+  <a class="b rv" style="--d:.24s" href="#s3" onclick="if(window.rimakApp){rimakApp.agents();return false}" ontouchend="if(window.rimakApp){rimakApp.agents();return false}">Explorar agentes →</a>
   <div class="ls rv" style="--d:.3s"><div><b>Research</b><span>Pesquisa profunda</span></div><div><b>Code</b><span>Desenvolvimento</span></div><div><b>Writer</b><span>Conteúdo e escrita</span></div><div><b>Designer</b><span>Design e criação</span></div><div><b>Analyst</b><span>Dados e insights</span></div><div><b>Marketing</b><span>Estratégia e marca</span></div><div><b>Mais agentes</b><span>Em breve</span></div></div>
 </div></section>
 
@@ -85,14 +85,14 @@ h2.big{font-size:clamp(38px,8vw,116px);text-transform:uppercase;line-height:.94;
   <span class="tag rv">03 NEVERA</span>
   <h2 class="rv" style="--d:.08s">Do plano à realidade.</h2>
   <p class="rv" style="--d:.16s">A NEVERA executa, automatiza e transforma suas ideias em ações. Trabalha 24/7 por você.</p>
-  <a class="b rv" style="--d:.24s" href="#s4">Acessar NEVERA →</a>
+  <a class="b rv" style="--d:.24s" href="#s4" onclick="window.open('https://nevera-production.up.railway.app','_blank');return false" ontouchend="window.open('https://nevera-production.up.railway.app','_blank');return false">Acessar NEVERA →</a>
 </div></section>
 
 <section class="sc r" id="s4"><div class="tx">
   <span class="tag rv">04 TEMPESTA</span>
   <h2 class="rv" style="--d:.08s">Entende. Sente. Adapta.</h2>
   <p class="rv" style="--d:.16s">Uma inteligência construída para compreender a interação humana. Mais que respostas, conexões.</p>
-  <a class="b rv" style="--d:.24s" href="#s5">Conversar com a TEMPESTA →</a>
+  <a class="b rv" style="--d:.24s" href="#s5" onclick="if(window.rimakApp){rimakApp.openChat('tempesta');return false}" ontouchend="if(window.rimakApp){rimakApp.openChat('tempesta');return false}">Conversar com a TEMPESTA →</a>
 </div></section>
 
 <section class="sc col" id="s5"><div class="tx">
@@ -105,7 +105,7 @@ h2.big{font-size:clamp(38px,8vw,116px);text-transform:uppercase;line-height:.94;
 <section class="sc c" id="s6"><div class="tx">
   <h2 class="big rv">Tudo o que você precisa. Em um só lugar.</h2>
   <p class="rv" style="--d:.1s">Uma plataforma completa de IA, com agentes especializados, execução, memória, ferramentas e muito mais.</p>
-  <a class="b rv" style="--d:.2s" href="#s0">Conheça os planos →</a>
+  <a class="b rv" style="--d:.2s" href="#s0" onclick="if(window.rimakApp){rimakApp.plans();return false}" ontouchend="if(window.rimakApp){rimakApp.plans();return false}">Conheça os planos →</a>
   <div class="ft rv" style="--d:.3s">Planos PRO e ULTRA · Inteligência que se adapta. Tecnologia que te impulsiona.</div>
 </div></section>
 
