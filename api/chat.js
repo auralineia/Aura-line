@@ -132,6 +132,44 @@ function normalizePlan(subscription) {
   return "free";
 }
 
+async function ensureCredits(userId, initialBalance = 20) {
+  const encoded = encodeURIComponent(userId);
+
+  try {
+    const existing = await supabaseRest(
+      `credits?user_id=eq.${encoded}&select=balance&limit=1`
+    );
+    const rows = await existing.json().catch(() => []);
+
+    if (existing.ok && Array.isArray(rows) && rows[0]) {
+      return Number(rows[0].balance || 0);
+    }
+
+    const created = await supabaseRest("credits", {
+      method: "POST",
+      headers: { Prefer: "return=representation,resolution=merge-duplicates" },
+      body: JSON.stringify({
+        user_id: userId,
+        balance: Math.max(0, Number(initialBalance) || 20)
+      })
+    });
+
+    if (created.ok) {
+      const createdRows = await created.json().catch(() => []);
+      return Number(createdRows?.[0]?.balance ?? initialBalance);
+    }
+
+    const retry = await supabaseRest(
+      `credits?user_id=eq.${encoded}&select=balance&limit=1`
+    );
+    const retryRows = await retry.json().catch(() => []);
+    return Number(retryRows?.[0]?.balance || 0);
+  } catch (error) {
+    console.error("Credits init:", error);
+    throw new Error("Não foi possível preparar seus créditos.");
+  }
+}
+
 async function consumeCredits(userId, amount = 1) {
   const { url, serviceKey } = supabaseConfig();
 
@@ -156,41 +194,41 @@ async function consumeCredits(userId, amount = 1) {
   if (!response.ok) {
     const lower = raw.toLowerCase();
 
-    if (
-      lower.includes("insufficient") ||
-      lower.includes("créditos insuficientes")
-    ) {
+    if (lower.includes("insufficient") || lower.includes("créditos insuficientes")) {
       return { ok: false, insufficient: true, balance: 0 };
     }
 
-    throw new Error(
-      `Erro ao consumir créditos: ${response.status} ${raw}`
-    );
+    if (response.status === 404 || response.status === 405 || lower.includes("consume_credits_for_user") || (lower.includes("function") && lower.includes("does not exist"))) {
+      const current = await ensureCredits(userId, 20);
+      if (current < amount) return { ok: false, insufficient: true, balance: current };
+
+      const next = current - amount;
+      const update = await supabaseRest(
+        `credits?user_id=eq.${encodeURIComponent(userId)}`,
+        {
+          method: "PATCH",
+          headers: { Prefer: "return=representation" },
+          body: JSON.stringify({ balance: next })
+        }
+      );
+
+      if (!update.ok) throw new Error("Não foi possível atualizar seus créditos.");
+      return { ok: true, balance: next };
+    }
+
+    throw new Error(`Erro ao consumir créditos: ${response.status} ${raw}`);
   }
 
   let value;
-  try {
-    value = JSON.parse(raw);
-  } catch {
-    value = raw;
-  }
+  try { value = JSON.parse(raw); } catch { value = raw; }
 
   let balance;
+  if (Array.isArray(value)) balance = Number(value[0]?.balance ?? value[0]);
+  else if (value && typeof value === "object") balance = Number(value.balance ?? value.result);
+  else balance = Number(value);
 
-  if (Array.isArray(value)) {
-    balance = Number(value[0]?.balance ?? value[0]);
-  } else if (value && typeof value === "object") {
-    balance = Number(value.balance ?? value.result);
-  } else {
-    balance = Number(value);
-  }
-
-  return {
-    ok: true,
-    balance: Number.isFinite(balance) ? balance : 0
-  };
+  return { ok: true, balance: Number.isFinite(balance) ? balance : 0 };
 }
-
 async function getMemories(userId, userToken, plan) {
   if (!userToken) return [];
 
@@ -1222,13 +1260,16 @@ export default async function handler(req, res) {
       if (action === "account") {
         const subscription = await getSubscription(user.id);
         const plan = normalizePlan(subscription);
-        let credits = 0;
-        try {
-          const balanceResponse = await supabaseRest(`credits?user_id=eq.${encodeURIComponent(user.id)}&select=balance&limit=1`);
-          const rows = await balanceResponse.json().catch(() => []);
-          credits = Number(rows?.[0]?.balance || 0);
-        } catch {}
-        return json(res, 200, { user: { id: user.id, email: user.email || null }, plan, planName: PLAN_CONFIG[plan].name, credits });
+        const credits = await ensureCredits(
+          user.id,
+          PLAN_CONFIG[plan].dailyCredits
+        );
+        return json(res, 200, {
+          user: { id: user.id, email: user.email || null },
+          plan,
+          planName: PLAN_CONFIG[plan].name,
+          credits
+        });
       }
       const baseUrl = (process.env.OMNIROUTE_BASE_URL || "").replace(/\\/+$/, "");
       if (!baseUrl) return json(res, 200, { ok: false, configured: false });
@@ -1271,6 +1312,8 @@ export default async function handler(req, res) {
     const subscription = await getSubscription(user.id);
     const plan = normalizePlan(subscription);
     const config = PLAN_CONFIG[plan];
+
+    await ensureCredits(user.id, config.dailyCredits);
 
     const history = safeHistory(body.history, plan);
     const memories = await getMemories(
