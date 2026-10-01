@@ -17,8 +17,5 @@
       "runtime": "container",
       "entrypoint": "Dockerfile.vercel"
     }
-  },
-  "rewrites": [
-    { "source": "/(.*)", "destination": { "service": "rimak" } }
-  ]
+  }
 }
