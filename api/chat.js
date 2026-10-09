@@ -964,17 +964,37 @@ function imageCost() {
   return Number.isFinite(n) && n >= 1 ? Math.min(Math.round(n), 20) : 3;
 }
 
+async function generateImageWithPollinations(prompt, size) {
+  const [w, h] = size.split("x");
+  const seed = Math.floor(Math.random() * 1e9);
+  const url =
+    "https://image.pollinations.ai/prompt/" + encodeURIComponent(prompt) +
+    `?width=${w}&height=${h}&model=flux&seed=${seed}&nologo=true&referrer=rimak.vercel.app`;
+
+  let response;
+  try {
+    response = await fetch(url, { signal: AbortSignal.timeout(55000) });
+  } catch {
+    throw new Error("O gerador de imagens demorou demais. Tente de novo em instantes.");
+  }
+  if (response.status === 429) {
+    throw new Error("Muitos pedidos de imagem ao mesmo tempo. Espere alguns segundos e tente de novo.");
+  }
+  const type = response.headers.get("content-type") || "";
+  if (!response.ok || !type.startsWith("image/")) {
+    throw new Error("Não foi possível gerar a imagem agora. Tente de novo.");
+  }
+  await response.arrayBuffer(); // garante que a imagem terminou de ser gerada
+  return { url, revised: null };
+}
+
 async function generateImageWithOmniRoute(prompt, size) {
   const baseUrl = (process.env.OMNIROUTE_BASE_URL || "").replace(/\/+$/, "");
   const key = process.env.OMNIROUTE_API_KEY;
   const model = process.env.OMNIROUTE_IMAGE_MODEL;
 
-  if (!baseUrl) throw new Error("OMNIROUTE_BASE_URL não configurada.");
-  if (!model) {
-    const err = new Error("A geração de imagens ainda não foi ativada na DNA.");
-    err.code = "image_not_configured";
-    throw err;
-  }
+  // Sem modelo configurado no OmniRoute: usa o gerador gratuito (Pollinations).
+  if (!baseUrl || !model) return generateImageWithPollinations(prompt, size);
 
   const response = await fetch(baseUrl + "/v1/images/generations", {
     method: "POST",
@@ -1055,7 +1075,7 @@ async function handleImageRequest(req, res, user) {
     plan,
     planName: config.name,
     credits: typeof credit.balance === "number" ? credit.balance : null,
-    model: process.env.OMNIROUTE_IMAGE_MODEL
+    model: process.env.OMNIROUTE_IMAGE_MODEL || "pollinations"
   });
 }
 
@@ -1424,7 +1444,7 @@ export default async function handler(req, res) {
 
     if (action === "image_status") {
       return json(res, 200, {
-        enabled: Boolean(process.env.OMNIROUTE_IMAGE_MODEL && process.env.OMNIROUTE_BASE_URL),
+        enabled: true,
         cost: imageCost()
       });
     }
