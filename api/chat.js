@@ -885,8 +885,32 @@ function textProvider() {
   return null;
 }
 
+// Escolhe um modelo que a chave da Groq realmente enxerga (a lista muda com o tempo).
+let groqModelCache = null;
+async function resolveGroqModel(key) {
+  if (process.env.GROQ_MODEL) return process.env.GROQ_MODEL;
+  if (groqModelCache && Date.now() - groqModelCache.at < 10 * 60 * 1000) return groqModelCache.id;
+  const prefer = ["llama-3.3-70b-versatile", "openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.1-8b-instant"];
+  let id = prefer[0];
+  try {
+    const r = await fetch("https://api.groq.com/openai/v1/models", {
+      headers: { Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(8000)
+    });
+    const data = await r.json();
+    const ids = (data?.data || []).map(m => m.id);
+    id =
+      prefer.find(m => ids.includes(m)) ||
+      ids.find(m => !/whisper|guard|tts|orpheus|playai|distil/i.test(m)) ||
+      prefer[0];
+  } catch {}
+  groqModelCache = { id, at: Date.now() };
+  return id;
+}
+
 async function generateWithOmniRoute(messages, plan) {
   const provider = textProvider();
+  if (provider && provider.name === "groq") provider.model = await resolveGroqModel(provider.key);
 
   if (!provider) {
     throw new Error("Nenhum provedor de IA configurado (OMNIROUTE_BASE_URL ou GROQ_API_KEY).");
@@ -909,7 +933,8 @@ async function generateWithOmniRoute(messages, plan) {
         messages,
         temperature: 0.6,
         max_completion_tokens: config.maxCompletionTokens,
-        top_p: 0.95
+        top_p: 0.95,
+        ...(/^openai\/gpt-oss/.test(model) ? { reasoning_effort: "low" } : {})
       })
     }
   );
@@ -1507,9 +1532,9 @@ export default async function handler(req, res) {
       });
     }
 
-    const credit = await consumeCredits(user.id, 1);
-
-    if (!credit.ok && credit.insufficient) {
+    // confere o saldo antes; o crédito só é cobrado se a resposta for gerada
+    const currentBalance = await ensureCredits(user.id, config.dailyCredits);
+    if (currentBalance < 1) {
       return json(res, 402, {
         error: "Seus créditos acabaram.",
         credits: 0,
@@ -1550,6 +1575,17 @@ export default async function handler(req, res) {
       plan
     );
 
+    const credit = await consumeCredits(user.id, 1);
+
+    if (!credit.ok && credit.insufficient) {
+      return json(res, 402, {
+        error: "Seus créditos acabaram.",
+        credits: 0,
+        plan,
+        planName: config.name
+      });
+    }
+
     if (mode === "rimak" || mode.indexOf("agent:") === 0) {
       await processMemory(user.id, token, message);
     }
@@ -1564,7 +1600,7 @@ export default async function handler(req, res) {
           : null,
       researched: Boolean(researchText),
       sources: researchSources(research),
-      model: textProvider()?.model || "auto"
+      model: groqModelCache?.id || textProvider()?.model || "auto"
     });
   } catch (error) {
     console.error("DNA API error:", error);
