@@ -3,7 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>RIMAK — Experiência</title>
+<title>DNA — Experiência</title>
+<meta name="description" content="Uma plataforma completa de IA, com agentes especializados, execução, memória, ferramentas e muito mais.">
+<meta name="theme-color" content="#050507">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="DNA">
+<meta property="og:title" content="DNA — Mais que uma IA. Um ecossistema.">
+<meta property="og:description" content="Uma plataforma completa de IA, com agentes especializados, execução, memória, ferramentas e muito mais.">
+<meta property="og:url" content="https://rimak.vercel.app/">
+<meta property="og:image" content="https://rimak.vercel.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DNA — Mais que uma IA. Um ecossistema.">
+<meta name="twitter:description" content="Uma plataforma completa de IA, com agentes especializados, execução, memória, ferramentas e muito mais.">
+<meta name="twitter:image" content="https://rimak.vercel.app/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -15,69 +33,116 @@ canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
 #st{z-index:0}#gl{z-index:1}
 #fl{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .5s;background:radial-gradient(circle at 30% 45%,rgba(190,225,255,.5),transparent 60%)}
 #fl.z{opacity:1;transition:none}
-.nv{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:20;display:grid;grid-template-columns:1fr auto 1fr;padding:16px 5vw 0;font:400 11px var(--mono);color:rgba(var(--fg),.7)}
+.nv{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:20;display:grid;grid-template-columns:1fr auto 1fr;padding:16px 5vw 0;font:400 12px var(--mono);color:rgba(var(--fg),.88)}
 .nv b{font:500 15px var(--sans);letter-spacing:.42em;color:rgb(var(--fg));padding-left:.42em}
 .nv span:last-child{text-align:right}
-#hl{position:fixed;inset:0;z-index:15;pointer-events:none}
-#hl a{position:absolute;pointer-events:auto;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:rgb(var(--fg));text-decoration:none;padding:8px}
-#hl a:hover{text-decoration:underline}
-#ct{position:fixed;left:5vw;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;font:400 11px var(--mono);color:rgba(var(--fg),.6)}
+#ct{position:fixed;left:5vw;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;font:400 12px var(--mono);color:rgba(var(--fg),.82)}
 .sc{position:relative;z-index:3;min-height:120vh;display:flex;align-items:center;padding:0 6vw}
 .sc.r{justify-content:flex-end}.sc.c{justify-content:center;text-align:center}
 .sc.col{flex-direction:column;align-items:stretch;justify-content:center}
 .tx{max-width:min(500px,42vw)}.c .tx{max-width:min(900px,90vw)}.col .tx{max-width:min(560px,90vw)}
-.tag{display:inline-block;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;background:rgb(var(--fg));color:rgb(var(--bg));margin-bottom:22px}
+.tag{display:inline-block;font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;background:rgb(var(--fg));color:rgb(var(--bg));margin-bottom:22px}
 h2{font:500 clamp(34px,4.4vw,62px)/1.02 var(--sans);letter-spacing:-.035em;margin-bottom:18px}
 h2.big{font-size:clamp(38px,8vw,116px);text-transform:uppercase;line-height:.94;letter-spacing:-.04em}
-.tx p{color:rgba(var(--fg),.64);max-width:40ch;margin-bottom:26px}.c p{margin-inline:auto}
-.b{position:relative;z-index:50;pointer-events:auto;display:inline-flex;gap:10px;align-items:center;padding:12px 18px;border:1px solid rgba(var(--fg),.4);background:none;color:inherit;font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:.25s;text-decoration:none}
+.tx p{color:rgba(var(--fg),.84);font-size:16px;line-height:1.55;max-width:40ch;margin-bottom:26px}.c p{margin-inline:auto}
+.b{position:relative;z-index:50;pointer-events:auto;display:inline-flex;gap:10px;align-items:center;padding:12px 18px;border:1px solid rgba(var(--fg),.4);background:none;color:inherit;font:500 13px var(--mono);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:.25s;text-decoration:none}
 .b:hover{background:rgb(var(--fg));color:rgb(var(--bg))}
 :focus-visible{outline:2px solid #8fd6ff;outline-offset:3px}
-.hb{position:absolute;left:6vw;right:6vw;top:calc(100vh - 92px);display:flex;justify-content:space-between;font:400 11px var(--mono);color:rgba(var(--fg),.65)}
-.sts{display:flex;gap:36px;margin-top:38px;font:400 11px var(--mono);color:rgba(var(--fg),.6)}
+.hb{position:absolute;left:6vw;right:6vw;top:calc(100vh - 92px);display:flex;flex-wrap:wrap;gap:4px 16px;justify-content:space-between;font:400 12px var(--mono);color:rgba(var(--fg),.85)}
+.sts{display:flex;gap:36px;margin-top:38px;font:400 12px var(--mono);color:rgba(var(--fg),.82)}
 .sts b{display:block;font:500 clamp(22px,2.6vw,34px) var(--mono);color:rgb(var(--fg));letter-spacing:-.03em}
-.ls{display:grid;grid-template-columns:1fr 1fr;gap:0 26px;font:400 11px var(--mono);margin-top:30px;max-width:480px}
+.ls{display:grid;grid-template-columns:1fr 1fr;gap:0 26px;font:400 12px var(--mono);margin-top:30px;max-width:480px}
 .ls div{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid rgba(var(--fg),.2)}
-.ls b{font-weight:500}.ls span{color:rgba(var(--fg),.55);text-align:right}
+.ls b{font-weight:500}.ls span{color:rgba(var(--fg),.78);text-align:right}
 .gr{display:grid;grid-template-columns:repeat(4,1fr);margin-top:40px;border-top:1px solid rgba(var(--fg),.3)}
-.gr div{padding:20px 20px 24px 0;font:400 12px/1.5 var(--mono);color:rgba(var(--fg),.6)}
+.gr div{padding:20px 20px 24px 0;font:400 13px/1.5 var(--mono);color:rgba(var(--fg),.8)}
 .gr b{display:block;font:500 18px var(--sans);letter-spacing:-.02em;color:rgb(var(--fg));margin-bottom:6px}
 .bars{position:absolute;right:6vw;bottom:9vh;display:flex;align-items:flex-end;gap:3px;height:34px}
 .bars i{width:2px;height:100%;background:rgba(var(--fg),.7);transform-origin:bottom;animation:br 1.4s ease-in-out infinite alternate;animation-delay:calc(var(--i)*-.09s)}
 @keyframes br{from{transform:scaleY(.15)}to{transform:scaleY(1)}}
 .rv{opacity:0;translate:0 26px;filter:blur(6px);transition:opacity .9s,translate .9s cubic-bezier(.2,.7,.2,1),filter .9s;transition-delay:var(--d,0s)}
 .rv.in{opacity:1;translate:0 0;filter:none}
-.ft{margin-top:44px;font:400 11px var(--mono);color:rgba(var(--fg),.55)}
-@media (max-width:820px){.sc{align-items:flex-end;padding-bottom:15vh}.sc.c{align-items:center;padding-bottom:0}.tx{max-width:100%}.gr{grid-template-columns:1fr 1fr}.ls{grid-template-columns:1fr}.bars{display:none}.nv span:first-child{visibility:hidden}.sts{gap:22px}#hl a:nth-child(2){right:4%!important}#hl a:nth-child(4){left:2%!important}}
+.ft{margin-top:44px;font:400 12px var(--mono);color:rgba(var(--fg),.78)}
+@media (max-width:820px){.sc{align-items:flex-end;padding-bottom:15vh}.sc.c{align-items:center;padding-bottom:0}.tx{max-width:100%}.gr{grid-template-columns:1fr 1fr}.ls{grid-template-columns:1fr}.bars{display:none}.nv span:first-child{visibility:hidden}.sts{gap:22px}}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;translate:none;filter:none;transition:none}.bars i{animation:none}html{scroll-behavior:auto}}
+
+/* ===== Logo DNA animada =====
+   A forma é a PNG original (usada como máscara, sem redesenhar nada).
+   Três camadas recortam D, N e A: entram em sequência e depois um brilho percorre a palavra. */
+.nv .dnaBrand{display:flex;justify-content:center;align-items:center;line-height:0}
+.dnaMark{--dc:rgb(var(--fg));--dh:#8fd6ff;position:relative;display:block;height:30px;aspect-ratio:800/522;isolation:isolate;animation:dnaGlow 4.5s ease-in-out 2s infinite alternate}
+.dnaMark i{position:absolute;inset:0;display:block;
+  -webkit-mask:url(dna-logo.png) center/100% 100% no-repeat;mask:url(dna-logo.png) center/100% 100% no-repeat;
+  background:linear-gradient(105deg,var(--dc) 0%,var(--dc) 42%,var(--dh) 50%,var(--dc) 58%,var(--dc) 100%) 100% 0/260% 100% no-repeat;
+  animation:dnaRise 1.1s cubic-bezier(.2,.7,.2,1) both,dnaShine 6s ease-in-out 2.2s infinite}
+.dnaMark i:nth-child(1){clip-path:inset(0 70.9% 0 0);animation-delay:.1s,2.2s}
+.dnaMark i:nth-child(2){clip-path:inset(0 26.5% 0 29.1%);animation-delay:.3s,2.2s}
+.dnaMark i:nth-child(3){clip-path:inset(0 0 0 73.5%);animation-delay:.5s,2.2s}
+@keyframes dnaRise{from{opacity:0;transform:translateY(45%) scale(.85)}to{opacity:1;transform:none}}
+@keyframes dnaShine{0%,40%{background-position:100% 0}78%,100%{background-position:0% 0}}
+@keyframes dnaGlow{from{filter:drop-shadow(0 0 0 rgba(143,214,255,0))}to{filter:drop-shadow(0 0 9px rgba(143,214,255,.38))}}
+@media (prefers-reduced-motion:reduce){.dnaMark,.dnaMark i{animation:none!important}}
+/* ===== Interações da página ===== */
+.menuBtn{background:transparent;border:1px solid rgba(var(--fg),.32);color:rgb(var(--fg));border-radius:12px;width:42px;height:38px;display:inline-grid;place-items:center;padding:0;cursor:pointer;transition:background .25s,border-color .25s}
+.menuBtn:hover{background:rgba(var(--fg),.1);border-color:rgba(var(--fg),.6)}
+.menuBtn svg{width:20px;height:20px}
+.b:active{transform:scale(.97)}
+.ask{position:absolute;left:6vw;right:6vw;top:calc(100vh - 210px);max-width:560px;margin-inline:auto;z-index:6;display:flex;align-items:center;gap:8px;height:56px;padding:0 8px 0 22px;border-radius:28px;border:1px solid rgba(var(--fg),.3);background:rgba(var(--fg),.06);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transition:border-color .3s,box-shadow .3s,background .3s}
+.ask:hover{border-color:rgba(var(--fg),.5)}
+.ask:focus-within{border-color:rgba(var(--fg),.75);background:rgba(var(--fg),.1);box-shadow:0 0 0 5px rgba(143,214,255,.1),0 20px 60px rgba(0,0,0,.45)}
+.ask input{flex:1;min-width:0;height:100%;background:none;border:0;outline:0;color:rgb(var(--fg));font:400 16px var(--sans)}
+.ask .ph{position:absolute;left:22px;right:70px;top:50%;translate:0 -50%;pointer-events:none;color:rgba(var(--fg),.62);font:400 16px var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .2s}
+.ask .ph::after{content:"";display:inline-block;width:1px;height:1.1em;background:currentColor;margin-left:2px;vertical-align:text-bottom;animation:caret 1s steps(1) infinite}
+@keyframes caret{50%{opacity:0}}
+.ask.has .ph,.ask:focus-within .ph{opacity:0}
+.ask button{flex:0 0 auto;width:40px;height:40px;border-radius:50%;border:0;background:rgb(var(--fg));color:rgb(var(--bg));cursor:pointer;display:grid;place-items:center;padding:0;transition:transform .2s}
+.ask button:hover{transform:translateY(-1px)}
+.ask button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ls div[role=button]{cursor:pointer;transition:background .25s,padding .25s}
+.ls div[role=button]:hover,.ls div[role=button]:focus-visible{background:rgba(var(--fg),.07);padding-left:8px;padding-right:8px}
+.gr b em{font:500 9.5px var(--mono);font-style:normal;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(var(--fg),.35);border-radius:8px;padding:2px 6px;margin-left:8px;vertical-align:middle;color:rgba(var(--fg),.75)}
+.rail{position:fixed;right:10px;top:50%;translate:0 -50%;z-index:18;display:flex;flex-direction:column;gap:4px}
+.rail button{width:22px;height:22px;padding:0;border:0;background:none;cursor:pointer;display:grid;place-items:center}
+.rail button::before{content:"";width:6px;height:6px;border-radius:50%;background:rgba(var(--fg),.4);transition:all .3s}
+.rail button:hover::before{background:rgba(var(--fg),.9)}
+.rail button.on::before{width:8px;height:8px;background:rgb(var(--fg));box-shadow:0 0 0 4px rgba(var(--fg),.14)}
+#cg{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .5s;background:radial-gradient(340px circle at var(--mx,50%) var(--my,50%),rgba(143,214,255,.1),transparent 70%)}
+body.hasptr #cg{opacity:1}
+@media (max-width:820px){.rail{right:4px}.rail button{width:18px;height:18px}.rail button::before{width:5px;height:5px}}
+@media (prefers-reduced-motion:reduce){.ask .ph::after{animation:none}}
 </style>
+<link rel="stylesheet" href="/dna-chat.css?v=3">
+<link rel="stylesheet" href="/dna-site.css?v=1">
 </head>
 <body>
-<canvas id="st"></canvas><canvas id="gl"></canvas><div id="fl"></div>
-<header class="nv"><span>Mais que uma IA. Um ecossistema.</span><b>RIMAK</b><span><button type="button" aria-label="Abrir menu" onclick="window.rimakApp&&rimakApp.menu()" style="background:transparent;border:1px solid rgba(var(--fg),.32);color:rgb(var(--fg));border-radius:10px;width:40px;height:36px;font-size:21px;line-height:1;cursor:pointer">☰</button></span></header>
-<nav id="hl" aria-label="Seções">
-  <a href="#s1" style="left:50%;top:21%;translate:-50% 0">01 RIMAK</a>
-  <a href="#s2" style="right:15%;top:54%">02 Agentes</a>
-  <a href="#s3" style="right:24%;bottom:12%">03 NEVERA</a>
-  <a href="#s4" style="left:13%;top:66%">04 TEMPESTA</a>
-</nav>
-<div id="ct">01 / 07 — RIMAK</div>
+<canvas id="st"></canvas><canvas id="gl"></canvas><div id="fl"></div><div id="cg"></div><div id="prog" aria-hidden="true"></div><nav class="rail" id="rail" aria-label="Ir para seção"></nav>
+<header class="nv"><span>Mais que uma IA. Um ecossistema.</span><div class="dnaBrand" role="img" aria-label="DNA"><div class="dnaMark" aria-hidden="true"><i></i><i></i><i></i></div></div><span><button type="button" class="menuBtn" aria-label="Abrir menu" aria-haspopup="dialog" onclick="window.rimakApp&&rimakApp.menu()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg></button></span></header>
+<div id="ct" data-notr>01 / 07 — DNA</div>
 
-<section class="sc" id="s0"><div class="hb"><span>Bem-vindo de volta, Kelvyn.</span><span>Role para explorar ↓</span></div></section>
+<section class="sc" id="s0">
+  <form class="ask" id="ask" autocomplete="off" role="search">
+    <label class="sr" for="askIn">Pergunte à DNA</label>
+    <input id="askIn" type="text" enterkeyhint="send" maxlength="600" autocapitalize="sentences">
+    <span class="ph" id="askPh" aria-hidden="true"></span>
+    <button type="submit" aria-label="Enviar pergunta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button>
+  </form>
+  <nav id="hl" aria-label="Seções"><a href="#s1"><i>01</i>DNA</a><a href="#s2"><i>02</i>Agentes</a><a href="#s3"><i>03</i>NEVERA</a><a href="#s4"><i>04</i>TEMPESTA</a></nav>
+  <div class="hb"><span id="greet" data-notr>Bem-vindo à DNA.</span><span>Role para explorar ↓</span></div>
+</section>
 
 <section class="sc" id="s1"><div class="tx">
-  <span class="tag rv">01 RIMAK</span>
-  <h2 class="rv" style="--d:.08s">O maestro do seu ecossistema.</h2>
-  <p class="rv" style="--d:.16s">Entenda, planeje, crie e coordene. A RIMAK é o ponto de partida para tudo.</p>
-  <a class="b rv" style="--d:.24s" href="#s2" role="button" onclick="event.preventDefault();window.rimakApp.openChat('rimak');return false">Conversar com a RIMAK →</a>
-  <div class="sts rv" style="--d:.3s"><div><b>24/7</b>execução</div><div><b data-n="6">06</b>agentes</div><div><b data-n="4">04</b>pilares</div><div><b data-n="1">01</b>assinatura</div></div>
+  <span class="tag rv">01 DNA</span>
+  <h2 class="rv" style="--d:.08s">A maestra do seu ecossistema.</h2>
+  <p class="rv" style="--d:.16s">Entenda, planeje, crie e coordene. A DNA é o ponto de partida para tudo.</p>
+  <a class="b rv" style="--d:.24s" href="#s2" role="button" onclick="event.preventDefault();window.rimakApp.openChat('rimak');return false">Conversar com a DNA<i class="ar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a>
+  <div class="sts rv" style="--d:.3s"><div><b>24/7</b>execução</div><div><b data-n="6">06</b>agentes</div><div><b data-n="4">04</b>pilares</div><div><b data-n="3">03</b>planos</div></div>
 </div><div class="bars"></div></section>
 
 <section class="sc" id="s2"><div class="tx">
   <span class="tag rv">02 Agentes</span>
   <h2 class="rv" style="--d:.08s">Conhecimento em ação.</h2>
   <p class="rv" style="--d:.16s">Agentes especializados para cada necessidade. Pesquisam, analisam, criam, programam e muito mais.</p>
-  <a class="b rv" style="--d:.24s" href="#s3" onclick="if(window.rimakApp){rimakApp.agents();return false}" ontouchend="if(window.rimakApp){rimakApp.agents();return false}">Explorar agentes →</a>
+  <a class="b rv" style="--d:.24s" href="#s3" onclick="if(window.rimakApp){rimakApp.agents();return false}" ontouchend="if(window.rimakApp){rimakApp.agents();return false}">Explorar agentes<i class="ar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a>
   <div class="ls rv" style="--d:.3s"><div><b>Research</b><span>Pesquisa profunda</span></div><div><b>Code</b><span>Desenvolvimento</span></div><div><b>Writer</b><span>Conteúdo e escrita</span></div><div><b>Designer</b><span>Design e criação</span></div><div><b>Analyst</b><span>Dados e insights</span></div><div><b>Marketing</b><span>Estratégia e marca</span></div><div><b>Mais agentes</b><span>Em breve</span></div></div>
 </div></section>
 
@@ -85,35 +150,139 @@ h2.big{font-size:clamp(38px,8vw,116px);text-transform:uppercase;line-height:.94;
   <span class="tag rv">03 NEVERA</span>
   <h2 class="rv" style="--d:.08s">Do plano à realidade.</h2>
   <p class="rv" style="--d:.16s">A NEVERA executa, automatiza e transforma suas ideias em ações. Trabalha 24/7 por você.</p>
-  <a class="b rv" style="--d:.24s" href="#s4" onclick="window.open('https://nevera-production.up.railway.app','_blank');return false" ontouchend="window.open('https://nevera-production.up.railway.app','_blank');return false">Acessar NEVERA →</a>
+  <a class="b rv" style="--d:.24s" href="#s4" onclick="window.open('https://nevera-production.up.railway.app','_blank');return false" ontouchend="window.open('https://nevera-production.up.railway.app','_blank');return false">Acessar NEVERA<i class="ar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a>
 </div></section>
 
 <section class="sc r" id="s4"><div class="tx">
   <span class="tag rv">04 TEMPESTA</span>
   <h2 class="rv" style="--d:.08s">Entende. Sente. Adapta.</h2>
   <p class="rv" style="--d:.16s">Uma inteligência construída para compreender a interação humana. Mais que respostas, conexões.</p>
-  <a class="b rv" style="--d:.24s" href="#s5" role="button" onclick="event.preventDefault();window.rimakApp.openChat('tempesta');return false">Conversar com a TEMPESTA →</a>
+  <a class="b rv" style="--d:.24s" href="#s5" role="button" onclick="event.preventDefault();window.rimakApp.openChat('tempesta');return false">Conversar com a TEMPESTA<i class="ar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a>
 </div></section>
 
 <section class="sc col" id="s5"><div class="tx">
   <span class="tag rv">05 Ecossistema</span>
   <h2 class="rv" style="--d:.08s">Mais do seu ecossistema.</h2>
   <p class="rv" style="--d:.16s">Ferramentas, arquivos e automações para ampliar suas possibilidades.</p></div>
-  <div class="gr"><div class="rv"><b>Memória</b>Seu histórico, sempre com você</div><div class="rv" style="--d:.08s"><b>Arquivos</b>Organize e acesse seus documentos</div><div class="rv" style="--d:.16s"><b>Ferramentas</b>Integrações e utilitários para o seu dia a dia</div><div class="rv" style="--d:.24s"><b>Automações</b>Deixe a RIMAK trabalhar por você</div></div>
+  <div class="gr"><div class="rv"><b>Memória</b>Suas conversas ficam salvas neste dispositivo</div><div class="rv" style="--d:.08s"><b>Arquivos <em>Em breve</em></b>Organize e acesse seus documentos</div><div class="rv" style="--d:.16s"><b>Ferramentas <em>Em breve</em></b>Integrações e utilitários para o seu dia a dia</div><div class="rv" style="--d:.24s"><b>Automações</b>A NEVERA executa e automatiza para você</div></div>
 </section>
 
 <section class="sc c" id="s6"><div class="tx">
-  <h2 class="big rv">Tudo o que você precisa. Em um só lugar.</h2>
-  <p class="rv" style="--d:.1s">Uma plataforma completa de IA, com agentes especializados, execução, memória, ferramentas e muito mais.</p>
-  <a class="b rv" style="--d:.2s" href="#s0" onclick="if(window.rimakApp){rimakApp.plans();return false}" ontouchend="if(window.rimakApp){rimakApp.plans();return false}">Conheça os planos →</a>
-  <div class="ft rv" style="--d:.3s">Planos PRO e ULTRA · Inteligência que se adapta. Tecnologia que te impulsiona.</div>
+  <span class="tag rv">07 Planos</span>
+  <h2 class="big rv">Escolha seu ritmo.</h2>
+  <p class="rv" style="--d:.1s">Comece grátis. Suba de plano quando precisar de mais créditos por dia.</p>
+  <div class="pick rv" id="planPick" role="group" aria-label="Como você usa a DNA?"><span class="pickQ">Como você usa a DNA?</span>
+    <div class="seg3"><button type="button" data-use="few" aria-pressed="false">De vez em quando</button><button type="button" data-use="daily" aria-pressed="false">Todos os dias</button><button type="button" data-use="heavy" aria-pressed="false">O dia todo, trabalhando</button></div>
+    <p class="pickSay" id="planSay" aria-live="polite">Escolha uma opção e destacamos o plano que mais combina.</p></div>
+  <div class="plans">
+    <div class="plan fx rv" data-plan="free"><header>FREE</header><div class="who">Para conhecer e usar de vez em quando</div><div class="cr"><span data-count="20">20</span><small>créditos por dia</small></div><div class="meter"><i style="--w:13%"></i></div>
+      <ul><li>Teste a DNA, os agentes e a TEMPESTA sem pagar</li><li>Saldo renovado todos os dias</li><li>Ideal para dúvidas pontuais e para decidir se a DNA serve para você</li></ul>
+      <div class="pr">Grátis</div><a class="b sm" href="#" data-act="dna">Começar grátis<i class="ar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a></div>
+    <div class="plan hot fx rv" data-plan="pro" style="--d:.08s"><header>PRO <em>Mais escolhido</em></header><div class="who">Para quem usa todos os dias</div><div class="cr"><span data-count="50">50</span><small>créditos por dia</small></div><div class="meter"><i style="--w:33%"></i></div>
+      <ul><li><b>2,5×</b> o saldo diário do FREE</li><li>Cerca de <b>R$ 0,40 por dia</b></li><li>Para estudar, trabalhar e escrever sem se preocupar com o saldo no meio da tarefa</li></ul>
+      <div class="pr">R$ 11,99 <small>/mês</small></div><a class="b sm" href="#" data-act="plans">Assinar PRO<i class="ar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a></div>
+    <div class="plan fx rv" data-plan="ultra" style="--d:.16s"><header>ULTRA</header><div class="who">Para uso intenso e profissional</div><div class="cr"><span data-count="150">150</span><small>créditos por dia</small></div><div class="meter"><i style="--w:100%"></i></div>
+      <ul><li><b>7,5×</b> o saldo diário do FREE</li><li>Cerca de <b>R$ 1,00 por dia</b> e o menor custo por crédito</li><li>Para trabalhar com vários agentes no mesmo dia, em projetos longos</li></ul>
+      <div class="pr">R$ 29,99 <small>/mês</small></div><a class="b sm" href="#" data-act="plans">Assinar ULTRA<i class="ar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a></div>
+  </div>
+  <div class="ft rv">Seu saldo aparece no topo de cada conversa. <a href="#creditos" data-go="creditos" style="color:inherit;text-decoration:underline">O que são créditos?</a></div>
 </div></section>
+
+<div class="after" id="mais">
+  <section class="sec" id="creditos">
+    <span class="tag rv">08 Créditos</span>
+    <h2 class="rv">O que são créditos?</h2>
+    <p class="lede rv">Créditos são a moeda de uso da DNA. Cada resposta que você recebe consome parte do seu saldo, e o saldo diário do seu plano volta a ser reposto todo dia.</p>
+    <div class="cgrid">
+      <div class="bc fx rv"><div class="k">01 · Consumo</div><h3>Você gasta ao conversar</h3><p>Cada mensagem custa 1 crédito e gerar uma imagem custa 3. O saldo atual fica no topo de cada chat e se atualiza a cada resposta.</p></div>
+      <div class="bc fx rv" style="--d:.08s"><div class="k">02 · Reposição</div><h3>O saldo volta todo dia</h3><p>FREE, PRO e ULTRA têm um limite diário diferente. Terminou o saldo? Basta esperar o dia seguinte ou subir de plano.</p></div>
+      <div class="bc fx rv" style="--d:.16s"><div class="k">03 · Plano</div><h3>Mais créditos, mais fôlego</h3><p>Quanto maior o plano, mais você conversa por dia antes de atingir o limite: de 20 (FREE) a 50 (PRO) e 150 (ULTRA).</p></div>
+    </div>
+    <div class="why rv">
+      <h3>Por que assinar?</h3>
+      <div class="whyg">
+        <div><b>Não parar no meio</b><span>Com mais saldo, uma pesquisa, um texto ou um plano longo termina na mesma sessão, sem esperar o dia seguinte.</span></div>
+        <div><b>Usar todos os agentes</b><span>Research, Code, Writer, Designer, Analyst e Marketing dividem o mesmo saldo. Mais créditos permitem alternar entre eles no mesmo dia.</span></div>
+        <div><b>Custo previsível</b><span>Valor fixo por mês, sem cobrança por uso: PRO custa cerca de R$ 0,40 por dia e ULTRA cerca de R$ 1,00.</span></div>
+        <div><b>Quanto maior, menor o custo por crédito</b><span>O crédito do ULTRA sai mais barato que o do PRO. Se você usa muito, é o plano que mais rende.</span></div>
+      </div>
+      <a class="b" href="#" data-act="plans">Ver planos e assinar<i class="ar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a>
+    </div>
+  </section>
+
+  <section class="sec" id="como">
+    <span class="tag rv">09 Como funciona</span>
+    <h2 class="rv">Da ideia solta ao resultado.</h2>
+    <p class="lede rv">Você não precisa saber escrever o pedido perfeito. A DNA pergunta o que falta, organiza e entrega em etapas.</p>
+    <div class="steps">
+      <div class="step rv"><div class="n">01</div><div class="ln"></div><h3>Diga o objetivo</h3><p>Escreva do seu jeito, em uma frase. Se faltar contexto, a DNA faz as perguntas certas antes de responder.</p></div>
+      <div class="step rv" style="--d:.1s"><div class="n">02</div><div class="ln"></div><h3>Receba um plano</h3><p>Etapas, prazos e o agente mais indicado para cada parte: pesquisa, texto, código, dados ou marca.</p></div>
+      <div class="step rv" style="--d:.2s"><div class="n">03</div><div class="ln"></div><h3>Coloque em prática</h3><p>A NEVERA leva o plano para a ação e automatiza o que se repete, enquanto você acompanha o resultado.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" id="pratica">
+    <span class="tag rv">10 Na prática</span>
+    <h2 class="rv">Veja como ele responde.</h2>
+    <p class="lede rv">Quatro situações reais, quatro jeitos de pensar. Escolha uma e depois teste no chat com a sua própria pergunta.</p>
+    <div class="demo rv" id="demo">
+      <div class="dtabs" role="tablist" aria-label="Exemplos">
+        <button type="button" role="tab" data-k="dna" aria-selected="true">DNA · Plano</button>
+        <button type="button" role="tab" data-k="analyst" aria-selected="false">Analyst · Dados</button>
+        <button type="button" role="tab" data-k="writer" aria-selected="false">Writer · Texto</button>
+        <button type="button" role="tab" data-k="tempesta" aria-selected="false">Tempesta · Conversa</button>
+      </div>
+      <div class="dbody" aria-live="polite">
+        <div class="dq"></div>
+        <div class="da"><div class="who">RESPOSTA</div><div class="tx2"></div></div>
+      </div>
+      <div class="dfoot"><small>Exemplo ilustrativo. As respostas reais variam conforme o que você escrever.</small>
+        <a class="b sm" href="#" id="demoGo">Testar no chat<i class="ar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a></div>
+    </div>
+  </section>
+
+  <section class="sec" id="porque">
+    <span class="tag rv">11 Diferenciais</span>
+    <h2 class="rv">Feito para uso de verdade.</h2>
+    <p class="lede rv">Sem promessa solta. Estas são as decisões de produto que você sente no dia a dia.</p>
+    <div class="bento">
+      <div class="bc w4 fx rv"><div class="k">Agentes</div><h3>Um especialista para cada trabalho</h3><p>Cada agente tem foco, perguntas e sugestões próprias, em vez de uma resposta genérica para tudo.</p><div class="chips"><span>Research</span><span>Code</span><span>Writer</span><span>Designer</span><span>Analyst</span><span>Marketing</span></div></div>
+      <div class="bc w2 fx rv" style="--d:.08s"><div class="k">Privacidade</div><h3>Conversas no seu aparelho</h3><p>O histórico fica salvo neste dispositivo, separado por modo.</p></div>
+      <div class="bc fx rv"><div class="k">Créditos</div><h3>Saldo sempre à vista</h3><p>Seus créditos aparecem no topo do chat e são atualizados a cada resposta.</p></div>
+      <div class="bc fx rv" style="--d:.08s"><div class="k">Celular primeiro</div><h3>Pensado para o toque</h3><p>O teclado não cobre o campo de texto e o botão voltar do Android fecha a conversa.</p></div>
+      <div class="bc fx rv" style="--d:.16s"><div class="k">Tempesta</div><h3>Cuidado com limites claros</h3><p>Um espaço para pensar e conversar. Não substitui acompanhamento profissional.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" id="faq">
+    <span class="tag rv">12 Dúvidas</span>
+    <h2 class="rv">Perguntas frequentes.</h2>
+    <div class="faq rv">
+      <div class="fq"><button type="button" aria-expanded="false">Preciso pagar para usar?<i></i></button><div class="a"><div><p>Não. O plano FREE inclui 20 créditos por dia. Os planos PRO (R$ 11,99/mês) e ULTRA (R$ 29,99/mês) oferecem 50 e 150 créditos por dia.</p></div></div></div>
+      <div class="fq"><button type="button" aria-expanded="false">O que são créditos e quando eles voltam?<i></i></button><div class="a"><div><p>Créditos são o saldo que você usa ao conversar: cada resposta consome parte dele. O limite é diário e depende do plano (20, 50 ou 150), então o saldo é reposto a cada dia.</p></div></div></div>
+      <div class="fq"><button type="button" aria-expanded="false">Minhas conversas ficam salvas?<i></i></button><div class="a"><div><p>Sim, neste dispositivo. Cada modo (DNA, agentes, NEVERA e TEMPESTA) guarda o próprio histórico, e você pode continuar de onde parou.</p></div></div></div>
+      <div class="fq"><button type="button" aria-expanded="false">Qual a diferença entre DNA, agentes, NEVERA e TEMPESTA?<i></i></button><div class="a"><div><p>A DNA é o ponto de partida: entende o objetivo e organiza o caminho. Os agentes são especialistas por área. A NEVERA cuida de execução e automação. A TEMPESTA é voltada à interação humana: entender conversas, decisões e emoções.</p></div></div></div>
+      <div class="fq"><button type="button" aria-expanded="false">A TEMPESTA substitui terapia?<i></i></button><div class="a"><div><p>Não. Ela é um espaço para organizar pensamentos e conversas, e não substitui acompanhamento profissional. Se estiver em sofrimento intenso, procure ajuda: no Brasil, o CVV atende 24 horas pelo telefone 188.</p></div></div></div>
+      <div class="fq"><button type="button" aria-expanded="false">Posso mudar o idioma ou reduzir as animações?<i></i></button><div class="a"><div><p>Sim. Em Configurações você troca o idioma e desliga as animações, o que também ajuda a poupar bateria.</p></div></div></div>
+    </div>
+  </section>
+
+  <section class="sec final" id="comecar">
+    <h2 class="rv">Pronto para começar?</h2>
+    <p class="lede rv">Abra uma conversa agora. Leva menos de um minuto.</p>
+    <a class="b rv" href="#" data-act="dna">Conversar com a DNA<i class="ar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a>
+  </section>
+
+  <footer class="foot"><span>© 2026 DNA · Mais que uma IA. Um ecossistema.</span>
+    <nav aria-label="Rodapé"><button type="button" data-act="agents">Agentes</button><button type="button" data-act="plans">Planos</button><button type="button" data-act="menu">Conta e suporte</button><button type="button" data-act="top">Voltar ao topo ↑</button></nav></footer>
+</div>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-const $=s=>document.querySelector(s),RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
-const VS=`uniform float t;varying vec3 vN;varying vec3 vP;
-float h(vec3 p){return sin(p.x*2.1+t*.9)*sin(p.y*2.4-t*.7)*sin(p.z*2.2+t*.8)*.32+sin(p.x*4.3-t*1.3+p.y*3.1)*sin(p.z*4.1+t)*.09;}
+const $=s=>document.querySelector(s),RM=matchMedia('(prefers-reduced-motion:reduce)').matches||(()=>{try{return localStorage.getItem('rimak.motion')==='off'}catch(e){return false}})();
+const VS=`uniform float t,pu;varying vec3 vN;varying vec3 vP;
+float h(vec3 p){return (sin(p.x*2.1+t*.9)*sin(p.y*2.4-t*.7)*sin(p.z*2.2+t*.8)*.32+sin(p.x*4.3-t*1.3+p.y*3.1)*sin(p.z*4.1+t)*.09)*(1.+pu*1.6)+pu*.05*sin(p.y*9.-t*6.);}
 vec3 d(vec3 p){p=normalize(p);return p*(1.+h(p));}
 void main(){vec3 p=normalize(position);vec3 a=normalize(cross(p,vec3(.3,1.,.2)));vec3 b=normalize(cross(p,a));float e=.02;vec3 q=d(p),qa=d(p+a*e),qb=d(p+b*e);vec3 n=normalize(cross(qa-q,qb-q));if(dot(n,q)<0.)n=-n;vN=normalize(normalMatrix*n);vP=(modelViewMatrix*vec4(q,1.)).xyz;gl_Position=projectionMatrix*vec4(vP,1.);}`;
 const FS=`uniform vec3 cA,cB,cR;uniform float ir,ch,so,t;varying vec3 vN;varying vec3 vP;
@@ -133,25 +302,25 @@ const KF=[
 [...CH,0,1,0,.96,IC,DK,FD,[-.42,0,1]],
 [[.62,.56,.4],[.99,.95,.82],[1,.98,.9],0,0,0,.94,IC,CR,FC,[.5,.25,.6]],
 [...CH,0,1,0,.96,IC,DK,FD,[0,.05,.6]]];
-const NAMES=['RIMAK','RIMAK','AGENTES','NEVERA','TEMPESTA','ECOSSISTEMA','PLANOS'];
+const NAMES=['DNA','DNA','AGENTES','NEVERA','TEMPESTA','ECOSSISTEMA','PLANOS'];
 const lp=(a,b,s)=>Array.isArray(a)?a.map((v,i)=>lp(v,b[i],s)):a+(b-a)*s;
-const ST={cu:0,q:0,k:-1};let PX=0,PY=0,sx=0,sy=0,render;
-function tick(){const vh=innerHeight,tu=Math.min(Math.max((scrollY+vh*.5)/(1.2*vh)-.5,0),6);ST.cu+=(tu-ST.cu)*(RM?1:.08);const q=ST.q=ST.cu,i=Math.min(Math.floor(q),5),f=q-i,s=f*f*(3-2*f),p=ST.p=lp(KF[i],KF[i+1],s),r=document.documentElement.style;
+const ST={cu:0,q:0,k:-1,pu:0,ly:0};window.DNAResetCt=()=>{ST.k=-1};window.DNAPulse=v=>{ST.pu=Math.min(1.4,ST.pu+v)};let PX=0,PY=0,sx=0,sy=0,render;
+function tick(){const vel=Math.abs(scrollY-ST.ly);ST.ly=scrollY;if(vel>6)ST.pu=Math.min(1.4,ST.pu+Math.min(vel,90)/700);const vh=innerHeight,tu=Math.min(Math.max((scrollY+vh*.5)/(1.2*vh)-.5,0),6);ST.cu+=(tu-ST.cu)*(RM?1:.08);const q=ST.q=ST.cu,i=Math.min(Math.floor(q),5),f=q-i,s=f*f*(3-2*f),p=ST.p=lp(KF[i],KF[i+1],s),r=document.documentElement.style;
 r.setProperty('--bg',p[8].map(Math.round).join());r.setProperty('--fg',p[9].map(Math.round).join());
 $('#hl').style.opacity=Math.max(0,1-scrollY/(vh*.5));
-const k=Math.round(q);if(k!==ST.k){ST.k=k;$('#ct').textContent='0'+(k+1)+' / 07 — '+NAMES[k]}}
+const k=Math.round(q);if(k!==ST.k){ST.k=k;$('#ct').textContent='0'+(k+1)+' / 07 — '+(window.DNAi18n?window.DNAi18n.t(NAMES[k]):NAMES[k]);document.querySelectorAll('#rail button').forEach((b,j)=>b.classList.toggle('on',j===k))}}
 try{
 const R=new THREE.WebGLRenderer({canvas:$('#gl'),alpha:true,antialias:true});R.setPixelRatio(Math.min(devicePixelRatio,1.75));R.setClearColor(0,0);
 const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(40,1,.1,20),V3=()=>({value:new THREE.Vector3()});C.position.z=4.4;
-const M=new THREE.ShaderMaterial({uniforms:{t:{value:0},cA:V3(),cB:V3(),cR:V3(),ir:{value:0},ch:{value:1},so:{value:1}},vertexShader:VS,fragmentShader:FS,transparent:true});
-const W=new THREE.ShaderMaterial({uniforms:{t:M.uniforms.t,op:{value:0},wc:V3()},vertexShader:VS,fragmentShader:WF,wireframe:true,transparent:true,depthWrite:false});
+const M=new THREE.ShaderMaterial({uniforms:{t:{value:0},pu:{value:0},cA:V3(),cB:V3(),cR:V3(),ir:{value:0},ch:{value:1},so:{value:1}},vertexShader:VS,fragmentShader:FS,transparent:true});
+const W=new THREE.ShaderMaterial({uniforms:{t:M.uniforms.t,pu:M.uniforms.pu,op:{value:0},wc:V3()},vertexShader:VS,fragmentShader:WF,wireframe:true,transparent:true,depthWrite:false});
 const m=new THREE.Mesh(new THREE.IcosahedronGeometry(1,22),M),w=new THREE.Mesh(new THREE.IcosahedronGeometry(1,13),W);S.add(m,w);
 const rs=()=>{R.setSize(innerWidth,innerHeight,false);C.aspect=innerWidth/innerHeight;C.updateProjectionMatrix()};rs();addEventListener('resize',rs);
 render=n=>{n=RM?0:n;const p=ST.p,u=M.uniforms,a=innerWidth/innerHeight,mob=a<.9,hw=1.6*a,bs=mob?.7:Math.min(1,a*.85);
-sx+=(PX-sx)*.05;sy+=(PY-sy)*.05;u.t.value=n/1000;u.cA.value.fromArray(p[0]);u.cB.value.fromArray(p[1]);u.cR.value.fromArray(p[2]);u.ir.value=p[3];u.ch.value=p[4];u.so.value=p[6];
+sx+=(PX-sx)*.06;sy+=(PY-sy)*.06;ST.pu*=.93;u.pu.value=ST.pu;u.t.value=n/1000;u.cA.value.fromArray(p[0]);u.cB.value.fromArray(p[1]);u.cR.value.fromArray(p[2]);u.ir.value=p[3];u.ch.value=p[4];u.so.value=p[6];
 W.uniforms.op.value=p[5];W.uniforms.wc.value.fromArray(p[7]);m.visible=p[6]>.01;w.visible=p[5]>.01;
-const px=mob?0:p[10][0]*hw,py=p[10][1]+(mob?.32:0),sc=p[10][2]*bs;
-[m,w].forEach(o=>{o.position.set(px,py,0);o.rotation.set(scrollY/900+sy*.4,n/7000+scrollY/700+sx*.6,0)});m.scale.setScalar(sc);w.scale.setScalar(sc*1.012);R.render(S,C)}
+const px=(mob?0:p[10][0]*hw)+sx*.35,py=p[10][1]+(mob?.32:0)-sy*.28,sc=p[10][2]*bs*(1+ST.pu*.06);
+[m,w].forEach(o=>{o.position.set(px,py,0);o.rotation.set(scrollY/900+sy*.8,n/7000+scrollY/700+sx*1.1,0)});m.scale.setScalar(sc);w.scale.setScalar(sc*1.012);R.render(S,C)}
 }catch(e){}
 // estrelas (aparecem nas seções escuras)
 const sc=$('#st'),xs=sc.getContext('2d'),stars=[...Array(150)].map(()=>[Math.random(),Math.random(),Math.random()*1.3+.3,Math.random()*6]);
@@ -159,7 +328,7 @@ const rz=()=>{sc.width=innerWidth;sc.height=innerHeight};rz();addEventListener('
 function frame(n){requestAnimationFrame(frame);tick();render&&render(n);const o=Math.max(0,1-ST.p[8][0]/140);sc.style.opacity=o;
 if(o>.03){xs.clearRect(0,0,sc.width,sc.height);xs.fillStyle='#fff';stars.forEach(s=>{xs.globalAlpha=RM?.6:.35+.65*Math.abs(Math.sin(n/900+s[3]));xs.beginPath();xs.arc(s[0]*sc.width,s[1]*sc.height,s[2]*.8,0,7);xs.fill()})}}
 frame(0);
-addEventListener('pointermove',e=>{PX=e.clientX/innerWidth-.5;PY=e.clientY/innerHeight-.5});
+addEventListener('pointermove',e=>{PX=e.clientX/innerWidth-.5;PY=e.clientY/innerHeight-.5;if(e.pointerType==='mouse'){const g=$('#cg').style;g.setProperty('--mx',e.clientX+'px');g.setProperty('--my',e.clientY+'px');document.body.classList.add('hasptr')}});
 // raio na seção TEMPESTA
 if(!RM)setInterval(()=>{const f=$('#fl');if(ST.q>3.5&&ST.q<4.6){f.classList.add('z');setTimeout(()=>f.classList.remove('z'),90);setTimeout(()=>{f.classList.add('z');setTimeout(()=>f.classList.remove('z'),60)},190)}},3300);
 // revelação e contagem
@@ -167,8 +336,32 @@ document.querySelectorAll('.bars').forEach(b=>b.innerHTML=[...Array(26)].map((_,
 const IO=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const t=e.target;IO.unobserve(t);t.classList.add('in');t.querySelectorAll('[data-n]').forEach(c=>{const N=+c.dataset.n,t0=performance.now();(function u(n){const k=Math.min((n-t0)/1200,1);c.textContent=String(Math.round(N*k)).padStart(2,'0');if(k<1&&!RM)requestAnimationFrame(u)})(t0)})}),{threshold:.15});
 document.querySelectorAll('.rv').forEach(e=>IO.observe(e));
 </script>
-\n<script src="/rimak-functional.js?v=18"></script>
+<script src="/dna-i18n.js?v=1"></script>
+<script src="/dna-i18n-data.js?v=3"></script>
+<script src="/dna-storm.js?v=2"></script>
+<script src="/dna-marks.js?v=1"></script>
+<script src="/dna-functional.js?v=21"></script>
+<script>
+// trilho de seções
+(function(){const r=document.getElementById('rail');NAMES.forEach((n,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',n.charAt(0)+n.slice(1).toLowerCase());b.title=b.getAttribute('aria-label');b.onclick=()=>document.getElementById('s'+i).scrollIntoView({behavior:RM?'auto':'smooth'});r.appendChild(b)});r.children[0].classList.add('on')})();
+// campo de pergunta da abertura
+(function(){
+  const f=document.getElementById('ask');if(!f)return;
+  const inp=document.getElementById('askIn'),ph=document.getElementById('askPh');
+  const ex=['Monte meu plano de estudos','Resuma um tema para mim','Escreva um e-mail profissional','Ajude-me a tomar uma decisão'];
+  const T=x=>window.DNAi18n?window.DNAi18n.t(x):x;
+  let i=0,n=0,dir=1;
+  function loop(){
+    if(f.classList.contains('has')||document.activeElement===inp){setTimeout(loop,500);return}
+    const s=T(ex[i]);
+    if(dir>0){n++;ph.textContent=s.slice(0,n);if(n>=s.length){dir=-1;setTimeout(loop,1900);return}setTimeout(loop,34+Math.random()*30)}
+    else{n-=2;if(n<=0){n=0;dir=1;i=(i+1)%ex.length;ph.textContent='';setTimeout(loop,350);return}ph.textContent=s.slice(0,n);setTimeout(loop,16)}
+  }
+  if(RM)ph.textContent=T(ex[0])+'…';else loop();
+  inp.addEventListener('input',()=>f.classList.toggle('has',!!inp.value));
+  f.addEventListener('submit',e=>{e.preventDefault();const v=inp.value.trim();inp.blur();inp.value='';f.classList.remove('has');window.rimakApp&&rimakApp.ask(v)});
+})();
+</script>
+<script src="/dna-site.js?v=2"></script>
 </body>
 </html>
-
-<!-- production trigger: mobile actions fix -->
