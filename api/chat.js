@@ -563,7 +563,7 @@ async function processMemory(userId, userToken, message) {
     await saveMemory(
       userId,
       userToken,
-      `O usuário relatou a seguinte informação, que não foi confirmada pela RIMAK: ${message}`,
+      `O usuário relatou a seguinte informação, que não foi confirmada pela DNA: ${message}`,
       "claim",
       4,
       false
@@ -782,15 +782,15 @@ function systemPrompt({
   mode = "rimak"
 }) {
   const modeRules = {
-    tempesta: "Você é TEMPESTA. Você é uma inteligência separada da RIMAK, com identidade própria, focada em compreender a interação humana, contexto, emoções e adaptação conversacional. Não se apresente como RIMAK e não assuma o papel de maestro do ecossistema.",
-    nevera: "Você é NEVERA. Você é um sistema separado, focado em execução, automação, planejamento operacional e transformação de objetivos em ações. Não se apresente como RIMAK.",
-    "agent:research": "Você é o agente RESEARCH da RIMAK. Sua função é pesquisar, comparar fontes e organizar evidências.",
-    "agent:code": "Você é o agente CODE da RIMAK. Sua função é projetar, escrever, revisar e depurar código.",
-    "agent:writer": "Você é o agente WRITER da RIMAK. Sua função é criar e editar textos.",
-    "agent:designer": "Você é o agente DESIGNER da RIMAK. Sua função é estruturar experiências, interfaces e direção visual.",
-    "agent:analyst": "Você é o agente ANALYST da RIMAK. Sua função é analisar dados, cenários e métricas.",
-    "agent:marketing": "Você é o agente MARKETING da RIMAK. Sua função é planejar posicionamento, conteúdo e aquisição.",
-    rimak: "Você é RIMAK, o maestro do ecossistema RIMAK LINE. Coordene ideias, ferramentas e agentes quando isso for útil."
+    tempesta: "Você é TEMPESTA. Você é uma inteligência separada da DNA, com identidade própria, focada em compreender a interação humana, contexto, emoções e adaptação conversacional. Não se apresente como DNA e não assuma o papel de maestra do ecossistema.",
+    nevera: "Você é NEVERA. Você é um sistema separado, focado em execução, automação, planejamento operacional e transformação de objetivos em ações. Não se apresente como DNA.",
+    "agent:research": "Você é o agente RESEARCH da DNA. Sua função é pesquisar, comparar fontes e organizar evidências.",
+    "agent:code": "Você é o agente CODE da DNA. Sua função é projetar, escrever, revisar e depurar código.",
+    "agent:writer": "Você é o agente WRITER da DNA. Sua função é criar e editar textos.",
+    "agent:designer": "Você é o agente DESIGNER da DNA. Sua função é estruturar experiências, interfaces e direção visual.",
+    "agent:analyst": "Você é o agente ANALYST da DNA. Sua função é analisar dados, cenários e métricas.",
+    "agent:marketing": "Você é o agente MARKETING da DNA. Sua função é planejar posicionamento, conteúdo e aquisição.",
+    rimak: "Você é DNA, a maestra do ecossistema DNA. Coordene ideias, ferramentas e agentes quando isso for útil."
   };
   const identityRule = modeRules[mode] || modeRules.rimak;
   const researchRule = researchText
@@ -808,15 +808,15 @@ Se a pergunta exige confirmação externa e não há pesquisa disponível, deixe
 `;
 
   return `
-Você é RIMAK, assistente da RIMAK LINE.
+Você é DNA, assistente do ecossistema DNA. Trate a DNA sempre no feminino ("a DNA").
 
 IDENTIDADE
 - Use esta identidade de modo: ${identityRule}
-- Quando o modo atual for RIMAK, seu nome é RIMAK.
-- Quando o modo atual for TEMPESTA, NEVERA ou um agente, preserve a identidade correspondente e não se apresente como RIMAK.
-- Você foi criada e desenvolvida pela RIMAK LINE.
+- Quando o modo atual for DNA, seu nome é DNA.
+- Quando o modo atual for TEMPESTA, NEVERA ou um agente, preserve a identidade correspondente e não se apresente como DNA.
+- Você foi criada e desenvolvida pela equipe da DNA.
 - Você NÃO foi criada pela OpenAI.
-- O modelo de IA usado pela RIMAK pode ser fornecido por terceiros.
+- O modelo de IA usado pela DNA pode ser fornecido por terceiros.
 - Nunca diga que é "uma IA da OpenAI" ou que a OpenAI é sua criadora.
 
 PERSONALIDADE
@@ -863,14 +863,36 @@ ${researchRule}
 `;
 }
 
-async function generateWithOmniRoute(messages, plan) {
-  const key = process.env.OMNIROUTE_API_KEY;
-  const baseUrl = (process.env.OMNIROUTE_BASE_URL || "").replace(/\/+$/, "");
-  const model = process.env.OMNIROUTE_MODEL || "auto";
-
-  if (!baseUrl) {
-    throw new Error("OMNIROUTE_BASE_URL não configurada.");
+// Provedor de texto: OmniRoute quando configurado; senão usa a Groq (GROQ_API_KEY).
+function textProvider() {
+  const omni = (process.env.OMNIROUTE_BASE_URL || "").replace(/\/+$/, "");
+  if (omni) {
+    return {
+      name: "omniroute",
+      baseUrl: omni,
+      key: process.env.OMNIROUTE_API_KEY,
+      model: process.env.OMNIROUTE_MODEL || "auto"
+    };
   }
+  if (process.env.GROQ_API_KEY) {
+    return {
+      name: "groq",
+      baseUrl: "https://api.groq.com/openai",
+      key: process.env.GROQ_API_KEY,
+      model: process.env.GROQ_MODEL || "llama-3.3-70b-versatile"
+    };
+  }
+  return null;
+}
+
+async function generateWithOmniRoute(messages, plan) {
+  const provider = textProvider();
+
+  if (!provider) {
+    throw new Error("Nenhum provedor de IA configurado (OMNIROUTE_BASE_URL ou GROQ_API_KEY).");
+  }
+
+  const { key, baseUrl, model } = provider;
 
   const config = PLAN_CONFIG[plan] || PLAN_CONFIG.free;
 
@@ -915,7 +937,7 @@ async function generateWithOmniRoute(messages, plan) {
 
     if (response.status === 429) {
       throw new Error(
-        "A RIMAK está recebendo muitas solicitações. Tente novamente em alguns segundos."
+        "A DNA está recebendo muitas solicitações. Tente novamente em alguns segundos."
       );
     }
 
@@ -927,10 +949,114 @@ async function generateWithOmniRoute(messages, plan) {
     data?.choices?.[0]?.message?.content?.trim();
 
   if (!reply) {
-    throw new Error("A RIMAK não recebeu uma resposta válida do OmniRoute.");
+    throw new Error("A DNA não recebeu uma resposta válida do OmniRoute.");
   }
 
   return reply;
+}
+
+
+/* ---------- Geração de imagens ---------- */
+const IMAGE_SIZES = ["1024x1024", "1024x1536", "1536x1024"];
+
+function imageCost() {
+  const n = Number(process.env.DNA_IMAGE_CREDITS);
+  return Number.isFinite(n) && n >= 1 ? Math.min(Math.round(n), 20) : 3;
+}
+
+async function generateImageWithOmniRoute(prompt, size) {
+  const baseUrl = (process.env.OMNIROUTE_BASE_URL || "").replace(/\/+$/, "");
+  const key = process.env.OMNIROUTE_API_KEY;
+  const model = process.env.OMNIROUTE_IMAGE_MODEL;
+
+  if (!baseUrl) throw new Error("OMNIROUTE_BASE_URL não configurada.");
+  if (!model) {
+    const err = new Error("A geração de imagens ainda não foi ativada na DNA.");
+    err.code = "image_not_configured";
+    throw err;
+  }
+
+  const response = await fetch(baseUrl + "/v1/images/generations", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(key ? { Authorization: `Bearer ${key}` } : {})
+    },
+    body: JSON.stringify({ model, prompt, n: 1, size }),
+    signal: AbortSignal.timeout(55000)
+  });
+
+  const raw = await response.text();
+  let data = null;
+  try { data = JSON.parse(raw); } catch {}
+
+  if (!response.ok) {
+    if (response.status === 429) {
+      throw new Error("A DNA está recebendo muitos pedidos de imagem. Tente de novo em alguns segundos.");
+    }
+    throw new Error(
+      data?.error?.message || data?.message ||
+      "Não foi possível gerar a imagem agora."
+    );
+  }
+
+  const item = data?.data?.[0] || data?.images?.[0] || null;
+  const url = item?.url || (typeof item === "string" && /^https?:/.test(item) ? item : null);
+  const b64 = item?.b64_json || item?.b64 || null;
+
+  if (url) return { url, revised: item?.revised_prompt || null };
+  if (b64) return { url: `data:image/png;base64,${b64}`, revised: item?.revised_prompt || null };
+  throw new Error("O modelo não devolveu nenhuma imagem. Tente descrever de outro jeito.");
+}
+
+async function handleImageRequest(req, res, user) {
+  const body = req.body || {};
+  const prompt = String(body.prompt || body.message || "").trim().slice(0, 1500);
+  if (!prompt) return json(res, 400, { error: "Descreva a imagem que você quer." });
+
+  const size = IMAGE_SIZES.includes(body.size) ? body.size : "1024x1024";
+  const subscription = await getSubscription(user.id);
+  const plan = normalizePlan(subscription);
+  const config = PLAN_CONFIG[plan];
+  const cost = imageCost();
+
+  const balance = await ensureCredits(user.id, config.dailyCredits);
+  if (balance < cost) {
+    return json(res, 402, {
+      error: `Uma imagem custa ${cost} créditos e você tem ${balance}.`,
+      credits: balance,
+      cost,
+      plan,
+      planName: config.name
+    });
+  }
+
+  let image;
+  try {
+    image = await generateImageWithOmniRoute(prompt, size);
+  } catch (e) {
+    if (e.code === "image_not_configured") {
+      return json(res, 501, { error: e.message, code: e.code });
+    }
+    throw e;
+  }
+
+  // cobra só depois de gerar com sucesso
+  const credit = await consumeCredits(user.id, cost);
+  if (!credit.ok && credit.insufficient) {
+    return json(res, 402, { error: "Seus créditos acabaram.", credits: 0, cost, plan, planName: config.name });
+  }
+
+  return json(res, 200, {
+    image: image.url,
+    revisedPrompt: image.revised,
+    prompt,
+    cost,
+    plan,
+    planName: config.name,
+    credits: typeof credit.balance === "number" ? credit.balance : null,
+    model: process.env.OMNIROUTE_IMAGE_MODEL
+  });
 }
 
 function setCors(res) {
@@ -948,7 +1074,7 @@ function setCors(res) {
 
 async function handleSupportRequest(req, res, user) {
   const token = bearer(req);
-  const subject = String(req.body?.subject || "Suporte RIMAK").slice(0, 160);
+  const subject = String(req.body?.subject || "Suporte DNA").slice(0, 160);
   const message = String(req.body?.message || "").trim().slice(0, 5000);
   if (!message) return json(res, 400, { error: "Escreva uma mensagem." });
 
@@ -1284,13 +1410,23 @@ export default async function handler(req, res) {
         });
       }
   const baseUrl = (process.env.OMNIROUTE_BASE_URL || "").replace(/\/+$/, "");
-      if (!baseUrl) return json(res, 200, { ok: false, configured: false });
+      if (!baseUrl) {
+        const g = Boolean(process.env.GROQ_API_KEY);
+        return json(res, 200, { ok: g, configured: g, provider: g ? "groq" : null });
+      }
       try {
         const health = await fetch(baseUrl + "/healthz", { signal: AbortSignal.timeout(4000) });
         return json(res, 200, { ok: health.ok, configured: true, status: health.status });
       } catch {
         return json(res, 200, { ok: false, configured: true });
       }
+    }
+
+    if (action === "image_status") {
+      return json(res, 200, {
+        enabled: Boolean(process.env.OMNIROUTE_IMAGE_MODEL && process.env.OMNIROUTE_BASE_URL),
+        cost: imageCost()
+      });
     }
 
     if (action === "mercadopago_webhook") {
@@ -1311,6 +1447,10 @@ export default async function handler(req, res) {
 
     if (String(body.action || "").toLowerCase() === "support") {
       return await handleSupportRequest(req, res, user);
+    }
+
+    if (String(body.action || "").toLowerCase() === "image") {
+      return await handleImageRequest(req, res, user);
     }
 
     const message = String(body.message || "").trim();
@@ -1343,7 +1483,7 @@ export default async function handler(req, res) {
 
     if (shouldResearch && !researchText) {
       return json(res, 503, {
-        error: "A pesquisa web da RIMAK está temporariamente indisponível. Tente novamente em instantes."
+        error: "A pesquisa web da DNA está temporariamente indisponível. Tente novamente em instantes."
       });
     }
 
@@ -1404,15 +1544,15 @@ export default async function handler(req, res) {
           : null,
       researched: Boolean(researchText),
       sources: researchSources(research),
-      model: process.env.OMNIROUTE_MODEL || "auto"
+      model: textProvider()?.model || "auto"
     });
   } catch (error) {
-    console.error("RIMAK API error:", error);
+    console.error("DNA API error:", error);
 
     return json(res, 500, {
       error:
         error?.message ||
-        "A RIMAK encontrou um erro interno. Tente novamente."
+        "A DNA encontrou um erro interno. Tente novamente."
     });
   }
 }
