@@ -863,14 +863,36 @@ ${researchRule}
 `;
 }
 
-async function generateWithOmniRoute(messages, plan) {
-  const key = process.env.OMNIROUTE_API_KEY;
-  const baseUrl = (process.env.OMNIROUTE_BASE_URL || "").replace(/\/+$/, "");
-  const model = process.env.OMNIROUTE_MODEL || "auto";
-
-  if (!baseUrl) {
-    throw new Error("OMNIROUTE_BASE_URL não configurada.");
+// Provedor de texto: OmniRoute quando configurado; senão usa a Groq (GROQ_API_KEY).
+function textProvider() {
+  const omni = (process.env.OMNIROUTE_BASE_URL || "").replace(/\/+$/, "");
+  if (omni) {
+    return {
+      name: "omniroute",
+      baseUrl: omni,
+      key: process.env.OMNIROUTE_API_KEY,
+      model: process.env.OMNIROUTE_MODEL || "auto"
+    };
   }
+  if (process.env.GROQ_API_KEY) {
+    return {
+      name: "groq",
+      baseUrl: "https://api.groq.com/openai",
+      key: process.env.GROQ_API_KEY,
+      model: process.env.GROQ_MODEL || "llama-3.3-70b-versatile"
+    };
+  }
+  return null;
+}
+
+async function generateWithOmniRoute(messages, plan) {
+  const provider = textProvider();
+
+  if (!provider) {
+    throw new Error("Nenhum provedor de IA configurado (OMNIROUTE_BASE_URL ou GROQ_API_KEY).");
+  }
+
+  const { key, baseUrl, model } = provider;
 
   const config = PLAN_CONFIG[plan] || PLAN_CONFIG.free;
 
@@ -1388,7 +1410,10 @@ export default async function handler(req, res) {
         });
       }
   const baseUrl = (process.env.OMNIROUTE_BASE_URL || "").replace(/\/+$/, "");
-      if (!baseUrl) return json(res, 200, { ok: false, configured: false });
+      if (!baseUrl) {
+        const g = Boolean(process.env.GROQ_API_KEY);
+        return json(res, 200, { ok: g, configured: g, provider: g ? "groq" : null });
+      }
       try {
         const health = await fetch(baseUrl + "/healthz", { signal: AbortSignal.timeout(4000) });
         return json(res, 200, { ok: health.ok, configured: true, status: health.status });
@@ -1519,7 +1544,7 @@ export default async function handler(req, res) {
           : null,
       researched: Boolean(researchText),
       sources: researchSources(research),
-      model: process.env.OMNIROUTE_MODEL || "auto"
+      model: textProvider()?.model || "auto"
     });
   } catch (error) {
     console.error("DNA API error:", error);
