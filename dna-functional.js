@@ -191,9 +191,8 @@
   chat.setAttribute("data-mode", "dna");
   chat.innerHTML =
     '<div class="dn-bg"></div><div class="dn-grain"></div><div class="dn-flash" id="rkFlash"></div>' +
-    '<header class="dn-head"><div class="dn-id"><div class="dn-mark" id="rkChatMark"></div><div class="dn-idtext"><strong id="rkChatTitle">DNA</strong><span id="rkChatSub" hidden></span><button class="dn-model" id="rkModel" type="button" aria-haspopup="true" aria-expanded="false" hidden><i class="mdot"></i><b id="rkModelName" data-notr>DNA 4.2</b><span id="rkEffortName" data-notr>Baixo</span>' + ICON.down + '</button></div></div>' +
+    '<header class="dn-head"><div class="dn-id"><div class="dn-mark" id="rkChatMark"></div><div class="dn-idtext"><strong id="rkChatTitle">DNA</strong><span id="rkChatSub" hidden></span><button class="dn-model" id="rkModel" type="button" aria-haspopup="true" aria-expanded="false" hidden><i class="mdot"></i><b id="rkModelName" data-notr>DNA 4.2</b>' + ICON.down + '</button></div></div>' +
     '<div class="dn-act">' +
-    '<button class="dn-credit" id="rkCredit" type="button" hidden aria-label="Créditos">' + ICON.spark + '<span id="rkCreditN">—</span></button>' +
     '<button class="dn-ico" id="rkChatSettings" type="button" aria-label="Minha conta">' + ICON.user + '</button>' +
     '<button class="dn-ico" id="rkChatClose" type="button" aria-label="Fechar conversa">' + ICON.close + '</button></div></header>' +
     '<div class="dn-pop" id="rkEffortPop" role="menu" hidden></div>' +
@@ -257,10 +256,6 @@
   }
   function updateAuthUI() {
     var logged = !!state.user;
-    var cr = $("#rkCredit");
-    cr.hidden = !logged;
-    $("#rkCreditN").textContent = state.credits == null ? "—" : String(state.credits);
-    cr.setAttribute("aria-label", state.credits == null ? T("Créditos") : state.credits + " " + T("créditos"));
     var auth = $("#rkMenuAuth .lb");
     if (auth) setTxt(auth, logged ? "Minha conta" : "Fazer login");
     renderModel();
@@ -279,7 +274,6 @@
     b.hidden = !state.user;
     var e = curEffort();
     $("#rkModelName").textContent = modelName();
-    $("#rkEffortName").textContent = T(e.label);
     b.setAttribute("aria-label", modelName() + " · " + T(e.label));
   }
   function closeEffort() { var p = $("#rkEffortPop"); if (p) p.hidden = true; var b = $("#rkModel"); if (b) b.setAttribute("aria-expanded", "false"); }
@@ -1221,7 +1215,6 @@
   ov.onclick = function (e) { if (e.target === ov) closePanel(); };
   $("#rkChatClose").onclick = closeChat;
   $("#rkChatSettings").onclick = accountPanel;
-  $("#rkCredit").onclick = plans;
   $("#rkComposer").onsubmit = onSubmit;
   $("#rkModel").onclick = function (e) { e.stopPropagation(); if ($("#rkEffortPop").hidden) openEffort(); else closeEffort(); };
   d.addEventListener("pointerdown", function (e) { var p = $("#rkEffortPop"); if (p && !p.hidden && !e.target.closest("#rkEffortPop,#rkModel")) closeEffort(); });
