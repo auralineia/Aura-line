@@ -771,6 +771,13 @@
     } finally { state.busy = false; setBusy(false); }
   }
   /* ---------- imagens ---------- */
+  // pedidos de imagem escritos em linguagem natural ("cria uma imagem...", "faz um banner...")
+  var IMG_ASK = /\b(cri[ae]r?|fa[çc]a|faz|fazer|ger[ae]r?|gera|desenh[ae]r?|monte|montar|produz[ai]r?|make|create|generate|draw|cre[ae]|genera|haz|dibuja)\b[^.?!\n]{0,40}\b(imagem|imagens|foto|arte|banner|logo|logotipo|ilustra[çc][ãa]o|poster|p[ôo]ster|cartaz|flyer|criativo|image|picture|photo|illustration|imagen)\b/i;
+  var IMG_FOLLOW = /^\s*(gera|gere|faz|fa[çc]a|cria|crie|manda|quero)\b[^.?!\n]{0,30}\b(imagem|arte|pronta|ela|isso)\b|^\s*(gera|gere|faz|fa[çc]a)\s+(a|essa|isso)\b/i;
+  function lastWasImageTalk() {
+    var h = state.history.slice(-3);
+    return h.some(function (x) { return x.kind === "image" || IMG_ASK.test(x.content || ""); });
+  }
   function imgOK(mode) { mode = mode || state.mode; return mode === "rimak" || mode === "agent:designer" || mode === "agent:marketing" || mode === "agent:writer"; }
   function imgUI() {
     var ok = imgOK(); if (!ok) state.img = false;
@@ -798,7 +805,8 @@
     var t = thinkEl("image");
     col().appendChild(t); col().appendChild(t._ph); scrollEnd();
     try {
-      var r = await api({ action: "image", prompt: prompt, language: lang(), mode: mode });
+      var ctx = state.history.slice(-7, -1).filter(function (x) { return x.kind !== "image"; }).map(function (x) { return { role: x.role, content: String(x.content || "").slice(0, 500) }; });
+      var r = await api({ action: "image", prompt: prompt, language: lang(), mode: mode, history: ctx });
       var data = await r.json().catch(function () { return {}; });
       if (typeof data.credits === "number") { state.credits = data.credits; updateAuthUI(); }
       if (typeof data.cost === "number") state.imgCost = data.cost;
@@ -822,7 +830,8 @@
     var text = ta.value.trim();
     if (!text) return;
     var asImg = false, cmd = /^\/(imagem|image|imagen|img)\s+/i.exec(text);
-    if (imgOK() && (state.img || cmd)) { asImg = true; if (cmd) text = text.slice(cmd[0].length).trim(); if (!text) return; }
+    var wants = imgOK() && (IMG_ASK.test(text) || IMG_FOLLOW.test(text) && lastWasImageTalk());
+    if (imgOK() && (state.img || cmd || wants)) { asImg = true; if (cmd) text = text.slice(cmd[0].length).trim(); if (!text) return; }
     if (state.credits != null && state.credits <= 0) { plans(); return; }
     if (asImg && state.credits != null && state.credits < state.imgCost) { toast(T("Uma imagem custa {n} créditos e você tem {c}.", { n: state.imgCost, c: state.credits })); plans(); return; }
     ta.value = ""; autosize();

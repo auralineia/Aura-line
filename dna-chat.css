@@ -544,3 +544,9 @@ label.stRow{cursor:pointer}
 
 /* toast acima do compositor quando o chat está aberto */
 #rkChat.open ~ .dn-toast,.dn-chat.open ~ .dn-toast{bottom:calc(112px + env(safe-area-inset-bottom,0px));max-width:min(88vw,420px);text-align:center;line-height:1.45}
+
+/* tabelas legíveis no celular: rolagem lateral, colunas com largura mínima */
+.dn-body table{display:block;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border:0;font-size:13.5px;line-height:1.5}
+.dn-body table thead,.dn-body table tbody{display:table;width:max-content;min-width:100%}
+.dn-body th,.dn-body td{min-width:120px;max-width:260px;vertical-align:top;word-break:normal;overflow-wrap:break-word;hyphens:none;padding:9px 12px}
+.dn-body th:first-child,.dn-body td:first-child{min-width:104px;white-space:normal;font-weight:600}
