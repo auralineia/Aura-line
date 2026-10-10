@@ -915,32 +915,53 @@ function textProvider() {
   return null;
 }
 
-// Escolhe um modelo que a chave da Groq realmente enxerga (a lista muda com o tempo).
+// Níveis de modelo da DNA por plano e esforço de raciocínio (custo em créditos).
+const PLAN_RANK = { free: 0, pro: 1, ultra: 2 };
+const MODEL_LABEL = { free: "DNA 4.2", pro: "DNA 5.5x", ultra: "DNA 6.0rs" };
+const EFFORTS = {
+  low:    { id: "low",    label: "Baixo",   cost: 1, min: "free",  reasoning: "low",    mult: 1,   hint: "Seja direta e curta." },
+  medium: { id: "medium", label: "Médio",   cost: 2, min: "free",  reasoning: "medium", mult: 1.4, hint: "Equilibre profundidade e brevidade." },
+  high:   { id: "high",   label: "Alto",    cost: 3, min: "pro",   reasoning: "high",   mult: 2,   hint: "Raciocine com cuidado e aprofunde." },
+  max:    { id: "max",    label: "Máximo",  cost: 5, min: "ultra", reasoning: "high",   mult: 3,   hint: "Análise máxima: passo a passo, verifique o resultado e cubra casos de borda." }
+};
+function pickEffort(plan, requested) {
+  const e = EFFORTS[String(requested || "low")] || EFFORTS.low;
+  if ((PLAN_RANK[plan] ?? 0) >= PLAN_RANK[e.min]) return e;
+  return PLAN_RANK[plan] >= 1 ? EFFORTS.medium : EFFORTS.low;
+}
+const GROQ_PREFS = {
+  free:  ["llama-3.3-70b-versatile", "openai/gpt-oss-20b", "llama-3.1-8b-instant"],
+  pro:   ["openai/gpt-oss-120b", "llama-3.3-70b-versatile", "openai/gpt-oss-20b"],
+  ultra: ["openai/gpt-oss-120b", "llama-3.3-70b-versatile", "openai/gpt-oss-20b"]
+};
 let groqModelCache = null;
-async function resolveGroqModel(key) {
+async function resolveGroqModel(key, plan = "free") {
   if (process.env.GROQ_MODEL) return process.env.GROQ_MODEL;
-  if (groqModelCache && Date.now() - groqModelCache.at < 10 * 60 * 1000) return groqModelCache.id;
-  const prefer = ["llama-3.3-70b-versatile", "openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.1-8b-instant"];
-  let id = prefer[0];
-  try {
-    const r = await fetch("https://api.groq.com/openai/v1/models", {
-      headers: { Authorization: `Bearer ${key}` },
-      signal: AbortSignal.timeout(8000)
-    });
-    const data = await r.json();
-    const ids = (data?.data || []).map(m => m.id);
-    id =
-      prefer.find(m => ids.includes(m)) ||
-      ids.find(m => !/whisper|guard|tts|orpheus|playai|distil/i.test(m)) ||
-      prefer[0];
-  } catch {}
-  groqModelCache = { id, at: Date.now() };
+  if (!groqModelCache || Date.now() - groqModelCache.at > 10 * 60 * 1000) {
+    let ids = [];
+    try {
+      const r = await fetch("https://api.groq.com/openai/v1/models", {
+        headers: { Authorization: `Bearer ${key}` },
+        signal: AbortSignal.timeout(8000)
+      });
+      const data = await r.json();
+      ids = (data?.data || []).map(m => m.id);
+    } catch {}
+    groqModelCache = { ids, at: Date.now() };
+  }
+  const ids = groqModelCache.ids;
+  const prefer = GROQ_PREFS[plan] || GROQ_PREFS.free;
+  const id =
+    prefer.find(m => ids.includes(m)) ||
+    ids.find(m => !/whisper|guard|tts|orpheus|playai|distil/i.test(m)) ||
+    prefer[0];
+  groqModelCache.id = id;
   return id;
 }
 
 async function generateWithOmniRoute(messages, plan) {
   const provider = textProvider();
-  if (provider && provider.name === "groq") provider.model = await resolveGroqModel(provider.key);
+  if (provider && provider.name === "groq") provider.model = await resolveGroqModel(provider.key, plan);
 
   if (!provider) {
     throw new Error("Nenhum provedor de IA configurado (OMNIROUTE_BASE_URL ou GROQ_API_KEY).");
@@ -1089,7 +1110,7 @@ async function craftImagePrompt(prompt, context) {
   const provider = textProvider();
   if (!provider) return prompt;
   try {
-    if (provider.name === "groq") provider.model = await resolveGroqModel(provider.key);
+    if (provider.name === "groq") provider.model = await resolveGroqModel(provider.key, "free");
     const ctx = (Array.isArray(context) ? context : [])
       .slice(-4)
       .map(m => `${m?.role === "assistant" ? "Assistente" : "Usuário"}: ${String(m?.content || "").slice(0, 500)}`)
@@ -1179,14 +1200,22 @@ async function handleImageRequest(req, res, user) {
 }
 
 // Geração em tempo real: chama onDelta(texto) a cada pedaço recebido do modelo.
-async function streamWithProvider(messages, plan, onDelta) {
+async function streamWithProvider(messages, plan, onDelta, effort = EFFORTS.low) {
   const provider = textProvider();
   if (!provider) {
     throw new Error("Nenhum provedor de IA configurado (OMNIROUTE_BASE_URL ou GROQ_API_KEY).");
   }
-  if (provider.name === "groq") provider.model = await resolveGroqModel(provider.key);
+  if (provider.name === "groq") provider.model = await resolveGroqModel(provider.key, plan);
   const { key, baseUrl, model } = provider;
   const config = PLAN_CONFIG[plan] || PLAN_CONFIG.free;
+  const reasoner = /^openai\/gpt-oss/.test(model);
+  const maxTok = Math.min(
+    reasoner ? 7000 : 4500,
+    Math.max(reasoner ? 1500 : 0, Math.round(config.maxCompletionTokens * effort.mult))
+  );
+  if (effort.id !== "low" && messages[0]?.role === "system") {
+    messages = [{ ...messages[0], content: messages[0].content + "\n\nESFORÇO: " + effort.hint }, ...messages.slice(1)];
+  }
 
   const response = await fetch(baseUrl + "/v1/chat/completions", {
     method: "POST",
@@ -1199,9 +1228,9 @@ async function streamWithProvider(messages, plan, onDelta) {
       messages,
       stream: true,
       temperature: 0.6,
-      max_completion_tokens: config.maxCompletionTokens,
+      max_completion_tokens: maxTok,
       top_p: 0.95,
-      ...(/^openai\/gpt-oss/.test(model) ? { reasoning_effort: "low" } : {})
+      ...(reasoner ? { reasoning_effort: effort.reasoning } : {})
     })
   });
 
@@ -1335,6 +1364,69 @@ async function handlePixStatus(req, res, user) {
     }
   }
   return json(res, 200, { status: "approved", plan, planName: PIX_PLANS[plan].name });
+}
+
+// Assinatura no cartão sem sair da DNA: o navegador tokeniza o cartão (MP.js) e o servidor cria a assinatura.
+async function handleCardSubscribe(req, res, user) {
+  const mp = process.env.MERCADOPAGO_ACCESS_TOKEN;
+  if (!mp) return json(res, 500, { error: "Pagamento indisponível no momento." });
+  const plan = String(req.body?.plan || "").toLowerCase();
+  const p = PIX_PLANS[plan];
+  const cardToken = String(req.body?.token || "");
+  if (!p) return json(res, 400, { error: "Plano inválido." });
+  if (!cardToken || cardToken.length > 200) return json(res, 400, { error: "Dados do cartão inválidos." });
+  if (!user.email) return json(res, 400, { error: "Sua conta precisa ter um e-mail." });
+
+  const baseUrl = process.env.RIMAK_PUBLIC_URL || process.env.AURA_PUBLIC_URL || "https://rimak.vercel.app";
+  const r = await fetch("https://api.mercadopago.com/preapproval", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${mp}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      reason: `DNA ${p.name}`,
+      external_reference: `${user.id}:${plan}`,
+      payer_email: user.email,
+      card_token_id: cardToken,
+      auto_recurring: { frequency: 1, frequency_type: "months", transaction_amount: p.amount, currency_id: "BRL" },
+      back_url: baseUrl + "?checkout=return",
+      status: "authorized"
+    })
+  });
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) {
+    console.error("Card subscribe:", r.status, JSON.stringify(data).slice(0, 400));
+    return json(res, 502, { error: data?.message || "Cartão recusado. Confira os dados ou tente outro cartão." });
+  }
+  const status = String(data.status || "").toLowerCase();
+  if (status !== "authorized") {
+    return json(res, 200, { status: status || "pending", plan });
+  }
+  const end = new Date(Date.now() + 31 * 24 * 60 * 60 * 1000).toISOString();
+  const up = await supabaseRest("subscriptions?on_conflict=user_id", {
+    method: "POST",
+    headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+    body: JSON.stringify({
+      user_id: user.id,
+      plan,
+      status: "active",
+      mercado_pago_subscription_id: data.id || null,
+      current_period_end: end,
+      updated_at: new Date().toISOString()
+    })
+  });
+  if (!up.ok) {
+    console.error("Card activate:", up.status, await up.text());
+    return json(res, 500, { error: "Pagamento aprovado, mas não conseguimos ativar o plano. Fale com o suporte." });
+  }
+  const daily = PLAN_CONFIG[plan].dailyCredits;
+  const bal = await ensureCredits(user.id, daily);
+  if (bal < daily) {
+    await supabaseRest(`credits?user_id=eq.${encodeURIComponent(user.id)}`, {
+      method: "PATCH",
+      headers: { Prefer: "return=minimal" },
+      body: JSON.stringify({ balance: daily })
+    }).catch(() => {});
+  }
+  return json(res, 200, { status: "authorized", plan, planName: p.name });
 }
 
 function setCors(res) {
@@ -1735,6 +1827,10 @@ export default async function handler(req, res) {
       return await handlePixCreate(req, res, user);
     }
 
+    if (String(body.action || "").toLowerCase() === "card_subscribe") {
+      return await handleCardSubscribe(req, res, user);
+    }
+
     if (String(body.action || "").toLowerCase() === "pix_status") {
       return await handlePixStatus(req, res, user);
     }
@@ -1775,11 +1871,16 @@ export default async function handler(req, res) {
 
     // confere o saldo antes; o crédito só é cobrado se a resposta for gerada
     const owner = isOwner(user);
+    const planEff = owner ? "ultra" : plan;
+    const eff = pickEffort(planEff, body.effort);
+    const modelLabel = MODEL_LABEL[planEff] || MODEL_LABEL.free;
     const currentBalance = owner ? OWNER_BALANCE : await ensureCredits(user.id, config.dailyCredits);
-    if (currentBalance < 1) {
+    if (currentBalance < eff.cost) {
       return json(res, 402, {
-        error: "Seus créditos acabaram.",
-        credits: 0,
+        error: currentBalance > 0
+          ? `Esse esforço gasta ${eff.cost} créditos e você tem ${currentBalance}. Escolha um esforço menor.`
+          : "Seus créditos acabaram.",
+        credits: currentBalance,
         plan,
         planName: config.name
       });
@@ -1822,10 +1923,10 @@ export default async function handler(req, res) {
       const send = obj => res.write(`data: ${JSON.stringify(obj)}\n\n`);
 
       try {
-        await streamWithProvider(messages, plan, piece => send({ t: piece }));
+        await streamWithProvider(messages, planEff, piece => send({ t: piece }), eff);
         const credit2 = owner
           ? { ok: true, balance: OWNER_BALANCE }
-          : await consumeCredits(user.id, 1);
+          : await consumeCredits(user.id, eff.cost);
         if (mode === "rimak" || mode.indexOf("agent:") === 0) {
           await processMemory(user.id, token, message);
         }
@@ -1833,6 +1934,9 @@ export default async function handler(req, res) {
           done: true,
           plan,
           planName: config.name,
+          cost: owner ? 0 : eff.cost,
+          effort: eff.id,
+          modelLabel,
           credits: typeof credit2.balance === "number" ? credit2.balance : null,
           researched: Boolean(researchText),
           sources: researchSources(research)
@@ -1846,12 +1950,12 @@ export default async function handler(req, res) {
 
     const reply = await generateWithOmniRoute(
       messages,
-      plan
+      planEff
     );
 
     const credit = owner
       ? { ok: true, balance: OWNER_BALANCE }
-      : await consumeCredits(user.id, 1);
+      : await consumeCredits(user.id, eff.cost);
 
     if (!credit.ok && credit.insufficient) {
       return json(res, 402, {
@@ -1876,7 +1980,10 @@ export default async function handler(req, res) {
           : null,
       researched: Boolean(researchText),
       sources: researchSources(research),
-      model: groqModelCache?.id || textProvider()?.model || "auto"
+      cost: owner ? 0 : eff.cost,
+      effort: eff.id,
+      modelLabel,
+      model: modelLabel
     });
   } catch (error) {
     console.error("DNA API error:", error);

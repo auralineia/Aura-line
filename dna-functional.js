@@ -19,7 +19,16 @@
   function T(pt, vars) { return I18N ? I18N.t(pt, vars) : (vars ? String(pt).replace(/\{(\w+)\}/g, function (m, k) { return vars[k] == null ? m : vars[k]; }) : pt); }
 
   var STORE = "rimak.cloud.session";
-  var state = { session: null, user: null, name: "", mode: "rimak", history: [], busy: false, credits: null, plan: "free", pendingMode: null, failed: null, pushed: false, img: false, imgCost: 3, imgLoaded: false };
+  var state = { session: null, user: null, name: "", mode: "rimak", history: [], busy: false, credits: null, plan: "free", pendingMode: null, failed: null, pushed: false, img: false, imgCost: 3, imgLoaded: false, effort: "low", modelLabel: "" };
+  var MODELS = { free: "DNA 4.2", pro: "DNA 5.5x", ultra: "DNA 6.0rs" };
+  var RANK = { free: 0, pro: 1, ultra: 2 };
+  var EFFORTS = [
+    { id: "low", label: "Baixo", cost: 1, min: "free", desc: "Respostas rápidas e diretas." },
+    { id: "medium", label: "Médio", cost: 2, min: "free", desc: "Mais cuidado em cada resposta." },
+    { id: "high", label: "Alto", cost: 3, min: "pro", desc: "Raciocínio profundo." },
+    { id: "max", label: "Máximo", cost: 5, min: "ultra", desc: "Análise completa, passo a passo." }
+  ];
+  state.effort = lsGet("rimak.effort", "low");
   var COARSE = false;
   try { COARSE = matchMedia("(pointer:coarse)").matches; } catch (e) {}
 
@@ -45,6 +54,10 @@
     img: '<svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="10" r="1.7"/><path d="M4 17l4.6-4.4a1.6 1.6 0 0 1 2.2 0L15 16.5l1.6-1.5a1.6 1.6 0 0 1 2.2 0L20.5 17"/></svg>',
     dl: '<svg viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>',
     redo: '<svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>',
+    clock: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg>',
+    lock: '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2.4"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+    grid: '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.8"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.8"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.8"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.8"/></svg>',
+    card: '<svg viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="3"/><path d="M3 10h18M7 15h3"/></svg>',
     ext: '<svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4.5A1.5 1.5 0 0 1 16.5 20h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></svg>'
   };
   var MARK = '<div class="dnaMark foil" role="img" aria-label="DNA"><i></i><i></i><i></i></div>';
@@ -185,7 +198,7 @@
     '<button class="dn-ico" id="rkChatClose" type="button" aria-label="Fechar conversa">' + ICON.close + '</button></div></header>' +
     '<main class="dn-scroll" id="rkChatBody" aria-live="polite"><div class="dn-col" id="rkCol"></div></main>' +
     '<button class="dn-down" id="rkDown" type="button" aria-label="Ir para o fim">' + ICON.down + '</button>' +
-    '<form class="dn-composer" id="rkComposer" autocomplete="off"><div class="dn-box"><textarea id="rkChatInput" rows="1" enterkeyhint="send" aria-label="Mensagem"></textarea>' +
+    '<form class="dn-composer" id="rkComposer" autocomplete="off"><div class="dn-modelrow"><button class="dn-model" id="rkModel" type="button" aria-haspopup="true" aria-expanded="false" hidden><i class="mdot"></i><b id="rkModelName" data-notr>DNA 4.2</b><span id="rkEffortName" data-notr>Baixo</span><em id="rkEffortCost" data-notr>1</em>' + ICON.down + '</button></div><div class="dn-pop" id="rkEffortPop" role="menu" hidden></div><div class="dn-box"><textarea id="rkChatInput" rows="1" enterkeyhint="send" aria-label="Mensagem"></textarea>' +
     '<button class="dn-imgbtn" id="rkImgBtn" type="button" hidden aria-pressed="false" aria-label="Gerar imagem">' + ICON.img + '<span data-notr></span></button>' +
     '<button class="dn-send" id="rkSend" type="submit" aria-label="Enviar">' + ICON.send + '</button></div><p class="dn-foot" id="rkFoot"></p></form>';
   d.body.appendChild(chat);
@@ -195,11 +208,11 @@
   function mi(id, ic, label, tail, attr) { return '<button class="rkMenuItem" ' + (attr || "") + ' data-menu="' + id + '" type="button"><i class="ic">' + ICON[ic] + '</i><span class="lb">' + label + '</span><em>' + tail + '</em></button>'; }
   menu.innerHTML = '<aside id="rkMenuPanel" role="dialog" aria-modal="true" aria-label="Menu"><div id="rkMenuTop">' + MARK + '<button class="rkClose" id="rkMenuClose" type="button" aria-label="Fechar menu">×</button></div>' +
     '<div id="rkMenuAccount"></div>' +
+    '<div class="rkMenuGroup">Começar</div>' +
+    mi("new-rimak", "plus", "Novo chat", "+") + mi("image", "img", "Gerar imagem", "→") + mi("agents", "grid", "Agentes", "→") + mi("continue-tempesta", "pulse", "TEMPESTA", "→") +
+    '<div class="rkMenuGroup">Histórico</div><div id="rkMenuHist"></div>' +
     '<div class="rkMenuGroup">Sua conta</div>' +
     mi("auth", "user", "Fazer login", "→", 'id="rkMenuAuth"') + mi("plans", "spark", "Planos e créditos", "→") + mi("settings", "gear", "Configurações", "→") +
-    '<div class="rkMenuGroup">Conversas</div>' +
-    mi("continue-rimak", "chat", "Conversa com a DNA", "→") + mi("continue-tempesta", "pulse", "Conversa com a TEMPESTA", "→") +
-    mi("new-rimak", "plus", "Novo chat com a DNA", "+") + mi("new-tempesta", "plus", "Novo chat com a TEMPESTA", "+") +
     '<div class="rkMenuGroup">Idioma</div><div class="seg" id="rkMenuLang" role="group" aria-label="Idioma"></div>' +
     '<div class="rkMenuGroup">Ajuda</div>' + mi("support", "help", "Suporte", "→") +
     '<div class="rkMenuFoot">Seu espaço de inteligência.</div></aside>';
@@ -250,6 +263,44 @@
     cr.setAttribute("aria-label", state.credits == null ? T("Créditos") : state.credits + " " + T("créditos"));
     var auth = $("#rkMenuAuth .lb");
     if (auth) setTxt(auth, logged ? "Minha conta" : "Fazer login");
+    renderModel();
+  }
+  /* ---------- modelo e esforço ---------- */
+  function planKey() { var p = String(state.plan || "free").toLowerCase(); return RANK[p] == null ? "free" : p; }
+  function modelName() { return MODELS[planKey()]; }
+  function effortOK(e) { return RANK[planKey()] >= RANK[e.min]; }
+  function curEffort() {
+    var e = EFFORTS.filter(function (x) { return x.id === state.effort; })[0] || EFFORTS[0];
+    if (effortOK(e)) return e;
+    return RANK[planKey()] >= 1 ? EFFORTS[1] : EFFORTS[0];
+  }
+  function renderModel() {
+    var b = $("#rkModel"); if (!b) return;
+    b.hidden = !state.user;
+    var e = curEffort(), isImg = !!state.img && imgOK();
+    $("#rkModelName").textContent = state.modelLabel && state.modelLabel !== modelName() && RANK[planKey()] < 2 ? modelName() : (state.modelLabel || modelName());
+    $("#rkModelName").textContent = modelName();
+    $("#rkEffortName").textContent = isImg ? T("Imagem") : T(e.label);
+    $("#rkEffortCost").textContent = (isImg ? state.imgCost : e.cost) + " cr";
+    b.setAttribute("aria-label", modelName() + " · " + (isImg ? T("Imagem") : T(e.label)));
+  }
+  function closeEffort() { var p = $("#rkEffortPop"); if (p) p.hidden = true; var b = $("#rkModel"); if (b) b.setAttribute("aria-expanded", "false"); }
+  function openEffort() {
+    var p = $("#rkEffortPop"), cur = curEffort(), up = { pro: "PRO", ultra: "ULTRA" };
+    p.innerHTML = '<div class="pophd"><b data-notr>' + esc(modelName()) + '</b><small>' + esc(T("Quanto mais esforço, mais créditos por resposta.")) + '</small></div>' +
+      EFFORTS.map(function (e) {
+        var ok = effortOK(e);
+        return '<button type="button" class="popit' + (e.id === cur.id ? " on" : "") + (ok ? "" : " lk") + '" data-eff="' + e.id + '" role="menuitemradio" aria-checked="' + (e.id === cur.id) + '"><span class="pl"><b>' + esc(T(e.label)) + '</b><small>' + esc(T(e.desc)) + '</small></span>' +
+          (ok ? '<em data-notr>' + e.cost + ' ' + (e.cost === 1 ? esc(T("crédito")) : esc(T("créditos"))) + '</em>' : '<em class="lk" data-notr>' + ICON.lock + up[e.min] + '</em>') + '</button>';
+      }).join("");
+    p.hidden = false; $("#rkModel").setAttribute("aria-expanded", "true");
+    $$("[data-eff]", p).forEach(function (b) {
+      b.onclick = function () {
+        var e = EFFORTS.filter(function (x) { return x.id === b.dataset.eff; })[0];
+        if (!effortOK(e)) { closeEffort(); toast(T("O esforço {e} é do plano {p}.", { e: T(e.label), p: up[e.min] })); plans(); return; }
+        state.effort = e.id; lsSet("rimak.effort", e.id); closeEffort(); renderModel();
+      };
+    });
   }
   function setTxt(el, pt) { el.textContent = pt; if (I18N) I18N.apply(el); }
   function lang() { return I18N ? I18N.lang() : lsGet("rimak.language", "pt-BR"); }
@@ -418,7 +469,7 @@
     panel('<h3>Planos DNA</h3><p data-notr>' + esc(T("Créditos são o saldo que você usa ao conversar: cada mensagem consome 1 crédito e cada imagem consome {n}. O saldo diário volta todo dia. Escolha o tamanho que cabe no seu uso.", { n: state.imgCost })) + '</p><div class="rkPlans">' +
       card("free", "FREE", "20 créditos por dia", "") + card("pro", "PRO", "50 créditos por dia", "R$ 11,99") + card("ultra", "ULTRA", "150 créditos por dia", "R$ 29,99") + '</div>' +
       (state.user ? '<div class="rkCard" style="margin-top:12px"><span>Seu saldo</span><b style="margin:2px 0 0">' + (state.credits == null ? "—" : state.credits + " " + T("créditos")) + '</b></div>' : ""));
-    $$("[data-plan]").forEach(function (b) { b.onclick = function () { checkout(b.dataset.plan); }; });
+    $$("[data-plan]").forEach(function (b) { b.onclick = function () { cardPanel(b.dataset.plan); }; });
     $$("[data-pix]").forEach(function (b) { b.onclick = function () { pixPanel(b.dataset.pix); }; });
   }
   var PIXP = { pro: "R$ 11,99", ultra: "R$ 29,99" };
@@ -461,6 +512,85 @@
       panel('<h3>Pix · ' + label + '</h3><p data-notr>' + esc(T(x instanceof TypeError ? "Sem conexão com o servidor. Verifique a internet e tente de novo." : (x.message || "Não foi possível gerar o Pix. Tente de novo."))) + '</p><div class="rkRow"><button class="rkBtn" id="rkPixBack" type="button">Voltar</button></div>');
       $("#rkPixBack").onclick = plans;
     }
+  }
+  /* ---------- cartão dentro da DNA (Mercado Pago, campos seguros) ---------- */
+  var mpPromise = null;
+  function loadMP() {
+    if (window.MercadoPago) return Promise.resolve();
+    if (!mpPromise) mpPromise = new Promise(function (ok, no) {
+      var sc = d.createElement("script"); sc.src = "https://sdk.mercadopago.com/js/v2"; sc.async = true;
+      sc.onload = ok; sc.onerror = function () { mpPromise = null; no(new Error("sdk")); };
+      d.head.appendChild(sc);
+    });
+    return mpPromise;
+  }
+  function cpfOK(v) {
+    v = String(v || "").replace(/\D/g, "");
+    if (v.length !== 11 || /^(\d)\1{10}$/.test(v)) return false;
+    for (var t = 9; t < 11; t++) {
+      var sum = 0; for (var i = 0; i < t; i++) sum += +v[i] * (t + 1 - i);
+      var dv = (sum * 10) % 11 % 10; if (dv !== +v[t]) return false;
+    }
+    return true;
+  }
+  async function cardPanel(plan) {
+    if (!state.user || !state.session) { login(); return; }
+    var label = plan.toUpperCase();
+    panel('<h3>Cartão · ' + label + '</h3><p>Preparando o pagamento seguro…</p>');
+    var pub = "";
+    try {
+      var cr = await fetch("/api/checkout-config"), cd = await cr.json().catch(function () { return {}; });
+      pub = cd.public_key || "";
+      if (!pub) throw new Error("nokey");
+      await loadMP();
+    } catch (e) { toast(T("Abrindo o pagamento seguro do Mercado Pago…")); checkout(plan); return; }
+    var mp, fields = {};
+    try { mp = new window.MercadoPago(pub, { locale: "pt-BR" }); } catch (e) { checkout(plan); return; }
+    panel('<h3>Cartão · ' + label + '</h3><p data-notr>' + esc(T("Assinatura mensal de {v}, cobrada todo mês. Você cancela quando quiser.", { v: PIXP[plan] || "" })) + '</p>' +
+      '<form id="rkCardForm" novalidate><div class="rkFieldLb">' + esc(T("Número do cartão")) + '</div><div class="mpField" id="rkCardNum"></div>' +
+      '<div class="rkTwo"><div><div class="rkFieldLb">' + esc(T("Validade")) + '</div><div class="mpField" id="rkCardExp"></div></div><div><div class="rkFieldLb">CVV</div><div class="mpField" id="rkCardCvv"></div></div></div>' +
+      '<div class="rkFieldLb">' + esc(T("Nome no cartão")) + '</div><input class="rkInput" id="rkCardName" autocomplete="cc-name" autocapitalize="characters" placeholder="' + esc(T("Como está no cartão")) + '">' +
+      '<div class="rkFieldLb">CPF</div><input class="rkInput" id="rkCardCpf" inputmode="numeric" autocomplete="off" maxlength="14" placeholder="000.000.000-00">' +
+      '<div class="rkRow"><button class="rkBtn primary" type="submit" id="rkCardPay">' + esc(T("Assinar por {v}/mês", { v: PIXP[plan] || "" })) + '</button><button class="rkBtn" type="button" id="rkCardBack">' + esc(T("Voltar")) + '</button></div>' +
+      '<div class="rkMuted" id="rkCardMsg"></div><p class="rkSafe">' + ICON.lock + esc(T("Os dados do cartão vão direto ao Mercado Pago. A DNA não guarda o número.")) + '</p></form>');
+    var st = { style: { fontSize: "16px", color: "#fff" } };
+    try {
+      fields.num = mp.fields.create("cardNumber", { placeholder: "0000 0000 0000 0000" }).mount("rkCardNum");
+      fields.exp = mp.fields.create("expirationDate", { placeholder: "MM/AA" }).mount("rkCardExp");
+      fields.cvv = mp.fields.create("securityCode", { placeholder: "123" }).mount("rkCardCvv");
+    } catch (e) { checkout(plan); return; }
+    $("#rkCardBack").onclick = plans;
+    $("#rkCardCpf").oninput = function () {
+      var v = this.value.replace(/\D/g, "").slice(0, 11);
+      this.value = v.replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    };
+    var busy = false, msg = $("#rkCardMsg"), btn = $("#rkCardPay");
+    $("#rkCardForm").onsubmit = async function (e) {
+      e.preventDefault(); if (busy) return;
+      var nm = $("#rkCardName").value.trim(), cpf = $("#rkCardCpf").value;
+      if (nm.length < 3) { msg.textContent = T("Digite o nome como está no cartão."); return; }
+      if (!cpfOK(cpf)) { msg.textContent = T("CPF inválido. Confira os números."); return; }
+      busy = true; btn.disabled = true; msg.textContent = T("Processando…");
+      try {
+        var tk = await mp.fields.createCardToken({ cardholderName: nm, identificationType: "CPF", identificationNumber: cpf.replace(/\D/g, "") });
+        if (!tk || !tk.id) throw new Error(T("Confira os dados do cartão."));
+        var r = await api({ action: "card_subscribe", plan: plan, token: tk.id }), data = await r.json().catch(function () { return {}; });
+        if (!r.ok) throw new Error(data.error || T("Cartão recusado. Confira os dados ou tente outro cartão."));
+        if (data.status === "authorized") {
+          await account();
+          panel('<h3>' + esc(T("Plano {p} ativo!", { p: label })) + '</h3><p>' + esc(T("Pagamento aprovado. Seus créditos já estão liberados.")) + '</p><div class="rkRow"><button class="rkBtn primary" type="button" id="rkCardOk">' + esc(T("Continuar")) + '</button></div>');
+          $("#rkCardOk").onclick = closePanel; toast(T("Plano {p} ativo!", { p: label }));
+        } else {
+          panel('<h3>' + esc(T("Pagamento em análise")) + '</h3><p>' + esc(T("O Mercado Pago está analisando o pagamento. Assim que aprovar, o plano é liberado.")) + '</p><div class="rkRow"><button class="rkBtn" type="button" id="rkCardOk">' + esc(T("Fechar")) + '</button></div>');
+          $("#rkCardOk").onclick = closePanel;
+        }
+      } catch (x) {
+        var m = x && x.message ? x.message : "";
+        if (Array.isArray(x) && x.length) m = T("Confira os dados do cartão.");
+        msg.textContent = m || T("Não foi possível processar. Tente de novo.");
+        busy = false; btn.disabled = false;
+      }
+    };
   }
   async function checkout(plan) {
     if (!state.user) { login(); return; }
@@ -534,6 +664,7 @@
     accountCard();
     langSeg("#rkMenuLang", accountCard);
     updateAuthUI();
+    renderMenuHist();
     menu.classList.add("open");
   }
   function closeMenu() { menu.classList.remove("open"); }
@@ -542,14 +673,15 @@
     if (a === "auth") { state.user ? accountPanel() : login(); }
     else if (a === "plans") plans();
     else if (a === "settings") settings();
-    else if (a === "continue-rimak") continueChat("rimak");
     else if (a === "continue-tempesta") continueChat("tempesta");
-    else if (a === "new-rimak") newChat("rimak");
-    else if (a === "new-tempesta") newChat("tempesta");
+    else if (a === "new-rimak") { if (!state.user) { state.pendingMode = "rimak"; login(); } else newChat("rimak"); }
+    else if (a === "image") { if (!state.user) { state.pendingMode = "rimak"; login(); } else { openChat("rimak"); state.img = true; imgUI(); setTimeout(function () { try { ta.focus(); } catch (e) {} }, 120); } }
+    else if (a === "agents") agents();
+    else if (a === "history") historyPanel();
     else if (a === "support") support();
   }
   function continueChat(mode) { if (!state.user) { state.pendingMode = mode; login(); return; } openChat(mode); }
-  function newChat(mode) { state.mode = mode; state.history = []; state.failed = null; saveChat(); openChat(mode); }
+  function newChat(mode) { archiveCurrent(mode); state.mode = mode; state.history = []; state.failed = null; saveChat(); openChat(mode); }
 
   /* ---------- histórico ---------- */
   function historyKey(mode) { return "rimak.chat." + ((state.user && state.user.id) || "anon") + "." + (mode || state.mode); }
@@ -558,6 +690,105 @@
   function loadChat() { try { state.history = JSON.parse(lsGet(historyKey(), "[]")) || []; } catch (e) { state.history = []; } }
   function slim(h) { return h.slice(-40).map(function (x) { return x && x.image && x.image.indexOf("data:") === 0 ? Object.assign({}, x, { image: "" }) : x; }); }
   function saveChat() { lsSet(historyKey(), JSON.stringify(slim(state.history))); }
+  /* arquivo de conversas: cada "novo chat" guarda a conversa anterior aqui */
+  function uid() { return (state.user && state.user.id) || "anon"; }
+  function archKey() { return "rimak.chat." + uid() + ".archive"; }
+  function readArch() { try { var a = JSON.parse(lsGet(archKey(), "[]")); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+  function writeArch(a) {
+    for (var n = a.length; n >= 0; n--) {
+      try { localStorage.setItem(archKey(), JSON.stringify(a.slice(0, n))); return; } catch (e) {}
+    }
+  }
+  function hasUserMsg(h) { return Array.isArray(h) && h.some(function (x) { return x && x.role === "user"; }); }
+  function titleOf(h) {
+    var u = (h || []).filter(function (x) { return x && x.role === "user"; })[0];
+    var t = String((u && u.content) || "").replace(/\s+/g, " ").trim();
+    return t.length > 64 ? t.slice(0, 62) + "…" : (t || T("Conversa"));
+  }
+  function stampOf(h) { var t = 0; (h || []).forEach(function (x) { if (x && x.ts > t) t = x.ts; }); return t; }
+  function archiveCurrent(mode, items) {
+    if (!state.user) return;
+    var h = items;
+    if (!h) { try { h = JSON.parse(lsGet(historyKey(mode), "[]")) || []; } catch (e) { h = []; } }
+    if (!hasUserMsg(h)) return;
+    var a = readArch();
+    a.unshift({ id: "t" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), mode: mode, title: titleOf(h), ts: stampOf(h) || Date.now(), items: slim(h) });
+    writeArch(a.slice(0, 30));
+  }
+  // lista unificada: conversas atuais de cada modo + arquivadas, da mais recente para a mais antiga
+  function threads() {
+    var out = [], pre = "rimak.chat." + uid() + ".";
+    try {
+      Object.keys(localStorage).forEach(function (k) {
+        if (k.indexOf(pre) !== 0) return;
+        var mode = k.slice(pre.length); if (mode === "archive") return;
+        var h = []; try { h = JSON.parse(localStorage.getItem(k) || "[]") || []; } catch (e) {}
+        if (hasUserMsg(h)) out.push({ cur: true, id: mode, mode: mode, title: titleOf(h), ts: stampOf(h) });
+      });
+    } catch (e) {}
+    readArch().forEach(function (t) { out.push({ cur: false, id: t.id, mode: t.mode, title: t.title, ts: t.ts || 0 }); });
+    out.sort(function (x, y) { return y.ts - x.ts; });
+    return out;
+  }
+  function openThread(t) {
+    if (!state.user) { login(); return; }
+    if (!t.cur) {
+      var a = readArch(), idx = -1;
+      a.forEach(function (x, k) { if (x.id === t.id) idx = k; });
+      if (idx < 0) return;
+      var th = a.splice(idx, 1)[0];
+      archiveCurrent(th.mode);
+      writeArch(a);
+      lsSet(historyKey(th.mode), JSON.stringify(th.items || []));
+    }
+    closePanel(); closeMenu(); openChat(t.mode);
+  }
+  function deleteThread(t) {
+    if (t.cur) {
+      lsDel(historyKey(t.mode));
+      if (state.mode === t.mode) { state.history = []; state.failed = null; if (chat.classList.contains("open")) renderChat(); }
+    } else writeArch(readArch().filter(function (x) { return x.id !== t.id; }));
+  }
+  function ago(ts) {
+    if (!ts) return "";
+    var m = Math.round((Date.now() - ts) / 60000);
+    if (m < 1) return T("agora");
+    if (m < 60) return T("há {n} min", { n: m });
+    var h = Math.round(m / 60); if (h < 24) return T("há {n} h", { n: h });
+    var dd = Math.round(h / 24); if (dd < 30) return T("há {n} d", { n: dd });
+    return new Date(ts).toLocaleDateString(lang());
+  }
+  function threadRow(t, i) {
+    var nm = meta(t.mode).name;
+    return '<div class="hrow"><button type="button" class="hopen" data-th="' + i + '"><i class="ic">' + ICON.chat + '</i><span class="ht"><b data-notr>' + esc(t.title) + '</b><small data-notr>' + esc(nm) + (t.ts ? ' · ' + esc(ago(t.ts)) : '') + '</small></span></button>' +
+      '<button type="button" class="hdel" data-thdel="' + i + '" aria-label="' + esc(T("Apagar conversa")) + '">' + ICON.trash + '</button></div>';
+  }
+  var menuThreads = [];
+  function renderMenuHist() {
+    var el = $("#rkMenuHist"); if (!el) return;
+    if (!state.user) { el.innerHTML = '<p class="hempty">' + esc(T("Entre para ver suas conversas.")) + '</p>'; return; }
+    menuThreads = threads();
+    if (!menuThreads.length) { el.innerHTML = '<p class="hempty">' + esc(T("Suas conversas aparecem aqui.")) + '</p>'; return; }
+    el.innerHTML = menuThreads.slice(0, 4).map(threadRow).join("") +
+      (menuThreads.length > 4 ? '<button class="rkMenuItem hall" type="button" data-menu="history"><i class="ic">' + ICON.clock + '</i><span class="lb">' + esc(T("Ver todo o histórico")) + '</span><em>' + menuThreads.length + '</em></button>' : "");
+    bindThreads(el, function () { renderMenuHist(); });
+  }
+  function bindThreads(root, after) {
+    $$("[data-th]", root).forEach(function (b) { b.onclick = function () { openThread(menuThreads[+b.dataset.th]); }; });
+    $$("[data-thdel]", root).forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); deleteThread(menuThreads[+b.dataset.thdel]); after(); }; });
+  }
+  function historyPanel() {
+    if (!state.user) { login(); return; }
+    function draw() {
+      menuThreads = threads();
+      panel('<h3>' + esc(T("Histórico")) + '</h3><p>' + esc(T("Suas conversas ficam salvas neste aparelho.")) + '</p>' +
+        (menuThreads.length ? '<div class="hlist">' + menuThreads.map(threadRow).join("") + '</div>' : '<p class="hempty">' + esc(T("Nenhuma conversa ainda.")) + '</p>') +
+        '<div class="rkRow"><button class="rkBtn" type="button" id="rkHistClose">' + esc(T("Fechar")) + '</button></div>');
+      bindThreads($("#rkPanelContent"), draw);
+      $("#rkHistClose").onclick = closePanel;
+    }
+    draw();
+  }
   function pushTo(mode, item) {
     var h = []; try { h = JSON.parse(lsGet(historyKey(mode), "[]")) || []; } catch (e) {}
     h.push(item); lsSet(historyKey(mode), JSON.stringify(slim(h)));
@@ -838,6 +1069,7 @@
     }
     if (meta) {
       if (typeof meta.credits === "number") { state.credits = meta.credits; updateAuthUI(); }
+      if (meta.modelLabel) { state.modelLabel = meta.modelLabel; renderModel(); }
       if (Array.isArray(meta.sources) && meta.sources.length) {
         item.sources = meta.sources.slice(0, 5).map(function (s) { return { title: String(s.title || "").slice(0, 120), url: String(s.url || "") }; });
         if (el) $(".dn-tools", el).insertAdjacentHTML("beforebegin", sourcesHTML(item.sources));
@@ -854,7 +1086,7 @@
     var t = thinkEl();
     col().appendChild(t); scrollEnd();
     try {
-      var r = await api({ message: text, history: state.history.slice(-9, -1).map(function (x) { return x.kind === "image" ? { role: "assistant", content: "[imagem gerada a partir de: " + x.content + "]" } : { role: x.role, content: x.content }; }), language: lang(), mode: mode, stream: true });
+      var r = await api({ message: text, history: state.history.slice(-9, -1).map(function (x) { return x.kind === "image" ? { role: "assistant", content: "[imagem gerada a partir de: " + x.content + "]" } : { role: x.role, content: x.content }; }), language: lang(), mode: mode, stream: true, effort: curEffort().id });
       if (r.ok && (r.headers.get("content-type") || "").indexOf("text/event-stream") >= 0 && r.body && r.body.getReader) {
         t = await readStream(r, mode, t);
         return;
@@ -893,6 +1125,7 @@
     chat.setAttribute("data-img", state.img ? "1" : "0");
     var m = meta();
     ta.placeholder = state.img ? T("Descreva a imagem que você quer…") : T(m.ph);
+    renderModel();
   }
   async function loadImgStatus() {
     if (!state.session || state.imgLoaded) return; state.imgLoaded = true;
@@ -937,9 +1170,10 @@
     var wants = imgOK() && (IMG_ASK.test(text) || IMG_FOLLOW.test(text) && lastWasImageTalk());
     if (imgOK() && (state.img || cmd || wants)) { asImg = true; if (cmd) text = text.slice(cmd[0].length).trim(); if (!text) return; }
     if (state.credits != null && state.credits <= 0) { plans(); return; }
+    if (!asImg && state.credits != null && state.credits < curEffort().cost) { toast(T("Esse esforço gasta {n} créditos e você tem {c}.", { n: curEffort().cost, c: state.credits })); openEffort(); return; }
     if (asImg && state.credits != null && state.credits < state.imgCost) { toast(T("Uma imagem custa {n} créditos e você tem {c}.", { n: state.imgCost, c: state.credits })); plans(); return; }
     ta.value = ""; autosize();
-    var item = { role: "user", content: text };
+    var item = { role: "user", content: text, ts: Date.now() };
     state.history.push(item); saveChat();
     if (state.history.length === 1) renderChat(); else { col().appendChild(msgEl(item, false)); scrollEnd(); }
     if (asImg) deliverImage(text); else deliver(text);
@@ -961,6 +1195,7 @@
     if (!COARSE) setTimeout(function () { ta.focus(); }, 60);
   }
   function hideChat() {
+    closeEffort();
     chat.classList.remove("open");
     d.documentElement.classList.remove("dn-lock");
     chat.style.height = ""; chat.style.top = "";
@@ -994,6 +1229,8 @@
   $("#rkChatSettings").onclick = accountPanel;
   $("#rkCredit").onclick = plans;
   $("#rkComposer").onsubmit = onSubmit;
+  $("#rkModel").onclick = function (e) { e.stopPropagation(); if ($("#rkEffortPop").hidden) openEffort(); else closeEffort(); };
+  d.addEventListener("pointerdown", function (e) { var p = $("#rkEffortPop"); if (p && !p.hidden && !e.target.closest("#rkEffortPop,#rkModel")) closeEffort(); });
   $("#rkDown").onclick = function () { scrollEnd(true); };
   ta.addEventListener("input", autosize);
   ta.addEventListener("keydown", function (e) {
@@ -1005,7 +1242,9 @@
   }, { passive: true });
   d.addEventListener("keydown", function (e) {
     if (e.key !== "Escape") return;
-    if (ov.classList.contains("open")) closePanel();
+    var ep = $("#rkEffortPop");
+    if (ep && !ep.hidden) closeEffort();
+    else if (ov.classList.contains("open")) closePanel();
     else if (menu.classList.contains("open")) closeMenu();
     else if (chat.classList.contains("open")) closeChat();
   });
@@ -1029,7 +1268,7 @@
 
   function onLang() {
     greet(); updateAuthUI();
-    if (menu.classList.contains("open")) { accountCard(); langSeg("#rkMenuLang", accountCard); }
+    if (menu.classList.contains("open")) { accountCard(); langSeg("#rkMenuLang", accountCard); renderMenuHist(); }
     if (ov.classList.contains("open") && $("#rkLangSeg")) settings();
     if (chat.classList.contains("open")) { setHeader(); renderChat(); }
   }

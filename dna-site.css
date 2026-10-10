@@ -33,7 +33,7 @@ h2 .w>span{display:inline-block;transform:translateY(112%);transition:transform 
 h2.in .w>span{transform:none}
 
 /* ---------- atalhos da abertura (substituem os rótulos soltos) ---------- */
-#hl{position:absolute;inset:auto;left:6vw;right:6vw;top:calc(100vh - 198px);margin-inline:auto;max-width:560px;z-index:6;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;pointer-events:none}
+#hl{position:absolute;inset:auto;left:6vw;right:6vw;top:calc(100vh - 198px);top:calc(100svh - 198px - env(safe-area-inset-bottom,0px));margin-inline:auto;max-width:560px;z-index:6;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;pointer-events:none}
 #hl a{position:relative!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;translate:none!important;pointer-events:auto;
   display:inline-flex;align-items:center;gap:9px;height:36px;padding:0 15px 0 12px;border-radius:18px;border:1px solid rgba(var(--fg),.26);background:rgba(var(--fg),.05);
   -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:rgb(var(--fg));overflow:hidden;
@@ -41,7 +41,7 @@ h2.in .w>span{transform:none}
 #hl a i{font-style:normal;color:rgba(var(--fg),.5);transition:color .3s}
 #hl a:hover,#hl a:focus-visible{text-decoration:none;border-color:rgba(var(--fg),.7);background:rgba(var(--fg),.1);transform:translateY(-2px);box-shadow:0 0 0 4px rgba(var(--glow),.1),0 12px 34px rgba(0,0,0,.35)}
 #hl a:hover i{color:rgb(var(--glow))}
-.ask{top:calc(100vh - 272px)}
+.ask{top:calc(100vh - 272px);top:calc(100svh - 272px - env(safe-area-inset-bottom,0px))}
 
 /* ---------- leitura sobre a esfera (celular) ---------- */
 @media (max-width:820px){
