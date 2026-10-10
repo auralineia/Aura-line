@@ -111,7 +111,7 @@ body.hasptr #cg{opacity:1}
 @media (max-width:820px){.rail{right:4px}.rail button{width:18px;height:18px}.rail button::before{width:5px;height:5px}}
 @media (prefers-reduced-motion:reduce){.ask .ph::after{animation:none}}
 </style>
-<link rel="stylesheet" href="/dna-chat.css?v=3">
+<link rel="stylesheet" href="/dna-chat.css?v=4">
 <link rel="stylesheet" href="/dna-site.css?v=1">
 </head>
 <body>
@@ -340,7 +340,7 @@ document.querySelectorAll('.rv').forEach(e=>IO.observe(e));
 <script src="/dna-i18n-data.js?v=3"></script>
 <script src="/dna-storm.js?v=2"></script>
 <script src="/dna-marks.js?v=1"></script>
-<script src="/dna-functional.js?v=21"></script>
+<script src="/dna-functional.js?v=22"></script>
 <script>
 // trilho de seções
 (function(){const r=document.getElementById('rail');NAMES.forEach((n,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',n.charAt(0)+n.slice(1).toLowerCase());b.title=b.getAttribute('aria-label');b.onclick=()=>document.getElementById('s'+i).scrollIntoView({behavior:RM?'auto':'smooth'});r.appendChild(b)});r.children[0].classList.add('on')})();

@@ -819,6 +819,19 @@ IDENTIDADE
 - O modelo de IA usado pela DNA pode ser fornecido por terceiros.
 - Nunca diga que é "uma IA da OpenAI" ou que a OpenAI é sua criadora.
 
+DATA E HORA
+- Agora é ${new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "full", timeStyle: "short" })} (horário de Brasília). Use isso para "hoje", "amanhã", "esta semana".
+
+FORMATO DA RESPOSTA (o usuário lê no celular)
+- Vá direto ao ponto: a resposta vem na primeira frase, sem introdução e sem repetir a pergunta.
+- Seja curta. Só se alongue se o usuário pedir profundidade.
+- NÃO use tabelas, a menos que o usuário peça uma tabela ou comparação com vários itens e várias colunas.
+- Prefira parágrafos curtos. Use lista curta só para passos ou itens realmente separados. Títulos só em respostas longas.
+- NÃO escreva seções como "Resumo para o usuário", "Observações" ou "O que fazer diante da divergência". Se as fontes divergem, diga em uma frase qual é a mais confiável.
+- Não cole URLs no texto. As fontes aparecem separadas na interface.
+- Emojis: no máximo um, e só se combinar com o tom.
+- Se o usuário pedir uma imagem, arte, logo ou banner, NÃO diga que não consegue: diga em uma frase que vai gerar e peça só o que faltar (ex.: nome da empresa). A interface tem o botão de imagem; se ele pedir de novo, oriente a tocar no ícone de imagem ao lado do enviar ou escrever "/imagem descrição".
+
 PERSONALIDADE
 - Seja natural, humana na conversa, clara e inteligente.
 - Fale em português quando o usuário falar português.
@@ -1054,6 +1067,48 @@ async function generateImageWithOmniRoute(prompt, size) {
   throw new Error("O modelo não devolveu nenhuma imagem. Tente descrever de outro jeito.");
 }
 
+// Transforma o pedido (e o contexto da conversa) em um prompt visual detalhado em inglês.
+async function craftImagePrompt(prompt, context) {
+  const provider = textProvider();
+  if (!provider) return prompt;
+  try {
+    if (provider.name === "groq") provider.model = await resolveGroqModel(provider.key);
+    const ctx = (Array.isArray(context) ? context : [])
+      .slice(-4)
+      .map(m => `${m?.role === "assistant" ? "Assistente" : "Usuário"}: ${String(m?.content || "").slice(0, 500)}`)
+      .join("\n");
+    const r = await fetch(provider.baseUrl + "/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(provider.key ? { Authorization: `Bearer ${provider.key}` } : {})
+      },
+      body: JSON.stringify({
+        model: provider.model,
+        temperature: 0.7,
+        max_completion_tokens: 220,
+        ...(/^openai\/gpt-oss/.test(provider.model) ? { reasoning_effort: "low" } : {}),
+        messages: [
+          {
+            role: "system",
+            content:
+              "You write prompts for an AI image generator. Given the user's request (and recent chat for context), reply with ONE English prompt, max 70 words, describing a single striking image: subject, setting, composition, lighting, style. " +
+              "For ads/marketing, describe a clean professional advertising photo or poster-style composition with space for text. " +
+              "Do NOT include any written words, letters, prices, logos or text in the image (generators render them badly). Output only the prompt, no quotes, no explanation."
+          },
+          { role: "user", content: `${ctx ? "Recent chat:\n" + ctx + "\n\n" : ""}Request: ${prompt}` }
+        ]
+      }),
+      signal: AbortSignal.timeout(12000)
+    });
+    const d = await r.json();
+    const out = String(d?.choices?.[0]?.message?.content || "").trim().replace(/^["']|["']$/g, "");
+    return out.length > 10 ? out.slice(0, 700) : prompt;
+  } catch {
+    return prompt;
+  }
+}
+
 async function handleImageRequest(req, res, user) {
   const body = req.body || {};
   const prompt = String(body.prompt || body.message || "").trim().slice(0, 1500);
@@ -1078,7 +1133,8 @@ async function handleImageRequest(req, res, user) {
 
   let image;
   try {
-    image = await generateImageWithOmniRoute(prompt, size);
+    const visualPrompt = await craftImagePrompt(prompt, body.history);
+    image = await generateImageWithOmniRoute(visualPrompt, size);
   } catch (e) {
     if (e.code === "image_not_configured") {
       return json(res, 501, { error: e.message, code: e.code });
