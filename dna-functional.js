@@ -756,13 +756,67 @@
     el.remove();
   }
 
+  // resposta em tempo real: o texto aparece enquanto o modelo escreve
+  async function readStream(r, mode, think) {
+    var reader = r.body.getReader(), dec = new TextDecoder(), buf = "", acc = "", el = null, body = null, raf = 0, meta = null, err = null;
+    var item = { role: "assistant", content: "" }, live = state.mode === mode;
+    function paint() {
+      raf = 0; if (!body) return;
+      body.innerHTML = md(acc);
+      if (scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight < 180) scroller.scrollTop = scroller.scrollHeight;
+    }
+    function handle(ev) {
+      if (ev.t) {
+        acc += ev.t; item.content = acc;
+        if (!el) {
+          endThink(think); think = null;
+          if (live) { el = msgEl(item, false); el.classList.add("streaming"); col().appendChild(el); body = $(".dn-body", el); }
+        }
+        if (!raf) raf = requestAnimationFrame(paint);
+      } else if (ev.error) err = ev.error;
+      else if (ev.done) meta = ev;
+    }
+    for (;;) {
+      var chunk = await reader.read();
+      if (chunk.done) break;
+      buf += dec.decode(chunk.value, { stream: true });
+      var i;
+      while ((i = buf.indexOf("\n\n")) >= 0) {
+        var block = buf.slice(0, i); buf = buf.slice(i + 2);
+        block.split("\n").forEach(function (ln) { if (ln.indexOf("data:") === 0) { try { handle(JSON.parse(ln.slice(5))); } catch (e) {} } });
+      }
+    }
+    if (raf) cancelAnimationFrame(raf);
+    if (think) { endThink(think); think = null; }
+    if (!acc) throw new Error(err || "Não recebi uma resposta.");
+    if (body) body.innerHTML = md(acc);
+    if (el) {
+      el.classList.remove("streaming");
+      $$(".dn-body > *", el).forEach(function (n, k) { n.style.setProperty("--k", Math.min(k, 10)); });
+    }
+    if (meta) {
+      if (typeof meta.credits === "number") { state.credits = meta.credits; updateAuthUI(); }
+      if (Array.isArray(meta.sources) && meta.sources.length) {
+        item.sources = meta.sources.slice(0, 5).map(function (s) { return { title: String(s.title || "").slice(0, 120), url: String(s.url || "") }; });
+        if (el) $(".dn-tools", el).insertAdjacentHTML("beforebegin", sourcesHTML(item.sources));
+      }
+    }
+    if (state.mode === mode) { state.history.push(item); saveChat(); } else pushTo(mode, item);
+    if (err) throw new Error(err);
+    if (el) scrollEnd(false);
+    return null;
+  }
   async function deliver(text) {
     var mode = state.mode;
     state.busy = true; state.failed = null; setBusy(true);
     var t = thinkEl();
     col().appendChild(t); scrollEnd();
     try {
-      var r = await api({ message: text, history: state.history.slice(-9, -1).map(function (x) { return x.kind === "image" ? { role: "assistant", content: "[imagem gerada a partir de: " + x.content + "]" } : { role: x.role, content: x.content }; }), language: lang(), mode: mode });
+      var r = await api({ message: text, history: state.history.slice(-9, -1).map(function (x) { return x.kind === "image" ? { role: "assistant", content: "[imagem gerada a partir de: " + x.content + "]" } : { role: x.role, content: x.content }; }), language: lang(), mode: mode, stream: true });
+      if (r.ok && (r.headers.get("content-type") || "").indexOf("text/event-stream") >= 0 && r.body && r.body.getReader) {
+        t = await readStream(r, mode, t);
+        return;
+      }
       var data = await r.json().catch(function () { return {}; });
       if (!r.ok) throw new Error(data.error || "Não foi possível responder.");
       var item = { role: "assistant", content: data.reply || T("Não recebi uma resposta.") };

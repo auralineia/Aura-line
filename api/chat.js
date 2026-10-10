@@ -1172,6 +1172,69 @@ async function handleImageRequest(req, res, user) {
   });
 }
 
+// Geração em tempo real: chama onDelta(texto) a cada pedaço recebido do modelo.
+async function streamWithProvider(messages, plan, onDelta) {
+  const provider = textProvider();
+  if (!provider) {
+    throw new Error("Nenhum provedor de IA configurado (OMNIROUTE_BASE_URL ou GROQ_API_KEY).");
+  }
+  if (provider.name === "groq") provider.model = await resolveGroqModel(provider.key);
+  const { key, baseUrl, model } = provider;
+  const config = PLAN_CONFIG[plan] || PLAN_CONFIG.free;
+
+  const response = await fetch(baseUrl + "/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(key ? { Authorization: `Bearer ${key}` } : {})
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      stream: true,
+      temperature: 0.6,
+      max_completion_tokens: config.maxCompletionTokens,
+      top_p: 0.95,
+      ...(/^openai\/gpt-oss/.test(model) ? { reasoning_effort: "low" } : {})
+    })
+  });
+
+  if (!response.ok || !response.body) {
+    const raw = await response.text().catch(() => "");
+    let msg = "";
+    try { msg = JSON.parse(raw)?.error?.message || ""; } catch {}
+    if (response.status === 413) throw new Error("A mensagem ficou grande demais. Tente uma pergunta mais curta.");
+    if (response.status === 429) throw new Error("A DNA está recebendo muitas solicitações. Tente novamente em alguns segundos.");
+    throw new Error(msg || "Não foi possível gerar a resposta agora.");
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let full = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    let idx;
+    while ((idx = buffer.indexOf("\n")) >= 0) {
+      const line = buffer.slice(0, idx).trim();
+      buffer = buffer.slice(idx + 1);
+      if (!line.startsWith("data:")) continue;
+      const payload = line.slice(5).trim();
+      if (!payload || payload === "[DONE]") continue;
+      try {
+        const piece = JSON.parse(payload)?.choices?.[0]?.delta?.content;
+        if (piece) { full += piece; onDelta(piece); }
+      } catch {}
+    }
+  }
+
+  if (!full.trim()) throw new Error("A DNA não recebeu uma resposta válida. Tente de novo.");
+  return full;
+}
+
 function setCors(res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -1638,6 +1701,38 @@ export default async function handler(req, res) {
         content: message.slice(0, config.contextChars)
       }
     ];
+
+    if (body.stream === true) {
+      // resposta em tempo real (SSE): erros antes daqui já saíram como JSON normal
+      res.status(200);
+      res.setHeader("Content-Type", "text/event-stream; charset=utf-8");
+      res.setHeader("Cache-Control", "no-cache, no-transform");
+      res.setHeader("X-Accel-Buffering", "no");
+      if (res.flushHeaders) res.flushHeaders();
+      const send = obj => res.write(`data: ${JSON.stringify(obj)}\n\n`);
+
+      try {
+        await streamWithProvider(messages, plan, piece => send({ t: piece }));
+        const credit2 = owner
+          ? { ok: true, balance: OWNER_BALANCE }
+          : await consumeCredits(user.id, 1);
+        if (mode === "rimak" || mode.indexOf("agent:") === 0) {
+          await processMemory(user.id, token, message);
+        }
+        send({
+          done: true,
+          plan,
+          planName: config.name,
+          credits: typeof credit2.balance === "number" ? credit2.balance : null,
+          researched: Boolean(researchText),
+          sources: researchSources(research)
+        });
+      } catch (e) {
+        console.error("DNA stream error:", e);
+        send({ error: e?.message || "Não foi possível gerar a resposta agora." });
+      }
+      return res.end();
+    }
 
     const reply = await generateWithOmniRoute(
       messages,
