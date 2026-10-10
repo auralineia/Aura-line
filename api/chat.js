@@ -758,71 +758,119 @@ function needsWebSearchBase(message) {
   return terms.some(term => text.includes(term));
 }
 
-async function searchTavily(query, withCountry = true) {
-  const retry = withCountry;
+const BAD_DOMAINS = ["facebook.com", "instagram.com", "tiktok.com", "pinterest.com", "quora.com", "twitter.com", "x.com", "youtube.com", "kwai.com"];
+
+async function searchTavily(query, opts = {}, withCountry = true) {
   const key = process.env.TAVILY_API_KEY;
   if (!key) {
     console.error("Tavily: TAVILY_API_KEY não configurada.");
     return null;
   }
-
+  const news = opts.topic === "news";
   try {
-    const response = await fetch(
-      "https://api.tavily.com/search",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${key}`
-        },
-        body: JSON.stringify({
-          query: String(query).slice(0, 2500),
-          search_depth: "advanced",
-          include_answer: true,
-          ...(withCountry ? { country: "brazil" } : {}),
-          max_results: 6,
-          include_raw_content: false
-        })
-      }
-    );
-
+    const response = await fetch("https://api.tavily.com/search", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(14000),
+      body: JSON.stringify({
+        query: String(query).slice(0, 380),
+        search_depth: "advanced",
+        chunks_per_source: 3,
+        include_answer: true,
+        topic: news ? "news" : "general",
+        ...(opts.range && opts.range !== "none" ? { time_range: opts.range } : {}),
+        ...(withCountry && !news ? { country: "brazil" } : {}),
+        exclude_domains: BAD_DOMAINS,
+        max_results: 7,
+        include_raw_content: false
+      })
+    });
     if (!response.ok) {
-      console.error("Tavily:", response.status, await response.text());
-      if (!retry) return null;
-      return await searchTavily(query, false);
+      console.error("Tavily:", response.status, (await response.text()).slice(0, 300));
+      if (!withCountry) return null;
+      return await searchTavily(query, opts, false);
     }
-
     return await response.json();
   } catch (error) {
-    console.error("Tavily error:", error);
+    console.error("Tavily error:", error?.message || error);
     return null;
   }
 }
 
+// Reescreve a pergunta (e o contexto da conversa) em consultas de busca precisas, com a data de hoje.
+async function planSearch(message, history) {
+  const fallback = { queries: [buildSearchQuery(message, history)], topic: "general", range: "none" };
+  if (!process.env.GROQ_API_KEY || process.env.OMNIROUTE_BASE_URL) return fallback;
+  try {
+    const today = new Date().toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo", day: "numeric", month: "long", year: "numeric" });
+    const prev = (Array.isArray(history) ? history : []).filter(h => h?.role === "user").slice(-2).map(h => String(h.content).slice(0, 200)).join(" | ");
+    const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.GROQ_API_KEY}` },
+      signal: AbortSignal.timeout(5000),
+      body: JSON.stringify({
+        model: "llama-3.1-8b-instant",
+        temperature: 0,
+        max_completion_tokens: 200,
+        response_format: { type: "json_object" },
+        messages: [
+          { role: "system", content: `Você monta buscas na web. Hoje é ${today}. Transforme a pergunta do usuário (usando o contexto se ela for continuação) em 1 ou 2 consultas curtas e específicas, em português do Brasil, com nome completo do produto/pessoa/evento, e o ano ${new Date().getFullYear()} quando for algo atual. Para preço, inclua "preço" e "Brasil". Para lançamento, inclua "data de lançamento". Responda só JSON: {"queries":["..."],"topic":"news"|"general","range":"day"|"week"|"month"|"year"|"none"}. Use topic "news" e range "week" ou "month" só para notícias e acontecimentos recentes; para preços, fichas técnicas e fatos gerais use "general" e range "none" ou "year".` },
+          { role: "user", content: `Contexto anterior: ${prev || "(nenhum)"}\nPergunta: ${String(message).slice(0, 400)}` }
+        ]
+      })
+    });
+    if (!r.ok) return fallback;
+    const out = JSON.parse((await r.json())?.choices?.[0]?.message?.content || "{}");
+    const queries = (Array.isArray(out.queries) ? out.queries : []).map(q => String(q).trim()).filter(q => q.length > 3).slice(0, 2);
+    if (!queries.length) return fallback;
+    return {
+      queries,
+      topic: out.topic === "news" ? "news" : "general",
+      range: ["day", "week", "month", "year"].includes(out.range) ? out.range : "none"
+    };
+  } catch {
+    return fallback;
+  }
+}
+
+// Busca em paralelo, junta e ordena os resultados, tira duplicados e fontes fracas.
+async function webResearch(message, history) {
+  const plan = await planSearch(message, history);
+  const runs = await Promise.all(plan.queries.map(q => searchTavily(q, plan)));
+  let ok = runs.filter(Boolean);
+  // se a busca de notícias não trouxe nada, tenta de novo como busca geral
+  if (!ok.some(r => (r.results || []).length) && plan.topic === "news") {
+    const again = await searchTavily(plan.queries[0], { topic: "general", range: plan.range });
+    if (again) ok = [again];
+  }
+  if (!ok.length) return null;
+  const seen = new Set(), results = [];
+  for (const r of ok) for (const it of (r.results || [])) {
+    const u = String(it.url || "").replace(/[#?].*$/, "");
+    if (!u || seen.has(u)) continue;
+    seen.add(u); results.push(it);
+  }
+  results.sort((a, b) => (b.score || 0) - (a.score || 0));
+  const strong = results.filter(x => (x.score || 0) >= 0.3);
+  return { answer: ok[0].answer || "", results: (strong.length >= 3 ? strong : results).slice(0, 7), queries: plan.queries };
+}
+
 function formatResearch(research) {
   if (!research) return "";
-
   const parts = [];
-
-  if (research.answer) {
-    parts.push(
-      `Resumo da pesquisa:\n${String(research.answer).slice(0, 1200)}`
-    );
-  }
-
+  if (research.answer) parts.push(`Resumo automático (confira nas fontes):\n${String(research.answer).slice(0, 900)}`);
   if (Array.isArray(research.results)) {
-    for (const result of research.results.slice(0, 5)) {
-      parts.push(
-        [
-          `Título: ${String(result.title || "").slice(0, 180)}`,
-          `Fonte: ${String(result.url || "").slice(0, 400)}`,
-          `Conteúdo: ${String(result.content || "").slice(0, 700)}`
-        ].join("\n")
-      );
-    }
+    research.results.slice(0, 7).forEach((result, i) => {
+      let host = "";
+      try { host = new URL(result.url).hostname.replace(/^www\./, ""); } catch {}
+      parts.push([
+        `[Fonte ${i + 1}] ${String(result.title || "").slice(0, 160)}`,
+        `Site: ${host}${result.published_date ? ` · publicado em ${String(result.published_date).slice(0, 25)}` : ""}`,
+        `Trecho: ${String(result.content || "").replace(/\s+/g, " ").slice(0, 900)}`
+      ].join("\n"));
+    });
   }
-
-  return parts.join("\n\n").slice(0, 5000);
+  return parts.join("\n\n").slice(0, 7500);
 }
 
 function researchSources(research) {
@@ -882,6 +930,9 @@ Abaixo estão resultados reais da pesquisa web, feitos AGORA. Eles são mais atu
 - Se as fontes não trazem a informação pedida, diga isso claramente e dê o que encontrou de mais próximo. Não invente valores nem datas.
 - Preços em reais (R$) quando houver; se só houver dólar, informe e diga que é a conversão aproximada.
 - Se a pergunta for continuação da conversa, mantenha o assunto anterior.
+- Cruze as fontes: dê mais peso a sites conhecidos e à informação mais recente. Se duas fontes divergirem, diga a faixa ("de R$ X a R$ Y") e de onde vem cada uma.
+- Responda a pergunta exata, com o dado pedido já na primeira frase (preço, data, resultado, nome). Depois, no máximo 1 ou 2 frases úteis de contexto.
+- Se a fonte for antiga (mais de 3 meses) e o assunto muda rápido, avise.
 Não invente fontes.
 
 ${researchText}
@@ -1935,7 +1986,7 @@ export default async function handler(req, res) {
 
     const shouldResearch = needsWebSearch(message, history);
     const research = shouldResearch
-      ? await searchTavily(buildSearchQuery(message, history))
+      ? await webResearch(message, history)
       : null;
 
     const researchText = formatResearch(research);
