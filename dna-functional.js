@@ -191,15 +191,15 @@
   chat.setAttribute("data-mode", "dna");
   chat.innerHTML =
     '<div class="dn-bg"></div><div class="dn-grain"></div><div class="dn-flash" id="rkFlash"></div>' +
-    '<header class="dn-head"><div class="dn-id"><div class="dn-mark" id="rkChatMark"></div><div class="dn-idtext"><strong id="rkChatTitle">DNA</strong><span id="rkChatSub"></span></div></div>' +
+    '<header class="dn-head"><div class="dn-id"><div class="dn-mark" id="rkChatMark"></div><div class="dn-idtext"><strong id="rkChatTitle">DNA</strong><span id="rkChatSub" hidden></span><button class="dn-model" id="rkModel" type="button" aria-haspopup="true" aria-expanded="false" hidden><i class="mdot"></i><b id="rkModelName" data-notr>DNA 4.2</b><span id="rkEffortName" data-notr>Baixo</span>' + ICON.down + '</button></div></div>' +
     '<div class="dn-act">' +
     '<button class="dn-credit" id="rkCredit" type="button" hidden aria-label="Créditos">' + ICON.spark + '<span id="rkCreditN">—</span></button>' +
     '<button class="dn-ico" id="rkChatSettings" type="button" aria-label="Minha conta">' + ICON.user + '</button>' +
     '<button class="dn-ico" id="rkChatClose" type="button" aria-label="Fechar conversa">' + ICON.close + '</button></div></header>' +
+    '<div class="dn-pop" id="rkEffortPop" role="menu" hidden></div>' +
     '<main class="dn-scroll" id="rkChatBody" aria-live="polite"><div class="dn-col" id="rkCol"></div></main>' +
     '<button class="dn-down" id="rkDown" type="button" aria-label="Ir para o fim">' + ICON.down + '</button>' +
-    '<form class="dn-composer" id="rkComposer" autocomplete="off"><div class="dn-modelrow"><button class="dn-model" id="rkModel" type="button" aria-haspopup="true" aria-expanded="false" hidden><i class="mdot"></i><b id="rkModelName" data-notr>DNA 4.2</b><span id="rkEffortName" data-notr>Baixo</span><em id="rkEffortCost" data-notr>1</em>' + ICON.down + '</button></div><div class="dn-pop" id="rkEffortPop" role="menu" hidden></div><div class="dn-box"><textarea id="rkChatInput" rows="1" enterkeyhint="send" aria-label="Mensagem"></textarea>' +
-    '<button class="dn-imgbtn" id="rkImgBtn" type="button" hidden aria-pressed="false" aria-label="Gerar imagem">' + ICON.img + '<span data-notr></span></button>' +
+    '<form class="dn-composer" id="rkComposer" autocomplete="off"><div class="dn-box"><textarea id="rkChatInput" rows="1" enterkeyhint="send" aria-label="Mensagem"></textarea>' +
     '<button class="dn-send" id="rkSend" type="submit" aria-label="Enviar">' + ICON.send + '</button></div><p class="dn-foot" id="rkFoot"></p></form>';
   d.body.appendChild(chat);
 
@@ -218,7 +218,7 @@
     '<div class="rkMenuFoot">Seu espaço de inteligência.</div></aside>';
   d.body.appendChild(menu);
 
-  var flashEl = $("#rkFlash"), scroller = $("#rkChatBody"), ta = $("#rkChatInput"), sendBtn = $("#rkSend"), imgBtn = $("#rkImgBtn");
+  var flashEl = $("#rkFlash"), scroller = $("#rkChatBody"), ta = $("#rkChatInput"), sendBtn = $("#rkSend");
   function col() { return $("#rkCol"); }
 
   /* ---------- utilidades de UI ---------- */
@@ -277,12 +277,10 @@
   function renderModel() {
     var b = $("#rkModel"); if (!b) return;
     b.hidden = !state.user;
-    var e = curEffort(), isImg = !!state.img && imgOK();
-    $("#rkModelName").textContent = state.modelLabel && state.modelLabel !== modelName() && RANK[planKey()] < 2 ? modelName() : (state.modelLabel || modelName());
+    var e = curEffort();
     $("#rkModelName").textContent = modelName();
-    $("#rkEffortName").textContent = isImg ? T("Imagem") : T(e.label);
-    $("#rkEffortCost").textContent = (isImg ? state.imgCost : e.cost) + " cr";
-    b.setAttribute("aria-label", modelName() + " · " + (isImg ? T("Imagem") : T(e.label)));
+    $("#rkEffortName").textContent = T(e.label);
+    b.setAttribute("aria-label", modelName() + " · " + T(e.label));
   }
   function closeEffort() { var p = $("#rkEffortPop"); if (p) p.hidden = true; var b = $("#rkModel"); if (b) b.setAttribute("aria-expanded", "false"); }
   function openEffort() {
@@ -894,13 +892,16 @@
   function hostOf(u) { try { return new URL(u).hostname.replace(/^www\./, ""); } catch (e) { return ""; } }
   function sourcesHTML(list) {
     if (!Array.isArray(list) || !list.length) return "";
-    var seen = {}, chips = "", n = 0;
+    var seen = {}, rows = [];
     list.forEach(function (s) {
-      if (!s || !/^https?:\/\//i.test(s.url || "") || seen[s.url]) return;
-      seen[s.url] = 1; n++;
-      chips += '<a class="dn-chip" href="' + esc(s.url) + '" target="_blank" rel="noopener noreferrer" title="' + esc(s.title || "") + '"><i>' + n + '</i><span data-notr>' + esc(hostOf(s.url) || s.title || "fonte") + '</span></a>';
+      var h = s && /^https?:\/\//i.test(s.url || "") ? hostOf(s.url) : "";
+      if (!h || seen[h]) return;
+      seen[h] = 1; rows.push({ h: h, url: s.url, t: s.title || h });
     });
-    return chips ? '<div class="dn-src"><span class="dn-srclb">' + esc(T("Pesquisado na web")) + '</span>' + chips + '</div>' : "";
+    if (!rows.length) return "";
+    var names = rows.slice(0, 3).map(function (r) { return r.h.replace(/\.(com|com\.br|gov\.br|org|net|br)$/i, "").replace(/^(www|oglobo)\./i, ""); }).join(", ");
+    return '<details class="dn-src"><summary><span class="sl">' + ICON.globe + '<b data-notr>' + esc(T("Fontes")) + ' · ' + rows.length + '</b><em data-notr>' + esc(names) + (rows.length > 3 ? "…" : "") + '</em></span>' + ICON.down + '</summary><div class="srl">' +
+      rows.map(function (r) { return '<a href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer"><b data-notr>' + esc(r.h) + '</b><small data-notr>' + esc(String(r.t).slice(0, 90)) + '</small></a>'; }).join("") + '</div></details>';
   }
   function downloadImg(url, name) {
     var a = d.createElement("a");
@@ -1109,6 +1110,7 @@
   /* ---------- imagens ---------- */
   // pedidos de imagem escritos em linguagem natural ("cria uma imagem...", "faz um banner...")
   var IMG_ASK = /\b(cri[ae]r?|fa[çc]a|faz|fazer|ger[ae]r?|gera|desenh[ae]r?|monte|montar|produz[ai]r?|make|create|generate|draw|cre[ae]|genera|haz|dibuja)\b[^.?!\n]{0,40}\b(imagem|imagens|foto|arte|banner|logo|logotipo|ilustra[çc][ãa]o|poster|p[ôo]ster|cartaz|flyer|criativo|image|picture|photo|illustration|imagen)\b/i;
+  var IMG_ASK2 = /\b(quero|queria|preciso|precisava|me\s+(?:d[aá]|manda|faz|mostra|cria)|pode\s+(?:criar|fazer|gerar)|consegue\s+(?:criar|fazer|gerar))\b[^.?!\n]{0,40}\b(uma?\s+)?(imagem|foto|arte|banner|logo|logotipo|ilustra[çc][ãa]o|poster|p[ôo]ster|cartaz|flyer|wallpaper|desenho|capa|thumbnail|avatar)\b/i;
   var IMG_FOLLOW = /^\s*(gera|gere|faz|fa[çc]a|cria|crie|manda|quero)\b[^.?!\n]{0,30}\b(imagem|arte|pronta|ela|isso)\b|^\s*(gera|gere|faz|fa[çc]a)\s+(a|essa|isso)\b/i;
   function lastWasImageTalk() {
     var h = state.history.slice(-3);
@@ -1117,11 +1119,6 @@
   function imgOK(mode) { mode = mode || state.mode; return mode === "rimak" || mode === "agent:designer" || mode === "agent:marketing" || mode === "agent:writer"; }
   function imgUI() {
     var ok = imgOK(); if (!ok) state.img = false;
-    imgBtn.hidden = !ok;
-    imgBtn.classList.toggle("on", !!state.img);
-    imgBtn.setAttribute("aria-pressed", state.img ? "true" : "false");
-    imgBtn.title = T("Gerar imagem · {n} créditos", { n: state.imgCost });
-    $("span", imgBtn).textContent = state.img ? T("Imagem") : "";
     chat.setAttribute("data-img", state.img ? "1" : "0");
     var m = meta();
     ta.placeholder = state.img ? T("Descreva a imagem que você quer…") : T(m.ph);
@@ -1131,10 +1128,6 @@
     if (!state.session || state.imgLoaded) return; state.imgLoaded = true;
     try { var r = await api({ action: "image_status" }), data = await r.json(); if (r.ok && data.cost) { state.imgCost = data.cost; imgUI(); } } catch (e) {}
   }
-  imgBtn.onclick = function () {
-    state.img = !state.img; imgUI();
-    if (state.img) { toast(T("Modo imagem ligado · cada imagem custa {n} créditos.", { n: state.imgCost })); try { ta.focus(); } catch (e) {} }
-  };
   async function deliverImage(prompt) {
     var mode = state.mode;
     if (state.credits != null && state.credits < state.imgCost) { state.failed = null; toast(T("Uma imagem custa {n} créditos e você tem {c}.", { n: state.imgCost, c: state.credits })); plans(); return; }
@@ -1167,12 +1160,13 @@
     var text = ta.value.trim();
     if (!text) return;
     var asImg = false, cmd = /^\/(imagem|image|imagen|img)\s+/i.exec(text);
-    var wants = imgOK() && (IMG_ASK.test(text) || IMG_FOLLOW.test(text) && lastWasImageTalk());
+    var wants = imgOK() && (IMG_ASK.test(text) || IMG_ASK2.test(text) || IMG_FOLLOW.test(text) && lastWasImageTalk());
     if (imgOK() && (state.img || cmd || wants)) { asImg = true; if (cmd) text = text.slice(cmd[0].length).trim(); if (!text) return; }
     if (state.credits != null && state.credits <= 0) { plans(); return; }
     if (!asImg && state.credits != null && state.credits < curEffort().cost) { toast(T("Esse esforço gasta {n} créditos e você tem {c}.", { n: curEffort().cost, c: state.credits })); openEffort(); return; }
     if (asImg && state.credits != null && state.credits < state.imgCost) { toast(T("Uma imagem custa {n} créditos e você tem {c}.", { n: state.imgCost, c: state.credits })); plans(); return; }
     ta.value = ""; autosize();
+    if (state.img) { state.img = false; imgUI(); }
     var item = { role: "user", content: text, ts: Date.now() };
     state.history.push(item); saveChat();
     if (state.history.length === 1) renderChat(); else { col().appendChild(msgEl(item, false)); scrollEnd(); }
