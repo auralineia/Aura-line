@@ -613,7 +613,34 @@ function safeHistory(history, plan) {
     .filter(item => item.content);
 }
 
-function needsWebSearch(message) {
+const SEARCH_ASK = /\b(valor|pre[cç]o|custa|custo|quanto|vale|cota[cç][aã]o|lan[cç]a|lan[cç]ou|lan[cç]amento|data|quando|existe|novo|nova|vers[aã]o|modelo|ficha|especifica|dispon[ií]vel|comprar|onde|not[ií]cia|[uú]ltim|atual|2026|2027|vs|melhor|compara)/i;
+const SEARCH_THING = /\b(iphone|ipad|macbook|apple|galaxy|samsung|xiaomi|pixel|google|playstation|ps[345]|xbox|nintendo|switch|rtx|nvidia|amd|intel|tesla|byd|gpt|claude|gemini|openai|anthropic|windows|android|ios|bitcoin|btc|d[oó]lar|euro|selic|copa|brasileir[aã]o|libertadores|filme|s[eé]rie|temporada|epis[oó]dio|jogo|album|[aá]lbum)\b|\b[a-z]{3,}\s?\d{1,2}\b/i;
+// pesquisa quando há palavra de pergunta factual + algo do mundo real (produto, marca, data, número), ou quando é continuação de um assunto pesquisado
+function needsWebSearch(message, history) {
+  const msg = String(message || "");
+  if (needsWebSearchBase(msg)) return true;
+  if (msg.length >= 6 && SEARCH_ASK.test(msg) && SEARCH_THING.test(msg)) return true;
+  const prev = lastUserTopic(history);
+  if (prev && msg.length <= 90 && /\?|^(e |mas |quando|quanto|onde|qual|quais|como|ent[aã]o|vai|tem|sai|pre[cç]o|valor)/i.test(msg.trim()) &&
+      (needsWebSearchBase(prev) || (SEARCH_ASK.test(prev) && SEARCH_THING.test(prev)))) return true;
+  return false;
+}
+function lastUserTopic(history) {
+  const h = Array.isArray(history) ? history : [];
+  for (let i = h.length - 1; i >= 0; i--) if (h[i]?.role === "user" && String(h[i].content || "").trim()) return String(h[i].content).trim();
+  return "";
+}
+// consulta de busca: mensagens curtas herdam o assunto da pergunta anterior
+function buildSearchQuery(message, history) {
+  const msg = String(message || "").trim();
+  const prev = lastUserTopic(history);
+  let q = msg;
+  if (prev && msg.length < 70 && prev !== msg) q = `${prev.slice(0, 160)} — ${msg}`;
+  const brazil = /\b(pre[cç]o|valor|custa|quanto|comprar|lan[cç]a|lan[cç]ou|lan[cç]amento)\b/i.test(q) && !/brasil/i.test(q) ? " no Brasil" : "";
+  return (q + brazil).slice(0, 380);
+}
+
+function needsWebSearchBase(message) {
   const text = String(message || "").toLowerCase();
 
   const terms = [
@@ -693,7 +720,8 @@ function needsWebSearch(message) {
   return terms.some(term => text.includes(term));
 }
 
-async function searchTavily(query) {
+async function searchTavily(query, withCountry = true) {
+  const retry = withCountry;
   const key = process.env.TAVILY_API_KEY;
   if (!key) {
     console.error("Tavily: TAVILY_API_KEY não configurada.");
@@ -713,19 +741,17 @@ async function searchTavily(query) {
           query: String(query).slice(0, 2500),
           search_depth: "advanced",
           include_answer: true,
-          max_results: 5,
+          ...(withCountry ? { country: "brazil" } : {}),
+          max_results: 6,
           include_raw_content: false
         })
       }
     );
 
     if (!response.ok) {
-      console.error(
-        "Tavily:",
-        response.status,
-        await response.text()
-      );
-      return null;
+      console.error("Tavily:", response.status, await response.text());
+      if (!retry) return null;
+      return await searchTavily(query, false);
     }
 
     return await response.json();
@@ -813,13 +839,18 @@ function systemPrompt({
   const researchRule = researchText
     ? `
 PESQUISA REALIZADA
-Abaixo estão resultados reais da pesquisa web. Use-os para responder fatos atuais ou que precisavam de confirmação. Não invente fontes.
+Abaixo estão resultados reais da pesquisa web, feitos AGORA. Eles são mais atuais que o seu treinamento: se divergirem do que você "sabe", vale a pesquisa.
+- Nunca diga que algo "não existe", "não foi lançado" ou "não tem data" com base só na sua memória. Diga o que as fontes dizem (preço, data, status) e cite a fonte em uma frase.
+- Se as fontes não trazem a informação pedida, diga isso claramente e dê o que encontrou de mais próximo. Não invente valores nem datas.
+- Preços em reais (R$) quando houver; se só houver dólar, informe e diga que é a conversão aproximada.
+- Se a pergunta for continuação da conversa, mantenha o assunto anterior.
+Não invente fontes.
 
 ${researchText}
 `
     : `
 PESQUISA
-Nenhuma pesquisa web foi concluída nesta mensagem.
+Nenhuma pesquisa web foi concluída nesta mensagem. NÃO afirme que algo "não existe", "não foi lançado" ou "não tem data": você pode estar desatualizada. Diga que não conseguiu confirmar agora e peça para tentar de novo.
 Não diga que pesquisou.
 Se a pergunta exige confirmação externa e não há pesquisa disponível, deixe a limitação clara.
 `;
@@ -1856,18 +1887,15 @@ export default async function handler(req, res) {
       plan
     );
 
-    const shouldResearch = needsWebSearch(message);
+    const shouldResearch = needsWebSearch(message, history);
     const research = shouldResearch
-      ? await searchTavily(message)
+      ? await searchTavily(buildSearchQuery(message, history))
       : null;
 
     const researchText = formatResearch(research);
 
-    if (shouldResearch && !researchText) {
-      return json(res, 503, {
-        error: "A pesquisa web da DNA está temporariamente indisponível. Tente novamente em instantes."
-      });
-    }
+    // se a pesquisa falhar, responde mesmo assim, avisando que não conseguiu confirmar
+    const searchFailed = shouldResearch && !researchText;
 
     // confere o saldo antes; o crédito só é cobrado se a resposta for gerada
     const owner = isOwner(user);
