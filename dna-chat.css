@@ -555,3 +555,9 @@ label.stRow{cursor:pointer}
 .dn-m.ai.streaming .dn-body>:last-child::after{content:"";display:inline-block;width:7px;height:1.05em;margin-left:3px;vertical-align:text-bottom;border-radius:2px;background:rgb(var(--a));animation:dnCaret .9s steps(1) infinite}
 @keyframes dnCaret{50%{opacity:0}}
 @media (prefers-reduced-motion:reduce){.dn-m.ai.streaming .dn-body>:last-child::after{animation:none}}
+
+/* Pix */
+.rkRow.tight{gap:8px;flex-wrap:wrap}
+.rkQR{display:grid;place-items:center;margin:14px 0}
+.rkQR img{width:min(240px,70vw);height:auto;border-radius:16px;background:#fff;padding:10px;image-rendering:pixelated}
+.rkCode{font:400 11.5px/1.5 var(--mono,monospace);word-break:break-all;max-height:84px;overflow:auto;padding:10px 12px;border-radius:12px;border:1px solid rgba(var(--t),.14);background:rgba(var(--t),.05);color:rgba(var(--t),.75);margin-bottom:12px;user-select:all}

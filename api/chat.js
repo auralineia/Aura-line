@@ -132,6 +132,12 @@ function normalizePlan(subscription) {
   const plan = String(subscription?.plan || "").toLowerCase();
   const status = String(subscription?.status || "").toLowerCase();
 
+  // plano pago por Pix vale 30 dias e não renova sozinho
+  if (String(subscription?.mercado_pago_subscription_id || "").startsWith("pix:")) {
+    const end = Date.parse(subscription?.current_period_end || "");
+    if (!end || end < Date.now()) return "free";
+  }
+
   if (
     (plan === "pro" || plan === "ultra") &&
     ["active", "authorized", "approved"].includes(status)
@@ -1235,6 +1241,102 @@ async function streamWithProvider(messages, plan, onDelta) {
   return full;
 }
 
+/* ---------- Pix (Mercado Pago) ---------- */
+const PIX_PLANS = { pro: { name: "PRO", amount: 11.99 }, ultra: { name: "ULTRA", amount: 29.99 } };
+
+async function handlePixCreate(req, res, user) {
+  const token = process.env.MERCADOPAGO_ACCESS_TOKEN;
+  if (!token) return json(res, 500, { error: "Pagamento indisponível no momento." });
+  const plan = String(req.body?.plan || "").toLowerCase();
+  const p = PIX_PLANS[plan];
+  if (!p) return json(res, 400, { error: "Plano inválido." });
+  if (!user.email) return json(res, 400, { error: "Sua conta precisa ter um e-mail." });
+
+  const r = await fetch("https://api.mercadopago.com/v1/payments", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      "X-Idempotency-Key": `dna-${user.id}-${plan}-${Date.now()}`
+    },
+    body: JSON.stringify({
+      transaction_amount: p.amount,
+      description: `DNA ${p.name} — 30 dias`,
+      payment_method_id: "pix",
+      payer: { email: user.email },
+      date_of_expiration: new Date(Date.now() + 30 * 60 * 1000).toISOString().replace("Z", "-00:00"),
+      external_reference: `aura:${user.id}:${plan}:pix`
+    })
+  });
+  const data = await r.json().catch(() => ({}));
+  const tx = data?.point_of_interaction?.transaction_data;
+  if (!r.ok || !tx?.qr_code) {
+    console.error("Pix create:", r.status, JSON.stringify(data).slice(0, 400));
+    return json(res, 502, { error: data?.message || "Não foi possível gerar o Pix. Tente de novo." });
+  }
+  return json(res, 200, {
+    payment_id: data.id,
+    plan,
+    amount: p.amount,
+    qr_code: tx.qr_code,
+    qr_code_base64: tx.qr_code_base64 || null
+  });
+}
+
+// Confere o pagamento direto na API do Mercado Pago (fonte confiável) e ativa o plano uma única vez.
+async function handlePixStatus(req, res, user) {
+  const token = process.env.MERCADOPAGO_ACCESS_TOKEN;
+  const id = String(req.body?.payment_id || "").replace(/[^0-9]/g, "");
+  if (!token || !id) return json(res, 400, { error: "Pagamento inválido." });
+
+  const r = await fetch(`https://api.mercadopago.com/v1/payments/${id}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  const pay = await r.json().catch(() => ({}));
+  if (!r.ok) return json(res, 502, { error: "Não foi possível consultar o pagamento." });
+
+  const parts = String(pay.external_reference || "").split(":");
+  if (parts[0] !== "aura" || parts[1] !== user.id || parts[3] !== "pix" || !PIX_PLANS[parts[2]]) {
+    return json(res, 403, { error: "Este pagamento não pertence à sua conta." });
+  }
+  const plan = parts[2];
+  const status = String(pay.status || "pending").toLowerCase();
+  if (status !== "approved") return json(res, 200, { status });
+
+  const marker = `pix:${id}`;
+  const current = await getSubscription(user.id);
+  if (current?.mercado_pago_subscription_id !== marker) {
+    const end = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+    const up = await supabaseRest("subscriptions?on_conflict=user_id", {
+      method: "POST",
+      headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+      body: JSON.stringify({
+        user_id: user.id,
+        plan,
+        status: "active",
+        mercado_pago_subscription_id: marker,
+        current_period_end: end,
+        updated_at: new Date().toISOString()
+      })
+    });
+    if (!up.ok) {
+      console.error("Pix activate:", up.status, await up.text());
+      return json(res, 500, { error: "Pagamento aprovado, mas não conseguimos ativar o plano. Fale com o suporte." });
+    }
+    // libera o saldo do plano na hora
+    const daily = PLAN_CONFIG[plan].dailyCredits;
+    const bal = await ensureCredits(user.id, daily);
+    if (bal < daily) {
+      await supabaseRest(`credits?user_id=eq.${encodeURIComponent(user.id)}`, {
+        method: "PATCH",
+        headers: { Prefer: "return=minimal" },
+        body: JSON.stringify({ balance: daily })
+      }).catch(() => {});
+    }
+  }
+  return json(res, 200, { status: "approved", plan, planName: PIX_PLANS[plan].name });
+}
+
 function setCors(res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -1627,6 +1729,14 @@ export default async function handler(req, res) {
 
     if (String(body.action || "").toLowerCase() === "image") {
       return await handleImageRequest(req, res, user);
+    }
+
+    if (String(body.action || "").toLowerCase() === "pix") {
+      return await handlePixCreate(req, res, user);
+    }
+
+    if (String(body.action || "").toLowerCase() === "pix_status") {
+      return await handlePixStatus(req, res, user);
     }
 
     const message = String(body.message || "").trim();

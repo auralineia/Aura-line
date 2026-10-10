@@ -310,7 +310,7 @@
 
   /* ---------- painéis ---------- */
   function panel(html) { var pc = $("#rkPanelContent"); pc.innerHTML = html; if (I18N) I18N.apply(pc); ov.classList.add("open"); }
-  function closePanel() { ov.classList.remove("open"); }
+  function closePanel() { ov.classList.remove("open"); if (typeof stopPix === "function") stopPix(); }
 
   function login() {
     state.pendingMode = state.pendingMode || null;
@@ -413,12 +413,54 @@
       var on = cur === id;
       return '<div class="rkPlan' + (on ? " on" : "") + '"><div><b>' + label + '</b><span>' + credits + '</span><span style="display:block;margin-top:6px;font-size:12.5px;opacity:.75;line-height:1.4">' + WHO[id] + '</span><ul class="rkFeat">' + FEAT[id].map(function (f) { return "<li>" + f + "</li>"; }).join("") + '</ul></div>' +
         (price ? '<div class="rkPrice"><strong>' + price + '</strong><small>/mês</small></div>' : '<div class="rkPrice"><span class="rkTag">' + (on ? "Seu plano" : "Grátis") + '</span></div>') +
-        (price ? (on ? '<span class="rkTag" style="justify-self:start">Seu plano</span>' : '<button class="rkBtn primary" type="button" data-plan="' + id + '">Assinar ' + label + '</button>') : "") + '</div>';
+        (price ? (on ? '<span class="rkTag" style="justify-self:start">Seu plano</span>' : '<div class="rkRow tight"><button class="rkBtn primary" type="button" data-pix="' + id + '">Pagar com Pix</button><button class="rkBtn" type="button" data-plan="' + id + '">Cartão (assinatura)</button></div>') : "") + '</div>';
     }
     panel('<h3>Planos DNA</h3><p data-notr>' + esc(T("Créditos são o saldo que você usa ao conversar: cada mensagem consome 1 crédito e cada imagem consome {n}. O saldo diário volta todo dia. Escolha o tamanho que cabe no seu uso.", { n: state.imgCost })) + '</p><div class="rkPlans">' +
       card("free", "FREE", "20 créditos por dia", "") + card("pro", "PRO", "50 créditos por dia", "R$ 11,99") + card("ultra", "ULTRA", "150 créditos por dia", "R$ 29,99") + '</div>' +
       (state.user ? '<div class="rkCard" style="margin-top:12px"><span>Seu saldo</span><b style="margin:2px 0 0">' + (state.credits == null ? "—" : state.credits + " " + T("créditos")) + '</b></div>' : ""));
     $$("[data-plan]").forEach(function (b) { b.onclick = function () { checkout(b.dataset.plan); }; });
+    $$("[data-pix]").forEach(function (b) { b.onclick = function () { pixPanel(b.dataset.pix); }; });
+  }
+  var PIXP = { pro: "R$ 11,99", ultra: "R$ 29,99" };
+  var pixTimer = null;
+  function stopPix() { clearInterval(pixTimer); pixTimer = null; }
+  async function pixPanel(plan) {
+    if (!state.user || !state.session) { login(); return; }
+    var label = plan.toUpperCase();
+    panel('<h3>Pix · ' + label + '</h3><p>Gerando o seu Pix…</p>');
+    try {
+      var r = await api({ action: "pix", plan: plan }), data = await r.json().catch(function () { return {}; });
+      if (!r.ok) throw new Error(data.error || "Não foi possível gerar o Pix. Tente de novo.");
+      panel('<h3>Pix · ' + label + '</h3><p data-notr>' + esc(T("Pague {v} para liberar 30 dias do plano {p}. O Pix não renova sozinho.", { v: PIXP[plan] || "", p: label })) + '</p>' +
+        (data.qr_code_base64 ? '<div class="rkQR"><img alt="QR Code Pix" src="data:image/png;base64,' + esc(data.qr_code_base64) + '"></div>' : "") +
+        '<div class="rkCode" id="rkPixCode" data-notr>' + esc(data.qr_code) + '</div>' +
+        '<div class="rkRow"><button class="rkBtn primary" type="button" id="rkPixCopy">Copiar código Pix</button><button class="rkBtn" type="button" id="rkPixBack">Voltar</button></div>' +
+        '<div class="rkMuted" id="rkPixSt">Aguardando o pagamento…</div>');
+      $("#rkPixCopy").onclick = function () {
+        var b = this, done = function () { b.textContent = T("Copiado"); setTimeout(function () { b.textContent = T("Copiar código Pix"); }, 1800); };
+        try { navigator.clipboard.writeText(data.qr_code).then(done, function () { toast("Não foi possível copiar."); }); } catch (e) { toast("Não foi possível copiar."); }
+      };
+      $("#rkPixBack").onclick = function () { stopPix(); plans(); };
+      stopPix();
+      var tries = 0;
+      pixTimer = setInterval(async function () {
+        if (!ov.classList.contains("open") || !$("#rkPixSt")) { stopPix(); return; }
+        if (++tries > 450) { stopPix(); $("#rkPixSt").textContent = T("O Pix expirou. Volte e gere outro."); return; }
+        try {
+          var rr = await api({ action: "pix_status", payment_id: data.payment_id }), dd = await rr.json().catch(function () { return {}; });
+          if (rr.ok && dd.status === "approved") {
+            stopPix(); await account();
+            panel('<h3>Pagamento confirmado</h3><p data-notr>' + esc(T("Seu plano {p} está ativo por 30 dias. Aproveite a DNA.", { p: label })) + '</p><div class="rkRow"><button class="rkBtn primary" id="rkPixOk" type="button">Começar</button></div>');
+            $("#rkPixOk").onclick = closePanel;
+          } else if (rr.ok && (dd.status === "rejected" || dd.status === "cancelled")) {
+            stopPix(); $("#rkPixSt").textContent = T("O pagamento não foi concluído. Volte e gere outro Pix.");
+          }
+        } catch (e) {}
+      }, 4000);
+    } catch (x) {
+      panel('<h3>Pix · ' + label + '</h3><p data-notr>' + esc(T(x instanceof TypeError ? "Sem conexão com o servidor. Verifique a internet e tente de novo." : (x.message || "Não foi possível gerar o Pix. Tente de novo."))) + '</p><div class="rkRow"><button class="rkBtn" id="rkPixBack" type="button">Voltar</button></div>');
+      $("#rkPixBack").onclick = plans;
+    }
   }
   async function checkout(plan) {
     if (!state.user) { login(); return; }
