@@ -758,7 +758,7 @@ function needsWebSearchBase(message) {
   return terms.some(term => text.includes(term));
 }
 
-const BAD_DOMAINS = ["facebook.com", "instagram.com", "tiktok.com", "pinterest.com", "quora.com", "twitter.com", "x.com", "youtube.com", "kwai.com"];
+const BAD_DOMAINS = ["facebook.com", "instagram.com", "tiktok.com", "pinterest.com", "quora.com", "twitter.com", "x.com", "youtube.com", "kwai.com", "threads.net", "threads.com", "linkedin.com", "t.me", "tiktok.com"];
 
 async function searchTavily(query, opts = {}, withCountry = true) {
   const key = process.env.TAVILY_API_KEY;
@@ -814,7 +814,7 @@ async function planSearch(message, history) {
         max_completion_tokens: 200,
         response_format: { type: "json_object" },
         messages: [
-          { role: "system", content: `Você monta buscas na web. Hoje é ${today}. Transforme a pergunta do usuário (usando o contexto se ela for continuação) em 1 ou 2 consultas curtas e específicas, em português do Brasil, com nome completo do produto/pessoa/evento, e o ano ${new Date().getFullYear()} quando for algo atual. Para preço, inclua "preço" e "Brasil". Para lançamento, inclua "data de lançamento". Responda só JSON: {"queries":["..."],"topic":"news"|"general","range":"day"|"week"|"month"|"year"|"none"}. Use topic "news" e range "week" ou "month" só para notícias e acontecimentos recentes; para preços, fichas técnicas e fatos gerais use "general" e range "none" ou "year".` },
+          { role: "system", content: `Você monta buscas na web. Hoje é ${today}. Transforme a pergunta do usuário (usando o contexto se ela for continuação) em 1 ou 2 consultas curtas e específicas, em português do Brasil, com nome completo do produto/pessoa/evento, e o ano ${new Date().getFullYear()} quando for algo atual. Para preço, inclua "preço" e "Brasil". Para lançamento, inclua "data de lançamento". Para "hoje"/"agora"/"ontem" inclua a data por extenso (dia, mês e ano). Para esportes, diga a sessão exata: em F1, "pole position classificação do GP (qualifying)" é diferente de "sprint" e "sprint qualifying"; só inclua sprint se o usuário falou de sprint. Faça uma consulta por versão quando houver ambiguidade. Responda só JSON: {"queries":["..."],"topic":"news"|"general","range":"day"|"week"|"month"|"year"|"none"}. Use topic "news" e range "day" para "hoje/agora", "week" ou "month" só para notícias e acontecimentos recentes; para preços, fichas técnicas e fatos gerais use "general" e range "none" ou "year".` },
           { role: "user", content: `Contexto anterior: ${prev || "(nenhum)"}\nPergunta: ${String(message).slice(0, 400)}` }
         ]
       })
@@ -864,7 +864,7 @@ function formatResearch(research) {
       let host = "";
       try { host = new URL(result.url).hostname.replace(/^www\./, ""); } catch {}
       parts.push([
-        `[Fonte ${i + 1}] ${String(result.title || "").slice(0, 160)}`,
+        `### ${host || "fonte"} — ${String(result.title || "").slice(0, 160)}`,
         `Site: ${host}${result.published_date ? ` · publicado em ${String(result.published_date).slice(0, 25)}` : ""}`,
         `Trecho: ${String(result.content || "").replace(/\s+/g, " ").slice(0, 900)}`
       ].join("\n"));
@@ -933,6 +933,10 @@ Abaixo estão resultados reais da pesquisa web, feitos AGORA. Eles são mais atu
 - Cruze as fontes: dê mais peso a sites conhecidos e à informação mais recente. Se duas fontes divergirem, diga a faixa ("de R$ X a R$ Y") e de onde vem cada uma.
 - Responda a pergunta exata, com o dado pedido já na primeira frase (preço, data, resultado, nome). Depois, no máximo 1 ou 2 frases úteis de contexto.
 - Se a fonte for antiga (mais de 3 meses) e o assunto muda rápido, avise.
+- NUNCA escreva rótulos como [Fonte 1], 【1】 ou colchetes de citação. Cite pelo nome do veículo, em texto corrido ("segundo o ge.globo").
+- Cuidado com ambiguidade: o mesmo assunto pode ter versões diferentes (ex.: pole do sprint x pole da corrida/classificação do domingo; resultado ao vivo x final; modelo Pro x Pro Max). Descubra de qual versão cada fonte fala, responda a que o usuário provavelmente quis e diga em uma frase a outra, com a data/sessão. Nunca misture dados de versões diferentes.
+- Para "hoje", "agora" ou "ontem", só use dado cuja data bate com hoje (veja DATA E HORA). Se as fontes forem de outro dia, diga isso.
+- Se as fontes se contradizem em fatos como nomes e tempos e você não consegue decidir, diga que há divergência e mostre as duas versões com a fonte. Não escolha no escuro.
 Não invente fontes.
 
 ${researchText}
