@@ -609,3 +609,25 @@ label.stRow{cursor:pointer}
 .rkTwo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .rkSafe{display:flex;align-items:flex-start;gap:8px;margin:14px 2px 0;font:400 12px/1.5 var(--sans,system-ui);color:rgba(var(--t),.5)}
 .rkSafe svg{flex:0 0 auto;width:14px;height:14px;margin-top:2px;fill:none;stroke:currentColor;stroke-width:1.8}
+
+/* ---------- ajustes: seletor no topo, fontes compactas, texto ---------- */
+.dn-idtext{display:grid;gap:3px;min-width:0}
+.dn-model{justify-self:start;display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 8px 0 7px;margin-left:-3px;border-radius:13px;border:1px solid transparent;background:rgba(var(--t),.06);color:rgba(var(--t),.9);font:500 11.5px var(--sans,system-ui);cursor:pointer}
+.dn-model:hover,.dn-model[aria-expanded=true]{border-color:rgba(var(--a),.45)}
+.dn-model span{color:rgba(var(--t),.55)}
+.dn-model svg{width:12px;height:12px}
+.dn-pop{position:absolute;top:calc(64px + env(safe-area-inset-top,0px));left:14px;right:auto;bottom:auto;width:min(340px,calc(100% - 28px));margin:0;z-index:20}
+.dn-body{font-family:'Inter',var(--sans,system-ui);letter-spacing:0;word-spacing:.04em;font-feature-settings:"tnum" 0}
+.dn-src{margin:6px 0 10px;border:1px solid rgba(var(--t),.1);border-radius:14px;background:rgba(var(--t),.03);overflow:hidden}
+.dn-src summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 12px;cursor:pointer;font:500 12px var(--sans,system-ui);color:rgba(var(--t),.7)}
+.dn-src summary::-webkit-details-marker{display:none}
+.dn-src .sl{display:flex;align-items:center;gap:8px;min-width:0}
+.dn-src .sl svg,.dn-src summary>svg{flex:0 0 auto;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;opacity:.7}
+.dn-src .sl b{font-weight:600;color:rgba(var(--t),.85)}
+.dn-src .sl em{font-style:normal;color:rgba(var(--t),.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dn-src[open] summary>svg{transform:rotate(180deg)}
+.dn-src .srl{display:grid;border-top:1px solid rgba(var(--t),.08)}
+.dn-src .srl a{display:grid;gap:1px;padding:9px 12px;text-decoration:none;color:inherit}
+.dn-src .srl a+a{border-top:1px solid rgba(var(--t),.06)}
+.dn-src .srl b{font:500 12.5px var(--sans,system-ui);color:rgb(var(--a))}
+.dn-src .srl small{font:400 11.5px/1.35 var(--sans,system-ui);color:rgba(var(--t),.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

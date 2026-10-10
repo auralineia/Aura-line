@@ -559,6 +559,44 @@ function wantsMemory(text) {
   ].some(term => value.includes(term));
 }
 
+// A DNA aprende com a conversa: extrai fatos duráveis sobre o usuário (preferências, projetos, trabalho, objetivos).
+async function learnFromChat(userId, userToken, message, reply, existing) {
+  try {
+    const msg = String(message || "").trim();
+    if (msg.length < 25 || !process.env.GROQ_API_KEY || process.env.OMNIROUTE_BASE_URL) return;
+    const known = (existing || []).slice(0, 40).map(m => "- " + m.memory).join("\n") || "(nada)";
+    const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.GROQ_API_KEY}` },
+      signal: AbortSignal.timeout(7000),
+      body: JSON.stringify({
+        model: "llama-3.1-8b-instant",
+        temperature: 0,
+        max_completion_tokens: 260,
+        response_format: { type: "json_object" },
+        messages: [
+          { role: "system", content: 'Você extrai memórias duráveis sobre o USUÁRIO a partir da mensagem dele. Só guarde fatos que continuarão úteis em conversas futuras: profissão, negócio, projetos, objetivos, preferências, estilo que ele gosta, ferramentas que usa, interesses recorrentes, restrições. NÃO guarde perguntas pontuais, fatos do mundo, dados sensíveis (senhas, documentos, saúde, dinheiro exato) nem nada que já esteja nas memórias conhecidas. Escreva cada memória em 1 frase curta na 3ª pessoa ("O usuário ..."). Responda só JSON: {"memories":[{"memory":"...","importance":1-8}]} com no máximo 2 itens, ou {"memories":[]} se não houver nada.' },
+          { role: "user", content: `Memórias já conhecidas:\n${known}\n\nMensagem do usuário:\n${msg.slice(0, 700)}` }
+        ]
+      })
+    });
+    if (!r.ok) return;
+    const data = await r.json();
+    const out = JSON.parse(data?.choices?.[0]?.message?.content || "{}");
+    const norm = t => String(t).toLowerCase().replace(/[^a-zà-ÿ0-9 ]/g, "").replace(/\s+/g, " ").trim();
+    const have = (existing || []).map(m => norm(m.memory));
+    for (const item of (Array.isArray(out.memories) ? out.memories : []).slice(0, 2)) {
+      const text = String(item?.memory || "").trim();
+      if (text.length < 12 || text.length > 300 || !/^O usuário/i.test(text)) continue;
+      const n = norm(text);
+      if (have.some(h => h === n || h.includes(n) || n.includes(h))) continue;
+      await saveMemory(userId, userToken, text, "general", Math.min(8, Math.max(3, Number(item.importance) || 5)), false);
+    }
+  } catch (e) {
+    console.error("learnFromChat:", e?.message || e);
+  }
+}
+
 async function processMemory(userId, userToken, message) {
   const automatic = automaticMemories(message);
 
@@ -878,7 +916,15 @@ FORMATO DA RESPOSTA (o usuário lê no celular)
 - NÃO escreva seções como "Resumo para o usuário", "Observações" ou "O que fazer diante da divergência". Se as fontes divergem, diga em uma frase qual é a mais confiável.
 - Não cole URLs no texto. As fontes aparecem separadas na interface.
 - Emojis: no máximo um, e só se combinar com o tom.
-- Se o usuário pedir uma imagem, arte, logo ou banner, NÃO diga que não consegue: diga em uma frase que vai gerar e peça só o que faltar (ex.: nome da empresa). A interface tem o botão de imagem; se ele pedir de novo, oriente a tocar no ícone de imagem ao lado do enviar ou escrever "/imagem descrição".
+- Se o usuário pedir uma imagem, arte, logo ou banner, NÃO diga que não consegue: a DNA gera imagens quando o pedido é claro. Peça só o que faltar (ex.: nome da empresa) e, se ele repetir o pedido, oriente a escrever "/imagem descrição". Não fale em "botão de imagem": ele não existe.
+
+ESCRITA (muito importante)
+- Escreva como uma especialista brasileira simpática e segura, em português natural de conversa. Nada de tom de robô, de tradução literal ou de frase pronta ("Com certeza!", "Claro, vou te ajudar").
+- Frases curtas e variadas, voz ativa, sem repetir a mesma ideia. Sem enrolação no começo nem "espero ter ajudado" no fim.
+- Números no padrão brasileiro: R$ 11.999,00 ou R$ 11.999 (sempre espaço depois de R$ e ponto de milhar), 10% sem espaço, datas como 18/09/2026.
+- Escreva nomes com espaços corretos: "iPhone 18 Pro Max", "Galaxy S26 Ultra". Nunca cole palavra com número.
+- Ao citar fonte, faça de forma natural e curta ("segundo o UOL, em 18/09") e não use "(Fonte: ...)" entre parênteses.
+- Acentuação e pontuação corretas. Sem gírias forçadas.
 
 PERSONALIDADE
 - Seja natural, humana na conversa, clara e inteligente.
@@ -1951,7 +1997,7 @@ export default async function handler(req, res) {
       const send = obj => res.write(`data: ${JSON.stringify(obj)}\n\n`);
 
       try {
-        await streamWithProvider(messages, planEff, piece => send({ t: piece }), eff);
+        const fullReply = await streamWithProvider(messages, planEff, piece => send({ t: piece }), eff);
         const credit2 = owner
           ? { ok: true, balance: OWNER_BALANCE }
           : await consumeCredits(user.id, eff.cost);
@@ -1969,6 +2015,9 @@ export default async function handler(req, res) {
           researched: Boolean(researchText),
           sources: researchSources(research)
         });
+        if (mode === "rimak" || mode.indexOf("agent:") === 0) {
+          await learnFromChat(user.id, token, message, fullReply, memories);
+        }
       } catch (e) {
         console.error("DNA stream error:", e);
         send({ error: e?.message || "Não foi possível gerar a resposta agora." });
@@ -1996,6 +2045,7 @@ export default async function handler(req, res) {
 
     if (mode === "rimak" || mode.indexOf("agent:") === 0) {
       await processMemory(user.id, token, message);
+      await learnFromChat(user.id, token, message, reply, memories);
     }
 
     return json(res, 200, {
