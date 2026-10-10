@@ -550,3 +550,8 @@ label.stRow{cursor:pointer}
 .dn-body table thead,.dn-body table tbody{display:table;width:max-content;min-width:100%}
 .dn-body th,.dn-body td{min-width:120px;max-width:260px;vertical-align:top;word-break:normal;overflow-wrap:break-word;hyphens:none;padding:9px 12px}
 .dn-body th:first-child,.dn-body td:first-child{min-width:104px;white-space:normal;font-weight:600}
+
+/* cursor piscando enquanto a resposta é escrita */
+.dn-m.ai.streaming .dn-body>:last-child::after{content:"";display:inline-block;width:7px;height:1.05em;margin-left:3px;vertical-align:text-bottom;border-radius:2px;background:rgb(var(--a));animation:dnCaret .9s steps(1) infinite}
+@keyframes dnCaret{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.dn-m.ai.streaming .dn-body>:last-child::after{animation:none}}
