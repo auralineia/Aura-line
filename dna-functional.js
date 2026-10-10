@@ -224,6 +224,12 @@
     return n.charAt(0).toUpperCase() + n.slice(1);
   }
   function setUser(u) {
+    var prevId = state.user ? state.user.id : null, nextId = u ? u.id : null;
+    if (prevId !== nextId) {
+      // outra conta (ou saiu): nada da conta anterior pode continuar na tela
+      state.credits = null; state.plan = "free"; state.history = []; state.failed = null; state.imgLoaded = false;
+      if (prevId && chat.classList.contains("open")) hideChat();
+    }
     state.user = u || null;
     state.name = nameOf(state.user);
     greet(); updateAuthUI();
@@ -504,7 +510,9 @@
   function newChat(mode) { state.mode = mode; state.history = []; state.failed = null; saveChat(); openChat(mode); }
 
   /* ---------- histórico ---------- */
-  function historyKey(mode) { return "rimak.chat." + (mode || state.mode); }
+  function historyKey(mode) { return "rimak.chat." + ((state.user && state.user.id) || "anon") + "." + (mode || state.mode); }
+  // histórico antigo (sem dono) não pode ser atribuído a ninguém: apaga uma vez
+  (function () { try { Object.keys(localStorage).forEach(function (k) { if (k.indexOf("rimak.chat.") === 0 && !/^rimak\.chat\.[0-9a-fA-F-]{36}\./.test(k)) localStorage.removeItem(k); }); } catch (e) {} })();
   function loadChat() { try { state.history = JSON.parse(lsGet(historyKey(), "[]")) || []; } catch (e) { state.history = []; } }
   function slim(h) { return h.slice(-40).map(function (x) { return x && x.image && x.image.indexOf("data:") === 0 ? Object.assign({}, x, { image: "" }) : x; }); }
   function saveChat() { lsSet(historyKey(), JSON.stringify(slim(state.history))); }
