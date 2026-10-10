@@ -63,8 +63,9 @@
   var MARK = '<div class="dnaMark foil" role="img" aria-label="DNA"><i></i><i></i><i></i></div>';
 
   /* ---------- markdown seguro (escapa tudo antes) ---------- */
+  function clean(t) { return String(t == null ? "" : t).replace(/[\u3010\[]\s*(?:fontes?|source|fuente)s?\s*\d+(?:\s*[,;]\s*\d+)*\s*[\u3011\]]/gi, "").replace(/\u3010[^\u3011\n]{0,40}\u3011/g, "").replace(/[ \t]+([.,;:!?])/g, "$1").replace(/[ \t]{2,}/g, " "); }
   function md(src) {
-    var blocks = [], s = String(src == null ? "" : src).replace(/\r\n?/g, "\n");
+    var blocks = [], s = clean(src).replace(/\r\n?/g, "\n");
     function stash(html) { blocks.push(html); return "\u0000" + (blocks.length - 1) + "\u0000"; }
     s = s.replace(/```[\w+#.-]*\n([\s\S]*?)(?:```|$)/g, function (_, code) {
       return "\n" + stash("<pre><code>" + esc(code.replace(/\n+$/, "")) + "</code></pre>") + "\n";
@@ -879,7 +880,7 @@
     var btn = $("[data-copy]", el);
     btn.onclick = function () {
       var done = function () { btn.innerHTML = ICON.check + T("Copiado"); setTimeout(function () { btn.innerHTML = ICON.copy + T("Copiar"); }, 1600); };
-      try { navigator.clipboard.writeText(x.content).then(done, function () { toast("Não foi possível copiar."); }); } catch (e) { toast("Não foi possível copiar."); }
+      try { navigator.clipboard.writeText(clean(x.content)).then(done, function () { toast("Não foi possível copiar."); }); } catch (e) { toast("Não foi possível copiar."); }
     };
     return el;
   }
