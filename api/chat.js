@@ -180,6 +180,17 @@ async function ensureCredits(userId, initialBalance = 20) {
   }
 }
 
+// Donos da plataforma (variável DNA_OWNER_EMAILS, e-mails separados por vírgula): uso sem limite.
+// Exige e-mail confirmado no Supabase, para ninguém se passar pelo dono.
+const OWNER_BALANCE = 9999;
+function isOwner(user) {
+  const list = String(process.env.DNA_OWNER_EMAILS || "")
+    .toLowerCase().split(",").map(x => x.trim()).filter(Boolean);
+  const email = String(user?.email || "").toLowerCase();
+  const confirmed = Boolean(user?.email_confirmed_at || user?.confirmed_at);
+  return Boolean(email && confirmed && list.includes(email));
+}
+
 async function consumeCredits(userId, amount = 1) {
   const { url, serviceKey } = supabaseConfig();
 
@@ -1120,7 +1131,8 @@ async function handleImageRequest(req, res, user) {
   const config = PLAN_CONFIG[plan];
   const cost = imageCost();
 
-  const balance = await ensureCredits(user.id, config.dailyCredits);
+  const owner = isOwner(user);
+  const balance = owner ? OWNER_BALANCE : await ensureCredits(user.id, config.dailyCredits);
   if (balance < cost) {
     return json(res, 402, {
       error: `Uma imagem custa ${cost} créditos e você tem ${balance}.`,
@@ -1143,7 +1155,7 @@ async function handleImageRequest(req, res, user) {
   }
 
   // cobra só depois de gerar com sucesso
-  const credit = await consumeCredits(user.id, cost);
+  const credit = owner ? { ok: true, balance: OWNER_BALANCE } : await consumeCredits(user.id, cost);
   if (!credit.ok && credit.insufficient) {
     return json(res, 402, { error: "Seus créditos acabaram.", credits: 0, cost, plan, planName: config.name });
   }
@@ -1499,14 +1511,14 @@ export default async function handler(req, res) {
       if (action === "account") {
         const subscription = await getSubscription(user.id);
         const plan = normalizePlan(subscription);
-        const credits = await ensureCredits(
-          user.id,
-          PLAN_CONFIG[plan].dailyCredits
-        );
+        const owner = isOwner(user);
+        const credits = owner
+          ? OWNER_BALANCE
+          : await ensureCredits(user.id, PLAN_CONFIG[plan].dailyCredits);
         return json(res, 200, {
           user: { id: user.id, email: user.email || null },
-          plan,
-          planName: PLAN_CONFIG[plan].name,
+          plan: owner ? "ultra" : plan,
+          planName: owner ? PLAN_CONFIG.ultra.name : PLAN_CONFIG[plan].name,
           credits
         });
       }
@@ -1589,7 +1601,8 @@ export default async function handler(req, res) {
     }
 
     // confere o saldo antes; o crédito só é cobrado se a resposta for gerada
-    const currentBalance = await ensureCredits(user.id, config.dailyCredits);
+    const owner = isOwner(user);
+    const currentBalance = owner ? OWNER_BALANCE : await ensureCredits(user.id, config.dailyCredits);
     if (currentBalance < 1) {
       return json(res, 402, {
         error: "Seus créditos acabaram.",
@@ -1631,7 +1644,9 @@ export default async function handler(req, res) {
       plan
     );
 
-    const credit = await consumeCredits(user.id, 1);
+    const credit = owner
+      ? { ok: true, balance: OWNER_BALANCE }
+      : await consumeCredits(user.id, 1);
 
     if (!credit.ok && credit.insufficient) {
       return json(res, 402, {
