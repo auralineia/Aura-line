@@ -1,4 +1,4 @@
-/* DNA — traduções. Cada linha: [português (fonte), inglês, espanhol]. */
+/* RIMAK — traduções. Cada linha: [português (fonte), inglês, espanhol]. */
 (function () {
   "use strict";
   var I = window.DNAi18n;
@@ -9,17 +9,17 @@
     ["Ir para seção", "Go to section", "Ir a la sección"],
     ["Mais que uma IA. Um ecossistema.", "More than an AI. An ecosystem.", "Más que una IA. Un ecosistema."],
     ["Abrir menu", "Open menu", "Abrir menú"],
-    ["Pergunte à DNA", "Ask DNA", "Pregunta a DNA"],
+    ["Pergunte à RIMAK", "Ask RIMAK", "Pregunta a RIMAK"],
     ["Enviar pergunta", "Send question", "Enviar pregunta"],
     ["Seções", "Sections", "Secciones"],
     ["Agentes", "Agents", "Agentes"],
     ["Role para explorar ↓", "Scroll to explore ↓", "Desliza para explorar ↓"],
-    ["{g}. Bem-vindo à DNA.", "{g}. Welcome to DNA.", "{g}. Bienvenido a DNA."],
+    ["{g}. Bem-vindo à RIMAK.", "{g}. Welcome to RIMAK.", "{g}. Bienvenido a RIMAK."],
     ["Bom dia", "Good morning", "Buenos días"],
     ["Boa tarde", "Good afternoon", "Buenas tardes"],
     ["Boa noite", "Good evening", "Buenas noches"],
     ["Boa madrugada", "Good night", "Buenas noches"],
-    ["DNA — Experiência", "DNA — Experience", "DNA — Experiencia"],
+    ["RIMAK — Experiência", "RIMAK — Experience", "RIMAK — Experiencia"],
     ["Uma plataforma completa de IA, com agentes especializados, execução, memória, ferramentas e muito mais.",
       "A complete AI platform with specialized agents, execution, memory, tools and much more.",
       "Una plataforma completa de IA, con agentes especializados, ejecución, memoria, herramientas y mucho más."],
@@ -32,10 +32,10 @@
   I.add([
     ["02 Agentes", "02 Agents", "02 Agentes"], ["05 Ecossistema", "05 Ecosystem", "05 Ecosistema"], ["07 Planos", "07 Plans", "07 Planes"],
     ["A maestra do seu ecossistema.", "The conductor of your ecosystem.", "El director de tu ecosistema."],
-    ["Entenda, planeje, crie e coordene. A DNA é o ponto de partida para tudo.",
-      "Understand, plan, create and coordinate. DNA is the starting point for everything.",
-      "Entiende, planifica, crea y coordina. DNA es el punto de partida para todo."],
-    ["Conversar com a DNA", "Chat with DNA", "Conversar con DNA"],
+    ["Entenda, planeje, crie e coordene. A RIMAK é o ponto de partida para tudo.",
+      "Understand, plan, create and coordinate. RIMAK is the starting point for everything.",
+      "Entiende, planifica, crea y coordina. RIMAK es el punto de partida para todo."],
+    ["Conversar com a RIMAK", "Chat with RIMAK", "Conversar con RIMAK"],
     ["execução", "execution", "ejecución"], ["agentes", "agents", "agentes"], ["pilares", "pillars", "pilares"], ["planos", "plans", "planes"],
     ["Conhecimento em ação.", "Knowledge in action.", "Conocimiento en acción."],
     ["Agentes especializados para cada necessidade. Pesquisam, analisam, criam, programam e muito mais.",
@@ -80,7 +80,7 @@
     ["Comece grátis. Suba de plano quando precisar de mais créditos por dia.",
       "Start free. Upgrade when you need more credits per day.",
       "Empieza gratis. Sube de plan cuando necesites más créditos al día."],
-    ["Como você usa a DNA?", "How do you use DNA?", "¿Cómo usas DNA?"],
+    ["Como você usa a RIMAK?", "How do you use RIMAK?", "¿Cómo usas RIMAK?"],
     ["De vez em quando", "Once in a while", "De vez en cuando"],
     ["Todos os dias", "Every day", "Todos los días"],
     ["O dia todo, trabalhando", "All day, for work", "Todo el día, trabajando"],
@@ -99,9 +99,9 @@
     ["20 créditos por dia", "20 credits per day", "20 créditos al día"],
     ["50 créditos por dia", "50 credits per day", "50 créditos al día"],
     ["150 créditos por dia", "150 credits per day", "150 créditos al día"],
-    ["Teste a DNA, os agentes e a TEMPESTA sem pagar", "Try DNA, the agents and TEMPESTA for free", "Prueba DNA, los agentes y TEMPESTA sin pagar"],
+    ["Teste a RIMAK, os agentes e a TEMPESTA sem pagar", "Try RIMAK, the agents and TEMPESTA for free", "Prueba RIMAK, los agentes y TEMPESTA sin pagar"],
     ["Saldo renovado todos os dias", "Balance renewed every day", "Saldo renovado todos los días"],
-    ["Ideal para dúvidas pontuais e para decidir se a DNA serve para você", "Great for quick questions and for deciding if DNA is right for you", "Ideal para dudas puntuales y para decidir si DNA es para ti"],
+    ["Ideal para dúvidas pontuais e para decidir se a RIMAK serve para você", "Great for quick questions and for deciding if RIMAK is right for you", "Ideal para dudas puntuales y para decidir si RIMAK es para ti"],
     ["Grátis", "Free", "Gratis"],
     ["Começar grátis", "Start free", "Empezar gratis"],
     ["Mais escolhido", "Most popular", "Más elegido"],
@@ -126,9 +126,9 @@
   // ---- site: créditos, como funciona, na prática
   I.add([
     ["08 Créditos", "08 Credits", "08 Créditos"],
-    ["Créditos são a moeda de uso da DNA. Cada resposta que você recebe consome parte do seu saldo, e o saldo diário do seu plano volta a ser reposto todo dia.",
-      "Credits are DNA's currency of use. Each reply you receive uses part of your balance, and your plan's daily balance is replenished every day.",
-      "Los créditos son la moneda de uso de DNA. Cada respuesta que recibes consume parte de tu saldo, y el saldo diario de tu plan se repone cada día."],
+    ["Créditos são a moeda de uso da RIMAK. Cada resposta que você recebe consome parte do seu saldo, e o saldo diário do seu plano volta a ser reposto todo dia.",
+      "Credits are RIMAK's currency of use. Each reply you receive uses part of your balance, and your plan's daily balance is replenished every day.",
+      "Los créditos son la moneda de uso de RIMAK. Cada respuesta que recibes consume parte de tu saldo, y el saldo diario de tu plan se repone cada día."],
     ["01 · Consumo", "01 · Usage", "01 · Consumo"],
     ["Você gasta ao conversar", "You spend as you chat", "Gastas al conversar"],
     ["Pedir, receber e refinar respostas usa créditos. O saldo atual fica no topo de cada chat e se atualiza a cada resposta.",
@@ -164,13 +164,13 @@
     ["Ver planos e assinar", "See plans and subscribe", "Ver planes y suscribirse"],
     ["09 Como funciona", "09 How it works", "09 Cómo funciona"],
     ["Da ideia solta ao resultado.", "From loose idea to result.", "De la idea suelta al resultado."],
-    ["Você não precisa saber escrever o pedido perfeito. A DNA pergunta o que falta, organiza e entrega em etapas.",
-      "You don't need to write the perfect request. DNA asks what's missing, organizes it and delivers in steps.",
-      "No necesitas escribir la petición perfecta. DNA pregunta lo que falta, lo organiza y lo entrega por etapas."],
+    ["Você não precisa saber escrever o pedido perfeito. A RIMAK pergunta o que falta, organiza e entrega em etapas.",
+      "You don't need to write the perfect request. RIMAK asks what's missing, organizes it and delivers in steps.",
+      "No necesitas escribir la petición perfecta. RIMAK pregunta lo que falta, lo organiza y lo entrega por etapas."],
     ["Diga o objetivo", "State your goal", "Cuenta tu objetivo"],
-    ["Escreva do seu jeito, em uma frase. Se faltar contexto, a DNA faz as perguntas certas antes de responder.",
-      "Write it your way, in one sentence. If context is missing, DNA asks the right questions before answering.",
-      "Escríbelo a tu manera, en una frase. Si falta contexto, DNA hace las preguntas correctas antes de responder."],
+    ["Escreva do seu jeito, em uma frase. Se faltar contexto, a RIMAK faz as perguntas certas antes de responder.",
+      "Write it your way, in one sentence. If context is missing, RIMAK asks the right questions before answering.",
+      "Escríbelo a tu manera, en una frase. Si falta contexto, RIMAK hace las preguntas correctas antes de responder."],
     ["Receba um plano", "Get a plan", "Recibe un plan"],
     ["Etapas, prazos e o agente mais indicado para cada parte: pesquisa, texto, código, dados ou marca.",
       "Steps, deadlines and the best agent for each part: research, writing, code, data or brand.",
@@ -185,7 +185,7 @@
       "Four real situations, four ways of thinking. Pick one, then try it in the chat with your own question.",
       "Cuatro situaciones reales, cuatro formas de pensar. Elige una y luego pruébalo en el chat con tu propia pregunta."],
     ["Exemplos", "Examples", "Ejemplos"],
-    ["DNA · Plano", "DNA · Plan", "DNA · Plan"],
+    ["RIMAK · Plano", "RIMAK · Plan", "RIMAK · Plan"],
     ["Analyst · Dados", "Analyst · Data", "Analyst · Datos"],
     ["Writer · Texto", "Writer · Text", "Writer · Texto"],
     ["Tempesta · Conversa", "Tempesta · Conversation", "Tempesta · Conversación"],
@@ -233,13 +233,13 @@
       "Credits are the balance you use while chatting: each reply uses part of it. The limit is daily and depends on your plan (20, 50 or 150), so your balance is replenished every day.",
       "Los créditos son el saldo que usas al conversar: cada respuesta consume parte. El límite es diario y depende del plan (20, 50 o 150), así que el saldo se repone cada día."],
     ["Minhas conversas ficam salvas?", "Are my conversations saved?", "¿Se guardan mis conversaciones?"],
-    ["Sim, neste dispositivo. Cada modo (DNA, agentes, NEVERA e TEMPESTA) guarda o próprio histórico, e você pode continuar de onde parou.",
-      "Yes, on this device. Each mode (DNA, agents, NEVERA and TEMPESTA) keeps its own history, and you can pick up where you left off.",
-      "Sí, en este dispositivo. Cada modo (DNA, agentes, NEVERA y TEMPESTA) guarda su propio historial y puedes continuar donde lo dejaste."],
-    ["Qual a diferença entre DNA, agentes, NEVERA e TEMPESTA?", "What's the difference between DNA, agents, NEVERA and TEMPESTA?", "¿Cuál es la diferencia entre DNA, agentes, NEVERA y TEMPESTA?"],
-    ["A DNA é o ponto de partida: entende o objetivo e organiza o caminho. Os agentes são especialistas por área. A NEVERA cuida de execução e automação. A TEMPESTA é voltada à interação humana: entender conversas, decisões e emoções.",
-      "DNA is the starting point: it understands the goal and organizes the path. Agents are specialists by area. NEVERA handles execution and automation. TEMPESTA is focused on human interaction: understanding conversations, decisions and emotions.",
-      "DNA es el punto de partida: entiende el objetivo y organiza el camino. Los agentes son especialistas por área. NEVERA se encarga de la ejecución y la automatización. TEMPESTA está orientada a la interacción humana: entender conversaciones, decisiones y emociones."],
+    ["Sim, neste dispositivo. Cada modo (RIMAK, agentes, NEVERA e TEMPESTA) guarda o próprio histórico, e você pode continuar de onde parou.",
+      "Yes, on this device. Each mode (RIMAK, agents, NEVERA and TEMPESTA) keeps its own history, and you can pick up where you left off.",
+      "Sí, en este dispositivo. Cada modo (RIMAK, agentes, NEVERA y TEMPESTA) guarda su propio historial y puedes continuar donde lo dejaste."],
+    ["Qual a diferença entre RIMAK, agentes, NEVERA e TEMPESTA?", "What's the difference between RIMAK, agents, NEVERA and TEMPESTA?", "¿Cuál es la diferencia entre RIMAK, agentes, NEVERA y TEMPESTA?"],
+    ["A RIMAK é o ponto de partida: entende o objetivo e organiza o caminho. Os agentes são especialistas por área. A NEVERA cuida de execução e automação. A TEMPESTA é voltada à interação humana: entender conversas, decisões e emoções.",
+      "RIMAK is the starting point: it understands the goal and organizes the path. Agents are specialists by area. NEVERA handles execution and automation. TEMPESTA is focused on human interaction: understanding conversations, decisions and emotions.",
+      "RIMAK es el punto de partida: entiende el objetivo y organiza el camino. Los agentes son especialistas por área. NEVERA se encarga de la ejecución y la automatización. TEMPESTA está orientada a la interacción humana: entender conversaciones, decisiones y emociones."],
     ["A TEMPESTA substitui terapia?", "Does TEMPESTA replace therapy?", "¿TEMPESTA sustituye a la terapia?"],
     ["Não. Ela é um espaço para organizar pensamentos e conversas, e não substitui acompanhamento profissional. Se estiver em sofrimento intenso, procure ajuda: no Brasil, o CVV atende 24 horas pelo telefone 188.",
       "No. It's a space to organize thoughts and conversations, and it doesn't replace professional support. If you're in intense distress, seek help: in Brazil, CVV answers 24 hours a day at 188.",
@@ -250,7 +250,7 @@
       "Sí. En Configuración cambias el idioma y desactivas las animaciones, lo que también ayuda a ahorrar batería."],
     ["Pronto para começar?", "Ready to start?", "¿Listo para empezar?"],
     ["Abra uma conversa agora. Leva menos de um minuto.", "Open a chat now. It takes less than a minute.", "Abre una conversación ahora. Lleva menos de un minuto."],
-    ["© 2026 DNA · Mais que uma IA. Um ecossistema.", "© 2026 DNA · More than an AI. An ecosystem.", "© 2026 DNA · Más que una IA. Un ecosistema."],
+    ["© 2026 RIMAK · Mais que uma IA. Um ecossistema.", "© 2026 RIMAK · More than an AI. An ecosystem.", "© 2026 RIMAK · Más que una IA. Un ecosistema."],
     ["Rodapé", "Footer", "Pie de página"],
     ["Conta e suporte", "Account and support", "Cuenta y soporte"],
     ["Voltar ao topo ↑", "Back to top ↑", "Volver arriba ↑"],
@@ -267,8 +267,8 @@
     ["Mensagem", "Message", "Mensaje"], ["Enviar", "Send", "Enviar"], ["Fechar menu", "Close menu", "Cerrar menú"], ["Menu", "Menu", "Menú"], ["Idioma", "Language", "Idioma"],
     ["Sua conta", "Your account", "Tu cuenta"], ["Fazer login", "Sign in", "Iniciar sesión"], ["Planos e créditos", "Plans and credits", "Planes y créditos"],
     ["Configurações", "Settings", "Configuración"], ["Conversas", "Chats", "Conversaciones"],
-    ["Conversa com a DNA", "Chat with DNA", "Conversación con DNA"], ["Conversa com a TEMPESTA", "Chat with TEMPESTA", "Conversación con TEMPESTA"],
-    ["Novo chat com a DNA", "New chat with DNA", "Nuevo chat con DNA"], ["Novo chat com a TEMPESTA", "New chat with TEMPESTA", "Nuevo chat con TEMPESTA"],
+    ["Conversa com a RIMAK", "Chat with RIMAK", "Conversación con RIMAK"], ["Conversa com a TEMPESTA", "Chat with TEMPESTA", "Conversación con TEMPESTA"],
+    ["Novo chat com a RIMAK", "New chat with RIMAK", "Nuevo chat con RIMAK"], ["Novo chat com a TEMPESTA", "New chat with TEMPESTA", "Nuevo chat con TEMPESTA"],
     ["Ajuda", "Help", "Ayuda"], ["Suporte", "Support", "Soporte"],
     ["Seu espaço de inteligência.", "Your intelligence space.", "Tu espacio de inteligencia."],
     ["Visitante", "Guest", "Invitado"],
@@ -279,11 +279,11 @@
     ["Pergunte, planeje, crie…", "Ask, plan, create…", "Pregunta, planifica, crea…"],
     ["Conte o que está pensando…", "Tell me what's on your mind…", "Cuéntame qué estás pensando…"],
     ["Descreva o que quer automatizar…", "Describe what you want to automate…", "Describe qué quieres automatizar…"],
-    ["A DNA pode errar. Confira informações importantes.", "DNA can make mistakes. Check important information.", "DNA puede equivocarse. Verifica la información importante."],
+    ["A RIMAK pode errar. Confira informações importantes.", "RIMAK can make mistakes. Check important information.", "RIMAK puede equivocarse. Verifica la información importante."],
     ["A TEMPESTA não substitui acompanhamento profissional.", "TEMPESTA does not replace professional support.", "TEMPESTA no sustituye el acompañamiento profesional."],
     ["Os agentes podem errar. Confira informações importantes.", "Agents can make mistakes. Check important information.", "Los agentes pueden equivocarse. Verifica la información importante."],
     ["Confira sempre o resultado antes de usar.", "Always check the result before using it.", "Revisa siempre el resultado antes de usarlo."],
-    ["DNA · Maestra do ecossistema", "DNA · Ecosystem conductor", "DNA · Director del ecosistema"],
+    ["RIMAK · Maestra do ecossistema", "RIMAK · Ecosystem conductor", "RIMAK · Director del ecosistema"],
     ["TEMPESTA · Interação humana", "TEMPESTA · Human interaction", "TEMPESTA · Interacción humana"],
     ["NEVERA · Execução", "NEVERA · Execution", "NEVERA · Ejecución"],
     ["Agente · RESEARCH", "Agent · RESEARCH", "Agente · RESEARCH"], ["Agente · CODE", "Agent · CODE", "Agente · CODE"], ["Agente · WRITER", "Agent · WRITER", "Agente · WRITER"],
@@ -308,8 +308,8 @@
     ["Não foi possível responder agora.", "Couldn't answer right now.", "No se pudo responder ahora."],
     ["Não recebi uma resposta.", "I didn't receive an answer.", "No recibí una respuesta."],
     ["Sem conexão com o servidor. Verifique a internet e tente de novo.", "No connection to the server. Check your internet and try again.", "Sin conexión con el servidor. Verifica tu internet e inténtalo de nuevo."],
-    ["Falha de conexão com a DNA. Verifique a internet e tente novamente.", "Connection to DNA failed. Check your internet and try again.", "Falló la conexión con DNA. Verifica tu internet e inténtalo de nuevo."],
-    ["A DNA recebeu uma resposta vazia ou inválida do servidor.", "DNA received an empty or invalid response from the server.", "DNA recibió una respuesta vacía o inválida del servidor."],
+    ["Falha de conexão com a RIMAK. Verifique a internet e tente novamente.", "Connection to RIMAK failed. Check your internet and try again.", "Falló la conexión con RIMAK. Verifica tu internet e inténtalo de nuevo."],
+    ["A RIMAK recebeu uma resposta vazia ou inválida do servidor.", "RIMAK received an empty or invalid response from the server.", "RIMAK recibió una respuesta vacía o inválida del servidor."],
     ["Confirme seu e-mail antes de entrar.", "Confirm your email before signing in.", "Confirma tu correo antes de entrar."],
     ["Erro ao entrar.", "Sign-in error.", "Error al entrar."], ["Erro ao criar conta.", "Error creating account.", "Error al crear la cuenta."],
     ["Erro ao abrir checkout.", "Error opening checkout.", "Error al abrir el pago."], ["Checkout indisponível.", "Checkout unavailable.", "Pago no disponible."]
@@ -317,11 +317,11 @@
 
   // ---- app: contas e painéis
   I.add([
-    ["Entrar na DNA", "Sign in to DNA", "Iniciar sesión en DNA"],
+    ["Entrar na RIMAK", "Sign in to RIMAK", "Iniciar sesión en RIMAK"],
     ["Entre para conversar, usar créditos e acessar seu plano.", "Sign in to chat, use credits and access your plan.", "Inicia sesión para conversar, usar créditos y acceder a tu plan."],
     ["Seu e-mail", "Your email", "Tu correo"], ["Sua senha", "Your password", "Tu contraseña"],
     ["Criar conta", "Create account", "Crear cuenta"],
-    ["Crie sua conta DNA para salvar seu acesso e usar o ecossistema.", "Create your DNA account to keep your access and use the ecosystem.", "Crea tu cuenta DNA para guardar tu acceso y usar el ecosistema."],
+    ["Crie sua conta RIMAK para salvar seu acesso e usar o ecossistema.", "Create your RIMAK account to keep your access and use the ecosystem.", "Crea tu cuenta RIMAK para guardar tu acceso y usar el ecosistema."],
     ["Senha (mínimo 6 caracteres)", "Password (minimum 6 characters)", "Contraseña (mínimo 6 caracteres)"],
     ["Já tenho conta", "I already have an account", "Ya tengo cuenta"],
     ["Entrando…", "Signing in…", "Entrando…"], ["Criando…", "Creating…", "Creando…"],
@@ -331,7 +331,7 @@
     ["Conversas apagadas deste dispositivo.", "Chats erased from this device.", "Conversaciones borradas de este dispositivo."],
     ["Plano", "Plan", "Plan"], ["Sair", "Sign out", "Salir"],
     ["Configurações", "Settings", "Configuración"],
-    ["Ajuste a DNA do seu jeito.", "Set DNA up your way.", "Ajusta DNA a tu manera."],
+    ["Ajuste a RIMAK do seu jeito.", "Set RIMAK up your way.", "Ajusta RIMAK a tu manera."],
     ["Idioma, movimento e dados deste dispositivo.", "Language, motion and data on this device.", "Idioma, movimiento y datos de este dispositivo."],
     ["Muda o site, os chats e o idioma das respostas.", "Changes the site, the chats and the language of replies.", "Cambia el sitio, los chats y el idioma de las respuestas."],
     ["Experiência", "Experience", "Experiencia"], ["Animações", "Animations", "Animaciones"],
@@ -347,8 +347,8 @@
     ["Dados", "Data", "Datos"], ["Conversas neste dispositivo", "Chats on this device", "Conversaciones en este dispositivo"],
     ["Apaga o histórico de todos os modos. Não afeta sua conta.", "Erases the history of every mode. Doesn't affect your account.", "Borra el historial de todos los modos. No afecta tu cuenta."],
     ["Apagar", "Erase", "Borrar"], ["Confirmar", "Confirm", "Confirmar"], ["Voltar à conta", "Back to account", "Volver a la cuenta"], ["Fechar", "Close", "Cerrar"],
-    ["DNA · Mais que uma IA. Um ecossistema.", "DNA · More than an AI. An ecosystem.", "DNA · Más que una IA. Un ecosistema."],
-    ["Planos DNA", "DNA Plans", "Planes DNA"],
+    ["RIMAK · Mais que uma IA. Um ecossistema.", "RIMAK · More than an AI. An ecosystem.", "RIMAK · Más que una IA. Un ecosistema."],
+    ["Planos RIMAK", "RIMAK Plans", "Planes RIMAK"],
     ["Créditos são o saldo que você usa ao conversar: cada resposta consome parte dele, e o limite diário volta todo dia. Escolha o tamanho que cabe no seu uso.",
       "Credits are the balance you use while chatting: each reply uses part of it, and your daily limit comes back every day. Pick the size that fits your use.",
       "Los créditos son el saldo que usas al conversar: cada respuesta consume parte, y el límite diario vuelve cada día. Elige el tamaño que encaja con tu uso."],
@@ -362,7 +362,7 @@
     ["Desenvolvimento e programação", "Development and programming", "Desarrollo y programación"],
     ["Precisa de ajuda com sua conta, créditos ou conversas?", "Need help with your account, credits or chats?", "¿Necesitas ayuda con tu cuenta, créditos o conversaciones?"],
     ["Central de suporte", "Support center", "Centro de soporte"],
-    ["Entre em contato pelo canal de suporte disponibilizado pela equipe DNA.", "Get in touch through the support channel provided by the DNA team.", "Ponte en contacto a través del canal de soporte proporcionado por el equipo DNA."]
+    ["Entre em contato pelo canal de suporte disponibilizado pela equipe RIMAK.", "Get in touch through the support channel provided by the RIMAK team.", "Ponte en contacto a través del canal de soporte proporcionado por el equipo RIMAK."]
   ]);
 
   // ---- app: indicador "pensando"
@@ -378,7 +378,7 @@
     ["planejando", "planning", "planificando"], ["preparando a execução", "preparing execution", "preparando la ejecución"], ["conferindo", "double-checking", "verificando"]
   ]);
 
-  // ---- app: sugestões da DNA e da TEMPESTA
+  // ---- app: sugestões da RIMAK e da TEMPESTA
   I.add([
     ["Transformar uma ideia em plano", "Turn an idea into a plan", "Convertir una idea en plan"],
     ["Objetivos, etapas e prazos em minutos.", "Goals, steps and deadlines in minutes.", "Objetivos, etapas y plazos en minutos."],
@@ -604,9 +604,9 @@
   "No se pudo generar la imagen ahora."
  ],
  [
-  "A geração de imagens ainda não foi ativada na DNA.",
-  "Image generation isn't enabled on DNA yet.",
-  "La generación de imágenes aún no está activada en la DNA."
+  "A geração de imagens ainda não foi ativada na RIMAK.",
+  "Image generation isn't enabled on RIMAK yet.",
+  "La generación de imágenes aún no está activada en la RIMAK."
  ],
  [
   "Descreva a imagem que você quer.",
@@ -669,14 +669,14 @@
   "Los créditos son el saldo que usas al conversar: cada mensaje consume 1 crédito y cada imagen {n}. El saldo diario se renueva cada día. Elige el tamaño que se ajuste a tu uso."
  ],
  [
-  "Entre na sua conta para abrir um chamado. A equipe da DNA responde pelo e-mail da conta.",
-  "Sign in to open a ticket. The DNA team replies to your account email.",
-  "Inicia sesión para abrir un ticket. El equipo de la DNA responde al correo de tu cuenta."
+  "Entre na sua conta para abrir um chamado. A equipe da RIMAK responde pelo e-mail da conta.",
+  "Sign in to open a ticket. The RIMAK team replies to your account email.",
+  "Inicia sesión para abrir un ticket. El equipo de la RIMAK responde al correo de tu cuenta."
  ],
  [
-  "Conta, créditos, pagamento ou algo que não funcionou? Conte o que houve e a equipe da DNA responde pelo e-mail da sua conta.",
-  "Account, credits, payment or something that didn't work? Tell us what happened and the DNA team replies to your account email.",
-  "¿Cuenta, créditos, pago o algo que no funcionó? Cuéntanos qué pasó y el equipo de la DNA responde al correo de tu cuenta."
+  "Conta, créditos, pagamento ou algo que não funcionou? Conte o que houve e a equipe da RIMAK responde pelo e-mail da sua conta.",
+  "Account, credits, payment or something that didn't work? Tell us what happened and the RIMAK team replies to your account email.",
+  "¿Cuenta, créditos, pago o algo que no funcionó? Cuéntanos qué pasó y el equipo de la RIMAK responde al correo de tu cuenta."
  ],
  [
   "Assunto",
@@ -704,9 +704,9 @@
   "Ticket enviado"
  ],
  [
-  "Recebemos sua mensagem. A equipe da DNA responde pelo e-mail da sua conta.",
-  "We got your message. The DNA team replies to your account email.",
-  "Recibimos tu mensaje. El equipo de la DNA responde al correo de tu cuenta."
+  "Recebemos sua mensagem. A equipe da RIMAK responde pelo e-mail da sua conta.",
+  "We got your message. The RIMAK team replies to your account email.",
+  "Recibimos tu mensaje. El equipo de la RIMAK responde al correo de tu cuenta."
  ],
  [
   "Não foi possível enviar o chamado.",
@@ -720,7 +720,7 @@
  ]
 ]);
   I.add([["Cada mensagem custa 1 crédito e gerar uma imagem custa 3. O saldo atual fica no topo de cada chat e se atualiza a cada resposta.", "Each message costs 1 credit and generating an image costs 3. Your current balance sits at the top of every chat and updates with each reply.", "Cada mensaje cuesta 1 crédito y generar una imagen cuesta 3. Tu saldo actual aparece arriba de cada chat y se actualiza con cada respuesta."]]);
-  I.add([["Pagar com Pix", "Pay with Pix", "Pagar con Pix"], ["Cartão (assinatura)", "Card (subscription)", "Tarjeta (suscripción)"], ["Pague {v} para liberar 30 dias do plano {p}. O Pix não renova sozinho.", "Pay {v} to unlock 30 days of the {p} plan. Pix does not renew by itself.", "Paga {v} para activar 30 días del plan {p}. El Pix no se renueva solo."], ["Copiar código Pix", "Copy Pix code", "Copiar código Pix"], ["Voltar", "Back", "Volver"], ["Aguardando o pagamento…", "Waiting for payment…", "Esperando el pago…"], ["O Pix expirou. Volte e gere outro.", "The Pix expired. Go back and create another.", "El Pix expiró. Vuelve y genera otro."], ["O pagamento não foi concluído. Volte e gere outro Pix.", "Payment wasn't completed. Go back and create another Pix.", "El pago no se completó. Vuelve y genera otro Pix."], ["Pagamento confirmado", "Payment confirmed", "Pago confirmado"], ["Seu plano {p} está ativo por 30 dias. Aproveite a DNA.", "Your {p} plan is active for 30 days. Enjoy DNA.", "Tu plan {p} está activo por 30 días. Disfruta la DNA."], ["Começar", "Start", "Empezar"], ["Gerando o seu Pix…", "Creating your Pix…", "Generando tu Pix…"], ["Não foi possível gerar o Pix. Tente de novo.", "Couldn't create the Pix. Try again.", "No se pudo generar el Pix. Inténtalo de nuevo."], ["Pagamento indisponível no momento.", "Payments are unavailable right now.", "Pagos no disponibles por ahora."]]);
-  DNAi18n.add([["Começar", "Start", "Empezar"], ["Novo chat", "New chat", "Nuevo chat"], ["Gerar imagem", "Generate image", "Generar imagen"], ["Agentes", "Agents", "Agentes"], ["Histórico", "History", "Historial"], ["Ver todo o histórico", "See all history", "Ver todo el historial"], ["Entre para ver suas conversas.", "Sign in to see your chats.", "Inicia sesión para ver tus conversaciones."], ["Suas conversas aparecem aqui.", "Your chats show up here.", "Tus conversaciones aparecen aquí."], ["Nenhuma conversa ainda.", "No chats yet.", "Aún no hay conversaciones."], ["Suas conversas ficam salvas neste aparelho.", "Your chats are saved on this device.", "Tus conversaciones se guardan en este dispositivo."], ["Apagar conversa", "Delete chat", "Borrar conversación"], ["Conversa", "Chat", "Conversación"], ["agora", "now", "ahora"], ["há {n} min", "{n} min ago", "hace {n} min"], ["há {n} h", "{n} h ago", "hace {n} h"], ["há {n} d", "{n} d ago", "hace {n} d"], ["Baixo", "Low", "Bajo"], ["Médio", "Medium", "Medio"], ["Alto", "High", "Alto"], ["Máximo", "Max", "Máximo"], ["Respostas rápidas e diretas.", "Fast, direct answers.", "Respuestas rápidas y directas."], ["Mais cuidado em cada resposta.", "More care in every answer.", "Más cuidado en cada respuesta."], ["Raciocínio profundo.", "Deep reasoning.", "Razonamiento profundo."], ["Análise completa, passo a passo.", "Full step-by-step analysis.", "Análisis completo, paso a paso."], ["Quanto mais esforço, mais créditos por resposta.", "More effort costs more credits per answer.", "Más esfuerzo cuesta más créditos por respuesta."], ["crédito", "credit", "crédito"], ["O esforço {e} é do plano {p}.", "{e} effort is part of the {p} plan.", "El esfuerzo {e} es del plan {p}."], ["Esse esforço gasta {n} créditos e você tem {c}.", "This effort costs {n} credits and you have {c}.", "Este esfuerzo cuesta {n} créditos y tienes {c}."], ["Imagem", "Image", "Imagen"], ["Preparando o pagamento seguro…", "Preparing secure payment…", "Preparando el pago seguro…"], ["Abrindo o pagamento seguro do Mercado Pago…", "Opening Mercado Pago secure payment…", "Abriendo el pago seguro de Mercado Pago…"], ["Assinatura mensal de {v}, cobrada todo mês. Você cancela quando quiser.", "Monthly subscription of {v}, billed every month. Cancel anytime.", "Suscripción mensual de {v}, cobrada cada mes. Cancelas cuando quieras."], ["Número do cartão", "Card number", "Número de tarjeta"], ["Validade", "Expiry", "Vencimiento"], ["Nome no cartão", "Name on card", "Nombre en la tarjeta"], ["Como está no cartão", "As shown on the card", "Como aparece en la tarjeta"], ["Assinar por {v}/mês", "Subscribe for {v}/month", "Suscribirse por {v}/mes"], ["Voltar", "Back", "Volver"], ["Os dados do cartão vão direto ao Mercado Pago. A DNA não guarda o número.", "Card data goes straight to Mercado Pago. DNA never stores the number.", "Los datos de la tarjeta van directo a Mercado Pago. DNA no guarda el número."], ["Digite o nome como está no cartão.", "Enter the name as shown on the card.", "Escribe el nombre como aparece en la tarjeta."], ["CPF inválido. Confira os números.", "Invalid CPF. Check the numbers.", "CPF inválido. Revisa los números."], ["Processando…", "Processing…", "Procesando…"], ["Confira os dados do cartão.", "Check the card details.", "Revisa los datos de la tarjeta."], ["Cartão recusado. Confira os dados ou tente outro cartão.", "Card declined. Check the details or try another card.", "Tarjeta rechazada. Revisa los datos o prueba otra."], ["Plano {p} ativo!", "{p} plan active!", "¡Plan {p} activo!"], ["Pagamento aprovado. Seus créditos já estão liberados.", "Payment approved. Your credits are ready.", "Pago aprobado. Tus créditos ya están listos."], ["Continuar", "Continue", "Continuar"], ["Pagamento em análise", "Payment under review", "Pago en revisión"], ["O Mercado Pago está analisando o pagamento. Assim que aprovar, o plano é liberado.", "Mercado Pago is reviewing the payment. The plan unlocks once approved.", "Mercado Pago está revisando el pago. El plan se libera al aprobarse."], ["Não foi possível processar. Tente de novo.", "Couldn't process. Try again.", "No se pudo procesar. Inténtalo de nuevo."], ["Fechar", "Close", "Cerrar"]]);
+  I.add([["Pagar com Pix", "Pay with Pix", "Pagar con Pix"], ["Cartão (assinatura)", "Card (subscription)", "Tarjeta (suscripción)"], ["Pague {v} para liberar 30 dias do plano {p}. O Pix não renova sozinho.", "Pay {v} to unlock 30 days of the {p} plan. Pix does not renew by itself.", "Paga {v} para activar 30 días del plan {p}. El Pix no se renueva solo."], ["Copiar código Pix", "Copy Pix code", "Copiar código Pix"], ["Voltar", "Back", "Volver"], ["Aguardando o pagamento…", "Waiting for payment…", "Esperando el pago…"], ["O Pix expirou. Volte e gere outro.", "The Pix expired. Go back and create another.", "El Pix expiró. Vuelve y genera otro."], ["O pagamento não foi concluído. Volte e gere outro Pix.", "Payment wasn't completed. Go back and create another Pix.", "El pago no se completó. Vuelve y genera otro Pix."], ["Pagamento confirmado", "Payment confirmed", "Pago confirmado"], ["Seu plano {p} está ativo por 30 dias. Aproveite a RIMAK.", "Your {p} plan is active for 30 days. Enjoy RIMAK.", "Tu plan {p} está activo por 30 días. Disfruta la RIMAK."], ["Começar", "Start", "Empezar"], ["Gerando o seu Pix…", "Creating your Pix…", "Generando tu Pix…"], ["Não foi possível gerar o Pix. Tente de novo.", "Couldn't create the Pix. Try again.", "No se pudo generar el Pix. Inténtalo de nuevo."], ["Pagamento indisponível no momento.", "Payments are unavailable right now.", "Pagos no disponibles por ahora."]]);
+  DNAi18n.add([["Começar", "Start", "Empezar"], ["Novo chat", "New chat", "Nuevo chat"], ["Gerar imagem", "Generate image", "Generar imagen"], ["Agentes", "Agents", "Agentes"], ["Histórico", "History", "Historial"], ["Ver todo o histórico", "See all history", "Ver todo el historial"], ["Entre para ver suas conversas.", "Sign in to see your chats.", "Inicia sesión para ver tus conversaciones."], ["Suas conversas aparecem aqui.", "Your chats show up here.", "Tus conversaciones aparecen aquí."], ["Nenhuma conversa ainda.", "No chats yet.", "Aún no hay conversaciones."], ["Suas conversas ficam salvas neste aparelho.", "Your chats are saved on this device.", "Tus conversaciones se guardan en este dispositivo."], ["Apagar conversa", "Delete chat", "Borrar conversación"], ["Conversa", "Chat", "Conversación"], ["agora", "now", "ahora"], ["há {n} min", "{n} min ago", "hace {n} min"], ["há {n} h", "{n} h ago", "hace {n} h"], ["há {n} d", "{n} d ago", "hace {n} d"], ["Baixo", "Low", "Bajo"], ["Médio", "Medium", "Medio"], ["Alto", "High", "Alto"], ["Máximo", "Max", "Máximo"], ["Respostas rápidas e diretas.", "Fast, direct answers.", "Respuestas rápidas y directas."], ["Mais cuidado em cada resposta.", "More care in every answer.", "Más cuidado en cada respuesta."], ["Raciocínio profundo.", "Deep reasoning.", "Razonamiento profundo."], ["Análise completa, passo a passo.", "Full step-by-step analysis.", "Análisis completo, paso a paso."], ["Quanto mais esforço, mais créditos por resposta.", "More effort costs more credits per answer.", "Más esfuerzo cuesta más créditos por respuesta."], ["crédito", "credit", "crédito"], ["O esforço {e} é do plano {p}.", "{e} effort is part of the {p} plan.", "El esfuerzo {e} es del plan {p}."], ["Esse esforço gasta {n} créditos e você tem {c}.", "This effort costs {n} credits and you have {c}.", "Este esfuerzo cuesta {n} créditos y tienes {c}."], ["Imagem", "Image", "Imagen"], ["Preparando o pagamento seguro…", "Preparing secure payment…", "Preparando el pago seguro…"], ["Abrindo o pagamento seguro do Mercado Pago…", "Opening Mercado Pago secure payment…", "Abriendo el pago seguro de Mercado Pago…"], ["Assinatura mensal de {v}, cobrada todo mês. Você cancela quando quiser.", "Monthly subscription of {v}, billed every month. Cancel anytime.", "Suscripción mensual de {v}, cobrada cada mes. Cancelas cuando quieras."], ["Número do cartão", "Card number", "Número de tarjeta"], ["Validade", "Expiry", "Vencimiento"], ["Nome no cartão", "Name on card", "Nombre en la tarjeta"], ["Como está no cartão", "As shown on the card", "Como aparece en la tarjeta"], ["Assinar por {v}/mês", "Subscribe for {v}/month", "Suscribirse por {v}/mes"], ["Voltar", "Back", "Volver"], ["Os dados do cartão vão direto ao Mercado Pago. A RIMAK não guarda o número.", "Card data goes straight to Mercado Pago. RIMAK never stores the number.", "Los datos de la tarjeta van directo a Mercado Pago. RIMAK no guarda el número."], ["Digite o nome como está no cartão.", "Enter the name as shown on the card.", "Escribe el nombre como aparece en la tarjeta."], ["CPF inválido. Confira os números.", "Invalid CPF. Check the numbers.", "CPF inválido. Revisa los números."], ["Processando…", "Processing…", "Procesando…"], ["Confira os dados do cartão.", "Check the card details.", "Revisa los datos de la tarjeta."], ["Cartão recusado. Confira os dados ou tente outro cartão.", "Card declined. Check the details or try another card.", "Tarjeta rechazada. Revisa los datos o prueba otra."], ["Plano {p} ativo!", "{p} plan active!", "¡Plan {p} activo!"], ["Pagamento aprovado. Seus créditos já estão liberados.", "Payment approved. Your credits are ready.", "Pago aprobado. Tus créditos ya están listos."], ["Continuar", "Continue", "Continuar"], ["Pagamento em análise", "Payment under review", "Pago en revisión"], ["O Mercado Pago está analisando o pagamento. Assim que aprovar, o plano é liberado.", "Mercado Pago is reviewing the payment. The plan unlocks once approved.", "Mercado Pago está revisando el pago. El plan se libera al aprobarse."], ["Não foi possível processar. Tente de novo.", "Couldn't process. Try again.", "No se pudo procesar. Inténtalo de nuevo."], ["Fechar", "Close", "Cerrar"]]);
   DNAi18n.add([["Fontes", "Sources", "Fuentes"]]);
 })();

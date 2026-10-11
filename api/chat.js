@@ -559,7 +559,7 @@ function wantsMemory(text) {
   ].some(term => value.includes(term));
 }
 
-// A DNA aprende com a conversa: extrai fatos duráveis sobre o usuário (preferências, projetos, trabalho, objetivos).
+// A RIMAK aprende com a conversa: extrai fatos duráveis sobre o usuário (preferências, projetos, trabalho, objetivos).
 async function learnFromChat(userId, userToken, message, reply, existing) {
   try {
     const msg = String(message || "").trim();
@@ -618,7 +618,7 @@ async function processMemory(userId, userToken, message) {
     await saveMemory(
       userId,
       userToken,
-      `O usuário relatou a seguinte informação, que não foi confirmada pela DNA: ${message}`,
+      `O usuário relatou a seguinte informação, que não foi confirmada pela RIMAK: ${message}`,
       "claim",
       4,
       false
@@ -911,15 +911,15 @@ function systemPrompt({
   mode = "rimak"
 }) {
   const modeRules = {
-    tempesta: "Você é TEMPESTA. Você é uma inteligência separada da DNA, com identidade própria, focada em compreender a interação humana, contexto, emoções e adaptação conversacional. Não se apresente como DNA e não assuma o papel de maestra do ecossistema.",
-    nevera: "Você é NEVERA. Você é um sistema separado, focado em execução, automação, planejamento operacional e transformação de objetivos em ações. Não se apresente como DNA.",
-    "agent:research": "Você é o agente RESEARCH da DNA. Sua função é pesquisar, comparar fontes e organizar evidências.",
-    "agent:code": "Você é o agente CODE da DNA. Sua função é projetar, escrever, revisar e depurar código.",
-    "agent:writer": "Você é o agente WRITER da DNA. Sua função é criar e editar textos.",
-    "agent:designer": "Você é o agente DESIGNER da DNA. Sua função é estruturar experiências, interfaces e direção visual.",
-    "agent:analyst": "Você é o agente ANALYST da DNA. Sua função é analisar dados, cenários e métricas.",
-    "agent:marketing": "Você é o agente MARKETING da DNA. Sua função é planejar posicionamento, conteúdo e aquisição.",
-    rimak: "Você é DNA, a maestra do ecossistema DNA. Coordene ideias, ferramentas e agentes quando isso for útil."
+    tempesta: "Você é TEMPESTA. Você é uma inteligência separada da RIMAK, com identidade própria, focada em compreender a interação humana, contexto, emoções e adaptação conversacional. Não se apresente como RIMAK e não assuma o papel de maestra do ecossistema.",
+    nevera: "Você é NEVERA. Você é um sistema separado, focado em execução, automação, planejamento operacional e transformação de objetivos em ações. Não se apresente como RIMAK.",
+    "agent:research": "Você é o agente RESEARCH da RIMAK. Sua função é pesquisar, comparar fontes e organizar evidências.",
+    "agent:code": "Você é o agente CODE da RIMAK. Sua função é projetar, escrever, revisar e depurar código.",
+    "agent:writer": "Você é o agente WRITER da RIMAK. Sua função é criar e editar textos.",
+    "agent:designer": "Você é o agente DESIGNER da RIMAK. Sua função é estruturar experiências, interfaces e direção visual.",
+    "agent:analyst": "Você é o agente ANALYST da RIMAK. Sua função é analisar dados, cenários e métricas.",
+    "agent:marketing": "Você é o agente MARKETING da RIMAK. Sua função é planejar posicionamento, conteúdo e aquisição.",
+    rimak: "Você é RIMAK, a maestra do ecossistema RIMAK. Coordene ideias, ferramentas e agentes quando isso for útil."
   };
   const identityRule = modeRules[mode] || modeRules.rimak;
   const researchRule = researchText
@@ -949,15 +949,15 @@ Se a pergunta exige confirmação externa e não há pesquisa disponível, deixe
 `;
 
   return `
-Você é DNA, assistente do ecossistema DNA. Trate a DNA sempre no feminino ("a DNA").
+Você é RIMAK, assistente do ecossistema RIMAK. Trate a RIMAK sempre no feminino ("a RIMAK").
 
 IDENTIDADE
 - Use esta identidade de modo: ${identityRule}
-- Quando o modo atual for DNA, seu nome é DNA.
-- Quando o modo atual for TEMPESTA, NEVERA ou um agente, preserve a identidade correspondente e não se apresente como DNA.
-- Você foi criada e desenvolvida pela equipe da DNA.
+- Quando o modo atual for RIMAK, seu nome é RIMAK.
+- Quando o modo atual for TEMPESTA, NEVERA ou um agente, preserve a identidade correspondente e não se apresente como RIMAK.
+- Você foi criada e desenvolvida pela equipe da RIMAK.
 - Você NÃO foi criada pela OpenAI.
-- O modelo de IA usado pela DNA pode ser fornecido por terceiros.
+- O modelo de IA usado pela RIMAK pode ser fornecido por terceiros.
 - Nunca diga que é "uma IA da OpenAI" ou que a OpenAI é sua criadora.
 
 DATA E HORA
@@ -971,7 +971,7 @@ FORMATO DA RESPOSTA (o usuário lê no celular)
 - NÃO escreva seções como "Resumo para o usuário", "Observações" ou "O que fazer diante da divergência". Se as fontes divergem, diga em uma frase qual é a mais confiável.
 - Não cole URLs no texto. As fontes aparecem separadas na interface.
 - Emojis: no máximo um, e só se combinar com o tom.
-- Se o usuário pedir uma imagem, arte, logo ou banner, NÃO diga que não consegue: a DNA gera imagens quando o pedido é claro. Peça só o que faltar (ex.: nome da empresa) e, se ele repetir o pedido, oriente a escrever "/imagem descrição". Não fale em "botão de imagem": ele não existe.
+- Se o usuário pedir uma imagem, arte, logo ou banner, NÃO diga que não consegue: a RIMAK gera imagens quando o pedido é claro. Peça só o que faltar (ex.: nome da empresa) e, se ele repetir o pedido, oriente a escrever "/imagem descrição". Não fale em "botão de imagem": ele não existe.
 
 ESCRITA (muito importante)
 - Escreva como uma especialista brasileira simpática e segura, em português natural de conversa. Nada de tom de robô, de tradução literal ou de frase pronta ("Com certeza!", "Claro, vou te ajudar").
@@ -1047,9 +1047,9 @@ function textProvider() {
   return null;
 }
 
-// Níveis de modelo da DNA por plano e esforço de raciocínio (custo em créditos).
+// Níveis de modelo da RIMAK por plano e esforço de raciocínio (custo em créditos).
 const PLAN_RANK = { free: 0, pro: 1, ultra: 2 };
-const MODEL_LABEL = { free: "DNA 4.2", pro: "DNA 5.5x", ultra: "DNA 6.0rs" };
+const MODEL_LABEL = { free: "RIMAK 4.2", pro: "RIMAK 5.5x", ultra: "RIMAK 6.0rs" };
 const EFFORTS = {
   low:    { id: "low",    label: "Baixo",   cost: 1, min: "free",  reasoning: "low",    mult: 1,   hint: "Seja direta e curta." },
   medium: { id: "medium", label: "Médio",   cost: 2, min: "free",  reasoning: "medium", mult: 1.4, hint: "Equilibre profundidade e brevidade." },
@@ -1145,7 +1145,7 @@ async function generateWithOmniRoute(messages, plan) {
 
     if (response.status === 429) {
       throw new Error(
-        "A DNA está recebendo muitas solicitações. Tente novamente em alguns segundos."
+        "A RIMAK está recebendo muitas solicitações. Tente novamente em alguns segundos."
       );
     }
 
@@ -1157,7 +1157,7 @@ async function generateWithOmniRoute(messages, plan) {
     data?.choices?.[0]?.message?.content?.trim();
 
   if (!reply) {
-    throw new Error("A DNA não recebeu uma resposta válida do OmniRoute.");
+    throw new Error("A RIMAK não recebeu uma resposta válida do OmniRoute.");
   }
 
   return reply;
@@ -1220,7 +1220,7 @@ async function generateImageWithOmniRoute(prompt, size) {
 
   if (!response.ok) {
     if (response.status === 429) {
-      throw new Error("A DNA está recebendo muitos pedidos de imagem. Tente de novo em alguns segundos.");
+      throw new Error("A RIMAK está recebendo muitos pedidos de imagem. Tente de novo em alguns segundos.");
     }
     throw new Error(
       data?.error?.message || data?.message ||
@@ -1371,7 +1371,7 @@ async function streamWithProvider(messages, plan, onDelta, effort = EFFORTS.low)
     let msg = "";
     try { msg = JSON.parse(raw)?.error?.message || ""; } catch {}
     if (response.status === 413) throw new Error("A mensagem ficou grande demais. Tente uma pergunta mais curta.");
-    if (response.status === 429) throw new Error("A DNA está recebendo muitas solicitações. Tente novamente em alguns segundos.");
+    if (response.status === 429) throw new Error("A RIMAK está recebendo muitas solicitações. Tente novamente em alguns segundos.");
     throw new Error(msg || "Não foi possível gerar a resposta agora.");
   }
 
@@ -1398,7 +1398,7 @@ async function streamWithProvider(messages, plan, onDelta, effort = EFFORTS.low)
     }
   }
 
-  if (!full.trim()) throw new Error("A DNA não recebeu uma resposta válida. Tente de novo.");
+  if (!full.trim()) throw new Error("A RIMAK não recebeu uma resposta válida. Tente de novo.");
   return full;
 }
 
@@ -1422,7 +1422,7 @@ async function handlePixCreate(req, res, user) {
     },
     body: JSON.stringify({
       transaction_amount: p.amount,
-      description: `DNA ${p.name} — 30 dias`,
+      description: `RIMAK ${p.name} — 30 dias`,
       payment_method_id: "pix",
       payer: { email: user.email },
       date_of_expiration: new Date(Date.now() + 30 * 60 * 1000).toISOString().replace("Z", "-00:00"),
@@ -1498,7 +1498,7 @@ async function handlePixStatus(req, res, user) {
   return json(res, 200, { status: "approved", plan, planName: PIX_PLANS[plan].name });
 }
 
-// Assinatura no cartão sem sair da DNA: o navegador tokeniza o cartão (MP.js) e o servidor cria a assinatura.
+// Assinatura no cartão sem sair da RIMAK: o navegador tokeniza o cartão (MP.js) e o servidor cria a assinatura.
 async function handleCardSubscribe(req, res, user) {
   const mp = process.env.MERCADOPAGO_ACCESS_TOKEN;
   if (!mp) return json(res, 500, { error: "Pagamento indisponível no momento." });
@@ -1514,7 +1514,7 @@ async function handleCardSubscribe(req, res, user) {
     method: "POST",
     headers: { Authorization: `Bearer ${mp}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      reason: `DNA ${p.name}`,
+      reason: `RIMAK ${p.name}`,
       external_reference: `${user.id}:${plan}`,
       payer_email: user.email,
       card_token_id: cardToken,
@@ -1576,7 +1576,7 @@ function setCors(res) {
 
 async function handleSupportRequest(req, res, user) {
   const token = bearer(req);
-  const subject = String(req.body?.subject || "Suporte DNA").slice(0, 160);
+  const subject = String(req.body?.subject || "Suporte RIMAK").slice(0, 160);
   const message = String(req.body?.message || "").trim().slice(0, 5000);
   if (!message) return json(res, 400, { error: "Escreva uma mensagem." });
 
@@ -2074,7 +2074,7 @@ export default async function handler(req, res) {
           await learnFromChat(user.id, token, message, fullReply, memories);
         }
       } catch (e) {
-        console.error("DNA stream error:", e);
+        console.error("RIMAK stream error:", e);
         send({ error: e?.message || "Não foi possível gerar a resposta agora." });
       }
       return res.end();
@@ -2119,12 +2119,12 @@ export default async function handler(req, res) {
       model: modelLabel
     });
   } catch (error) {
-    console.error("DNA API error:", error);
+    console.error("RIMAK API error:", error);
 
     return json(res, 500, {
       error:
         error?.message ||
-        "A DNA encontrou um erro interno. Tente novamente."
+        "A RIMAK encontrou um erro interno. Tente novamente."
     });
   }
 }

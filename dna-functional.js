@@ -1,4 +1,4 @@
-/* DNA — app: chats (DNA e TEMPESTA), agentes, conta, planos.
+/* RIMAK — app: chats (RIMAK e TEMPESTA), agentes, conta, planos.
    Contrato com o servidor mantido: POST /api/chat { action | message, history, language, mode } com Bearer token.
    Chaves de armazenamento mantidas (rimak.*) para não derrubar sessões e históricos existentes. */
 (function () {
@@ -20,7 +20,7 @@
 
   var STORE = "rimak.cloud.session";
   var state = { session: null, user: null, name: "", mode: "rimak", history: [], busy: false, credits: null, plan: "free", pendingMode: null, failed: null, pushed: false, img: false, imgCost: 3, imgLoaded: false, effort: "low", modelLabel: "" };
-  var MODELS = { free: "DNA 4.2", pro: "DNA 5.5x", ultra: "DNA 6.0rs" };
+  var MODELS = { free: "RIMAK 4.2", pro: "RIMAK 5.5x", ultra: "RIMAK 6.0rs" };
   var RANK = { free: 0, pro: 1, ultra: 2 };
   var EFFORTS = [
     { id: "low", label: "Baixo", cost: 1, min: "free", desc: "Respostas rápidas e diretas." },
@@ -60,7 +60,7 @@
     card: '<svg viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="3"/><path d="M3 10h18M7 15h3"/></svg>',
     ext: '<svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4.5A1.5 1.5 0 0 1 16.5 20h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></svg>'
   };
-  var MARK = '<div class="dnaMark foil" role="img" aria-label="DNA"><i></i><i></i><i></i></div>';
+  var MARK = '<div class="dnaMark foil" role="img" aria-label="RIMAK"><i></i><i></i><i></i></div>';
 
   /* ---------- markdown seguro (escapa tudo antes) ---------- */
   function clean(t) { return String(t == null ? "" : t).replace(/[\u3010\[]\s*(?:fontes?|source|fuente)s?\s*\d+(?:\s*[,;]\s*\d+)*\s*[\u3011\]]/gi, "").replace(/\u3010[^\u3011\n]{0,40}\u3011/g, "").replace(/[ \t]+([.,;:!?])/g, "$1").replace(/[ \t]{2,}/g, " "); }
@@ -173,8 +173,8 @@
     }
     if (mode === "nevera") return { theme: "dna", kind: "agent", agent: "nevera", name: "NEVERA", sub: "Execução e automação", ph: "Descreva o que quer automatizar…", foot: "Confira sempre o resultado antes de usar.",
       eyebrow: "NEVERA · Execução", h: "O que vamos colocar em prática?", lead: "Do plano à realidade: execução e automação.", sugs: DNA_SUGS };
-    return { theme: "dna", name: "DNA", sub: "Maestra do ecossistema", ph: "Pergunte, planeje, crie…", foot: "A DNA pode errar. Confira informações importantes.",
-      eyebrow: "DNA · Maestra do ecossistema", h: "O que vamos construir hoje?", lead: "Entenda, planeje, crie e coordene. Diga o que você quer alcançar e eu organizo o caminho.", sugs: DNA_SUGS };
+    return { theme: "dna", name: "RIMAK", sub: "Maestra do ecossistema", ph: "Pergunte, planeje, crie…", foot: "A RIMAK pode errar. Confira informações importantes.",
+      eyebrow: "RIMAK · Maestra do ecossistema", h: "O que vamos construir hoje?", lead: "Entenda, planeje, crie e coordene. Diga o que você quer alcançar e eu organizo o caminho.", sugs: DNA_SUGS };
   }
 
   /* ---------- DOM base ---------- */
@@ -192,7 +192,7 @@
   chat.setAttribute("data-mode", "dna");
   chat.innerHTML =
     '<div class="dn-bg"></div><div class="dn-grain"></div><div class="dn-flash" id="rkFlash"></div>' +
-    '<header class="dn-head"><div class="dn-id"><div class="dn-mark" id="rkChatMark"></div><div class="dn-idtext"><strong id="rkChatTitle">DNA</strong><span id="rkChatSub" hidden></span><button class="dn-model" id="rkModel" type="button" aria-haspopup="true" aria-expanded="false" hidden><i class="mdot"></i><b id="rkModelName" data-notr>DNA 4.2</b>' + ICON.down + '</button></div></div>' +
+    '<header class="dn-head"><div class="dn-id"><div class="dn-mark" id="rkChatMark"></div><div class="dn-idtext"><strong id="rkChatTitle">RIMAK</strong><span id="rkChatSub" hidden></span><button class="dn-model" id="rkModel" type="button" aria-haspopup="true" aria-expanded="false" hidden><i class="mdot"></i><b id="rkModelName" data-notr>RIMAK 4.2</b>' + ICON.down + '</button></div></div>' +
     '<div class="dn-act">' +
     '<button class="dn-ico" id="rkChatSettings" type="button" aria-label="Minha conta">' + ICON.user + '</button>' +
     '<button class="dn-ico" id="rkChatClose" type="button" aria-label="Fechar conversa">' + ICON.close + '</button></div></header>' +
@@ -253,7 +253,7 @@
     var hr = new Date().getHours(), pt = hr < 5 ? "Boa madrugada" : hr < 12 ? "Bom dia" : hr < 18 ? "Boa tarde" : "Boa noite";
     g.textContent = state.user
       ? (state.name ? T("{g}, {n}.", { g: T(pt), n: state.name }) : T("{g}.", { g: T(pt) }))
-      : T("{g}. Bem-vindo à DNA.", { g: T(pt) });
+      : T("{g}. Bem-vindo à RIMAK.", { g: T(pt) });
   }
   function updateAuthUI() {
     var logged = !!state.user;
@@ -308,14 +308,14 @@
     var r;
     try {
       r = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(Object.assign({ action: action }, payload || {})) });
-    } catch (e) { throw new Error("Falha de conexão com a DNA. Verifique a internet e tente novamente."); }
+    } catch (e) { throw new Error("Falha de conexão com a RIMAK. Verifique a internet e tente novamente."); }
     var raw = await r.text(), data = {};
     try { data = raw ? JSON.parse(raw) : {}; } catch (e) {}
     if (!r.ok) {
       var detail = data.error || data.message || data.msg || data.error_description;
-      throw new Error(detail ? String(detail) : "O servidor da DNA retornou HTTP " + r.status + " (" + r.statusText + ").");
+      throw new Error(detail ? String(detail) : "O servidor da RIMAK retornou HTTP " + r.status + " (" + r.statusText + ").");
     }
-    if (!raw || !Object.keys(data).length) throw new Error("A DNA recebeu uma resposta vazia ou inválida do servidor.");
+    if (!raw || !Object.keys(data).length) throw new Error("A RIMAK recebeu uma resposta vazia ou inválida do servidor.");
     return data;
   }
   async function refresh() {
@@ -358,7 +358,7 @@
 
   function login() {
     state.pendingMode = state.pendingMode || null;
-    panel('<h3>Entrar na DNA</h3><p>Entre para conversar, usar créditos e acessar seu plano.</p>' +
+    panel('<h3>Entrar na RIMAK</h3><p>Entre para conversar, usar créditos e acessar seu plano.</p>' +
       '<form id="rkLoginForm"><input class="rkInput" id="rkEmail" type="email" autocomplete="email" inputmode="email" placeholder="Seu e-mail" required>' +
       '<input class="rkInput" id="rkPass" type="password" autocomplete="current-password" placeholder="Sua senha" required>' +
       '<div class="rkRow"><button class="rkBtn primary" type="submit">Entrar</button><button class="rkBtn" type="button" id="rkSignup">Criar conta</button></div><div class="rkMuted" id="rkAuthMsg"></div></form>');
@@ -377,7 +377,7 @@
     $("#rkSignup").onclick = signup;
   }
   function signup() {
-    panel('<h3>Criar conta</h3><p>Crie sua conta DNA para salvar seu acesso e usar o ecossistema.</p>' +
+    panel('<h3>Criar conta</h3><p>Crie sua conta RIMAK para salvar seu acesso e usar o ecossistema.</p>' +
       '<form id="rkSignupForm"><input class="rkInput" id="rkEmail" type="email" autocomplete="email" inputmode="email" placeholder="Seu e-mail" required>' +
       '<input class="rkInput" id="rkPass" type="password" autocomplete="new-password" minlength="6" placeholder="Senha (mínimo 6 caracteres)" required>' +
       '<div class="rkRow"><button class="rkBtn primary" type="submit">Criar conta</button><button class="rkBtn" type="button" id="rkBackLogin">Já tenho conta</button></div><div class="rkMuted" id="rkAuthMsg"></div></form>');
@@ -410,7 +410,7 @@
   function settings() {
     var logged = !!state.user, plan = String(state.plan || "free").toUpperCase();
     panel('<div class="pnHead">' + MARK + '<span class="pnKick">Configurações</span></div>' +
-      '<h3>Ajuste a DNA do seu jeito.</h3><p>Idioma, movimento e dados deste dispositivo.</p>' +
+      '<h3>Ajuste a RIMAK do seu jeito.</h3><p>Idioma, movimento e dados deste dispositivo.</p>' +
       '<div class="stSec"><div class="stLabel"><i>' + ICON.globe + '</i>Idioma</div><div class="seg lg" id="rkLangSeg" role="group" aria-label="Idioma"></div>' +
       '<p class="stHint">Muda o site, os chats e o idioma das respostas.</p></div>' +
       '<div class="stSec"><div class="stLabel"><i>' + ICON.pulse + '</i>Experiência</div><div class="stList">' +
@@ -424,7 +424,7 @@
       '<div class="stSec"><div class="stLabel"><i>' + ICON.trash + '</i>Dados</div><div class="stList">' +
       '<div class="stRow"><span class="stTx"><b>Conversas neste dispositivo</b><small>Apaga o histórico de todos os modos. Não afeta sua conta.</small></span><button class="rkBtn danger" type="button" id="rkWipe">Apagar</button></div></div></div>' +
       '<div class="rkRow"><button class="rkBtn" id="rkSettingsBack" type="button">' + (logged ? "Voltar à conta" : "Fechar") + '</button></div>' +
-      '<div class="pnFoot">DNA · Mais que uma IA. Um ecossistema.</div>');
+      '<div class="pnFoot">RIMAK · Mais que uma IA. Um ecossistema.</div>');
     langSeg("#rkLangSeg", function () { toast(T("Idioma salvo.")); });
     $("#rkMotion").checked = lsGet("rimak.motion", "on") !== "off";
     $("#rkMotion").onchange = function (e) {
@@ -459,7 +459,7 @@
         (price ? '<div class="rkPrice"><strong>' + price + '</strong><small>/mês</small></div>' : '<div class="rkPrice"><span class="rkTag">' + (on ? "Seu plano" : "Grátis") + '</span></div>') +
         (price ? (on ? '<span class="rkTag" style="justify-self:start">Seu plano</span>' : '<div class="rkRow tight"><button class="rkBtn primary" type="button" data-pix="' + id + '">Pagar com Pix</button><button class="rkBtn" type="button" data-plan="' + id + '">Cartão (assinatura)</button></div>') : "") + '</div>';
     }
-    panel('<h3>Planos DNA</h3><p data-notr>' + esc(T("Créditos são o saldo que você usa ao conversar: cada mensagem consome 1 crédito e cada imagem consome {n}. O saldo diário volta todo dia. Escolha o tamanho que cabe no seu uso.", { n: state.imgCost })) + '</p><div class="rkPlans">' +
+    panel('<h3>Planos RIMAK</h3><p data-notr>' + esc(T("Créditos são o saldo que você usa ao conversar: cada mensagem consome 1 crédito e cada imagem consome {n}. O saldo diário volta todo dia. Escolha o tamanho que cabe no seu uso.", { n: state.imgCost })) + '</p><div class="rkPlans">' +
       card("free", "FREE", "20 créditos por dia", "") + card("pro", "PRO", "50 créditos por dia", "R$ 11,99") + card("ultra", "ULTRA", "150 créditos por dia", "R$ 29,99") + '</div>' +
       (state.user ? '<div class="rkCard" style="margin-top:12px"><span>Seu saldo</span><b style="margin:2px 0 0">' + (state.credits == null ? "—" : state.credits + " " + T("créditos")) + '</b></div>' : ""));
     $$("[data-plan]").forEach(function (b) { b.onclick = function () { cardPanel(b.dataset.plan); }; });
@@ -494,7 +494,7 @@
           var rr = await api({ action: "pix_status", payment_id: data.payment_id }), dd = await rr.json().catch(function () { return {}; });
           if (rr.ok && dd.status === "approved") {
             stopPix(); await account();
-            panel('<h3>Pagamento confirmado</h3><p data-notr>' + esc(T("Seu plano {p} está ativo por 30 dias. Aproveite a DNA.", { p: label })) + '</p><div class="rkRow"><button class="rkBtn primary" id="rkPixOk" type="button">Começar</button></div>');
+            panel('<h3>Pagamento confirmado</h3><p data-notr>' + esc(T("Seu plano {p} está ativo por 30 dias. Aproveite a RIMAK.", { p: label })) + '</p><div class="rkRow"><button class="rkBtn primary" id="rkPixOk" type="button">Começar</button></div>');
             $("#rkPixOk").onclick = closePanel;
           } else if (rr.ok && (dd.status === "rejected" || dd.status === "cancelled")) {
             stopPix(); $("#rkPixSt").textContent = T("O pagamento não foi concluído. Volte e gere outro Pix.");
@@ -506,7 +506,7 @@
       $("#rkPixBack").onclick = plans;
     }
   }
-  /* ---------- cartão dentro da DNA (Mercado Pago, campos seguros) ---------- */
+  /* ---------- cartão dentro da RIMAK (Mercado Pago, campos seguros) ---------- */
   var mpPromise = null;
   function loadMP() {
     if (window.MercadoPago) return Promise.resolve();
@@ -545,7 +545,7 @@
       '<div class="rkFieldLb">' + esc(T("Nome no cartão")) + '</div><input class="rkInput" id="rkCardName" autocomplete="cc-name" autocapitalize="characters" placeholder="' + esc(T("Como está no cartão")) + '">' +
       '<div class="rkFieldLb">CPF</div><input class="rkInput" id="rkCardCpf" inputmode="numeric" autocomplete="off" maxlength="14" placeholder="000.000.000-00">' +
       '<div class="rkRow"><button class="rkBtn primary" type="submit" id="rkCardPay">' + esc(T("Assinar por {v}/mês", { v: PIXP[plan] || "" })) + '</button><button class="rkBtn" type="button" id="rkCardBack">' + esc(T("Voltar")) + '</button></div>' +
-      '<div class="rkMuted" id="rkCardMsg"></div><p class="rkSafe">' + ICON.lock + esc(T("Os dados do cartão vão direto ao Mercado Pago. A DNA não guarda o número.")) + '</p></form>');
+      '<div class="rkMuted" id="rkCardMsg"></div><p class="rkSafe">' + ICON.lock + esc(T("Os dados do cartão vão direto ao Mercado Pago. A RIMAK não guarda o número.")) + '</p></form>');
     var st = { style: { fontSize: "16px", color: "#fff" } };
     try {
       fields.num = mp.fields.create("cardNumber", { placeholder: "0000 0000 0000 0000" }).mount("rkCardNum");
@@ -609,11 +609,11 @@
   }
   function support() {
     if (!state.user || !state.session) {
-      panel('<h3>Suporte</h3><p>Entre na sua conta para abrir um chamado. A equipe da DNA responde pelo e-mail da conta.</p><div class="rkRow"><button class="rkBtn primary" id="rkSupLogin" type="button">Entrar</button><button class="rkBtn" id="rkSupClose" type="button">Fechar</button></div>');
+      panel('<h3>Suporte</h3><p>Entre na sua conta para abrir um chamado. A equipe da RIMAK responde pelo e-mail da conta.</p><div class="rkRow"><button class="rkBtn primary" id="rkSupLogin" type="button">Entrar</button><button class="rkBtn" id="rkSupClose" type="button">Fechar</button></div>');
       $("#rkSupLogin").onclick = login; $("#rkSupClose").onclick = closePanel;
       return;
     }
-    panel('<h3>Suporte</h3><p>Conta, créditos, pagamento ou algo que não funcionou? Conte o que houve e a equipe da DNA responde pelo e-mail da sua conta.</p>' +
+    panel('<h3>Suporte</h3><p>Conta, créditos, pagamento ou algo que não funcionou? Conte o que houve e a equipe da RIMAK responde pelo e-mail da sua conta.</p>' +
       '<form id="rkSupForm"><input class="rkInput" id="rkSupSub" type="text" maxlength="120" placeholder="Assunto" required>' +
       '<textarea class="rkInput rkArea" id="rkSupMsg" rows="5" maxlength="4000" placeholder="Descreva o que aconteceu" required></textarea>' +
       '<div class="rkRow"><button class="rkBtn primary" type="submit" id="rkSupSend">Enviar chamado</button><button class="rkBtn" type="button" id="rkSupClose">Fechar</button></div><div class="rkMuted" id="rkSupMsgOut" data-notr></div></form>');
@@ -624,7 +624,7 @@
       try {
         var r = await api({ action: "support", subject: $("#rkSupSub").value.trim(), message: $("#rkSupMsg").value.trim() }), data = await r.json().catch(function () { return {}; });
         if (!r.ok) throw new Error(data.error || "Não foi possível enviar o chamado.");
-        panel('<h3>Chamado enviado</h3><p>Recebemos sua mensagem. A equipe da DNA responde pelo e-mail da sua conta.</p><div class="rkRow"><button class="rkBtn primary" id="rkSupClose" type="button">Fechar</button></div>');
+        panel('<h3>Chamado enviado</h3><p>Recebemos sua mensagem. A equipe da RIMAK responde pelo e-mail da sua conta.</p><div class="rkRow"><button class="rkBtn primary" id="rkSupClose" type="button">Fechar</button></div>');
         $("#rkSupClose").onclick = closePanel;
       } catch (x) { b.disabled = false; out.textContent = T(x instanceof TypeError ? "Sem conexão com o servidor. Verifique a internet e tente de novo." : (x.message || "Não foi possível enviar o chamado.")); }
     };

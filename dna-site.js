@@ -1,4 +1,4 @@
-/* DNA — interações do site */
+/* RIMAK — interações do site */
 (function () {
   "use strict";
   var d = document;
