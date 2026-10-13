@@ -1027,6 +1027,16 @@ ${researchRule}
 
 // Provedor de texto: OmniRoute quando configurado; senão usa a Groq (GROQ_API_KEY).
 function textProvider() {
+  // OpenAI direto tem prioridade quando configurado. Assim, OPENAI_MODEL
+  // controla o modelo real usado pelo chat, sem depender da Groq/OmniRoute.
+  if (process.env.OPENAI_API_KEY) {
+    return {
+      name: "openai",
+      baseUrl: "https://api.openai.com/v1",
+      key: process.env.OPENAI_API_KEY,
+      model: process.env.OPENAI_MODEL || "gpt-6-astra"
+    };
+  }
   const omni = (process.env.OMNIROUTE_BASE_URL || "").replace(/\/+$/, "");
   if (omni) {
     return {
