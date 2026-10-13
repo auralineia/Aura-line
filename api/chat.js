@@ -1032,7 +1032,7 @@ function textProvider() {
   if (process.env.OPENAI_API_KEY) {
     return {
       name: "openai",
-      baseUrl: "https://api.openai.com/v1",
+      baseUrl: "https://api.openai.com",
       key: process.env.OPENAI_API_KEY,
       model: process.env.OPENAI_MODEL || "gpt-6-astra"
     };
