@@ -1057,6 +1057,27 @@ function textProvider() {
   return null;
 }
 
+// Todos os provedores configurados, em ordem de prioridade (OpenAI, OmniRoute, Groq).
+function textProviders() {
+  const list = [];
+  if (process.env.OPENAI_API_KEY) {
+    list.push({
+      name: "openai",
+      baseUrl: "https://api.openai.com",
+      key: process.env.OPENAI_API_KEY,
+      model: process.env.OPENAI_MODEL || "gpt-6-astra"
+    });
+  }
+  const omni = (process.env.OMNIROUTE_BASE_URL || "").replace(/\/+$/, "");
+  if (omni) {
+    list.push({ name: "omniroute", baseUrl: omni, key: process.env.OMNIROUTE_API_KEY, model: process.env.OMNIROUTE_MODEL || "auto" });
+  }
+  if (process.env.GROQ_API_KEY) {
+    list.push({ name: "groq", baseUrl: "https://api.groq.com/openai", key: process.env.GROQ_API_KEY, model: process.env.GROQ_MODEL || "llama-3.3-70b-versatile" });
+  }
+  return list;
+}
+
 // Níveis de modelo da RIMAK por plano e esforço de raciocínio (custo em créditos).
 const PLAN_RANK = { free: 0, pro: 1, ultra: 2 };
 const MODEL_LABEL = { free: "RIMAK 4.2", pro: "RIMAK 5.5x", ultra: "RIMAK 6.0rs" };
@@ -1343,10 +1364,26 @@ async function handleImageRequest(req, res, user) {
 
 // Geração em tempo real: chama onDelta(texto) a cada pedaço recebido do modelo.
 async function streamWithProvider(messages, plan, onDelta, effort = EFFORTS.low) {
-  const provider = textProvider();
-  if (!provider) {
+  const providers = textProviders();
+  if (!providers.length) {
     throw new Error("Nenhum provedor de IA configurado (OMNIROUTE_BASE_URL ou GROQ_API_KEY).");
   }
+  // Tenta cada provedor em ordem. Só cai para o próximo se nada foi enviado ao usuário ainda.
+  let lastErr;
+  for (const provider of providers) {
+    let sent = false;
+    try {
+      return await streamOnce(provider, messages, plan, piece => { sent = true; onDelta(piece); }, effort);
+    } catch (e) {
+      lastErr = e;
+      console.error("Provedor " + provider.name + " falhou:", e?.message || e);
+      if (sent) throw e;
+    }
+  }
+  throw lastErr;
+}
+
+async function streamOnce(provider, messages, plan, onDelta, effort) {
   if (provider.name === "groq") provider.model = await resolveGroqModel(provider.key, plan);
   const { key, baseUrl, model } = provider;
   const config = PLAN_CONFIG[plan] || PLAN_CONFIG.free;
@@ -1380,6 +1417,7 @@ async function streamWithProvider(messages, plan, onDelta, effort = EFFORTS.low)
     const raw = await response.text().catch(() => "");
     let msg = "";
     try { msg = JSON.parse(raw)?.error?.message || ""; } catch {}
+    console.error("Upstream " + provider.name + " " + response.status + ":", raw.slice(0, 300));
     if (response.status === 413) throw new Error("A mensagem ficou grande demais. Tente uma pergunta mais curta.");
     if (response.status === 429) throw new Error("A RIMAK está recebendo muitas solicitações. Tente novamente em alguns segundos.");
     throw new Error(msg || "Não foi possível gerar a resposta agora.");
