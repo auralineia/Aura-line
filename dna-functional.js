@@ -262,6 +262,10 @@
     renderModel();
   }
   /* ---------- modelo e esforço ---------- */
+  // conversar exige plano pago (PRO ou ULTRA); "free" aqui significa apenas "sem plano"
+  function hasPlan() { var p = String(state.plan || "free").toLowerCase(); return p === "pro" || p === "ultra"; }
+  function planLabel() { return hasPlan() ? String(state.plan).toUpperCase() : "SEM PLANO"; }
+  function needPlan() { state.failed = null; toast(T("Para conversar com a RIMAK, assine um plano.")); plans(); }
   function planKey() { var p = String(state.plan || "free").toLowerCase(); return RANK[p] == null ? "free" : p; }
   function modelName() { return MODELS[planKey()]; }
   function effortOK(e) { return RANK[planKey()] >= RANK[e.min]; }
@@ -337,7 +341,7 @@
     if (!state.user || !state.session) return;
     try {
       var r = await api({ action: "account" }), data = await r.json();
-      if (r.ok) { state.plan = data.plan || "free"; state.credits = Number(data.credits || 0); updateAuthUI(); }
+      if (r.ok) { state.plan = data.plan || "free"; state.credits = Number(data.credits || 0); updateAuthUI(); if (chat.classList.contains("open") && !state.history.length) renderChat(); }
     } catch (e) {}
   }
   async function boot() {
@@ -395,7 +399,7 @@
   function accountPanel() {
     if (!state.user) { login(); return; }
     panel('<h3>' + esc(state.name ? T("Olá, {n}.", { n: state.name }) : T("Sua conta")) + '</h3><p>' + esc(state.user.email || "") + '</p>' +
-      '<div class="rkGrid"><div class="rkCard stat"><span>Plano</span><strong>' + esc(String(state.plan).toUpperCase()) + '</strong></div>' +
+      '<div class="rkGrid"><div class="rkCard stat"><span>Plano</span><strong>' + esc(planLabel()) + '</strong></div>' +
       '<div class="rkCard stat"><span>Créditos</span><strong>' + (state.credits == null ? "—" : state.credits) + '</strong></div></div>' +
       '<div class="rkRow"><button class="rkBtn" id="rkSettings" type="button">Configurações</button><button class="rkBtn" id="rkPlans" type="button">Planos e créditos</button><button class="rkBtn" id="rkLogout" type="button">Sair</button></div>');
     $("#rkSettings").onclick = settings; $("#rkPlans").onclick = plans; $("#rkLogout").onclick = logout;
@@ -408,7 +412,7 @@
     return n;
   }
   function settings() {
-    var logged = !!state.user, plan = String(state.plan || "free").toUpperCase();
+    var logged = !!state.user, plan = planLabel();
     panel('<div class="pnHead">' + MARK + '<span class="pnKick">Configurações</span></div>' +
       '<h3>Ajuste a RIMAK do seu jeito.</h3><p>Idioma, movimento e dados deste dispositivo.</p>' +
       '<div class="stSec"><div class="stLabel"><i>' + ICON.globe + '</i>Idioma</div><div class="seg lg" id="rkLangSeg" role="group" aria-label="Idioma"></div>' +
@@ -451,16 +455,16 @@
   }
   function plans() {
     var cur = state.user ? String(state.plan || "free").toLowerCase() : "";
-    var WHO = { free: "Para conhecer e usar de vez em quando.", pro: "Para quem usa todos os dias: 2,5× o saldo do FREE, cerca de R$ 0,40 por dia.", ultra: "Para uso intenso e profissional: 7,5× o saldo do FREE, cerca de R$ 1,00 por dia e o menor custo por crédito." };
-    var FEAT = { free: ["Pesquisa na web", "Memória básica", "Respostas de tamanho padrão"], pro: ["Pesquisa na web", "Memória de longo prazo", "Respostas e conversas mais longas"], ultra: ["Pesquisa profunda na web", "Memória avançada", "Respostas longas e contexto máximo"] };
+    var WHO = { pro: "Para quem usa todos os dias, cerca de R$ 0,40 por dia.", ultra: "Para uso intenso e profissional: 3× o saldo do PRO, cerca de R$ 1,00 por dia e o menor custo por crédito." };
+    var FEAT = { pro: ["Pesquisa na web", "Memória de longo prazo", "Respostas e conversas mais longas"], ultra: ["Pesquisa profunda na web", "Memória avançada", "Respostas longas e contexto máximo"] };
     function card(id, label, credits, price) {
       var on = cur === id;
       return '<div class="rkPlan' + (on ? " on" : "") + '"><div><b>' + label + '</b><span>' + credits + '</span><span style="display:block;margin-top:6px;font-size:12.5px;opacity:.75;line-height:1.4">' + WHO[id] + '</span><ul class="rkFeat">' + FEAT[id].map(function (f) { return "<li>" + f + "</li>"; }).join("") + '</ul></div>' +
         (price ? '<div class="rkPrice"><strong>' + price + '</strong><small>/mês</small></div>' : '<div class="rkPrice"><span class="rkTag">' + (on ? "Seu plano" : "Grátis") + '</span></div>') +
         (price ? (on ? '<span class="rkTag" style="justify-self:start">Seu plano</span>' : '<div class="rkRow tight"><button class="rkBtn primary" type="button" data-pix="' + id + '">Pagar com Pix</button><button class="rkBtn" type="button" data-plan="' + id + '">Cartão (assinatura)</button></div>') : "") + '</div>';
     }
-    panel('<h3>Planos RIMAK</h3><p data-notr>' + esc(T("Créditos são o saldo que você usa ao conversar: cada mensagem consome 1 crédito e cada imagem consome {n}. O saldo diário volta todo dia. Escolha o tamanho que cabe no seu uso.", { n: state.imgCost })) + '</p><div class="rkPlans">' +
-      card("free", "FREE", "20 créditos por dia", "") + card("pro", "PRO", "50 créditos por dia", "R$ 11,99") + card("ultra", "ULTRA", "150 créditos por dia", "R$ 29,99") + '</div>' +
+    panel('<h3>Planos RIMAK</h3><p data-notr>' + esc(T("Para conversar com a RIMAK você precisa de uma conta e de um plano. Cada mensagem consome 1 crédito e cada imagem consome {n}. O saldo diário volta todo dia.", { n: state.imgCost })) + '</p><div class="rkPlans">' +
+      card("pro", "PRO", "50 créditos por dia", "R$ 11,99") + card("ultra", "ULTRA", "150 créditos por dia", "R$ 29,99") + '</div>' +
       (state.user ? '<div class="rkCard" style="margin-top:12px"><span>Seu saldo</span><b style="margin:2px 0 0">' + (state.credits == null ? "—" : state.credits + " " + T("créditos")) + '</b></div>' : ""));
     $$("[data-plan]").forEach(function (b) { b.onclick = function () { cardPanel(b.dataset.plan); }; });
     $$("[data-pix]").forEach(function (b) { b.onclick = function () { pixPanel(b.dataset.pix); }; });
@@ -651,7 +655,7 @@
     }
     var nm = state.name || (state.user.email || "").split("@")[0];
     el.innerHTML = '<div class="acRow"><span class="av"><b>' + esc((nm || "?").charAt(0).toUpperCase()) + '</b></span><div class="acT"><b data-notr>' + esc(nm) + '</b><small data-notr>' + esc(state.user.email || "") + '</small></div></div>' +
-      '<div class="acChips"><span class="rkTag" data-notr>' + esc(String(state.plan || "free").toUpperCase()) + '</span><span class="acCr" data-notr>' + ICON.spark + esc(state.credits == null ? "—" : state.credits + " " + T("créditos")) + '</span></div>';
+      '<div class="acChips"><span class="rkTag" data-notr>' + esc(planLabel()) + '</span><span class="acCr" data-notr>' + ICON.spark + esc(state.credits == null ? "—" : state.credits + " " + T("créditos")) + '</span></div>';
   }
   function openMenu() {
     accountCard();
@@ -864,9 +868,11 @@
     var sugs = m.sugs.map(function (s, i) {
       return '<button class="dn-sug" type="button" style="--i:' + i + '" data-prompt="' + esc(s[2]) + '"><i>0' + (i + 1) + '</i><span><b>' + esc(s[0]) + '</b><small>' + esc(s[1]) + '</small></span>' + ICON.arrow + '</button>';
     }).join("");
-    var foot = state.user
+    var foot = state.user && hasPlan()
       ? '<p class="dn-note">Suas conversas ficam salvas neste dispositivo.</p>'
-      : '<button class="dn-cta" type="button" id="rkWelcomeLogin">Entrar para conversar</button><p class="dn-note">O plano FREE inclui 20 créditos por dia.</p>';
+      : state.user
+        ? '<button class="dn-cta" type="button" id="rkWelcomePlans">Assinar um plano</button><p class="dn-note">Para conversar com a RIMAK, assine um plano.</p>'
+        : '<button class="dn-cta" type="button" id="rkWelcomeLogin">Entrar para conversar</button><p class="dn-note">Crie sua conta e assine um plano para conversar.</p>';
     return '<section class="dn-welcome">' + hero + '<div class="dn-eyebrow">' + esc(m.eyebrow) + '</div><h2>' + h2 + '</h2><p class="dn-lead">' + esc(m.lead) + '</p><div class="dn-sugs">' + sugs + '</div>' + foot + '</section>';
   }
   function msgEl(x, fresh) {
@@ -949,6 +955,7 @@
       if (I18N) I18N.apply(c);
       $$("[data-prompt]", c).forEach(function (b) { b.onclick = function () { ta.value = T(b.getAttribute("data-prompt")); autosize(); ta.focus(); }; });
       var li = $("#rkWelcomeLogin", c); if (li) li.onclick = function () { state.pendingMode = state.mode; login(); };
+      var pl = $("#rkWelcomePlans", c); if (pl) pl.onclick = function () { plans(); };
       var cv = $("#rkStormLg", c); if (cv) mountStorm("hero", cv, "lg");
       bindHero(c);
     } else {
@@ -1088,6 +1095,7 @@
         return;
       }
       var data = await r.json().catch(function () { return {}; });
+      if (r.status === 402 && data.code === "subscription_required") { state.plan = "free"; state.credits = 0; updateAuthUI(); setTimeout(plans, 0); }
       if (!r.ok) throw new Error(data.error || "Não foi possível responder.");
       var item = { role: "assistant", content: data.reply || T("Não recebi uma resposta.") };
       if (Array.isArray(data.sources) && data.sources.length) item.sources = data.sources.slice(0, 5).map(function (s) { return { title: String(s.title || "").slice(0, 120), url: String(s.url || "") }; });
@@ -1135,6 +1143,7 @@
       var data = await r.json().catch(function () { return {}; });
       if (typeof data.credits === "number") { state.credits = data.credits; updateAuthUI(); }
       if (typeof data.cost === "number") state.imgCost = data.cost;
+      if (r.status === 402 && data.code === "subscription_required") { state.plan = "free"; state.credits = 0; updateAuthUI(); setTimeout(plans, 0); }
       if (!r.ok) { var er = new Error(data.error || "Não foi possível gerar a imagem agora."); er.code = data.code; throw er; }
       var item = { role: "assistant", kind: "image", content: prompt, image: data.image };
       endThink(t);
@@ -1152,6 +1161,7 @@
     if (e && e.preventDefault) e.preventDefault();
     if (state.busy) return;
     if (!state.user || !state.session) { state.pendingMode = state.mode; login(); return; }
+    if (state.credits != null && !hasPlan()) { needPlan(); return; }
     var text = ta.value.trim();
     if (!text) return;
     var asImg = false, cmd = /^\/(imagem|image|imagen|img)\s+/i.exec(text);
