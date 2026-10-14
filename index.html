@@ -121,7 +121,7 @@ body.hasptr #cg{opacity:1}
 @media (prefers-reduced-motion:reduce){.ask .ph::after{animation:none}}
 </style>
 <link rel="stylesheet" href="/dna-chat.css?v=9">
-<link rel="stylesheet" href="/dna-site.css?v=2">
+<link rel="stylesheet" href="/dna-site.css?v=3">
 </head>
 <body>
 <canvas id="st"></canvas><canvas id="gl"></canvas><div id="fl"></div><div id="cg"></div><div id="prog" aria-hidden="true"></div><nav class="rail" id="rail" aria-label="Ir para seção"></nav>
@@ -179,19 +179,16 @@ body.hasptr #cg{opacity:1}
 <section class="sc c" id="s6"><div class="tx">
   <span class="tag rv">07 Planos</span>
   <h2 class="big rv">Escolha seu ritmo.</h2>
-  <p class="rv" style="--d:.1s">Comece grátis. Suba de plano quando precisar de mais créditos por dia.</p>
+  <p class="rv" style="--d:.1s">Assine, converse e use a RIMAK todos os dias. Troque de plano quando precisar de mais créditos.</p>
   <div class="pick rv" id="planPick" role="group" aria-label="Como você usa a RIMAK?"><span class="pickQ">Como você usa a RIMAK?</span>
     <div class="seg3"><button type="button" data-use="few" aria-pressed="false">De vez em quando</button><button type="button" data-use="daily" aria-pressed="false">Todos os dias</button><button type="button" data-use="heavy" aria-pressed="false">O dia todo, trabalhando</button></div>
     <p class="pickSay" id="planSay" aria-live="polite">Escolha uma opção e destacamos o plano que mais combina.</p></div>
   <div class="plans">
-    <div class="plan fx rv" data-plan="free"><header>FREE</header><div class="who">Para conhecer e usar de vez em quando</div><div class="cr"><span data-count="20">20</span><small>créditos por dia</small></div><div class="meter"><i style="--w:13%"></i></div>
-      <ul><li>Teste a RIMAK, os agentes e a TEMPESTA sem pagar</li><li>Saldo renovado todos os dias</li><li>Ideal para dúvidas pontuais e para decidir se a RIMAK serve para você</li></ul>
-      <div class="pr">Grátis</div><a class="b sm" href="#" data-act="dna">Começar grátis<i class="ar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a></div>
     <div class="plan hot fx rv" data-plan="pro" style="--d:.08s"><header>PRO <em>Mais escolhido</em></header><div class="who">Para quem usa todos os dias</div><div class="cr"><span data-count="50">50</span><small>créditos por dia</small></div><div class="meter"><i style="--w:33%"></i></div>
-      <ul><li><b>2,5×</b> o saldo diário do FREE</li><li>Cerca de <b>R$ 0,40 por dia</b></li><li>Para estudar, trabalhar e escrever sem se preocupar com o saldo no meio da tarefa</li></ul>
+      <ul><li><b>50</b> créditos novos todos os dias</li><li>Cerca de <b>R$ 0,40 por dia</b></li><li>Para estudar, trabalhar e escrever sem se preocupar com o saldo no meio da tarefa</li></ul>
       <div class="pr">R$ 11,99 <small>/mês</small></div><a class="b sm" href="#" data-act="plans">Assinar PRO<i class="ar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a></div>
     <div class="plan fx rv" data-plan="ultra" style="--d:.16s"><header>ULTRA</header><div class="who">Para uso intenso e profissional</div><div class="cr"><span data-count="150">150</span><small>créditos por dia</small></div><div class="meter"><i style="--w:100%"></i></div>
-      <ul><li><b>7,5×</b> o saldo diário do FREE</li><li>Cerca de <b>R$ 1,00 por dia</b> e o menor custo por crédito</li><li>Para trabalhar com vários agentes no mesmo dia, em projetos longos</li></ul>
+      <ul><li><b>3×</b> o saldo diário do PRO</li><li>Cerca de <b>R$ 1,00 por dia</b> e o menor custo por crédito</li><li>Para trabalhar com vários agentes no mesmo dia, em projetos longos</li></ul>
       <div class="pr">R$ 29,99 <small>/mês</small></div><a class="b sm" href="#" data-act="plans">Assinar ULTRA<i class="ar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a></div>
   </div>
   <div class="ft rv">Seu saldo aparece no topo de cada conversa. <a href="#creditos" data-go="creditos" style="color:inherit;text-decoration:underline">O que são créditos?</a></div>
@@ -204,8 +201,8 @@ body.hasptr #cg{opacity:1}
     <p class="lede rv">Créditos são a moeda de uso da RIMAK. Cada resposta que você recebe consome parte do seu saldo, e o saldo diário do seu plano volta a ser reposto todo dia.</p>
     <div class="cgrid">
       <div class="bc fx rv"><div class="k">01 · Consumo</div><h3>Você gasta ao conversar</h3><p>Cada mensagem custa 1 crédito e gerar uma imagem custa 3. O saldo atual fica no topo de cada chat e se atualiza a cada resposta.</p></div>
-      <div class="bc fx rv" style="--d:.08s"><div class="k">02 · Reposição</div><h3>O saldo volta todo dia</h3><p>FREE, PRO e ULTRA têm um limite diário diferente. Terminou o saldo? Basta esperar o dia seguinte ou subir de plano.</p></div>
-      <div class="bc fx rv" style="--d:.16s"><div class="k">03 · Plano</div><h3>Mais créditos, mais fôlego</h3><p>Quanto maior o plano, mais você conversa por dia antes de atingir o limite: de 20 (FREE) a 50 (PRO) e 150 (ULTRA).</p></div>
+      <div class="bc fx rv" style="--d:.08s"><div class="k">02 · Reposição</div><h3>O saldo volta todo dia</h3><p>PRO e ULTRA têm um limite diário diferente. Terminou o saldo? Basta esperar o dia seguinte ou subir de plano.</p></div>
+      <div class="bc fx rv" style="--d:.16s"><div class="k">03 · Plano</div><h3>Mais créditos, mais fôlego</h3><p>Quanto maior o plano, mais você conversa por dia antes de atingir o limite: de 50 (PRO) a 150 (ULTRA).</p></div>
     </div>
     <div class="why rv">
       <h3>Por que assinar?</h3>
@@ -267,8 +264,8 @@ body.hasptr #cg{opacity:1}
     <span class="tag rv">12 Dúvidas</span>
     <h2 class="rv">Perguntas frequentes.</h2>
     <div class="faq rv">
-      <div class="fq"><button type="button" aria-expanded="false">Preciso pagar para usar?<i></i></button><div class="a"><div><p>Não. O plano FREE inclui 20 créditos por dia. Os planos PRO (R$ 11,99/mês) e ULTRA (R$ 29,99/mês) oferecem 50 e 150 créditos por dia.</p></div></div></div>
-      <div class="fq"><button type="button" aria-expanded="false">O que são créditos e quando eles voltam?<i></i></button><div class="a"><div><p>Créditos são o saldo que você usa ao conversar: cada resposta consome parte dele. O limite é diário e depende do plano (20, 50 ou 150), então o saldo é reposto a cada dia.</p></div></div></div>
+      <div class="fq"><button type="button" aria-expanded="false">Preciso pagar para usar?<i></i></button><div class="a"><div><p>Sim. Você pode explorar o site à vontade, mas para conversar com a RIMAK é preciso criar uma conta e assinar um plano. Os planos PRO (R$ 11,99/mês) e ULTRA (R$ 29,99/mês) oferecem 50 e 150 créditos por dia.</p></div></div></div>
+      <div class="fq"><button type="button" aria-expanded="false">O que são créditos e quando eles voltam?<i></i></button><div class="a"><div><p>Créditos são o saldo que você usa ao conversar: cada resposta consome parte dele. O limite é diário e depende do plano (50 ou 150), então o saldo é reposto a cada dia.</p></div></div></div>
       <div class="fq"><button type="button" aria-expanded="false">Minhas conversas ficam salvas?<i></i></button><div class="a"><div><p>Sim, neste dispositivo. Cada modo (RIMAK, agentes, NEVERA e TEMPESTA) guarda o próprio histórico, e você pode continuar de onde parou.</p></div></div></div>
       <div class="fq"><button type="button" aria-expanded="false">Qual a diferença entre RIMAK, agentes, NEVERA e TEMPESTA?<i></i></button><div class="a"><div><p>A RIMAK é o ponto de partida: entende o objetivo e organiza o caminho. Os agentes são especialistas por área. A NEVERA cuida de execução e automação. A TEMPESTA é voltada à interação humana: entender conversas, decisões e emoções.</p></div></div></div>
       <div class="fq"><button type="button" aria-expanded="false">A TEMPESTA substitui terapia?<i></i></button><div class="a"><div><p>Não. Ela é um espaço para organizar pensamentos e conversas, e não substitui acompanhamento profissional. Se estiver em sofrimento intenso, procure ajuda: no Brasil, o CVV atende 24 horas pelo telefone 188.</p></div></div></div>
@@ -346,10 +343,10 @@ const IO=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return
 document.querySelectorAll('.rv').forEach(e=>IO.observe(e));
 </script>
 <script src="/dna-i18n.js?v=1"></script>
-<script src="/dna-i18n-data.js?v=7"></script>
+<script src="/dna-i18n-data.js?v=8"></script>
 <script src="/dna-storm.js?v=2"></script>
 <script src="/dna-marks.js?v=1"></script>
-<script src="/dna-functional.js?v=29"></script>
+<script src="/dna-functional.js?v=30"></script>
 <script>
 // trilho de seções
 (function(){const r=document.getElementById('rail');NAMES.forEach((n,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',n.charAt(0)+n.slice(1).toLowerCase());b.title=b.getAttribute('aria-label');b.onclick=()=>document.getElementById('s'+i).scrollIntoView({behavior:RM?'auto':'smooth'});r.appendChild(b)});r.children[0].classList.add('on')})();
@@ -371,6 +368,6 @@ document.querySelectorAll('.rv').forEach(e=>IO.observe(e));
   f.addEventListener('submit',e=>{e.preventDefault();const v=inp.value.trim();inp.blur();inp.value='';f.classList.remove('has');window.rimakApp&&rimakApp.ask(v)});
 })();
 </script>
-<script src="/dna-site.js?v=3"></script>
+<script src="/dna-site.js?v=4"></script>
 </body>
 </html>

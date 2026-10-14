@@ -76,7 +76,7 @@ h2.in .w>span{transform:none}
 #s6 .tx{max-width:min(1040px,100%)}
 #s6 h2.big{font-size:clamp(36px,7.2vw,104px)}
 #s6 .tx>p{margin-inline:auto}
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:44px auto 34px;max-width:1040px;text-align:left}
+.plans{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:44px auto 34px;max-width:720px;text-align:left}
 .plan{border:1px solid rgba(var(--fg),.22);border-radius:26px;padding:24px 22px 22px;background:rgba(var(--fg),.05);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);display:flex;flex-direction:column;gap:14px;transition:border-color .3s,transform .45s var(--ease)}
 .plan:hover{border-color:rgba(var(--fg),.55);transform:translateY(-4px)}
 .plan.hot{border-color:rgba(var(--glow),.55);box-shadow:0 0 0 1px rgba(var(--glow),.18) inset,0 24px 80px rgba(var(--glow),.08)}

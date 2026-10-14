@@ -1,9 +1,10 @@
 const MODEL = "openai/gpt-oss-20b";
 
 const PLAN_CONFIG = {
+  // sem plano pago não há conversa: "free" é só o estado de quem ainda não assinou
   free: {
-    name: "FREE",
-    dailyCredits: 20,
+    name: "SEM PLANO",
+    dailyCredits: 0,
     research: "full",
     memory: "basic",
     contextChars: 3200,
@@ -29,6 +30,17 @@ const PLAN_CONFIG = {
 
 function json(res, status, body) {
   res.status(status).json(body);
+}
+
+// Conversar e gerar imagens exige conta com plano pago ativo (PRO ou ULTRA).
+function subscriptionRequired(res) {
+  return json(res, 402, {
+    error: "Para conversar com a RIMAK, crie sua conta e assine um plano.",
+    code: "subscription_required",
+    plan: "free",
+    planName: PLAN_CONFIG.free.name,
+    credits: 0
+  });
 }
 
 function bearer(req) {
@@ -166,7 +178,7 @@ async function ensureCredits(userId, initialBalance = 20) {
       headers: { Prefer: "return=representation,resolution=merge-duplicates" },
       body: JSON.stringify({
         user_id: userId,
-        balance: Math.max(0, Number(initialBalance) || 20)
+        balance: Math.max(0, Number.isFinite(Number(initialBalance)) ? Number(initialBalance) : 20)
       })
     });
 
@@ -1322,6 +1334,7 @@ async function handleImageRequest(req, res, user) {
   const cost = imageCost();
 
   const owner = isOwner(user);
+  if (plan === "free" && !owner) return subscriptionRequired(res);
   const balance = owner ? OWNER_BALANCE : await ensureCredits(user.id, config.dailyCredits);
   if (balance < cost) {
     return json(res, 402, {
@@ -1951,7 +1964,9 @@ export default async function handler(req, res) {
         const owner = isOwner(user);
         const credits = owner
           ? OWNER_BALANCE
-          : await ensureCredits(user.id, PLAN_CONFIG[plan].dailyCredits);
+          : plan === "free"
+            ? 0
+            : await ensureCredits(user.id, PLAN_CONFIG[plan].dailyCredits);
         return json(res, 200, {
           user: { id: user.id, email: user.email || null },
           plan: owner ? "ultra" : plan,
@@ -2026,6 +2041,8 @@ export default async function handler(req, res) {
     const subscription = await getSubscription(user.id);
     const plan = normalizePlan(subscription);
     const config = PLAN_CONFIG[plan];
+
+    if (plan === "free" && !isOwner(user)) return subscriptionRequired(res);
 
     await ensureCredits(user.id, config.dailyCredits);
 
