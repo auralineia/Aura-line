@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>RIMAK</title>
 <meta name="description" content="Uma plataforma completa de IA, com agentes especializados, execução, memória, ferramentas e muito mais.">
-<meta name="theme-color" content="#050507">
+<meta name="theme-color" content="#07080a">
 <meta name="apple-mobile-web-app-title" content="RIMAK">
 <meta name="application-name" content="RIMAK">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="/manifest.webmanifest">
-<link rel="icon" href="/favicon.ico?v=4" sizes="any">
+<link rel="icon" href="/favicon.ico?v=5" sizes="any">
 <link rel="icon" type="image/png" sizes="192x192" href="/rimak-icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/rimak-icon-512.png">
 <link rel="apple-touch-icon" href="/rimak-apple-icon.png">
@@ -21,15 +21,15 @@
 <meta property="og:title" content="RIMAK — Mais que uma IA. Um ecossistema.">
 <meta property="og:description" content="Uma plataforma completa de IA, com agentes especializados, execução, memória, ferramentas e muito mais.">
 <meta property="og:url" content="https://rimak.vercel.app/">
-<meta property="og:image" content="https://rimak.vercel.app/og-image.png?v=2">
+<meta property="og:image" content="https://rimak.vercel.app/og-image.png?v=3">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="RIMAK — Mais que uma IA. Um ecossistema.">
 <meta name="twitter:description" content="Uma plataforma completa de IA, com agentes especializados, execução, memória, ferramentas e muito mais.">
-<meta name="twitter:image" content="https://rimak.vercel.app/og-image.png?v=2">
+<meta name="twitter:image" content="https://rimak.vercel.app/og-image.png?v=3">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:5,6,8;--fg:238,241,245;--mono:'JetBrains Mono',ui-monospace,monospace;--sans:'Inter Tight',system-ui,-apple-system,sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
@@ -122,21 +122,27 @@ body.hasptr #cg{opacity:1}
 </style>
 <link rel="stylesheet" href="/dna-chat.css?v=10">
 <link rel="stylesheet" href="/dna-site.css?v=5">
+<link rel="stylesheet" href="/rimak-brand.css?v=2">
+<link rel="stylesheet" href="/rimak-brand.css?v=2">
 </head>
 <body>
 <canvas id="st"></canvas><canvas id="gl"></canvas><div id="fl"></div><div id="cg"></div><div id="prog" aria-hidden="true"></div><nav class="rail" id="rail" aria-label="Ir para seção"></nav>
 <header class="nv"><span>Mais que uma IA. Um ecossistema.</span><div class="dnaBrand" role="img" aria-label="RIMAK"><div class="dnaMark" aria-hidden="true"><i></i><i></i><i></i></div></div><span><button type="button" class="menuBtn" aria-label="Abrir menu" aria-haspopup="dialog" onclick="window.rimakApp&&rimakApp.menu()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg></button></span></header>
-<div id="ct" data-notr>01 / 07 — RIMAK</div>
+<div id="ct" data-notr>RIMAK</div>
 
 <section class="sc" id="s0">
-  <form class="ask" id="ask" autocomplete="off" role="search">
-    <label class="sr" for="askIn">Pergunte à RIMAK</label>
-    <input id="askIn" type="text" enterkeyhint="send" maxlength="600" autocapitalize="sentences">
-    <span class="ph" id="askPh" aria-hidden="true"></span>
-    <button type="submit" aria-label="Enviar pergunta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button>
-  </form>
-  <nav id="hl" aria-label="Seções"><a href="#s1"><i>01</i>RIMAK</a><a href="#s2"><i>02</i>Agentes</a><a href="#s3"><i>03</i>NEVERA</a><a href="#s4"><i>04</i>TEMPESTA</a></nav>
-  <div class="hb"><span id="greet" data-notr>Bem-vindo à RIMAK.</span><span>Role para explorar ↓</span></div>
+  <div class="hero-txt">
+    <span id="greet" data-notr>Bem-vindo à RIMAK.</span>
+    <h1 class="hero-h rv">Pensar fica mais leve<span>com a RIMAK ao lado.</span></h1>
+    <form class="ask" id="ask" autocomplete="off" role="search">
+      <label class="sr" for="askIn">Pergunte à RIMAK</label>
+      <input id="askIn" type="text" enterkeyhint="send" maxlength="600" autocapitalize="sentences">
+      <span class="ph" id="askPh" aria-hidden="true"></span>
+      <button type="submit" aria-label="Enviar pergunta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button>
+    </form>
+    <nav id="hl" aria-label="Seções"><a href="#s1">RIMAK</a><a href="#s2">Agentes</a><a href="#s3">NEVERA</a><a href="#s4">TEMPESTA</a></nav>
+  </div>
+  <div class="hb" aria-hidden="true"></div>
 </section>
 
 <section class="sc" id="s1"><div class="tx">
@@ -301,7 +307,7 @@ void main(){vec3 n=normalize(vN),v=normalize(-vP);float f=.6+.4*pow(1.-max(dot(n
 const DK=[5,6,8],CR=[226,230,235],FD=[238,241,245],FC=[14,16,20],IC=[.62,.78,.95],CH=[[.02,.02,.03],[.32,.34,.4],[.7,.78,.9]];
 // A,B,R,ir,ch,wf,so,wireColor,bg,fg,pose[x,y,scale],monolito
 const KF=[
-[...CH,0,1,0,0,IC,DK,FD,[0,.02,1.15],1],
+[...CH,0,1,0,0,IC,DK,FD,[.4,.02,1.05],1],
 [[.005,.005,.008],[.07,.07,.085],[.25,.3,.38],0,.6,0,1,IC,CR,FC,[.42,0,1],0],
 [[.1,.1,.2],[.7,.7,.85],[1,1,1],1,0,0,1,IC,CR,FC,[.36,0,1],0],
 [[.86,.89,.93],[.9,.92,.95],[0,0,0],0,0,1,0,[.3,.36,.46],CR,FC,[0,0,1.25],0],
@@ -314,7 +320,7 @@ const ST={cu:0,q:0,k:-1,pu:0,ly:0};window.DNAResetCt=()=>{ST.k=-1};window.DNAPul
 function tick(){const vel=Math.abs(scrollY-ST.ly);ST.ly=scrollY;if(vel>6)ST.pu=Math.min(1.4,ST.pu+Math.min(vel,90)/700);const vh=innerHeight,tu=Math.min(Math.max((scrollY+vh*.5)/(1.2*vh)-.5,0),6);ST.cu+=(tu-ST.cu)*(RM?1:.08);const q=ST.q=ST.cu,i=Math.min(Math.floor(q),5),f=q-i,s=f*f*(3-2*f),p=ST.p=lp(KF[i],KF[i+1],s),r=document.documentElement.style;
 r.setProperty('--bg',p[8].map(Math.round).join());r.setProperty('--fg',p[9].map(Math.round).join());
 $('#hl').style.opacity=Math.max(0,1-scrollY/(vh*.5));
-const k=Math.round(q);if(k!==ST.k){ST.k=k;$('#ct').textContent='0'+(k+1)+' / 07 — '+(window.DNAi18n?window.DNAi18n.t(NAMES[k]):NAMES[k]);document.querySelectorAll('#rail button').forEach((b,j)=>b.classList.toggle('on',j===k))}}
+const k=Math.round(q);if(k!==ST.k){ST.k=k;$('#ct').textContent=(window.DNAi18n?window.DNAi18n.t(NAMES[k]):NAMES[k]);document.querySelectorAll('#rail button').forEach((b,j)=>b.classList.toggle('on',j===k))}}
 try{
 const R=new THREE.WebGLRenderer({canvas:$('#gl'),alpha:true,antialias:true});R.setPixelRatio(Math.min(devicePixelRatio,1.75));R.setClearColor(0,0);
 const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(40,1,.1,20),V3=()=>({value:new THREE.Vector3()});C.position.z=4.4;
@@ -345,7 +351,7 @@ render=n=>{n=RM?0:n;const p=ST.p,u=M.uniforms,a=innerWidth/innerHeight,mob=a<.9,
 sx+=(PX-sx)*.06;sy+=(PY-sy)*.06;ST.pu*=.93;u.pu.value=ST.pu;u.t.value=n/1000;u.cA.value.fromArray(p[0]);u.cB.value.fromArray(p[1]);u.cR.value.fromArray(p[2]);u.ir.value=p[3];u.ch.value=p[4];u.so.value=p[6];
 W.uniforms.op.value=p[5];W.uniforms.wc.value.fromArray(p[7]);m.visible=p[6]>.01;w.visible=p[5]>.01;const mq=p[11]*p[11]*p[11];MU.mo.value=mq;mono.visible=halo.visible=mq>.01;
 const px=(mob?0:p[10][0]*hw)+sx*.35,py=p[10][1]+(mob?.32:0)-sy*.28,sc=p[10][2]*bs*(1+ST.pu*.06);
-[m,w].forEach(o=>{o.position.set(px,py,0);o.rotation.set(scrollY/900+sy*.8,n/7000+scrollY/700+sx*1.1,0)});m.scale.setScalar(sc);w.scale.setScalar(sc*1.012);mono.position.set(px,py,0);halo.position.set(px,py,-.5);halo.scale.setScalar(sc*.9);mono.scale.setScalar(sc*.8);mono.rotation.set(sy*.28+Math.sin(scrollY/700)*.12,n/9000+scrollY/520+sx*.9,Math.sin(n/5000)*.02);R.render(S,C)}
+[m,w].forEach(o=>{o.position.set(px,py,0);o.rotation.set(scrollY/900+sy*.8,n/7000+scrollY/700+sx*1.1,0)});m.scale.setScalar(sc);w.scale.setScalar(sc*1.012);mono.position.set(px,py,0);halo.position.set(px,py,-.5);halo.scale.setScalar(sc*.9);mono.scale.setScalar(sc*(mob?.66:.8));mono.position.y+=mob?p[11]*.28:0;halo.position.y=mono.position.y;mono.rotation.set(sy*.28+Math.sin(scrollY/700)*.12,n/9000+scrollY/520+sx*.9,Math.sin(n/5000)*.02);R.render(S,C)}
 }catch(e){}
 // estrelas (aparecem nas seções escuras)
 const sc=$('#st'),xs=sc.getContext('2d'),stars=[...Array(150)].map(()=>[Math.random(),Math.random(),Math.random()*1.3+.3,Math.random()*6]);
@@ -362,7 +368,7 @@ const IO=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return
 document.querySelectorAll('.rv').forEach(e=>IO.observe(e));
 </script>
 <script src="/dna-i18n.js?v=1"></script>
-<script src="/dna-i18n-data.js?v=8"></script>
+<script src="/dna-i18n-data.js?v=9"></script>
 <script src="/dna-storm.js?v=3"></script>
 <script src="/dna-marks.js?v=1"></script>
 <script src="/dna-functional.js?v=31"></script>

@@ -8,6 +8,8 @@
   I.add([
     ["Ir para seção", "Go to section", "Ir a la sección"],
     ["Mais que uma IA. Um ecossistema.", "More than an AI. An ecosystem.", "Más que una IA. Un ecosistema."],
+    ["Pensar fica mais leve", "Thinking gets lighter", "Pensar se vuelve más ligero"],
+    ["com a RIMAK ao lado.", "with RIMAK by your side.", "con RIMAK a tu lado."],
     ["Abrir menu", "Open menu", "Abrir menú"],
     ["Pergunte à RIMAK", "Ask RIMAK", "Pregunta a RIMAK"],
     ["Enviar pergunta", "Send question", "Enviar pregunta"],
@@ -289,6 +291,9 @@
     ["NEVERA · Execução", "NEVERA · Execution", "NEVERA · Ejecución"],
     ["Agente · RESEARCH", "Agent · RESEARCH", "Agente · RESEARCH"], ["Agente · CODE", "Agent · CODE", "Agente · CODE"], ["Agente · WRITER", "Agent · WRITER", "Agente · WRITER"],
     ["Agente · DESIGNER", "Agent · DESIGNER", "Agente · DESIGNER"], ["Agente · ANALYST", "Agent · ANALYST", "Agente · ANALYST"], ["Agente · MARKETING", "Agent · MARKETING", "Agente · MARKETING"],
+    ["Uma inteligência que","An intelligence that","Una inteligencia que"],
+    ["pensa com você.","thinks with you.","piensa contigo."],
+    ["Elegante por fora, poderosa por dentro. Converse, crie e coordene tudo em um só lugar.","Elegant on the outside, powerful within. Talk, create and coordinate everything in one place.","Elegante por fuera, potente por dentro. Conversa, crea y coordina todo en un solo lugar."],
     ["O que vamos construir hoje?", "What shall we build today?", "¿Qué construimos hoy?"],
     ["Entenda, planeje, crie e coordene. Diga o que você quer alcançar e eu organizo o caminho.",
       "Understand, plan, create and coordinate. Tell me what you want to achieve and I'll organize the path.",
