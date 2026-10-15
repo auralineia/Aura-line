@@ -1,0 +1,102 @@
+/* RIMAK — identidade nova. Carregado por último: redefine tipografia, logo, hero e componentes. */
+@font-face{font-family:"RK Display";src:url(/fonts/InterDisplay-Light.woff) format("woff");font-weight:300;font-display:swap}
+@font-face{font-family:"RK Display";src:url(/fonts/InterDisplay-ExtraLight.woff) format("woff");font-weight:200;font-display:swap}
+:root{
+  --bg:7,8,10;--fg:236,239,243;
+  --ash:139,144,152;--silver:205,211,220;--bordo:110,36,64;--gelo:191,227,243;--glow:191,227,243;
+  --disp:"RK Display","Inter Display","Inter Tight",system-ui,sans-serif;
+  --sans:Inter,-apple-system,"SF Pro Text",system-ui,sans-serif;--mono:Inter,system-ui,sans-serif;
+}
+body{font:300 16px/1.6 var(--sans);letter-spacing:.005em}
+/* ---- logo: um único desenho (monólito + rimak), usado em todo lugar ---- */
+.dnaMark{aspect-ratio:296/68;height:30px;animation:none!important;filter:none!important}
+.dnaMark i{display:none!important}
+.dnaMark i:nth-child(1){display:block!important;clip-path:none!important;-webkit-mask:url(/rimak-lockup.svg) center/contain no-repeat!important;mask:url(/rimak-lockup.svg) center/contain no-repeat!important;
+  background:linear-gradient(180deg,#fff 0%,#aeb6c2 100%)!important;animation:rkIn 1.4s cubic-bezier(.2,.7,.2,1) both!important}
+.dnaMark::after{display:none!important}
+.dnaMark.lg{height:auto;width:min(100%,300px)}
+@keyframes rkIn{from{opacity:0;filter:blur(8px)}to{opacity:1;filter:none}}
+/* ---- navegação ---- */
+.nv{padding:22px 5vw 0;font:300 13px var(--sans);letter-spacing:.02em;color:rgba(var(--fg),.62)}
+.nv>span:first-child{align-self:center}
+.menuBtn{border-radius:50%;width:42px;height:42px;border-color:rgba(var(--fg),.2)}
+#ct{font:300 12px var(--sans);letter-spacing:.06em;color:rgba(var(--fg),.55);text-transform:lowercase}
+#ct::first-letter{text-transform:uppercase}
+.rail button::before{background:rgba(var(--fg),.25)}
+/* ---- tipografia ---- */
+h2{font:300 clamp(36px,4.8vw,72px)/1.04 var(--disp);letter-spacing:-.028em;margin-bottom:22px}
+h2.big{font-size:clamp(40px,6.6vw,96px);text-transform:none;letter-spacing:-.034em;line-height:1}
+.tx p{font:300 17px/1.65 var(--sans);color:rgba(var(--fg),.68);max-width:38ch}
+.tag{display:none}
+.rv{translate:none;filter:none;transition:opacity 1.2s ease;transition-delay:var(--d,0s)}
+h2 .w>span{transition-duration:1.3s}
+/* ---- botões ---- */
+.b{height:52px;padding:0 8px 0 26px;border-radius:26px;border:1px solid rgba(var(--fg),.28);background:rgba(var(--fg),.03);font:400 14px var(--sans);letter-spacing:.01em;text-transform:none;color:rgb(var(--fg))}
+.b:hover,.b:focus-visible{background:rgba(var(--fg),.08);border-color:rgba(var(--fg),.6);box-shadow:none}
+.b .ar{width:36px;height:36px;background:rgb(var(--fg));color:rgb(var(--bg))}
+.b.sm{height:46px;font-size:13.5px}
+.plan .b{background:rgb(var(--fg));color:rgb(var(--bg));border-color:transparent}
+.plan .b .ar{background:rgb(var(--bg));color:rgb(var(--fg))}
+/* ---- hero ---- */
+#s0{display:block;min-height:100vh;min-height:100svh;padding:0}
+.hero-txt{position:absolute;left:6vw;bottom:calc(9vh + env(safe-area-inset-bottom,0px));width:min(620px,88vw);z-index:6}
+#greet{display:block;font:300 13px var(--sans);letter-spacing:.04em;color:rgba(var(--fg),.55);margin-bottom:20px}
+.hero-h{font:200 clamp(42px,6.4vw,96px)/1 var(--disp);letter-spacing:-.04em;margin:0 0 30px;max-width:11ch;text-wrap:balance}
+.hero-h span{display:block;color:rgba(var(--fg),.55)}
+#s0 .ask{position:relative;left:auto;right:auto;top:auto;margin:0;max-width:520px;height:58px;border-radius:29px;border-color:rgba(var(--fg),.22);background:rgba(var(--fg),.04)}
+#hl{position:relative;inset:auto;top:auto!important;left:auto;right:auto;margin:22px 0 0;max-width:none;justify-content:flex-start;gap:6px 22px}
+#hl a{height:auto;padding:0;border:0;background:none;border-radius:0;font:300 13px var(--sans);letter-spacing:.02em;text-transform:none;color:rgba(var(--fg),.6);-webkit-backdrop-filter:none;backdrop-filter:none}
+#hl a i{display:none}
+#hl a:hover,#hl a:focus-visible{background:none;border:0;box-shadow:none;transform:none;color:rgb(var(--fg))}
+.hb{left:auto;right:6vw;top:auto;bottom:calc(9vh + env(safe-area-inset-bottom,0px));display:block;width:1px;height:64px;background:linear-gradient(rgba(var(--fg),.55),transparent);color:transparent;font-size:0;overflow:hidden}
+.hb #greet{display:none}
+/* ---- seções ---- */
+.sts{display:none}
+.ls{max-width:460px;margin-top:34px;font:300 14px var(--sans)}
+.ls b{font:400 15px var(--disp);letter-spacing:.005em}
+.ls span{color:rgba(var(--fg),.55)}
+.ls div{border-top-color:rgba(var(--fg),.14);padding:11px 0}
+.gr{border-top:0;gap:0;margin-top:48px}
+.gr div{border:0;border-top:1px solid rgba(var(--fg),.16);border-radius:0;background:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding:22px 24px 8px 0;font:300 14px/1.6 var(--sans);color:rgba(var(--fg),.6)}
+.gr div:hover{transform:none;border-color:rgba(var(--fg),.5)}
+.gr b{font:300 22px var(--disp);letter-spacing:-.01em;margin-bottom:10px}
+.gr b em{border-radius:4px;font:400 10.5px var(--sans);letter-spacing:.04em;text-transform:none}
+/* ---- planos e cartões: cantos discretos, sem vidro ---- */
+.plan,.bc,.demo,.fx{border-radius:10px}
+.plan{background:rgba(var(--fg),.03);-webkit-backdrop-filter:none;backdrop-filter:none;border-color:rgba(var(--fg),.16)}
+.plan.hot{background:rgba(var(--fg),.06);border-color:rgba(var(--silver),.55);box-shadow:0 30px 90px rgba(var(--bordo),.14)}
+.plan header{font:400 13px var(--sans);letter-spacing:.14em}
+.plan header em{font:400 11px var(--sans);letter-spacing:.02em;text-transform:none;border-color:rgba(var(--gelo),.5);color:rgb(var(--gelo))}
+.plan .cr{font:200 clamp(52px,6vw,72px)/1 var(--disp);letter-spacing:-.04em}
+.plan .cr small{font:300 13px var(--sans);letter-spacing:.01em}
+.plan .pr{font:300 17px var(--sans)}
+.plan .meter i{background:linear-gradient(90deg,rgba(var(--gelo),.9),rgb(var(--fg)))}
+.pick .seg3 button{font:300 14px var(--sans)}
+.pickQ{font:300 13px var(--sans)!important;letter-spacing:.02em!important;text-transform:none!important}
+.after{background:#07080a;color:rgb(var(--fg));--bg:7,8,10;--fg:236,239,243}
+.after::before{background:linear-gradient(rgba(7,8,10,0),#07080a)}
+.after .k,.after .who{font-family:var(--sans)}
+.after h2{font-weight:300}
+.after h3{font:300 24px/1.25 var(--disp);letter-spacing:-.015em}
+.ft{font:300 13px var(--sans)}
+.bc .k{font:300 13px var(--sans);letter-spacing:.02em;text-transform:none;color:rgba(var(--fg),.5)}
+.chips span{font:300 12.5px var(--sans);letter-spacing:.01em;text-transform:none;border-radius:6px;color:rgba(var(--fg),.7)}
+.dtabs button{font:300 13.5px var(--sans);letter-spacing:.01em;text-transform:none;border-radius:8px}
+.dtabs button[aria-selected=true]{background:rgb(var(--fg));color:rgb(var(--bg))}
+.step .n{font:200 clamp(56px,7vw,84px)/1 var(--disp);letter-spacing:-.04em;-webkit-text-stroke:0;color:rgba(var(--fg),.28)}
+.step h3,.why h3{font-family:var(--disp)}
+.fq button{font:300 18px var(--sans)}
+.foot{font:300 13px var(--sans)}
+@media (max-width:820px){
+  .hero-txt{bottom:calc(6vh + env(safe-area-inset-bottom,0px))}
+  .hero-h{font-size:clamp(34px,9.6vw,48px);margin-bottom:22px}
+  #hl{gap:4px 18px}.hb{display:none}
+  .nv>span:first-child{visibility:hidden}
+}
+/* ---- chat: mesma voz do site (sem caixa-alta, tipografia leve) ---- */
+.dn-idtext strong,.dn-eyebrow,.dn-who,.dn-tool,.dn-login,.dn-cta,.dn-notice button,.rkBtn,.rkTag,#rkMenuPanel .rkMenuGroup,.dn-ttext b,.pnKick,.stLabel,.rkCard.agc b,.dn-srclb,.rkFieldLb,.dn-copy,.dn-act{text-transform:none!important;letter-spacing:.01em!important;font-family:var(--sans)!important}
+.dn-eyebrow{font-weight:300!important;font-size:13px!important;color:rgba(var(--t),.55)!important}
+.dn-welcome h2{font-family:var(--disp)!important;font-weight:200!important;letter-spacing:-.03em!important}
+.dn-welcome h2,.dn-welcome p{text-wrap:balance}
+.dn-sug b{font-family:var(--disp)!important;font-weight:300!important}
+.dn-sug i,.dn-sug .n{font-family:var(--sans)!important}
