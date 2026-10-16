@@ -18,7 +18,7 @@
     designer: '<svg class="rkE rkE-designer" viewBox="0 0 64 64" aria-hidden="true"><circle class="c1" cx="24" cy="26" r="15"/><circle class="c2" cx="40" cy="26" r="15"/><circle class="c3" cx="32" cy="40" r="15"/></svg>',
     analyst: '<svg class="rkE rkE-analyst" viewBox="0 0 64 64" aria-hidden="true"><rect class="b1" x="8" y="34" width="10" height="22" rx="2"/><rect class="b2" x="27" y="22" width="10" height="34" rx="2"/><rect class="b3" x="46" y="10" width="10" height="46" rx="2"/><path class="tr" d="M6 30l18-10 16 6 20-18"/></svg>',
     marketing: '<svg class="rkE rkE-marketing" viewBox="0 0 64 64" aria-hidden="true"><path class="mg" d="M10 26h12l22-12v36L22 38H10z"/><path class="w1" d="M50 24a12 12 0 0 1 0 16"/><path class="w2" d="M55 17a22 22 0 0 1 0 30"/><path class="w3" d="M24 38l4 14h8l-4-12"/></svg>',
-    nevera: '<svg class="rkE rkE-nevera" viewBox="0 0 64 64" aria-hidden="true"><g class="g1"><circle cx="24" cy="30" r="9"/><path d="M24 14v6M24 40v6M8 30h6M34 30h6M12.7 18.7l4.2 4.2M31.1 37.1l4.2 4.2M12.7 41.3l4.2-4.2M31.1 22.9l4.2-4.2"/></g><g class="g2"><circle cx="46" cy="44" r="6"/><path d="M46 33v4M46 51v4M35 44h4M53 44h4M38.2 36.2l2.8 2.8M51 49l2.8 2.8M38.2 51.8l2.8-2.8M51 39l2.8-2.8"/></g><circle class="nd" cx="52" cy="14" r="3"/><path class="fl" d="M40 22 52 14"/></svg>',
+    ritty: '<svg class="rkE rkE-ritty" viewBox="0 0 64 64" aria-hidden="true"><g class="g1"><path d="M52 24A22 22 0 0 0 14 20"/><path d="M14 8v12h12"/></g><g class="g2"><path d="M12 40a22 22 0 0 0 38 4"/><path d="M50 56V44H38"/></g><circle class="nd" cx="32" cy="32" r="4.5"/></svg>',
     tempesta: '<svg class="rkE rkE-tempesta" viewBox="0 0 64 64" aria-hidden="true"><circle class="o1" cx="32" cy="32" r="24"/><circle class="o2" cx="32" cy="32" r="16"/><circle class="o3" cx="32" cy="32" r="7"/></svg>'
   };
   function emblem(k, busy) { return EMB[k] ? '<span class="rkEm' + (busy ? " busy" : "") + '">' + EMB[k] + '</span>' : ""; }
@@ -57,10 +57,10 @@
       var words = "POSICIONAR ✦ CAMPANHA ✦ CONTEÚDO ✦ PÚBLICO ✦ MENSAGEM ✦ MÉTRICA ✦ ";
       return '<section class="dn-welcome rk-w rk-w-marketing"><div class="rk-mq" aria-hidden="true"><div><span>' + words + words + '</span><span>' + words + words + '</span></div></div><div class="rk-mh">' + emblem("marketing") + '<h2>' + c.esc(c.m.h) + '</h2></div><p class="dn-lead">' + nm(c) + c.esc(c.m.lead) + '</p><div class="rk-bars">' + rows + '</div>' + c.foot + '</section>';
     },
-    nevera: function (c) {
-      var labs = ["Entrada", "Plano", "Execução", "Resultado"];
-      var steps = c.sugs.map(function (s, i) { return '<button class="rk-st" type="button" style="--i:' + i + '" data-prompt="' + c.esc(s[2]) + '"><span class="no">' + (i + 1) + '</span><small>' + labs[i % 4] + '</small><b>' + c.esc(s[0]) + '</b><em>' + c.esc(s[1]) + '</em></button>'; }).join("");
-      return '<section class="dn-welcome rk-w rk-w-nevera"><div class="rk-nhead">' + emblem("nevera") + '<div><p class="rk-kick">' + nm(c) + 'Linha de execução</p><h2>' + c.esc(c.m.h) + '</h2></div></div><p class="dn-lead">' + c.esc(c.m.lead) + '</p><div class="rk-flow"><div class="rk-wire" aria-hidden="true"><i></i></div>' + steps + '</div>' + c.foot + '</section>';
+    ritty: function (c) {
+      var labs = ["Criar", "Status", "Retomar", "Fila"];
+      var steps = c.sugs.map(function (s, i) { return '<button class="rk-st" type="button" style="--i:' + i + '" data-prompt="' + c.esc(s[2]) + '"><span class="no">' + (i + 1) + '</span><small>' + c.esc(c.T(labs[i % 4])) + '</small><b>' + c.esc(s[0]) + '</b><em>' + c.esc(s[1]) + '</em></button>'; }).join("");
+      return '<section class="dn-welcome rk-w rk-w-ritty"><div class="rk-nhead">' + emblem("ritty") + '<div><p class="rk-kick">' + nm(c) + c.esc(c.T('Ciclo autônomo')) + '</p><h2>' + c.esc(c.m.h) + '</h2></div></div><p class="dn-lead">' + c.esc(c.m.lead) + '</p><div class="rk-flow"><div class="rk-wire" aria-hidden="true"><i></i></div>' + steps + '</div>' + c.foot + '</section>';
     },
     tempesta: function (c) {
       var chips = c.sugs.map(function (s, i) { return '<button class="rk-chip" type="button" style="--i:' + i + '" data-prompt="' + c.esc(s[2]) + '"><b>' + c.esc(s[0]) + '</b><small>' + c.esc(s[1]) + '</small></button>'; }).join("");
@@ -135,7 +135,7 @@
       x.fillStyle = col(A, .05); for (var s = -h; s < w; s += 60) { var o2 = (t * .03) % 60; x.beginPath(); x.moveTo(s + o2, h); x.lineTo(s + o2 + 18, h); x.lineTo(s + o2 + 18 + h, 0); x.lineTo(s + o2 + h, 0); x.fill(); }
     };
   };
-  FX.nevera = function (cv, x, o) {
+  FX.ritty = function (cv, x, o) {
     var A = css(o.chat, "--a", [255, 150, 40]), paths = [], pulses = [], i;
     function build(w, h) { paths = []; var n = 14; for (i = 0; i < n; i++) { var px = R() * w, py = R() * h, pts = [[px, py]]; for (var k = 0; k < 5; k++) { if (k % 2) py += (R() - .5) * 260; else px += (R() - .2) * 280; pts.push([px, py]); } paths.push(pts); } pulses = paths.map(function (p, j) { return { p: j, s: R() * (p.length - 1), v: .004 + R() * .006 }; }); }
     var bw = 0, bh = 0;
