@@ -148,6 +148,12 @@
         ["Plano de conteúdo", "Calendário e temas por objetivo.", "Monte um plano de conteúdo para um negócio. Pergunte o que precisar sobre público e objetivo."],
         ["Ideias de campanha", "Conceitos criativos com métrica.", "Quero ideias de campanha para um lançamento, com conceito e como medir resultado."]] }
   };
+  var RITTY_SUGS = [
+    ["Criar uma tarefa", "Descreva o objetivo e a RITTY monta o plano em ciclos.", "Quero criar uma tarefa. Pergunte o que faltar e depois divida em passos, com prioridade e prazo."],
+    ["Status do sistema", "O que está pendente, em andamento e concluído.", "Faça o status do meu objetivo atual: o que está em andamento, o que está pendente e o que falta para concluir."],
+    ["Acordar a RITTY", "Retome de onde parou, com a memória do que já foi feito.", "Retome o trabalho de onde paramos: resuma o que foi feito e proponha o próximo ciclo."],
+    ["Ver tarefas", "Fila organizada por prioridade, com o próximo passo.", "Liste minhas tarefas em aberto por prioridade, com o próximo passo e o prazo de cada uma."]
+  ];
   var DNA_SUGS = [
     ["Transformar uma ideia em plano", "Objetivos, etapas e prazos em minutos.", "Me ajude a organizar minhas ideias e transformar uma delas em um plano."],
     ["Aprender algo novo", "Explicações simples, com exemplos.", "Explique um assunto complexo de um jeito simples, com exemplos."],
@@ -171,8 +177,8 @@
       var a = AGENTS[mode.slice(6)];
       return { theme: "dna", kind: "agent", agent: mode.slice(6), name: a.name, sub: a.sub, ph: a.ph, foot: "Os agentes podem errar. Confira informações importantes.", eyebrow: "Agente · " + a.name, h: a.h, lead: a.lead, sugs: a.sugs };
     }
-    if (mode === "nevera") return { theme: "dna", kind: "agent", agent: "nevera", name: "NEVERA", sub: "Execução e automação", ph: "Descreva o que quer automatizar…", foot: "Confira sempre o resultado antes de usar.",
-      eyebrow: "NEVERA · Execução", h: "O que vamos colocar em prática?", lead: "Do plano à realidade: execução e automação.", sugs: DNA_SUGS };
+    if (mode === "ritty") return { theme: "dna", kind: "agent", agent: "ritty", name: "RITTY", sub: "Agente autônomo de criação de valor", ph: "Dê uma tarefa ou um objetivo à RITTY…", foot: "A RITTY pode errar. Confira o resultado antes de usar.",
+      eyebrow: "RITTY · Agente autônomo", h: "O que a RITTY vai criar?", lead: "Disciplina hoje. Liberdade amanhã. Dê o objetivo e a RITTY organiza as tarefas, roda em ciclos e traz o resultado.", sugs: RITTY_SUGS };
     return { theme: "dna", name: "RIMAK", sub: "Maestra do ecossistema", ph: "Pergunte, planeje, crie…", foot: "A RIMAK pode errar. Confira informações importantes.",
       eyebrow: "RIMAK · Maestra do ecossistema", h: "O que vamos construir hoje?", lead: "Entenda, planeje, crie e coordene. Diga o que você quer alcançar e eu organizo o caminho.", sugs: DNA_SUGS };
   }
@@ -605,7 +611,7 @@
   function agents() {
     var h = '<h3>Agentes</h3><p>Escolha uma inteligência especializada. Cada conversa abre separadamente.</p><div class="rkGrid ag">';
     Object.keys(AGENTS).forEach(function (id) {
-      var a = AGENTS[id] || { name: "NEVERA", sub: "Execução e automação" };
+      var a = AGENTS[id] || { name: "RITTY", sub: "Agente autônomo de criação de valor" };
       h += '<button class="rkCard agc" type="button" data-agent="' + id + '">' + agentMark(id) + '<b>' + a.name + '</b><span>' + esc(a.sub) + '</span></button>';
     });
     panel(h + "</div>");
@@ -1004,7 +1010,7 @@
     designer: ["explorando ideias", "compondo", "refinando"],
     analyst: ["lendo os dados", "calculando", "interpretando"],
     marketing: ["entendendo o público", "montando a estratégia", "afinando a mensagem"],
-    nevera: ["planejando", "preparando a execução", "conferindo"],
+    ritty: ["planejando", "preparando a execução", "conferindo"],
     image: ["interpretando o pedido", "compondo a cena", "ajustando luz e cor", "renderizando"]
   };
   function thinkEl(kind) {

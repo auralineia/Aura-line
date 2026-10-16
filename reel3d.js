@@ -32,14 +32,14 @@ body.in-reel .top .brand{color:#111}body.in-reel .top .icon-btn,body.in-reel .to
   // ---------- HUD: rótulos clicáveis que levam às cenas ----------
   let MODE = "rimak";
   const PERSONA = {
-    nevera: "[MODO NEVERA — agente de execução] Aja como um agente de execução: entenda o objetivo, quebre em passos, entregue o resultado final pronto para usar (texto, plano, checklist, código) e indique o próximo passo. Seja direto e objetivo.",
+    ritty: "[MODO RITTY — agente autônomo de criação de valor] Trabalhe em ciclos: reformule o objetivo, quebre em tarefas com prioridade e prazo, entregue agora o que for possível (texto, plano, checklist, código) e proponha o próximo ciclo. Seja disciplinado e objetivo.",
     tempesta: "[MODO TEMPESTA — inteligência emocional e neural] Aja com empatia e inteligência emocional: acolha, ajude a nomear o que a pessoa sente, organize os pensamentos com perguntas gentis e passos práticos. Você não substitui um profissional de saúde; se houver risco, oriente a buscar ajuda."
   };
-  const NAME = { rimak: "a RIMAK", nevera: "a NEVERA", tempesta: "a TEMPESTA" };
+  const NAME = { rimak: "a RIMAK", ritty: "a RITTY", tempesta: "a TEMPESTA" };
   const _fetch = window.fetch.bind(window);
   window.fetch = (u, o) => { try { if (String(u).indexOf("/api/chat") > -1 && o && o.method === "POST" && o.body) { const b = JSON.parse(o.body); if (b.message && PERSONA[MODE]) { b.mode = MODE; b.history = [{ role: "user", content: PERSONA[MODE] }, { role: "assistant", content: "Entendido." }].concat(b.history || []); o.body = JSON.stringify(b); } } } catch (e) {} return _fetch(u, o); };
   const ag = document.createElement("div"); ag.id = "rkAg";
-  ag.innerHTML = '<div><h3>Agentes</h3><p class="s">Tudo incluído na RIMAK.</p><button class="a" data-m="nevera"><b>NEVERA</b><span>Agente de execução. Transforma pedidos em passos e entrega o resultado pronto.</span></button><button class="a" data-m="tempesta"><b>TEMPESTA</b><span>Inteligência emocional e neural. Acolhe, organiza o que você sente e ajuda a decidir.</span></button><button class="a" data-m="rimak"><b>RIMAK</b><span>Conversa geral, com memória do seu histórico.</span></button><button class="x">Fechar</button></div>';
+  ag.innerHTML = '<div><h3>Agentes</h3><p class="s">Tudo incluído na RIMAK.</p><button class="a" data-m="ritty"><b>RITTY</b><span>Agente autônomo. Trabalha em ciclos, cria tarefas e entrega valor com memória.</span></button><button class="a" data-m="tempesta"><b>TEMPESTA</b><span>Inteligência emocional e neural. Acolhe, organiza o que você sente e ajuda a decidir.</span></button><button class="a" data-m="rimak"><b>RIMAK</b><span>Conversa geral, com memória do seu histórico.</span></button><button class="x">Fechar</button></div>';
   document.body.appendChild(ag);
   ag.onclick = e => { const m = e.target.closest("[data-m]"); if (m) { ag.classList.remove("open"); openChat(m.dataset.m); } else if (e.target === ag || e.target.className === "x") ag.classList.remove("open"); };
   function openChat(m) {

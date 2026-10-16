@@ -239,7 +239,7 @@ button.rkCard:hover{border-color:rgba(var(--s),.4);background:rgba(var(--s),.06)
 #rkChat[data-agent=designer]{--t:250,235,252;--a:217,70,239;--s:244,172,252;--bg:13,4,16;--rad:26px 6px 26px 6px}
 #rkChat[data-agent=analyst]{--t:232,236,254;--a:99,102,241;--s:165,180,252;--bg:5,6,18;--rad:10px}
 #rkChat[data-agent=marketing]{--t:254,236,238;--a:244,63,94;--s:253,164,175;--bg:15,4,7;--rad:999px}
-#rkChat[data-agent=nevera]{--t:236,246,255;--a:186,230,253;--s:255,255,255;--bg:5,10,16;--rad:14px}
+#rkChat[data-agent=ritty]{--t:236,246,255;--a:186,230,253;--s:255,255,255;--bg:5,10,16;--rad:14px}
 #rkChat[data-agent] .dn-sug{border-radius:var(--rad,16px)}
 #rkChat[data-agent=marketing] .dn-sug{border-radius:30px}
 #rkChat[data-agent] .dn-m.user .dn-bubble{border-radius:var(--rad,20px) var(--rad,20px) 4px var(--rad,20px)}
@@ -252,7 +252,7 @@ button.rkCard:hover{border-color:rgba(var(--s),.4);background:rgba(var(--s),.06)
   repeating-linear-gradient(0deg,rgba(var(--a),.05) 0 1px,transparent 1px 44px),repeating-linear-gradient(90deg,rgba(var(--a),.05) 0 1px,transparent 1px 44px),rgb(var(--bg))}
 #rkChat[data-agent=code] .dn-bg{background:radial-gradient(900px 520px at 50% -12%,rgba(var(--a),.12),transparent 62%),
   repeating-linear-gradient(0deg,rgba(var(--a),.045) 0 1px,transparent 1px 4px),rgb(var(--bg))}
-#rkChat[data-agent=nevera] .dn-bg{background:radial-gradient(900px 560px at 50% -10%,rgba(186,230,253,.16),transparent 62%),radial-gradient(600px 400px at 0% 100%,rgba(255,255,255,.05),transparent 60%),rgb(var(--bg))}
+#rkChat[data-agent=ritty] .dn-bg{background:radial-gradient(900px 560px at 50% -10%,rgba(186,230,253,.16),transparent 62%),radial-gradient(600px 400px at 0% 100%,rgba(255,255,255,.05),transparent 60%),rgb(var(--bg))}
 #rkChat[data-agent] .dn-send{background:rgb(var(--a));color:rgb(var(--bg))}
 
 .am{display:block;width:100%;height:auto;overflow:visible;--sp:1;filter:drop-shadow(0 0 14px rgba(var(--a),.35))}
@@ -291,7 +291,7 @@ button.rkCard:hover{border-color:rgba(var(--s),.4);background:rgba(var(--s),.06)
 .m-p{transform-box:fill-box;transform-origin:50% 50%;animation:mkPulse calc(2.6s/var(--sp)) ease-out infinite}.m-p2{animation-delay:calc(-1.3s/var(--sp))}
 .m-arrow{animation:mkHit calc(2.6s/var(--sp)) ease-in-out infinite}
 .m-spark{animation:mkSpark calc(2.6s/var(--sp)) ease-out infinite}
-/* nevera */
+/* ritty */
 .m-flake{animation:mkSpin calc(28s/var(--sp)) linear infinite}
 .m-tw{animation:mkTw calc(3s/var(--sp)) ease-in-out infinite}.m-tw2{animation-delay:-1.5s}
 @keyframes mkSpin{to{transform:rotate(360deg)}}
@@ -414,7 +414,7 @@ label.stRow{cursor:pointer}
 @keyframes dnRumble{0%,100%{translate:0 0}10%{translate:-2px 1px}25%{translate:2px -1px}40%{translate:-1.5px 1px}55%{translate:1.5px 0}70%{translate:-1px 0}85%{translate:.8px 0}}
 .m-gear{transform-box:view-box;transform-origin:50px 50px;animation:mkSpin calc(30s/var(--sp)) linear infinite}
 .am .m-gear .m-draw{animation:none;stroke-dasharray:none;stroke-dashoffset:0}
-.am-nevera .m-flake{animation-direction:reverse}
+.am-ritty .m-flake{animation-direction:reverse}
 
 /* tokens dos agentes também nos cartões do painel */
 .rkCard[data-agent=research],.ag-chip[data-agent=research]{--t:230,244,250;--a:34,211,238;--s:165,243,252;--bg:4,11,16;--rad:16px}
@@ -423,7 +423,7 @@ label.stRow{cursor:pointer}
 .rkCard[data-agent=designer],.ag-chip[data-agent=designer]{--t:250,235,252;--a:217,70,239;--s:244,172,252;--bg:13,4,16;--rad:26px 6px 26px 6px}
 .rkCard[data-agent=analyst],.ag-chip[data-agent=analyst]{--t:232,236,254;--a:99,102,241;--s:165,180,252;--bg:5,6,18;--rad:10px}
 .rkCard[data-agent=marketing],.ag-chip[data-agent=marketing]{--t:254,236,238;--a:244,63,94;--s:253,164,175;--bg:15,4,7;--rad:999px}
-.rkCard[data-agent=nevera],.ag-chip[data-agent=nevera]{--t:236,246,255;--a:186,230,253;--s:255,255,255;--bg:5,10,16;--rad:14px}
+.rkCard[data-agent=ritty],.ag-chip[data-agent=ritty]{--t:236,246,255;--a:186,230,253;--s:255,255,255;--bg:5,10,16;--rad:14px}
 
 /* ===== ambiente exclusivo de cada agente ===== */
 .dn-hero.ag{position:relative;width:min(188px,48vw,25vh);isolation:isolate}
@@ -458,8 +458,8 @@ label.stRow{cursor:pointer}
 #rkChat[data-agent=marketing] .dn-hero.ag::before{inset:-48%;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(var(--a),.2) 0 5deg,transparent 5deg 20deg);
   -webkit-mask-image:radial-gradient(closest-side,transparent 34%,#000 52%,transparent);mask-image:radial-gradient(closest-side,transparent 34%,#000 52%,transparent);animation:agTurn 40s linear infinite}
 @keyframes agTurn{to{transform:rotate(360deg)}}
-/* nevera: neve caindo e malha hexagonal */
-#rkChat[data-agent=nevera] .dn-hero.ag::before{inset:-30% -60%;background:radial-gradient(circle,rgba(255,255,255,.75) 1px,transparent 1.6px) 0 0/34px 34px,radial-gradient(circle,rgba(186,230,253,.55) 1.4px,transparent 2px) 17px 17px/52px 52px;
+/* ritty: neve caindo e malha hexagonal */
+#rkChat[data-agent=ritty] .dn-hero.ag::before{inset:-30% -60%;background:radial-gradient(circle,rgba(255,255,255,.75) 1px,transparent 1.6px) 0 0/34px 34px,radial-gradient(circle,rgba(186,230,253,.55) 1.4px,transparent 2px) 17px 17px/52px 52px;
   -webkit-mask-image:radial-gradient(closest-side,#000 35%,transparent);mask-image:radial-gradient(closest-side,#000 35%,transparent);animation:agSnow 9s linear infinite}
 @keyframes agSnow{to{background-position:-8px 34px,9px 69px}}
 
@@ -481,12 +481,12 @@ label.stRow{cursor:pointer}
 #rkChat[data-agent=marketing] .dn-sug b{text-transform:uppercase;letter-spacing:.04em;font-size:13.5px;font-weight:700}
 #rkChat[data-agent=marketing] .dn-welcome h2{text-transform:uppercase;letter-spacing:-.03em;font-weight:700}
 #rkChat[data-agent=marketing] .dn-sug:hover{background:rgba(var(--a),.12)}
-#rkChat[data-agent=nevera] .dn-sugs{position:relative}
-#rkChat[data-agent=nevera] .dn-sug{position:relative;margin-left:14px}
-#rkChat[data-agent=nevera] .dn-sug::before{content:"";position:absolute;left:-14px;top:50%;width:14px;height:1px;background:rgba(var(--a),.5)}
-#rkChat[data-agent=nevera] .dn-sugs::before{content:"";position:absolute;left:0;top:26px;bottom:26px;width:1px;background:linear-gradient(rgba(var(--a),.7),rgba(var(--a),.15))}
+#rkChat[data-agent=ritty] .dn-sugs{position:relative}
+#rkChat[data-agent=ritty] .dn-sug{position:relative;margin-left:14px}
+#rkChat[data-agent=ritty] .dn-sug::before{content:"";position:absolute;left:-14px;top:50%;width:14px;height:1px;background:rgba(var(--a),.5)}
+#rkChat[data-agent=ritty] .dn-sugs::before{content:"";position:absolute;left:0;top:26px;bottom:26px;width:1px;background:linear-gradient(rgba(var(--a),.7),rgba(var(--a),.15))}
 #rkChat[data-agent=research] .dn-box{border-radius:30px}#rkChat[data-agent=code] .dn-box{border-radius:8px}#rkChat[data-agent=writer] .dn-box{border-radius:20px}
-#rkChat[data-agent=designer] .dn-box{border-radius:26px 8px 26px 8px}#rkChat[data-agent=analyst] .dn-box{border-radius:12px}#rkChat[data-agent=nevera] .dn-box{border-radius:16px}
+#rkChat[data-agent=designer] .dn-box{border-radius:26px 8px 26px 8px}#rkChat[data-agent=analyst] .dn-box{border-radius:12px}#rkChat[data-agent=ritty] .dn-box{border-radius:16px}
 #rkChat[data-agent] .dn-idtext strong{background:linear-gradient(90deg,rgb(var(--s)),rgb(var(--a)));-webkit-background-clip:text;background-clip:text;color:transparent}
 #rkChat[data-agent=writer] .dn-idtext strong{font-family:Georgia,serif;letter-spacing:.22em}
 #rkChat[data-agent=code] .dn-idtext strong{letter-spacing:.12em}

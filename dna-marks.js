@@ -50,7 +50,7 @@
     designer: "M50 4C56 4 60 7 64 11L89 36C93 40 96 44 96 50C96 56 93 60 89 64L64 89C60 93 56 96 50 96C44 96 40 93 36 89L11 64C7 60 4 56 4 50C4 44 7 40 11 36L36 11C40 7 44 4 50 4Z",
     analyst: poly(regular(8, 47, Math.PI / 8)),
     marketing: rosette(14, 43, 3.4),
-    nevera: gear(12, 47, 41)
+    ritty: gear(12, 47, 41)
   };
 
   var ART = {
@@ -119,11 +119,11 @@
         '<g class="m-arrow"><path d="M80 18L53 49" stroke="rgb(var(--t))" stroke-width="3.6" stroke-linecap="round"/><path d="M80 18L68 20M80 18L78 30M75 23L64 25M75 23L77 34" stroke="rgb(var(--t))" stroke-width="2.4" stroke-linecap="round"/></g>' +
         '<g class="m-spark" stroke="rgb(var(--s))" stroke-width="1.8" stroke-linecap="round"><path d="M50 40V36M50 68V72M38 52H34M62 52H66"/></g>';
     },
-    /* NEVERA — engrenagem (execução) girando ao redor de um cristal (planejamento) */
-    nevera: function (p) {
+    /* RITTY — engrenagem (execução) girando ao redor de um cristal (planejamento) */
+    ritty: function (p) {
       var arm = "M50 28V72M50 35L44 29M50 35L56 29M50 65L44 71M50 65L56 71M50 45L46 41M50 45L54 41M50 55L46 59M50 55L54 59";
       var inner = '<circle cx="50" cy="50" r="31" fill="none" stroke="rgb(var(--s))" stroke-opacity=".3" stroke-width="1" stroke-dasharray="1.5 4"/>';
-      return '<g class="m-gear">' + badge(p, SHAPE.nevera, "") + '</g>' +
+      return '<g class="m-gear">' + badge(p, SHAPE.ritty, "") + '</g>' +
         '<circle cx="50" cy="50" r="35" fill="url(#' + p + 'f)"/>' +
         '<circle cx="50" cy="50" r="35" fill="none" stroke="rgb(var(--s))" stroke-opacity=".35" stroke-width="1.2"/>' + inner +
         '<g class="m-flake" fill="none" stroke="url(#' + p + 'g)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="' + arm + '"/><path transform="rotate(60 50 50)" d="' + arm + '"/><path transform="rotate(120 50 50)" d="' + arm + '"/></g>' +
