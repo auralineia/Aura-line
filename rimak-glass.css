@@ -1,0 +1,56 @@
+/* RIMAK — liquid glass: vidro líquido com refração, brilho especular e luz que segue o toque */
+:root{--gl-blur:22px;--gl-sat:1.9;--gl-hi:rgba(255,255,255,.5);--gl-lo:rgba(255,255,255,.04)}
+/* base do vidro */
+.dn-box,.dn-ico,.dn-model,.dn-think,.dn-cta,.dn-down,.dn-m.user .dn-bubble,
+.rk-tile,.rk-q,.rk-qc,.rk-chip,.rk-mb,.rk-bar,.rk-cmd,.rk-ch,.rk-st,
+.b,.tag,#hl a,.ask,.bc,.fq,.plan,.why,#rkPanel,#rkMenuPanel,.dn-pop,.rkCard,.menu-btn,#menuBtn{
+  -webkit-backdrop-filter:blur(var(--gl-blur)) saturate(var(--gl-sat)) brightness(1.08);backdrop-filter:blur(var(--gl-blur)) saturate(var(--gl-sat)) brightness(1.08);
+  background-image:radial-gradient(120% 140% at var(--mx,20%) var(--my,0%),rgba(255,255,255,.22),rgba(255,255,255,0) 46%),linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.03) 55%,rgba(255,255,255,.08))!important;
+  background-color:rgba(190,215,255,.055)!important;
+  border:1px solid rgba(255,255,255,.2)!important;
+  box-shadow:inset 0 1.5px 0 var(--gl-hi),inset 0 -1.5px 0 rgba(255,255,255,.08),inset 1px 0 0 rgba(255,255,255,.18),inset -1px 0 0 rgba(255,255,255,.06),inset 0 0 26px rgba(255,255,255,.05),0 12px 36px rgba(0,0,0,.34),0 2px 6px rgba(0,0,0,.2)!important;
+  transition:transform .5s cubic-bezier(.2,1.3,.3,1),box-shadow .4s,background-color .4s,border-color .4s}
+.rk-tile:hover,.rk-q:hover,.rk-qc:hover,.rk-chip:hover,.rk-mb:hover,.rk-bar:hover,.rk-st:hover,.b:hover,.bc:hover,.dn-cta:hover{border-color:rgba(255,255,255,.4)!important;background-color:rgba(190,215,255,.11)!important}
+.rk-tile:active,.rk-q:active,.rk-chip:active,.b:active,.dn-cta:active,.rk-bar:active{transform:scale(.97)}
+/* o vidro da barra de topo e composer é mais profundo */
+.dn-box{--gl-blur:30px;border-radius:30px;box-shadow:inset 0 1.5px 0 var(--gl-hi),inset 0 -2px 0 rgba(255,255,255,.1),inset 0 0 34px rgba(255,255,255,.06),0 24px 60px rgba(0,0,0,.5)!important}
+.nv{-webkit-backdrop-filter:blur(22px) saturate(1.7);backdrop-filter:blur(22px) saturate(1.7);box-shadow:inset 0 -1px 0 rgba(255,255,255,.12)}
+.nv .lk a{border-radius:99px;padding:7px 12px;transition:background .3s,box-shadow .3s}.nv .lk a:hover{background:rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+.dn-head{-webkit-backdrop-filter:blur(26px) saturate(1.8);backdrop-filter:blur(26px) saturate(1.8);background:linear-gradient(rgba(255,255,255,.07),rgba(255,255,255,.015))!important;border-bottom:1px solid rgba(255,255,255,.14)!important;box-shadow:inset 0 -1px 0 rgba(255,255,255,.06)}
+.dn-ico,.dn-down{border-radius:50%}
+/* botão de enviar: gota de vidro */
+.dn-send{background:radial-gradient(circle at 35% 25%,rgba(255,255,255,.85),rgba(var(--a),.75) 55%,rgba(var(--a),.9))!important;color:#06090f!important;box-shadow:inset 0 2px 3px rgba(255,255,255,.8),inset 0 -3px 6px rgba(0,0,0,.18),0 8px 22px rgba(var(--a),.35)!important}
+/* brilho de borda que anda (reflexo líquido) */
+.dn-box::after,.rk-tile::after,.rk-mb::after,.rk-bar::after,.dn-think::after,.b::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.18) 47%,rgba(255,255,255,.05) 53%,transparent 65%);background-size:260% 100%;background-position:130% 0;animation:glSheen 7s ease-in-out infinite}
+.dn-box,.rk-tile,.rk-mb,.rk-bar{position:relative}
+@keyframes glSheen{0%,55%{background-position:130% 0}100%{background-position:-60% 0}}
+/* ===== barra de "pensando": refeita ===== */
+.dn-think{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;width:max-content;max-width:100%;margin:8px 0 26px;padding:9px 20px 9px 10px;border-radius:999px;font:400 13px var(--sans,system-ui);color:rgba(var(--t),.9);animation:dnUp .5s var(--dn-ease) both,thFloat 5s ease-in-out infinite}
+@keyframes thFloat{50%{transform:translateY(-2px)}}
+.dn-think::before{display:none!important}
+.dn-tmark{position:relative;flex:0 0 auto;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,rgba(255,255,255,.35),rgba(var(--a),.16) 60%);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.6),inset 0 -2px 4px rgba(0,0,0,.2),0 0 22px rgba(var(--a),.35)}
+.dn-tmark::before{inset:-5px!important}
+.dn-tmark .rkEm{width:26px;height:26px}
+.dn-tmark .dnaMark,.dn-tmark>.dnaMark{display:none!important}
+.dn-ttext{display:flex;flex-direction:column;gap:2px;min-width:0}
+.dn-ttext>b{font:600 10px var(--mono,monospace)!important;letter-spacing:.2em;text-transform:uppercase;color:rgb(var(--a))!important;opacity:.95}
+.dn-tline{display:flex;align-items:center;gap:8px}
+.dn-tstate{font-style:normal;font-family:var(--sans,system-ui)!important;font-size:14px;letter-spacing:0;background:linear-gradient(90deg,rgba(var(--t),.55) 0%,rgba(var(--t),1) 45%,rgba(var(--t),.55) 90%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:thText 2.4s linear infinite}
+@keyframes thText{to{background-position:-220% 0}}
+/* emblema da RIMAK */
+.rkE-rimak ellipse{stroke-width:2.2;transform-origin:32px 32px;opacity:.9}
+.rkE-rimak .e1{animation:rkTilt1 4s linear infinite}.rkE-rimak .e2{animation:rkTilt2 4s linear infinite;opacity:.6}.rkE-rimak .e3{animation:rkTilt3 4s linear infinite;opacity:.35}
+.rkE-rimak .cr{fill:rgb(var(--a));stroke:none;animation:rkBlip 2s ease-in-out infinite}
+@keyframes rkTilt1{to{transform:rotate(360deg)}}@keyframes rkTilt2{from{transform:rotate(60deg)}to{transform:rotate(420deg)}}@keyframes rkTilt3{from{transform:rotate(120deg)}to{transform:rotate(480deg)}}
+/* vidro por chat: o tom muda com a cor do chat */
+#rkChat[data-skin=writer] .dn-box,#rkChat[data-skin=writer] .dn-ico,#rkChat[data-skin=writer] .dn-think,#rkChat[data-skin=writer] .rk-ch,#rkChat[data-skin=writer] .dn-cta,#rkChat[data-skin=writer] .dn-bubble,#rkChat[data-skin=writer] .dn-head{background-color:rgba(255,255,255,.5)!important;background-image:radial-gradient(120% 140% at var(--mx,20%) var(--my,0%),rgba(255,255,255,.9),rgba(255,255,255,0) 50%)!important;border-color:rgba(120,80,40,.2)!important;box-shadow:inset 0 1.5px 0 #fff,inset 0 -1px 0 rgba(120,80,40,.1),0 10px 30px rgba(80,50,20,.12)!important;color:#241d17}
+#rkChat[data-skin=writer] .dn-ttext>b{color:rgb(var(--a))!important}
+#rkChat[data-skin=writer] .dn-tstate{background-image:linear-gradient(90deg,rgba(36,29,23,.45),#241d17,rgba(36,29,23,.45));background-size:220% 100%}
+#rkChat[data-skin=marketing] .dn-bubble{background-color:rgba(255,84,52,.85)!important;background-image:radial-gradient(120% 140% at var(--mx,20%) var(--my,0%),rgba(255,255,255,.4),transparent 50%)!important}
+#rkChat[data-skin=code] .dn-box,#rkChat[data-skin=code] .rk-term{background-color:rgba(0,30,12,.35)!important}
+/* site: seções claras, vidro branco */
+.sec#como .bc,.sec#porque .bc,.sec#como .step,.sec#porque .fx,.sec#como .tag,.sec#porque .tag{background-color:rgba(255,255,255,.55)!important;background-image:radial-gradient(120% 140% at var(--mx,20%) var(--my,0%),rgba(255,255,255,.95),transparent 55%)!important;border:1px solid rgba(255,255,255,.9)!important;box-shadow:inset 0 1.5px 0 #fff,inset 0 -1px 0 rgba(10,20,40,.06),0 18px 44px rgba(30,50,90,.14)!important;-webkit-backdrop-filter:blur(24px) saturate(1.6);backdrop-filter:blur(24px) saturate(1.6)}
+.hero-txt .ask{border-radius:999px;box-shadow:inset 0 1.5px 0 var(--gl-hi),inset 0 -2px 0 rgba(255,255,255,.1),0 20px 50px rgba(0,0,0,.35)!important}
+.ask button{background:radial-gradient(circle at 35% 25%,#fff,#cfe0f5 60%,#9db8dc)!important;box-shadow:inset 0 2px 3px #fff,inset 0 -3px 6px rgba(0,0,0,.18)!important}
+@media (prefers-reduced-motion:reduce){.dn-think,.dn-box::after,.rk-tile::after,.rk-mb::after,.rk-bar::after,.dn-think::after,.b::before,.dn-tstate,.rkE-rimak *{animation:none!important}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.dn-box,.dn-think,.rk-tile,.b,.nv{background-color:rgba(20,26,38,.85)!important}}
