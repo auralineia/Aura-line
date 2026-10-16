@@ -853,6 +853,7 @@
       if (storms.hdr) { storms.hdr.destroy(); storms.hdr = null; }
       mk.innerHTML = m.agent ? agentMark(m.agent) : MARK;
     }
+    if (window.RKSkins) { var sk = window.RKSkins.key(m); chat.setAttribute("data-skin", sk); if (sk !== "tempesta") mk.innerHTML = window.RKSkins.emblem(sk) || mk.innerHTML; window.RKSkins.fx(chat, sk); }
     updateAuthUI();
   }
 
@@ -868,11 +869,13 @@
     var sugs = m.sugs.map(function (s, i) {
       return '<button class="dn-sug" type="button" style="--i:' + i + '" data-prompt="' + esc(s[2]) + '"><i>0' + (i + 1) + '</i><span><b>' + esc(s[0]) + '</b><small>' + esc(s[1]) + '</small></span>' + ICON.arrow + '</button>';
     }).join("");
-    var foot = state.user && hasPlan()
+    var foot0 = state.user && hasPlan()
       ? '<p class="dn-note">Suas conversas ficam salvas neste dispositivo.</p>'
       : state.user
         ? '<button class="dn-cta" type="button" id="rkWelcomePlans">Assinar um plano</button><p class="dn-note">Para conversar com a RIMAK, assine um plano.</p>'
         : '<button class="dn-cta" type="button" id="rkWelcomeLogin">Entrar para conversar</button><p class="dn-note">Crie sua conta e assine um plano para conversar.</p>';
+    var foot = foot0;
+    if (window.RKSkins) { try { return window.RKSkins.welcome(window.RKSkins.key(m), { m: m, sugs: m.sugs, esc: esc, T: T, name: nm, foot: foot }); } catch (e) {} }
     return '<section class="dn-welcome">' + hero + '<div class="dn-eyebrow">' + esc(m.eyebrow) + '</div><h2>' + h2 + '</h2><p class="dn-lead">' + esc(m.lead) + '</p><div class="dn-sugs">' + sugs + '</div>' + foot + '</section>';
   }
   function msgEl(x, fresh) {
@@ -1009,6 +1012,7 @@
     var el = d.createElement("div"), mark;
     el.className = "dn-think"; el.setAttribute("role", "status");
     if (m.theme === "tempesta") mark = '<canvas aria-hidden="true"></canvas>';
+    else if (window.RKSkins && window.RKSkins.emblem(m.agent || "rimak", 1)) mark = window.RKSkins.emblem(m.agent || "rimak", 1);
     else if (m.agent) mark = agentMark(m.agent, "busy");
     else mark = MARK.replace('class="dnaMark foil"', 'class="dnaMark foil busy"');
     el.innerHTML = '<span class="dn-tmark">' + mark + '</span><span class="dn-ttext"><b>' + esc(m.name) + '</b><span class="dn-tline"><em class="dn-tstate">' + esc(T(ph[0])) + '</em><span class="dn-dots"><i></i><i></i><i></i></span></span></span>';
@@ -1195,7 +1199,7 @@
   }
   function hideChat() {
     closeEffort();
-    chat.classList.remove("open");
+    chat.classList.remove("open"); if (window.RKSkins) window.RKSkins.stop();
     d.documentElement.classList.remove("dn-lock");
     chat.style.height = ""; chat.style.top = "";
     stopStorms();

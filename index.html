@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="/manifest.webmanifest">
-<link rel="icon" href="/favicon.ico?v=6" sizes="any">
+<link rel="icon" href="/favicon.ico?v=7" sizes="any">
 <link rel="icon" type="image/png" sizes="192x192" href="/rimak-icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/rimak-icon-512.png">
 <link rel="apple-touch-icon" href="/rimak-apple-icon.png">
@@ -21,13 +21,13 @@
 <meta property="og:title" content="RIMAK — Mais que uma IA. Um ecossistema.">
 <meta property="og:description" content="Uma plataforma completa de IA, com agentes especializados, execução, memória, ferramentas e muito mais.">
 <meta property="og:url" content="https://rimak.vercel.app/">
-<meta property="og:image" content="https://rimak.vercel.app/og-image.png?v=4">
+<meta property="og:image" content="https://rimak.vercel.app/og-image.png?v=5">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="RIMAK — Mais que uma IA. Um ecossistema.">
 <meta name="twitter:description" content="Uma plataforma completa de IA, com agentes especializados, execução, memória, ferramentas e muito mais.">
-<meta name="twitter:image" content="https://rimak.vercel.app/og-image.png?v=4">
+<meta name="twitter:image" content="https://rimak.vercel.app/og-image.png?v=5">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -122,8 +122,8 @@ body.hasptr #cg{opacity:1}
 </style>
 <link rel="stylesheet" href="/dna-chat.css?v=10">
 <link rel="stylesheet" href="/dna-site.css?v=5">
-<link rel="stylesheet" href="/rimak-brand.css?v=3">
-<link rel="stylesheet" href="/rimak-brand.css?v=3">
+<link rel="stylesheet" href="/rimak-brand.css?v=4">
+<link rel="stylesheet" href="/rimak-skins.css?v=1">
 </head>
 <body>
 <div id="aur" aria-hidden="true"></div><canvas id="st"></canvas><canvas id="gl"></canvas><div id="fl"></div><div id="cg"></div><div id="prog" aria-hidden="true"></div><nav class="rail" id="rail" aria-label="Ir para seção"></nav>
@@ -293,90 +293,96 @@ body.hasptr #cg{opacity:1}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 const $=s=>document.querySelector(s),RM=matchMedia('(prefers-reduced-motion:reduce)').matches||(()=>{try{return localStorage.getItem('rimak.motion')==='off'}catch(e){return false}})();
-/* malha wireframe orgânica (seção NEVERA) */
-const VS=`uniform float t,pu;varying vec3 vN;varying vec3 vP;
-float h(vec3 p){return (sin(p.x*2.1+t*.9)*sin(p.y*2.4-t*.7)*sin(p.z*2.2+t*.8)*.32+sin(p.x*4.3-t*1.3+p.y*3.1)*sin(p.z*4.1+t)*.09)*(1.+pu*1.6)+pu*.05*sin(p.y*9.-t*6.);}
-vec3 d(vec3 p){p=normalize(p);return p*(1.+h(p));}
-void main(){vec3 p=normalize(position);vec3 a=normalize(cross(p,vec3(.3,1.,.2)));vec3 b=normalize(cross(p,a));float e=.02;vec3 q=d(p),qa=d(p+a*e),qb=d(p+b*e);vec3 n=normalize(cross(qa-q,qb-q));if(dot(n,q)<0.)n=-n;vN=normalize(normalMatrix*n);vP=(modelViewMatrix*vec4(q,1.)).xyz;gl_Position=projectionMatrix*vec4(vP,1.);}`;
-const WF=`uniform float op;uniform vec3 wc;varying vec3 vN;varying vec3 vP;
-void main(){vec3 n=normalize(vN),v=normalize(-vP);float f=.6+.4*pow(1.-max(dot(n,v),0.),1.5);gl_FragColor=vec4(wc*f,op);}`;
-/* nuvem de partículas: 5 formas que se transformam com o scroll */
-const PV=`attribute vec3 a1,a2,a3,a4;attribute float rnd;uniform float t,pu,sz,dpr,w[5];uniform vec2 pm;uniform vec3 cT,cM,cB,cX;varying vec3 vC;varying float vA;
-void main(){vec3 p=position*w[0]+a1*w[1]+a2*w[2]+a3*w[3]+a4*w[4];
-float n=sin(p.x*2.3+t*.6)*sin(p.y*2.1-t*.5)*sin(p.z*2.4+t*.55);float n2=sin(p.x*5.1-t*.9+p.y*3.)*sin(p.z*4.7+t*.8);
-vec3 dir=normalize(p+1e-4);p+=dir*(n*.1+n2*.03)*(1.+pu*2.4);p+=dir*sin(t*1.3+rnd*40.)*.005;
-vec4 mv=modelViewMatrix*vec4(p,1.);vec2 d=mv.xy-pm;float dd=length(d);mv.xy+=normalize(d+1e-4)*exp(-dd*dd*5.)*.26;
-gl_Position=projectionMatrix*mv;
-gl_PointSize=sz*dpr*(4.4/-mv.z)*(.6+rnd*.8);
-float hh=clamp(p.y*.42+.5,0.,1.);vec3 c=mix(cB,cM,smoothstep(0.,.5,hh));c=mix(c,cT,smoothstep(.5,1.,hh));
-if(rnd>.962)c=mix(c,cX,.85);
-vC=c*(.8+.4*sin(t*.8+rnd*20.));vA=.55+.45*smoothstep(-1.2,1.2,-mv.z+4.4+p.z*.0);}`;
-const PF=`uniform float op;varying vec3 vC;varying float vA;void main(){vec2 q=gl_PointCoord-.5;float r=length(q);if(r>.5)discard;float a=smoothstep(.5,.04,r);gl_FragColor=vec4(vC,a*vA*op);}`;
-const DK=[7,8,10],CR=[222,227,233],FD=[236,239,243],FC=[14,16,20],WI=[.3,.36,.46];
-const TT=[.6,.97,.8],TM=[.42,.68,1],TB=[.62,.46,.97],TX=[.86,.32,.52];
-const T2=[.86,.92,1],M2=[.62,.64,.96],B2=[.78,.38,.62];
-/* [wf, wireColor, bg, fg, pose[x,y,s], po, shapeWeights, cT,cM,cB] */
+/* ====== uma única superfície paramétrica (anel -> esfera -> disco -> funil -> nuvem). Tudo muda de forma contínua; pontos e wireframe usam a MESMA função. ====== */
+const SURF=`uniform float t,pu,uR,uRr,uFlat,uCone,uTw,uLobe,uDsp;
+vec3 surf(vec2 a,vec3 rv){float u=a.x*6.2831853,v=a.y*6.2831853;v+=uTw*sin(u+.5);float ring=uR+uRr*cos(v);vec3 p=vec3(ring*cos(u),ring*sin(u),uRr*sin(v));p.xy*=1.+uCone*sin(v)*.6;p.z*=uFlat;
+ vec3 dir=normalize(p+1e-4);float n=sin(p.x*2.3+t*.45)*sin(p.y*2.1-t*.4)*sin(p.z*2.4+t*.42);float n2=sin(p.x*5.1-t*.7+p.y*3.)*sin(p.z*4.7+t*.6);
+ p+=dir*(n*.11+n2*.03)*uLobe*(1.+pu*2.2);p+=(rv-.5)*uDsp*3.4;return p;}`;
+const PV=SURF+`attribute vec2 uvp;attribute vec3 rv;attribute float rnd;uniform float sz,dpr,cy,sc;uniform vec2 pm;uniform vec3 cT,cM,cB,cX;varying vec3 vC;varying float vA;
+void main(){vec3 p=surf(uvp,rv);p+=dir0(rnd);vec4 mv=modelViewMatrix*vec4(p,1.);vec2 d=mv.xy-pm;float dd=length(d);mv.xy+=normalize(d+1e-4)*exp(-dd*dd*5.)*.24;gl_Position=projectionMatrix*mv;
+gl_PointSize=sz*dpr*(4.4/-mv.z)*(.55+rnd*.9);float hh=clamp(.5+(mv.y-cy)/(sc*2.7),0.,1.);vec3 c=mix(cB,cM,smoothstep(0.,.5,hh));c=mix(c,cT,smoothstep(.5,1.,hh));if(rnd>.965)c=mix(c,cX,.9);
+vC=c*(.82+.38*sin(t*.8+rnd*20.));vA=.5+.5*smoothstep(-1.4,1.2,4.4+mv.z*-1.+0.);}`.replace('p+=dir0(rnd);','p+=normalize(p+1e-4)*sin(t*1.3+rnd*40.)*.004;');
+const PF=`uniform float op,lt;varying vec3 vC;varying float vA;void main(){vec2 q=gl_PointCoord-.5;float r=length(q);if(r>.5)discard;float a=smoothstep(.5,.03,r);a=a*a*1.5*vA*op;gl_FragColor=vec4(vC*a,a*lt);}`;
+const LV=SURF+`attribute vec2 uvp;uniform vec3 wc;varying float vL;void main(){vec3 p=surf(uvp,vec3(.5));vec4 mv=modelViewMatrix*vec4(p,1.);gl_Position=projectionMatrix*mv;vL=.45+.55*smoothstep(-1.6,1.2,-mv.z+4.4);}`;
+const LF=`uniform float op,lt;uniform vec3 wc;varying float vL;void main(){float a=op*vL;gl_FragColor=vec4(wc*a,a*lt);}`;
+/* poeira espacial: camada de fundo sempre presente, com parallax de scroll */
+const DV=`attribute vec3 rv;attribute float rnd;uniform float t,dpr,sy,sx,sz;uniform vec3 c1,c2,cX;uniform vec2 par;varying vec3 vC;varying float vA;
+void main(){vec3 p=(rv-.5)*vec3(11.,7.5,7.);float k=.3+rnd*.9;float ang=t*.03*k+rnd*6.283;p.x+=sin(ang)*.35*k;p.y+=cos(ang*1.3)*.3*k+sy*.0014*k*3.5;p.xy+=par*k*.6;p.y=mod(p.y+3.75,7.5)-3.75;
+vec4 mv=modelViewMatrix*vec4(p,1.);gl_Position=projectionMatrix*mv;gl_PointSize=sz*dpr*(1.+rnd*2.4)*(4.4/max(.5,-mv.z+0.));
+vec3 c=mix(c1,c2,fract(rnd*7.31));if(rnd>.975)c=cX;vC=c;vA=(.25+.75*rnd)*(.55+.45*sin(t*(.4+rnd*1.2)+rnd*30.));}`;
+const DF=`uniform float op,lt;varying vec3 vC;varying float vA;void main(){vec2 q=gl_PointCoord-.5;float r=length(q);if(r>.5)discard;float a=smoothstep(.5,.0,r)*vA*op;gl_FragColor=vec4(vC*a,a*lt);}`;
+/* ====== keyframes: todos os valores variam continuamente (spline Catmull-Rom) ====== */
+const DK=[7,8,11],CR=[224,229,236],FD=[236,239,244],FC=[14,16,22];
+const COL={d:{T:[.62,.97,.84],M:[.45,.7,1],B:[.66,.5,.98],X:[.9,.34,.56],W:[.55,.8,1],D1:[.7,.85,1],D2:[.78,.72,1]},
+           l:{T:[.1,.3,.5],M:[.12,.26,.78],B:[.42,.14,.6],X:[.55,.08,.26],W:[.2,.3,.55],D1:[.15,.25,.55],D2:[.35,.2,.55]}};
+/* 0 R,1 r,2 flat,3 cone,4 twist,5 lobe,6 dsp,7 wf,8 pop(opac. pontos),9 rx,10 ry,11 rz,12 px,13 py,14 sc,15 size,16 lt, 17-19 bg, 20-22 fg, 23-25 T,26-28 M,29-31 B,32-34 wire,35-37 d1,38-40 d2 */
+const kf=(o,l)=>{const c=l?COL.l:COL.d;return [o.R,o.r,o.f,o.c,o.w,o.l,o.d,o.wf,o.po,o.rx,o.ry,o.rz,o.px,o.py,o.sc,o.sz,l?1:0,...(l?CR:DK),...(l?FC:FD),...c.T,...c.M,...c.B,...c.W,...c.D1,...c.D2]};
 const KF=[
-[1,0,WI,DK,FD,[.34,.02,.66],1,[1,0,0,0,0],TT,TM,TB],
-[1,0,WI,DK,FD,[.38,0,.8],1,[0,1,0,0,0],TT,TM,TB],
-[1,0,WI,DK,FD,[.36,0,.62],1,[0,0,1,0,0],TT,TM,TB],
-[1,1,WI,CR,FC,[0,0,1.25],0,[0,0,1,0,0],TT,TM,TB],
-[1,0,WI,DK,FD,[-.42,0,.66],1,[0,0,0,1,0],T2,M2,B2],
-[1,0,WI,DK,FD,[.5,.2,.5],1,[0,0,0,0,1],TT,TM,TB],
-[1,0,WI,DK,FD,[0,.05,.5],1,[1,0,0,0,0],TT,TM,TB]].map(r=>r.slice(1));
+kf({R:1,r:.46,f:1,c:0,w:0,l:1,d:0,wf:.16,po:1,rx:.34,ry:0,rz:0,px:.4,py:0,sc:.6,sz:1.9},0),
+kf({R:.2,r:1.08,f:1,c:0,w:.3,l:1.2,d:0,wf:.42,po:1,rx:.5,ry:.4,rz:.2,px:.38,py:0,sc:.78,sz:1.8},1),
+kf({R:1.5,r:.42,f:.34,c:0,w:.6,l:.8,d:0,wf:.2,po:1,rx:1.05,ry:.2,rz:.6,px:.36,py:.05,sc:.6,sz:1.7},0),
+kf({R:.9,r:.62,f:1,c:.2,w:.2,l:1.6,d:0,wf:1,po:.45,rx:.7,ry:.6,rz:.3,px:0,py:0,sc:.92,sz:1.4},1),
+kf({R:.5,r:.78,f:1,c:.95,w:1.5,l:1.4,d:.12,wf:.3,po:1,rx:1.5,ry:.2,rz:.9,px:-.4,py:0,sc:.62,sz:1.8},0),
+kf({R:.9,r:.9,f:1,c:0,w:.4,l:1.3,d:.8,wf:0,po:.9,rx:.4,ry:.9,rz:.2,px:.5,py:.18,sc:.52,sz:1.9},1),
+kf({R:1,r:.46,f:1,c:0,w:0,l:1,d:0,wf:.1,po:1,rx:.34,ry:0,rz:0,px:0,py:.05,sc:.5,sz:1.9},0)];
 const NAMES=['RIMAK','RIMAK','AGENTES','NEVERA','TEMPESTA','ECOSSISTEMA','PLANOS'];
-const lp=(a,b,s)=>Array.isArray(a)?a.map((v,i)=>lp(v,b[i],s)):a+(b-a)*s;
-const ST={cu:0,q:0,k:-1,pu:0,ly:0};window.DNAResetCt=()=>{ST.k=-1};window.DNAPulse=v=>{ST.pu=Math.min(1.4,ST.pu+v)};let PX=0,PY=0,sx=0,sy=0,render;
-function tick(){const vel=Math.abs(scrollY-ST.ly);ST.ly=scrollY;if(vel>6)ST.pu=Math.min(1.4,ST.pu+Math.min(vel,90)/700);const vh=innerHeight,tu=Math.min(Math.max((scrollY+vh*.5)/(1.2*vh)-.5,0),6);ST.cu+=(tu-ST.cu)*(RM?1:.08);const q=ST.q=ST.cu,i=Math.min(Math.floor(q),5),f=q-i,s=f*f*(3-2*f),p=ST.p=lp(KF[i],KF[i+1],s),r=document.documentElement.style;
-/* p: 0 wire,1 wireColor,2 bg,3 fg,4 pose,5 po,6 weights,7 cT,8 cM,9 cB */
-r.setProperty('--bg',p[2].map(Math.round).join());r.setProperty('--fg',p[3].map(Math.round).join());
-const au=$('#aur');if(au)au.style.opacity=Math.max(0,1-p[2][0]/120);
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const cr=(a,b,c,d,s)=>.5*((2*b)+(-a+c)*s+(2*a-5*b+4*c-d)*s*s+(-a+3*b-3*c+d)*s*s*s);
+function spl(q){const n=KF.length-1,i=Math.min(Math.floor(q),n-1),s=q-i,A=KF[Math.max(i-1,0)],B=KF[i],C=KF[i+1],D=KF[Math.min(i+2,n)];const o=B.map((_,j)=>cr(A[j],B[j],C[j],D[j],s));
+/* fundo e texto trocam mais rápido que a forma (evita cinza lamacento no meio) */
+const e=clamp((s-.3)/.4,0,1),se=e*e*(3-2*e);for(let j=16;j<23;j++)o[j]=B[j]+(C[j]-B[j])*se;return o}
+const ST={cu:0,q:0,k:-1,pu:0,ly:0,lt:0,pt:0};window.DNAResetCt=()=>{ST.k=-1};window.DNAPulse=v=>{ST.pu=Math.min(1.4,ST.pu+v)};let PX=0,PY=0,sx=0,sy=0,render,lastT=0;
+function tick(now){const dt=Math.min(.05,(now-lastT)/1000||.016);lastT=now;const vel=Math.abs(scrollY-ST.ly);ST.ly=scrollY;if(vel>6)ST.pu=Math.min(1.4,ST.pu+Math.min(vel,90)/800);
+const vh=innerHeight,tu=clamp((scrollY+vh*.5)/(1.2*vh)-.5,0,6);ST.cu+=(tu-ST.cu)*(RM?1:1-Math.exp(-dt*3.1));const q=ST.q=ST.cu,p=ST.p=spl(q),r=document.documentElement.style;
+p[0]=Math.max(0,p[0]);p[1]=Math.max(.18,p[1]);p[2]=clamp(p[2],.05,1.2);p[5]=Math.max(0,p[5]);p[6]=Math.max(0,p[6]);p[7]=clamp(p[7],0,1);p[8]=clamp(p[8],0,1);p[16]=clamp(p[16],0,1);
+for(let j=17;j<23;j++)p[j]=clamp(p[j],0,255);
+r.setProperty('--bg',[p[17],p[18],p[19]].map(Math.round).join());r.setProperty('--fg',[p[20],p[21],p[22]].map(Math.round).join());
+const au=$('#aur');if(au)au.style.opacity=Math.max(0,1-p[17]/110);
 $('#hl').style.opacity=Math.max(0,1-scrollY/(vh*.5));
 const k=Math.round(q);if(k!==ST.k){ST.k=k;$('#ct').textContent=(window.DNAi18n?window.DNAi18n.t(NAMES[k]):NAMES[k]);document.querySelectorAll('#rail button').forEach((b,j)=>b.classList.toggle('on',j===k))}}
 try{
 const R=new THREE.WebGLRenderer({canvas:$('#gl'),alpha:true,antialias:true});const DPR=Math.min(devicePixelRatio,1.75);R.setPixelRatio(DPR);R.setClearColor(0,0);
-const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(40,1,.1,20),V3=()=>({value:new THREE.Vector3()});C.position.z=4.4;
-const W=new THREE.ShaderMaterial({uniforms:{t:{value:0},pu:{value:0},op:{value:0},wc:V3()},vertexShader:VS,fragmentShader:WF,wireframe:true,transparent:true,depthWrite:false});
-const wm=new THREE.Mesh(new THREE.IcosahedronGeometry(1,13),W);S.add(wm);
-/* ---- partículas ---- */
-const N=innerWidth<820?36000:90000,rn=Math.random,g1=()=>(rn()+rn()+rn()-1.5)*.66;
-const A=[0,1,2,3,4].map(()=>new Float32Array(N*3)),RND=new Float32Array(N);
-const NU=Math.round(Math.sqrt(N*2.1));
-for(let i=0;i<N;i++){
- RND[i]=rn();
- /* 0: anel (torus de frente) em grade levemente irregular */
- {const u=((i%NU)+rn()*.7)/NU*6.2832,v=(Math.floor(i/NU)+rn()*.7)/Math.ceil(N/NU)*6.2832,Rr=1+.46*Math.cos(v);A[0].set([Rr*Math.cos(u),Rr*Math.sin(u),.46*Math.sin(v)],i*3)}
- /* 1: casca esférica (fibonacci) */
- {const y=1-2*(i+.5)/N,rr=Math.sqrt(1-y*y),th=i*2.399963,R0=1.18+rn()*.03;A[1].set([Math.cos(th)*rr*R0,y*R0,Math.sin(th)*rr*R0],i*3)}
- /* 2: disco em espiral */
- {const r0=.12+Math.pow(rn(),.7)*1.75,arm=(i%3)*2.0944,th=r0*2.4+arm+g1()*.35;A[2].set([Math.cos(th)*r0,Math.sin(th)*r0*.9,g1()*.12*(1.4-r0*.5)],i*3)}
- /* 3: vórtice / funil */
- {const y=rn()*3-1.5,r0=.18+(y+1.5)*.3+g1()*.08,th=y*5+rn()*.9+(i%5)*1.2566;A[3].set([Math.cos(th)*r0,y,Math.sin(th)*r0],i*3)}
- /* 4: nuvem de poeira */
- {const r0=Math.pow(rn(),.55)*1.9,th=rn()*6.2832,ph=Math.acos(2*rn()-1);A[4].set([r0*Math.sin(ph)*Math.cos(th),r0*Math.sin(ph)*Math.sin(th),r0*Math.cos(ph)],i*3)}
-}
-const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(A[0],3));
-[1,2,3,4].forEach(j=>pg.setAttribute('a'+j,new THREE.BufferAttribute(A[j],3)));pg.setAttribute('rnd',new THREE.BufferAttribute(RND,1));
-const PU={t:W.uniforms.t,pu:W.uniforms.pu,sz:{value:innerWidth<820?2.3:1.9},dpr:{value:DPR},w:{value:[1,0,0,0,0]},pm:{value:new THREE.Vector2(9,9)},cT:V3(),cM:V3(),cB:V3(),cX:{value:new THREE.Vector3(...TX)},op:{value:1}};
-const PM=new THREE.ShaderMaterial({uniforms:PU,vertexShader:PV,fragmentShader:PF,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending});
-const pts=new THREE.Points(pg,PM);pts.frustumCulled=false;S.add(pts);
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(40,1,.1,30),V3=()=>({value:new THREE.Vector3()});C.position.z=4.4;
+const mob0=innerWidth<820,N=mob0?34000:90000,rn=Math.random;
+const NU=Math.round(Math.sqrt(N*2.1)),NVv=Math.ceil(N/NU);
+const UV=new Float32Array(N*2),RV=new Float32Array(N*3),RND=new Float32Array(N),POS=new Float32Array(N*3);
+for(let i=0;i<N;i++){UV[i*2]=((i%NU)+rn()*.7)/NU;UV[i*2+1]=(Math.floor(i/NU)+rn()*.7)/NVv;RV[i*3]=rn();RV[i*3+1]=rn();RV[i*3+2]=rn();RND[i]=rn()}
+const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(POS,3));pg.setAttribute('uvp',new THREE.BufferAttribute(UV,2));pg.setAttribute('rv',new THREE.BufferAttribute(RV,3));pg.setAttribute('rnd',new THREE.BufferAttribute(RND,1));
+const SH={t:{value:0},pu:{value:0},uR:{value:1},uRr:{value:.46},uFlat:{value:1},uCone:{value:0},uTw:{value:0},uLobe:{value:1},uDsp:{value:0},lt:{value:0}};
+const BL={transparent:true,depthWrite:false,blending:THREE.CustomBlending,blendEquation:THREE.AddEquation,blendSrc:THREE.OneFactor,blendDst:THREE.OneMinusSrcAlphaFactor};
+const PU=Object.assign({},SH,{sz:{value:mob0?2.3:1.9},dpr:{value:DPR},cy:{value:0},sc:{value:1},pm:{value:new THREE.Vector2(9,9)},cT:V3(),cM:V3(),cB:V3(),cX:{value:new THREE.Vector3(...COL.d.X)},op:{value:1}});
+const pts=new THREE.Points(pg,new THREE.ShaderMaterial(Object.assign({uniforms:PU,vertexShader:PV,fragmentShader:PF},BL)));pts.frustumCulled=false;
+/* wireframe: linhas u e v da mesma superfície */
+const NL=44,NM=22,SEG=200,SEG2=44,lv=[];const pushL=(u0,v0,u1,v1)=>lv.push(u0,v0,u1,v1);
+for(let a=0;a<NL;a++){const v=a/NL;for(let s=0;s<SEG;s++)pushL(s/SEG,v,(s+1)/SEG,v)}
+for(let a=0;a<NM*3;a++){const u=a/(NM*3);for(let s=0;s<SEG2;s++)pushL(u,s/SEG2,u,(s+1)/SEG2)}
+const lg=new THREE.BufferGeometry();lg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(lv.length/2*3),3));lg.setAttribute('uvp',new THREE.BufferAttribute(new Float32Array(lv),2));
+const LU=Object.assign({},SH,{wc:V3(),op:{value:0}});
+const wm=new THREE.LineSegments(lg,new THREE.ShaderMaterial(Object.assign({uniforms:LU,vertexShader:LV,fragmentShader:LF},BL)));wm.frustumCulled=false;
+/* poeira */
+const ND=mob0?9000:26000,DRV=new Float32Array(ND*3),DRN=new Float32Array(ND);for(let i=0;i<ND;i++){DRV[i*3]=rn();DRV[i*3+1]=rn();DRV[i*3+2]=rn();DRN[i]=rn()}
+const dg=new THREE.BufferGeometry();dg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(ND*3),3));dg.setAttribute('rv',new THREE.BufferAttribute(DRV,3));dg.setAttribute('rnd',new THREE.BufferAttribute(DRN,1));
+const DU={t:SH.t,lt:SH.lt,dpr:{value:DPR},sy:{value:0},sx:{value:0},sz:{value:mob0?1.5:1.25},c1:V3(),c2:V3(),cX:V3(),par:{value:new THREE.Vector2()},op:{value:.9}};
+const dust=new THREE.Points(dg,new THREE.ShaderMaterial(Object.assign({uniforms:DU,vertexShader:DV,fragmentShader:DF},BL)));dust.frustumCulled=false;
+S.add(dust,wm,pts);
 const rs=()=>{R.setSize(innerWidth,innerHeight,false);C.aspect=innerWidth/innerHeight;C.updateProjectionMatrix()};rs();addEventListener('resize',rs);
+addEventListener('pointerdown',()=>window.DNAPulse(.7));
 render=n=>{n=RM?0:n;const p=ST.p,a=innerWidth/innerHeight,mob=a<.9,hw=1.6*a,bs=mob?.52:Math.min(1,a*.85);
-sx+=(PX-sx)*.06;sy+=(PY-sy)*.06;ST.pu*=.93;PU.pu.value=ST.pu;PU.t.value=n/1000;
-PU.w.value=p[6];PU.cT.value.fromArray(p[7]);PU.cM.value.fromArray(p[8]);PU.cB.value.fromArray(p[9]);PU.op.value=p[5];
+sx+=(PX-sx)*.05;sy+=(PY-sy)*.05;ST.pu*=.94;SH.pu.value=ST.pu;SH.t.value=n/1000;
+SH.uR.value=p[0];SH.uRr.value=p[1];SH.uFlat.value=p[2];SH.uCone.value=p[3];SH.uTw.value=p[4];SH.uLobe.value=p[5];SH.uDsp.value=p[6];SH.lt.value=p[16];
+const sc=p[14]*bs*(1+ST.pu*.05),px=(mob?0:p[12]*hw)+sx*.35,py=p[13]+(mob?.34:0)-sy*.28;
+PU.cT.value.set(p[23],p[24],p[25]);PU.cM.value.set(p[26],p[27],p[28]);PU.cB.value.set(p[29],p[30],p[31]);PU.cX.value.set(...(p[16]>.5?COL.l.X:COL.d.X));PU.op.value=p[8];PU.sz.value=(mob?1.25:1)*p[15]*1.0;PU.cy.value=py;PU.sc.value=sc;
 PU.pm.value.set(PX*2*hw,-PY*2*1.6);
-const light=p[2][0]>120;PM.blending=light?THREE.NormalBlending:THREE.AdditiveBlending;
-W.uniforms.op.value=p[0];W.uniforms.wc.value.fromArray(p[1]===undefined?WI:WI);wm.visible=p[0]>.01;pts.visible=p[5]>.01;
-const px=(mob?0:p[4][0]*hw)+sx*.35,py=p[4][1]+(mob?.34:0)-sy*.28,sc=p[4][2]*bs*(1+ST.pu*.05);
-pts.position.set(px,py,0);pts.scale.setScalar(sc);
-pts.rotation.set(.34+sy*.45-scrollY/2400,sx*.7+Math.sin(n/5200)*.12,n/16000+scrollY/1500);
-wm.position.set(px,py,0);wm.scale.setScalar(sc);wm.rotation.set(scrollY/900+sy*.8,n/7000+scrollY/700+sx*1.1,0);
+LU.op.value=p[7];LU.wc.value.set(p[32],p[33],p[34]);
+DU.c1.value.set(p[35],p[36],p[37]);DU.c2.value.set(p[38],p[39],p[40]);DU.cX.value.set(...(p[16]>.5?COL.l.X:COL.d.X));DU.sy.value=scrollY;DU.par.value.set(sx*-.5,sy*.4);DU.op.value=p[16]>.5?.7:.95;
+[pts,wm].forEach(o=>{o.position.set(px,py,0);o.scale.setScalar(sc);o.rotation.set(p[9]+sy*.45-scrollY/3200,p[10]+sx*.7+Math.sin(n/5200)*.1,p[11]+n/18000+scrollY/2200)});
+wm.visible=p[7]>.01;pts.visible=p[8]>.01;
 R.render(S,C)}
-}catch(e){}
+}catch(e){console.error(e)}
 // estrelas (aparecem nas seções escuras)
 const sc=$('#st'),xs=sc.getContext('2d'),stars=[...Array(150)].map(()=>[Math.random(),Math.random(),Math.random()*1.3+.3,Math.random()*6]);
 const rz=()=>{sc.width=innerWidth;sc.height=innerHeight};rz();addEventListener('resize',rz);
-function frame(n){requestAnimationFrame(frame);tick();render&&render(n);const o=Math.max(0,1-ST.p[2][0]/140);sc.style.opacity=o;
+function frame(n){requestAnimationFrame(frame);tick(n);render&&render(n);const o=Math.max(0,1-ST.p[17]/140);sc.style.opacity=o;
 if(o>.03){xs.clearRect(0,0,sc.width,sc.height);xs.fillStyle='#fff';stars.forEach(s=>{xs.globalAlpha=RM?.6:.35+.65*Math.abs(Math.sin(n/900+s[3]));xs.beginPath();xs.arc(s[0]*sc.width,s[1]*sc.height,s[2]*.8,0,7);xs.fill()})}}
 frame(0);
 addEventListener('pointermove',e=>{PX=e.clientX/innerWidth-.5;PY=e.clientY/innerHeight-.5;if(e.pointerType==='mouse'){const g=$('#cg').style;g.setProperty('--mx',e.clientX+'px');g.setProperty('--my',e.clientY+'px');document.body.classList.add('hasptr')}});
@@ -414,5 +420,6 @@ document.querySelectorAll('.rv').forEach(e=>IO.observe(e));
 })();
 </script>
 <script src="/dna-site.js?v=5"></script>
+<script src="/rimak-skins.js?v=1"></script>
 </body>
 </html>
