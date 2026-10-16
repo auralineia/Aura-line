@@ -1,4 +1,4 @@
-const PLANS={pro:{name:"PRO",amount:11.99},ultra:{name:"ULTRA",amount:29.99}};
+const PLANS={pro:{name:"PRO",amount:19.90},ultra:{name:"ULTRA",amount:49.90},high:{name:"HIGH",amount:99.90}};
 function bearer(req){const v=req.headers?.authorization||req.headers?.Authorization||"";return v.startsWith("Bearer ")?v.slice(7).trim():"";}
 function cfg(){const url=process.env.SUPABASE_URL?.replace(/\/+$/,"");const serviceKey=process.env.SUPABASE_SERVICE_ROLE_KEY;const anonKey=process.env.SUPABASE_ANON_KEY||process.env.SUPABASE_PUBLISHABLE_KEY;if(!url||!serviceKey||!anonKey)throw new Error("Supabase não configurado.");return{url,serviceKey,anonKey};}
 async function user(req){const t=bearer(req);if(!t)return null;const {url,anonKey}=cfg();const r=await fetch(url+"/auth/v1/user",{headers:{apikey:anonKey,Authorization:"Bearer "+t}});if(!r.ok)return null;return r.json();}

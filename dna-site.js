@@ -216,7 +216,7 @@
   /* ---------- planos: "como você usa?" destaca o plano certo ---------- */
   var pick = $("#planPick");
   if (pick) {
-    var MAP = { few: ["pro", "Para usar de vez em quando, o PRO já resolve: 50 créditos novos todo dia."], daily: ["pro", "Para usar todos os dias, o PRO dá 50 créditos novos por dia e evita ficar sem créditos no meio da tarefa."], heavy: ["ultra", "Para trabalhar o dia todo, o ULTRA tem 150 créditos por dia e o menor custo por crédito."] };
+    var MAP = { few: ["pro", "Para usar de vez em quando, o PRO já resolve: 60 créditos novos todo dia."], daily: ["ultra", "Para usar todos os dias, o ULTRA dá 180 créditos por dia, com o crédito 16% mais barato que o do PRO."], heavy: ["high", "Para trabalhar o dia todo, o HIGH tem 450 créditos por dia, o modelo RIMAK 6.0rs e o menor custo por crédito."] };
     var say = $("#planSay");
     $$("button", pick).forEach(function (b) {
       b.addEventListener("click", function () {

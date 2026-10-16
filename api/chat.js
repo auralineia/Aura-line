@@ -12,7 +12,7 @@ const PLAN_CONFIG = {
   },
   pro: {
     name: "PRO",
-    dailyCredits: 50,
+    dailyCredits: 60,
     research: "full",
     memory: "long",
     contextChars: 5200,
@@ -20,11 +20,19 @@ const PLAN_CONFIG = {
   },
   ultra: {
     name: "ULTRA",
-    dailyCredits: 150,
+    dailyCredits: 180,
     research: "deep",
     memory: "advanced",
     contextChars: 7000,
     maxCompletionTokens: 1400
+  },
+  high: {
+    name: "HIGH",
+    dailyCredits: 450,
+    research: "deep",
+    memory: "advanced",
+    contextChars: 9500,
+    maxCompletionTokens: 1900
   }
 };
 
@@ -32,7 +40,7 @@ function json(res, status, body) {
   res.status(status).json(body);
 }
 
-// Conversar e gerar imagens exige conta com plano pago ativo (PRO ou ULTRA).
+// Conversar e gerar imagens exige conta com plano pago ativo (PRO, ULTRA ou HIGH).
 function subscriptionRequired(res) {
   return json(res, 402, {
     error: "Para conversar com a RIMAK, crie sua conta e assine um plano.",
@@ -151,7 +159,7 @@ function normalizePlan(subscription) {
   }
 
   if (
-    (plan === "pro" || plan === "ultra") &&
+    (plan === "pro" || plan === "ultra" || plan === "high") &&
     ["active", "authorized", "approved"].includes(status)
   ) {
     return plan;
@@ -274,6 +282,7 @@ async function getMemories(userId, userToken, plan) {
   const { url, anonKey } = supabaseConfig();
 
   const limit =
+    plan === "high" ? 90 :
     plan === "ultra" ? 60 :
     plan === "pro" ? 45 :
     30;
@@ -642,11 +651,13 @@ function safeHistory(history, plan) {
   if (!Array.isArray(history)) return [];
 
   const maxItems =
+    plan === "high" ? 10 :
     plan === "ultra" ? 8 :
     plan === "pro" ? 6 :
     5;
 
   const maxChars =
+    plan === "high" ? 1100 :
     plan === "ultra" ? 900 :
     plan === "pro" ? 750 :
     600;
@@ -1092,8 +1103,8 @@ function textProviders() {
 }
 
 // Níveis de modelo da RIMAK por plano e esforço de raciocínio (custo em créditos).
-const PLAN_RANK = { free: 0, pro: 1, ultra: 2 };
-const MODEL_LABEL = { free: "RIMAK 4.2", pro: "RIMAK 5.5x", ultra: "RIMAK 6.0rs" };
+const PLAN_RANK = { free: 0, pro: 1, ultra: 2, high: 3 };
+const MODEL_LABEL = { free: "RIMAK 4.2", pro: "RIMAK 4.2x", ultra: "RIMAK 5.5s", high: "RIMAK 6.0rs" };
 const EFFORTS = {
   low:    { id: "low",    label: "Baixo",   cost: 1, min: "free",  reasoning: "low",    mult: 1,   hint: "Seja direta e curta." },
   medium: { id: "medium", label: "Médio",   cost: 2, min: "free",  reasoning: "medium", mult: 1.4, hint: "Equilibre profundidade e brevidade." },
@@ -1108,7 +1119,8 @@ function pickEffort(plan, requested) {
 const GROQ_PREFS = {
   free:  ["llama-3.3-70b-versatile", "openai/gpt-oss-20b", "llama-3.1-8b-instant"],
   pro:   ["openai/gpt-oss-120b", "llama-3.3-70b-versatile", "openai/gpt-oss-20b"],
-  ultra: ["openai/gpt-oss-120b", "llama-3.3-70b-versatile", "openai/gpt-oss-20b"]
+  ultra: ["openai/gpt-oss-120b", "llama-3.3-70b-versatile", "openai/gpt-oss-20b"],
+  high:  ["openai/gpt-oss-120b", "llama-3.3-70b-versatile", "openai/gpt-oss-20b"]
 };
 let groqModelCache = null;
 async function resolveGroqModel(key, plan = "free") {
@@ -1465,7 +1477,7 @@ async function streamOnce(provider, messages, plan, onDelta, effort) {
 }
 
 /* ---------- Pix (Mercado Pago) ---------- */
-const PIX_PLANS = { pro: { name: "PRO", amount: 11.99 }, ultra: { name: "ULTRA", amount: 29.99 } };
+const PIX_PLANS = { pro: { name: "PRO", amount: 19.90 }, ultra: { name: "ULTRA", amount: 49.90 }, high: { name: "HIGH", amount: 99.90 } };
 
 async function handlePixCreate(req, res, user) {
   const token = process.env.MERCADOPAGO_ACCESS_TOKEN;
@@ -1695,7 +1707,7 @@ async function handleMercadoPagoWebhook(req, res) {
   const parts = String(subscription.external_reference || "").split(":");
   const userId = parts[0];
   const plan = parts[1];
-  if (!userId || !["pro", "ultra"].includes(plan)) {
+  if (!userId || !["pro", "ultra", "high"].includes(plan)) {
     return json(res, 200, { received: true });
   }
 
@@ -1970,8 +1982,8 @@ export default async function handler(req, res) {
             : await ensureCredits(user.id, PLAN_CONFIG[plan].dailyCredits);
         return json(res, 200, {
           user: { id: user.id, email: user.email || null },
-          plan: owner ? "ultra" : plan,
-          planName: owner ? PLAN_CONFIG.ultra.name : PLAN_CONFIG[plan].name,
+          plan: owner ? "high" : plan,
+          planName: owner ? PLAN_CONFIG.high.name : PLAN_CONFIG[plan].name,
           credits
         });
       }
@@ -2066,7 +2078,7 @@ export default async function handler(req, res) {
 
     // confere o saldo antes; o crédito só é cobrado se a resposta for gerada
     const owner = isOwner(user);
-    const planEff = owner ? "ultra" : plan;
+    const planEff = owner ? "high" : plan;
     const eff = pickEffort(planEff, body.effort);
     const modelLabel = MODEL_LABEL[planEff] || MODEL_LABEL.free;
     const currentBalance = owner ? OWNER_BALANCE : await ensureCredits(user.id, config.dailyCredits);
