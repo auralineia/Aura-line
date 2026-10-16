@@ -11,6 +11,7 @@
 
   /* ---------- emblemas (SVG animado por CSS) ---------- */
   var EMB = {
+    rimak: '<svg class="rkE rkE-rimak" viewBox="0 0 64 64" aria-hidden="true"><ellipse class="e1" cx="32" cy="32" rx="26" ry="10"/><ellipse class="e2" cx="32" cy="32" rx="26" ry="10"/><ellipse class="e3" cx="32" cy="32" rx="26" ry="10"/><circle class="cr" cx="32" cy="32" r="3.4"/></svg>',
     research: '<svg class="rkE rkE-research" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28"/><circle cx="32" cy="32" r="18"/><circle cx="32" cy="32" r="8"/><path class="sw" d="M32 32 L32 4 A28 28 0 0 1 58 22 Z"/><circle class="bp b1" cx="46" cy="20" r="2.4"/><circle class="bp b2" cx="20" cy="42" r="2"/><circle class="bp b3" cx="38" cy="46" r="1.8"/></svg>',
     code: '<svg class="rkE rkE-code" viewBox="0 0 64 64" aria-hidden="true"><path class="l" d="M22 18 8 32l14 14"/><path class="r" d="M42 18l14 14-14 14"/><path class="sl" d="M37 14 27 50"/><rect class="cu" x="26" y="52" width="14" height="4" rx="1"/></svg>',
     writer: '<svg class="rkE rkE-writer" viewBox="0 0 64 64" aria-hidden="true"><path class="ink" d="M6 52c8-2 12-14 20-14s8 10 16 6 8-14 16-18"/><g class="nib"><path d="M44 6l14 14-20 20-12 3 3-12z"/><path d="M26 31l8 8"/></g></svg>',
@@ -165,6 +166,10 @@
   window.RKSkins = { key: key, welcome: welcome, emblem: emblem, fx: fxStart, stop: fxStop };
 })();
 
+/* luz do liquid glass segue o dedo/mouse */
+(function(){var G=".dn-box,.dn-ico,.dn-model,.dn-think,.dn-cta,.rk-tile,.rk-q,.rk-qc,.rk-chip,.rk-mb,.rk-bar,.rk-cmd,.rk-st,.rk-ch,.b,.tag,#hl a,.ask,.bc,.fq,.plan,#rkPanel,.dn-bubble,.nv .lk a";
+function mv(e){var t=e.target.closest&&e.target.closest(G);if(!t)return;var r=t.getBoundingClientRect();t.style.setProperty("--mx",((e.clientX-r.left)/r.width*100).toFixed(1)+"%");t.style.setProperty("--my",((e.clientY-r.top)/r.height*100).toFixed(1)+"%")}
+document.addEventListener("pointermove",mv,{passive:true});document.addEventListener("pointerdown",mv,{passive:true})})();
 /* logo interativo: passe o dedo/mouse e o nome deixa um rastro, como nas referências */
 (function(){var t;function z(e){var m=e.target.closest&&e.target.closest(".dnaMark");if(!m||m.classList.contains("rkTrail"))return;m.classList.add("rkTrail");clearTimeout(t);t=setTimeout(function(){m.classList.remove("rkTrail")},1100)}
 document.addEventListener("pointerover",z,{passive:true});document.addEventListener("pointerdown",z,{passive:true})})();
