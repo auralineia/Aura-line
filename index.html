@@ -166,7 +166,7 @@ body.hasptr #cg{opacity:1}
   <span class="tag rv">03 RITTY</span>
   <h2 class="rv" style="--d:.08s">Do plano à realidade.</h2>
   <p class="rv" style="--d:.16s">A RITTY é um agente autônomo: trabalha em ciclos, com memória e tarefas, para criar valor por você.</p>
-  <a class="b rv" style="--d:.24s" href="#s4" onclick="window.open('https://ritty-production.up.railway.app','_blank');return false" ontouchend="window.open('https://ritty-production.up.railway.app','_blank');return false">Acessar RITTY<i class="ar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a>
+  <a class="b rv" style="--d:.24s" href="#s4" onclick="window.rimakApp&&rimakApp.openRitty();return false">Acessar RITTY<i class="ar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a>
 </div></section>
 
 <section class="sc r" id="s4"><div class="tx">
@@ -395,10 +395,10 @@ const IO=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return
 document.querySelectorAll('.rv').forEach(e=>IO.observe(e));
 </script>
 <script src="/dna-i18n.js?v=1"></script>
-<script src="/dna-i18n-data.js?v=11"></script>
+<script src="/dna-i18n-data.js?v=12"></script>
 <script src="/dna-storm.js?v=3"></script>
 <script src="/dna-marks.js?v=1"></script>
-<script src="/dna-functional.js?v=32"></script>
+<script src="/dna-functional.js?v=33"></script>
 <script>
 // trilho de seções
 (function(){const r=document.getElementById('rail');NAMES.forEach((n,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',n.charAt(0)+n.slice(1).toLowerCase());b.title=b.getAttribute('aria-label');b.onclick=()=>document.getElementById('s'+i).scrollIntoView({behavior:RM?'auto':'smooth'});r.appendChild(b)});r.children[0].classList.add('on')})();

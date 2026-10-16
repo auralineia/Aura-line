@@ -311,6 +311,8 @@
     ["Ver tarefas", "View tasks", "Ver tareas"],
     ["Fila organizada por prioridade, com o próximo passo.", "Queue ordered by priority, with the next step.", "Cola ordenada por prioridad, con el siguiente paso."],
     ["Ciclo autônomo", "Autonomous cycle", "Ciclo autónomo"], ["Criar", "Create", "Crear"], ["Retomar", "Resume", "Retomar"], ["Fila", "Queue", "Cola"],
+    ["Entre na sua conta e assine um plano para acessar a RITTY.", "Sign in and subscribe to a plan to access RITTY.", "Inicia sesión y suscríbete a un plan para acceder a RITTY."],
+    ["A RITTY é exclusiva para assinantes. Escolha um plano para entrar.", "RITTY is for subscribers only. Choose a plan to get in.", "RITTY es exclusiva para suscriptores. Elige un plan para entrar."],
     ["O que a RITTY vai criar?", "What will RITTY create?", "¿Qué va a crear RITTY?"],
     ["Disciplina hoje. Liberdade amanhã. Dê o objetivo e a RITTY organiza as tarefas, roda em ciclos e traz o resultado.", "Discipline today. Freedom tomorrow. Give the goal and RITTY organizes tasks, runs in cycles and brings the result.", "Disciplina hoy. Libertad mañana. Da el objetivo y RITTY organiza tareas, corre en ciclos y trae el resultado."],
     ["Entrar para conversar", "Sign in to chat", "Iniciar sesión para conversar"],
