@@ -1,6 +1,7 @@
 const PLAN_CONFIG = {
-  pro: { price: 11.99, name: "PRO" },
-  ultra: { price: 29.99, name: "ULTRA" }
+  pro: { price: 19.90, name: "PRO" },
+  ultra: { price: 49.90, name: "ULTRA" },
+  high: { price: 99.90, name: "HIGH" }
 };
 
 function json(res, status, body) {

@@ -174,7 +174,7 @@ async function processPixPayment(payment){
   const parts=reference.split(":");
   if(parts.length<4||parts[0]!=="aura"||parts[3]!=="pix") return false;
   const userId=parts[1],plan=parts[2];
-  if(!userId||!["pro","ultra"].includes(plan)) return false;
+  if(!userId||!["pro","ultra","high"].includes(plan)) return false;
   const status=String(payment?.status||"").toLowerCase();
   if(status!=="approved") return true;
   const config=planConfig(plan);
@@ -247,7 +247,8 @@ function extractPlan(subscription) {
 
     if (
       plan === "pro" ||
-      plan === "ultra"
+      plan === "ultra" ||
+      plan === "high"
     ) {
       return plan;
     }
@@ -258,6 +259,10 @@ function extractPlan(subscription) {
       subscription?.reason ||
       ""
     ).toLowerCase();
+
+  if (reason.includes("high")) {
+    return "high";
+  }
 
   if (reason.includes("ultra")) {
     return "ultra";
@@ -291,17 +296,24 @@ function extractUserId(subscription) {
 }
 
 function planConfig(plan) {
+  if (plan === "high") {
+    return {
+      amount: 99.90,
+      dailyCredits: 450
+    };
+  }
+
   if (plan === "ultra") {
     return {
-      amount: 29.99,
-      dailyCredits: 150
+      amount: 49.90,
+      dailyCredits: 180
     };
   }
 
   if (plan === "pro") {
     return {
-      amount: 11.99,
-      dailyCredits: 50
+      amount: 19.90,
+      dailyCredits: 60
     };
   }
 
@@ -535,8 +547,9 @@ export default async function handler(
      * o plano:
      *
      * FREE  = 20
-     * PRO   = 50
-     * ULTRA = 150
+     * PRO   = 60
+     * ULTRA = 180
+     * HIGH  = 450
      *
      * Isso evita créditos duplicados.
      */

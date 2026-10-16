@@ -67,3 +67,29 @@
 .fq>button i{background:rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
 .bc,.why,.plan{border-radius:28px!important}
 .b,.tag,#hl a{border-radius:999px!important}
+
+/* ===== planos: 3 cartões alinhados + tabela comparativa ===== */
+.plans{grid-template-columns:repeat(3,1fr)!important;max-width:1060px!important;align-items:stretch}
+.plan{padding:26px 22px 24px;min-width:0}
+.plan header{min-height:26px;flex-wrap:wrap;gap:8px}
+.plan .cr span{font-variant-numeric:tabular-nums}
+.plan .mdl{display:inline-flex;align-self:flex-start;gap:6px;align-items:baseline;font:400 11.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 11px;border-radius:99px;border:1px solid rgba(var(--fg),.22);color:rgba(var(--fg),.75);margin-top:-4px}
+.plan .mdl b{color:rgb(var(--fg));font-weight:500}
+.plan.hot{transform:translateY(-8px)}
+.plan ul{flex:1}
+.cmp{max-width:1060px;margin:0 auto 30px;text-align:left;overflow-x:auto;border-radius:28px;-webkit-overflow-scrolling:touch;background-color:rgba(190,215,255,.05);border:1px solid rgba(255,255,255,.16);-webkit-backdrop-filter:blur(22px) saturate(1.6);backdrop-filter:blur(22px) saturate(1.6);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.4),0 18px 50px rgba(0,0,0,.3)}
+.cmp table{width:100%;min-width:520px;border-collapse:collapse;font:400 14px/1.4 var(--sans)}
+.cmp th,.cmp td{padding:14px 16px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08);font-variant-numeric:tabular-nums}
+.cmp tbody th{text-align:left;font-weight:400;color:rgba(var(--fg),.72);white-space:nowrap}
+.cmp thead th{font:500 12px var(--mono);letter-spacing:.18em;padding-top:18px;color:rgb(var(--fg))}
+.cmp td{color:rgb(var(--fg))}
+.cmp tbody tr:last-child th,.cmp tbody tr:last-child td{border-bottom:0}
+.cmp tr.hl td,.cmp tr.hl th{background:rgba(var(--glow),.1);color:rgb(var(--fg))}
+.cmp tr.hl td:nth-child(4){font-weight:600}
+.cmp .fn{margin:0;padding:14px 18px 18px;font:400 12px/1.55 var(--sans);color:rgba(var(--fg),.6);border-top:1px solid rgba(255,255,255,.08)}
+@media (max-width:980px){.plans{grid-template-columns:1fr!important;max-width:520px!important}.plan.hot{transform:none}}
+@media (max-width:520px){.cmp th,.cmp td{padding:12px 10px;font-size:13px}}
+.plan.fx,.cmp{background-color:rgba(var(--bg),.58)!important}
+.cmp{-webkit-backdrop-filter:blur(26px) saturate(1.5);backdrop-filter:blur(26px) saturate(1.5)}
+.cmp .fn{max-width:none!important;width:auto!important;position:sticky;left:0}
+.plan .b{color:rgb(var(--fg))!important}

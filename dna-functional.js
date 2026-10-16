@@ -20,8 +20,8 @@
 
   var STORE = "rimak.cloud.session";
   var state = { session: null, user: null, name: "", mode: "rimak", history: [], busy: false, credits: null, plan: "free", pendingMode: null, failed: null, pushed: false, img: false, imgCost: 3, imgLoaded: false, effort: "low", modelLabel: "" };
-  var MODELS = { free: "RIMAK 4.2", pro: "RIMAK 5.5x", ultra: "RIMAK 6.0rs" };
-  var RANK = { free: 0, pro: 1, ultra: 2 };
+  var MODELS = { free: "RIMAK 4.2", pro: "RIMAK 4.2x", ultra: "RIMAK 5.5s", high: "RIMAK 6.0rs" };
+  var RANK = { free: 0, pro: 1, ultra: 2, high: 3 };
   var EFFORTS = [
     { id: "low", label: "Baixo", cost: 1, min: "free", desc: "Respostas rápidas e diretas." },
     { id: "medium", label: "Médio", cost: 2, min: "free", desc: "Mais cuidado em cada resposta." },
@@ -268,8 +268,8 @@
     renderModel();
   }
   /* ---------- modelo e esforço ---------- */
-  // conversar exige plano pago (PRO ou ULTRA); "free" aqui significa apenas "sem plano"
-  function hasPlan() { var p = String(state.plan || "free").toLowerCase(); return p === "pro" || p === "ultra"; }
+  // conversar exige plano pago (PRO, ULTRA ou HIGH); "free" aqui significa apenas "sem plano"
+  function hasPlan() { var p = String(state.plan || "free").toLowerCase(); return p === "pro" || p === "ultra" || p === "high"; }
   function planLabel() { return hasPlan() ? String(state.plan).toUpperCase() : "SEM PLANO"; }
   function needPlan() { state.failed = null; toast(T("Para conversar com a RIMAK, assine um plano.")); plans(); }
   function planKey() { var p = String(state.plan || "free").toLowerCase(); return RANK[p] == null ? "free" : p; }
@@ -289,7 +289,7 @@
   }
   function closeEffort() { var p = $("#rkEffortPop"); if (p) p.hidden = true; var b = $("#rkModel"); if (b) b.setAttribute("aria-expanded", "false"); }
   function openEffort() {
-    var p = $("#rkEffortPop"), cur = curEffort(), up = { pro: "PRO", ultra: "ULTRA" };
+    var p = $("#rkEffortPop"), cur = curEffort(), up = { pro: "PRO", ultra: "ULTRA", high: "HIGH" };
     p.innerHTML = '<div class="pophd"><b data-notr>' + esc(modelName()) + '</b><small>' + esc(T("Quanto mais esforço, mais créditos por resposta.")) + '</small></div>' +
       EFFORTS.map(function (e) {
         var ok = effortOK(e);
@@ -461,21 +461,21 @@
   }
   function plans() {
     var cur = state.user ? String(state.plan || "free").toLowerCase() : "";
-    var WHO = { pro: "Para quem usa todos os dias, cerca de R$ 0,40 por dia.", ultra: "Para uso intenso e profissional: 3× o saldo do PRO, cerca de R$ 1,00 por dia e o menor custo por crédito." };
-    var FEAT = { pro: ["Pesquisa na web", "Memória de longo prazo", "Respostas e conversas mais longas"], ultra: ["Pesquisa profunda na web", "Memória avançada", "Respostas longas e contexto máximo"] };
+    var WHO = { pro: "Para quem usa todos os dias, cerca de R$ 0,66 por dia.", ultra: "Para uso intenso: 3× o saldo do PRO, cerca de R$ 1,66 por dia e crédito 16% mais barato.", high: "Para quem vive dentro da RIMAK: 7,5× o saldo do PRO, cerca de R$ 3,33 por dia e o crédito mais barato de todos." };
+    var FEAT = { pro: ["Pesquisa na web", "Memória de longo prazo", "Respostas e conversas mais longas"], ultra: ["Pesquisa profunda na web", "Memória avançada", "Respostas longas e contexto máximo"], high: ["Modelo RIMAK 6.0rs, o mais avançado", "Pesquisa profunda e memória avançada", "Contexto e respostas ainda maiores"] };
     function card(id, label, credits, price) {
       var on = cur === id;
       return '<div class="rkPlan' + (on ? " on" : "") + '"><div><b>' + label + '</b><span>' + credits + '</span><span style="display:block;margin-top:6px;font-size:12.5px;opacity:.75;line-height:1.4">' + WHO[id] + '</span><ul class="rkFeat">' + FEAT[id].map(function (f) { return "<li>" + f + "</li>"; }).join("") + '</ul></div>' +
         (price ? '<div class="rkPrice"><strong>' + price + '</strong><small>/mês</small></div>' : '<div class="rkPrice"><span class="rkTag">' + (on ? "Seu plano" : "Grátis") + '</span></div>') +
         (price ? (on ? '<span class="rkTag" style="justify-self:start">Seu plano</span>' : '<div class="rkRow tight"><button class="rkBtn primary" type="button" data-pix="' + id + '">Pagar com Pix</button><button class="rkBtn" type="button" data-plan="' + id + '">Cartão (assinatura)</button></div>') : "") + '</div>';
     }
-    panel('<h3>Planos RIMAK</h3><p data-notr>' + esc(T("Para conversar com a RIMAK você precisa de uma conta e de um plano. Cada mensagem consome 1 crédito e cada imagem consome {n}. O saldo diário volta todo dia.", { n: state.imgCost })) + '</p><div class="rkPlans">' +
-      card("pro", "PRO", "50 créditos por dia", "R$ 11,99") + card("ultra", "ULTRA", "150 créditos por dia", "R$ 29,99") + '</div>' +
+    panel('<h3>Planos RIMAK</h3><p data-notr>' + esc(T("Para conversar com a RIMAK você precisa de uma conta e de um plano. Cada mensagem consome de 1 a 5 créditos, conforme o esforço, e cada imagem consome {n}. O saldo diário volta todo dia.", { n: state.imgCost })) + '</p><div class="rkPlans">' +
+      card("pro", "PRO · RIMAK 4.2x", "60 créditos por dia", "R$ 19,90") + card("ultra", "ULTRA · RIMAK 5.5s", "180 créditos por dia", "R$ 49,90") + card("high", "HIGH · RIMAK 6.0rs", "450 créditos por dia", "R$ 99,90") + '</div>' +
       (state.user ? '<div class="rkCard" style="margin-top:12px"><span>Seu saldo</span><b style="margin:2px 0 0">' + (state.credits == null ? "—" : state.credits + " " + T("créditos")) + '</b></div>' : ""));
     $$("[data-plan]").forEach(function (b) { b.onclick = function () { cardPanel(b.dataset.plan); }; });
     $$("[data-pix]").forEach(function (b) { b.onclick = function () { pixPanel(b.dataset.pix); }; });
   }
-  var PIXP = { pro: "R$ 11,99", ultra: "R$ 29,99" };
+  var PIXP = { pro: "R$ 19,90", ultra: "R$ 49,90", high: "R$ 99,90" };
   var pixTimer = null;
   function stopPix() { clearInterval(pixTimer); pixTimer = null; }
   async function pixPanel(plan) {
