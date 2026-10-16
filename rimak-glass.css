@@ -54,3 +54,16 @@
 .ask button{background:radial-gradient(circle at 35% 25%,#fff,#cfe0f5 60%,#9db8dc)!important;box-shadow:inset 0 2px 3px #fff,inset 0 -3px 6px rgba(0,0,0,.18)!important}
 @media (prefers-reduced-motion:reduce){.dn-think,.dn-box::after,.rk-tile::after,.rk-mb::after,.rk-bar::after,.dn-think::after,.b::before,.dn-tstate,.rkE-rimak *{animation:none!important}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.dn-box,.dn-think,.rk-tile,.b,.nv{background-color:rgba(20,26,38,.85)!important}}
+
+/* transição suave preto→claro→preto (sangra a largura toda) */
+.sec#como,.sec#porque{background:transparent!important;padding-top:clamp(190px,26vh,260px);padding-bottom:230px}
+.sec#como::before,.sec#porque::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:100vw;translate:-50% 0;pointer-events:none;background:linear-gradient(180deg,rgb(5,5,7) 0px,rgb(15,15,17) 35px,rgb(41,41,44) 70px,rgb(77,78,82) 105px,rgb(119,121,125) 140px,rgb(161,164,168) 175px,rgb(197,201,206) 210px,rgb(223,227,233) 245px,rgb(233,237,243) 280px) top/100% 280px no-repeat,linear-gradient(180deg,rgb(233,237,243) 0px,rgb(223,227,233) 35px,rgb(197,201,206) 70px,rgb(161,164,168) 105px,rgb(119,121,125) 140px,rgb(77,78,82) 175px,rgb(41,41,44) 210px,rgb(15,15,17) 245px,rgb(5,5,7) 280px) bottom/100% 280px no-repeat,rgb(233,237,243)}
+.sec#como+.sec,.sec#porque+.sec{padding-top:clamp(180px,24vh,240px)}
+/* FAQ: cartões de vidro arredondados */
+.fq{border:0!important;margin-bottom:10px;border-radius:26px;overflow:hidden;box-shadow:inset 0 1.5px 0 rgba(255,255,255,.45),0 10px 30px rgba(0,0,0,.28)!important}
+.fq>button{padding:20px 20px 20px 22px!important;border-radius:26px}
+.fq>button:hover{padding-left:28px!important}
+.fq .a p{padding:0 64px 24px 22px!important}
+.fq>button i{background:rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+.bc,.why,.plan{border-radius:28px!important}
+.b,.tag,#hl a{border-radius:999px!important}
