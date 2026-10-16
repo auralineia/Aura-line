@@ -1194,7 +1194,16 @@
     var vv = window.visualViewport;
     if (vv) { chat.style.height = vv.height + "px"; chat.style.top = vv.offsetTop + "px"; }
   }
+  var RITTY_URL = "https://ritty-production.up.railway.app";
+  // a RITTY só abre para quem tem plano (PRO ou ULTRA)
+  function rittyGate() {
+    if (!state.user) { toast(T("Entre na sua conta e assine um plano para acessar a RITTY.")); state.pendingMode = "ritty"; login(); return false; }
+    if (!hasPlan()) { toast(T("A RITTY é exclusiva para assinantes. Escolha um plano para entrar.")); plans(); return false; }
+    return true;
+  }
+  function openRitty() { if (rittyGate()) { try { window.open(RITTY_URL, "_blank", "noopener"); } catch (e) {} } }
   function openChat(mode) {
+    if (mode === "ritty" && !rittyGate()) return;
     state.mode = mode; state.failed = null; state.img = false; loadChat(); loadImgStatus();
     setHeader();
     chat.classList.add("open");
@@ -1283,7 +1292,7 @@
   if (I18N) { I18N.apply(chat); I18N.apply(menu); I18N.apply($("#rkOverlay")); I18N.onChange(onLang); }
 
   window.rimakApp = {
-    openChat: openChat, agents: agents, plans: plans, login: login, settings: settings, account: accountPanel, menu: openMenu, ask: ask, fill: fill,
+    openChat: openChat, agents: agents, plans: plans, login: login, settings: settings, account: accountPanel, menu: openMenu, ask: ask, fill: fill, openRitty: openRitty,
     _md: md
   };
   greet(); updateAuthUI();
