@@ -1,0 +1,79 @@
+/* RIMAK — movimento em tudo */
+/* HUD no hero */
+.hudL{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+.hud{position:absolute;min-width:104px;padding:9px 12px 8px;font:500 9.5px/1.2 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:rgba(var(--fg),.78);animation:hudDrift 9s ease-in-out infinite,hudIn 1s .8s both}
+.hud span{display:block;opacity:.6}.hud b{display:block;font:300 22px/1.1 var(--disp,var(--sans));letter-spacing:.02em;margin-top:3px;font-variant-numeric:tabular-nums}
+.hud b.tick{animation:hudTick .5s}
+.hud .c{position:absolute;width:9px;height:9px;border:1px solid rgba(var(--fg),.8)}
+.hud .c.a{left:0;top:0;border-right:0;border-bottom:0}.hud .c.b{right:0;top:0;border-left:0;border-bottom:0}.hud .c.c{left:0;bottom:0;border-right:0;border-top:0}.hud .c.d{right:0;bottom:0;border-left:0;border-top:0}
+.hud u{display:block;position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--fg),.8),transparent);animation:hudScan 3.2s linear infinite}
+.hud.h1{right:5vw;top:22vh;animation-delay:0s,.8s}.hud.h2{right:24vw;bottom:24vh;animation-delay:-3s,1s}.hud.h3{right:7vw;bottom:34vh;animation-delay:-6s,1.2s}.hud.h4{right:34vw;top:16vh;animation-delay:-2s,1.4s}
+.hudLn{position:absolute;inset:0;width:100%;height:100%;opacity:.35}.hudLn path{fill:none;stroke:rgba(var(--fg),.55);stroke-width:.25;stroke-dasharray:3 2;animation:hudDash 8s linear infinite}
+@keyframes hudDrift{0%,100%{transform:translate(0,0)}33%{transform:translate(8px,-10px)}66%{transform:translate(-6px,7px)}}
+@keyframes hudIn{from{opacity:0;clip-path:inset(0 100% 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
+@keyframes hudScan{0%{top:0;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:100%;opacity:0}}
+@keyframes hudTick{0%{opacity:.2;transform:translateY(-4px)}100%{opacity:1;transform:none}}
+@keyframes hudDash{to{stroke-dashoffset:-60}}
+@media (max-width:820px){.hud{min-width:84px;padding:7px 9px}.hud b{font-size:17px}.hud.h1{right:4vw;top:15vh}.hud.h2{right:auto;left:3vw;top:34vh;bottom:auto}.hud.h3{right:4vw;top:42vh;bottom:auto}.hud.h4{display:none}}
+/* faixas */
+.mqB{position:relative;overflow:hidden;padding:clamp(40px,8vh,90px) 0;margin:0;z-index:1;pointer-events:none;translate:var(--bx,0) 0}
+.mqT{display:flex;width:max-content;animation:mqRun 38s linear infinite}.mqB.rev .mqT{animation-direction:reverse;animation-duration:46s}
+.mqT span{font:200 clamp(54px,11vw,150px)/1 var(--disp,var(--sans));letter-spacing:-.03em;white-space:pre;color:transparent;-webkit-text-stroke:1px rgba(var(--fg),.28);padding-right:.2em}
+.mqB:nth-of-type(odd) .mqT span{-webkit-text-stroke-color:rgba(var(--fg),.2)}
+@keyframes mqRun{to{transform:translateX(-25%)}}
+/* paralaxe da rolagem */
+.sec h2,.sec .tag{transform:translateX(calc((var(--sp,.5) - .5) * -46px))}
+.sec .lede{transform:translateX(calc((var(--sp,.5) - .5) * 28px))}
+.plans,.cgrid,.steps,.whyg{transform:translateY(calc((var(--sp,.5) - .5) * -22px))}
+.sc .tx{transform:translateY(calc((var(--sp,.5) - .5) * -16px))}
+/* tilt 3D */
+.tl{transform:perspective(900px) rotateX(var(--tx,0deg)) rotateY(var(--ty,0deg))!important;transition:transform .12s linear!important;will-change:transform}
+.plan.hot.tl{transform:perspective(900px) rotateX(var(--tx,0deg)) rotateY(var(--ty,0deg)) translateY(-8px)!important}
+/* borda que gira nos planos em destaque */
+@property --ang{syntax:"<angle>";initial-value:0deg;inherits:false}
+.plan.hot,.plan.rec{position:relative}
+.plan.hot::before,.plan.rec::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1.5px;background:conic-gradient(from var(--ang),transparent 0 70%,rgba(var(--glow),.95) 85%,#fff 92%,transparent 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:angSpin 5s linear infinite;pointer-events:none}
+@keyframes angSpin{to{--ang:360deg}}
+/* flutuação suave de elementos */
+.plan .cr span{display:inline-block;animation:numPulse 4s ease-in-out infinite}
+@keyframes numPulse{50%{transform:translateY(-3px);text-shadow:0 0 22px rgba(var(--glow),.35)}}
+.plan .meter i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);transform:translateX(-100%);animation:meterRun 3s ease-in-out infinite}
+.plan .meter i{position:relative;overflow:hidden}
+@keyframes meterRun{60%,100%{transform:translateX(100%)}}
+.tag::before{animation:ping 2.4s ease-out infinite}
+.bc,.step,.fq{animation:floatY 9s ease-in-out infinite}
+.bc:nth-child(2n),.step:nth-child(2n){animation-delay:-3s}.bc:nth-child(3n),.step:nth-child(3n){animation-delay:-6s}.fq:nth-child(2n){animation-delay:-4s}
+@keyframes floatY{50%{translate:0 -5px}}
+.rail button::before{transition:all .3s}.rail button[aria-current="true"]::before,.rail button.on::before{animation:railPulse 1.6s ease-in-out infinite}
+@keyframes railPulse{50%{box-shadow:0 0 0 6px rgba(var(--fg),.0),0 0 12px rgba(var(--fg),.6)}}
+/* aurora viva nas seções de baixo */
+.after{position:relative;overflow:hidden}
+.after::before,.after::after{content:"";position:absolute;width:70vmax;height:70vmax;border-radius:50%;filter:blur(90px);opacity:.22;pointer-events:none;z-index:0}
+.after::before{left:-25vmax;top:8%;background:radial-gradient(circle,rgba(110,150,255,.55),transparent 62%);animation:orbA 26s ease-in-out infinite}
+.after::after{right:-28vmax;top:48%;background:radial-gradient(circle,rgba(170,90,150,.5),transparent 62%);animation:orbB 32s ease-in-out infinite}
+@keyframes orbA{50%{transform:translate(28vmax,34vmax) scale(1.2)}}@keyframes orbB{50%{transform:translate(-30vmax,-26vmax) scale(1.15)}}
+/* título final com entrada viva */
+.sec.final h2{animation:finalGlow 6s ease-in-out infinite}
+@keyframes finalGlow{50%{text-shadow:0 0 60px rgba(var(--glow),.4);letter-spacing:.01em}}
+/* menu: links com sublinhado deslizante */
+.nv .lk a{position:relative}.nv .lk a::after{content:"";position:absolute;left:12px;right:12px;bottom:3px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .45s cubic-bezier(.2,.8,.2,1)}.nv .lk a:hover::after{transform:scaleX(1);transform-origin:left}
+/* ondas de toque */
+.rkRip{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.45),rgba(255,255,255,0) 65%);transform:scale(0);opacity:1;pointer-events:none;animation:ripGo .75s cubic-bezier(.2,.7,.2,1) forwards;z-index:0}
+@keyframes ripGo{to{transform:scale(1);opacity:0}}
+button,.b,.plan,.rk-tile,.rk-q,.rk-bar,.rk-chip,.rk-mb,.rk-st,.rk-ch,.rk-cmd,.rk-qc{overflow:hidden}
+.plan{overflow:visible}.plan.tl{overflow:visible}
+/* cursor */
+.rkCur{position:fixed;left:-14px;top:-14px;width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(255,255,255,.7);mix-blend-mode:difference;pointer-events:none;z-index:2000;opacity:0;transition:opacity .3s,width .3s,height .3s,margin .3s,background .3s,border-color .3s;will-change:transform}
+.rkCur.hv{width:54px;height:54px;margin:-13px 0 0 -13px;background:rgba(255,255,255,.18)}.rkCur.dn{width:16px;height:16px;margin:6px 0 0 6px;background:rgba(255,255,255,.7)}
+@media (hover:none){.rkCur{display:none}}
+/* chats: mais vida */
+#rkChat .dn-box{animation:boxBreath 5s ease-in-out infinite}
+@keyframes boxBreath{50%{box-shadow:0 0 0 1px rgba(var(--a),.25),0 0 34px rgba(var(--a),.22),0 24px 60px rgba(0,0,0,.5)!important}}
+#rkChat .dn-m.ai.fresh .dn-body>*{animation-duration:.8s}
+#rkChat .dn-head .dn-mark{animation:markFloat 5s ease-in-out infinite}
+@keyframes markFloat{50%{transform:translateY(-2px) rotate(-2deg)}}
+#rkChat .dn-welcome h2{animation:h2Float 7s ease-in-out infinite}
+@keyframes h2Float{50%{transform:translateY(-4px)}}
+#rkChat .dn-send{animation:sendPulse 2.8s ease-in-out infinite}
+@keyframes sendPulse{50%{filter:brightness(1.18)}}
+@media (prefers-reduced-motion:reduce){.hud,.hud u,.mqT,.plan::before,.bc,.step,.fq,.after::before,.after::after,.rkCur{animation:none!important}.tl{transform:none!important}}
