@@ -5,15 +5,15 @@
 [data-motion=off] *,[data-motion=off] *::before,[data-motion=off] *::after{animation:none!important;transition:none!important}
 
 /* ---------- tokens ---------- */
-#rkChat,#rkOverlay,#rkMenu{--t:243,239,231;--a:143,214,255;--s:246,239,226;--bg:7,7,10;font-family:var(--sans,system-ui,-apple-system,sans-serif);-webkit-font-smoothing:antialiased}
-#rkChat[data-mode=tempesta]{--t:236,234,247;--a:185,168,255;--s:185,168,255;--bg:6,8,15}
+#rkChat,#rkOverlay,#rkMenu{--t:243,239,231;--a:255,143,150;--s:246,239,226;--bg:13,5,4;font-family:var(--sans,system-ui,-apple-system,sans-serif);-webkit-font-smoothing:antialiased}
+#rkChat[data-mode=tempesta]{--t:247,236,234;--a:255,182,168;--s:255,182,168;--bg:17,5,4}
 
 /* ---------- logo DNA premium (mesma forma, acabamento metálico) ---------- */
-.dnaMark.foil{--dc:#eef3fa}
+.dnaMark.foil{--dc:#faeeee}
 .dnaMark.foil i{
   background:
-    linear-gradient(105deg,transparent 0%,transparent 42%,rgba(214,238,255,.98) 50%,transparent 58%,transparent 100%) 100% 0/260% 100% no-repeat,
-    linear-gradient(170deg,#ffffff 0%,#f2f6fc 30%,#c4d0df 64%,#f4f8fd 100%);
+    linear-gradient(105deg,transparent 0%,transparent 42%,rgba(255,214,216,.98) 50%,transparent 58%,transparent 100%) 100% 0/260% 100% no-repeat,
+    linear-gradient(170deg,#ffffff 0%,#fcf2f2 30%,#e0c3c4 64%,#fdf4f4 100%);
   animation:dnaRise 1.1s var(--dn-ease) both,dnaShineFoil 6s ease-in-out 2.2s infinite}
 .dnaMark.foil i:nth-child(1){animation-delay:.1s,2.2s}
 .dnaMark.foil i:nth-child(2){animation-delay:.3s,2.2s}
@@ -39,7 +39,7 @@
   radial-gradient(35% 28% at 75% 70%,rgba(var(--s),.05),transparent 70%);animation:dnDrift 22s ease-in-out infinite alternate}
 .dn-grain{position:absolute;inset:0;pointer-events:none;opacity:.07;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")}
-.dn-flash{position:absolute;inset:0;pointer-events:none;opacity:0;mix-blend-mode:screen;background:radial-gradient(70% 50% at 50% -5%,rgba(185,200,255,.55),transparent 72%)}
+.dn-flash{position:absolute;inset:0;pointer-events:none;opacity:0;mix-blend-mode:screen;background:radial-gradient(70% 50% at 50% -5%,rgba(255,188,185,.55),transparent 72%)}
 
 .dn-head{position:relative;z-index:2;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;
   padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;border-bottom:1px solid rgba(var(--t),.08);
@@ -140,8 +140,8 @@
 .dn-box:focus-within{border-color:rgba(var(--a),.5);box-shadow:0 20px 60px rgba(0,0,0,.45),0 0 0 4px rgba(var(--a),.08)}
 #rkChatInput{flex:1;min-width:0;min-height:28px;max-height:140px;padding:9px 0;background:none;border:0;outline:0;resize:none;color:inherit;font:400 16px/1.45 var(--sans,system-ui)}
 #rkChatInput::placeholder{color:rgba(var(--t),.38)}
-.dn-send{flex:0 0 auto;width:42px;height:42px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;padding:0;color:#0b0b10;background:linear-gradient(160deg,#ffffff,#cdd5df);transition:transform .2s,opacity .2s,box-shadow .2s;box-shadow:0 6px 20px rgba(246,239,226,.18)}
-#rkChat[data-mode=tempesta] .dn-send{background:linear-gradient(160deg,#e4dcff,#a898f0);box-shadow:0 6px 20px rgba(168,152,240,.3)}
+.dn-send{flex:0 0 auto;width:42px;height:42px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;padding:0;color:#150706;background:linear-gradient(160deg,#ffffff,#dfcdcd);transition:transform .2s,opacity .2s,box-shadow .2s;box-shadow:0 6px 20px rgba(246,239,226,.18)}
+#rkChat[data-mode=tempesta] .dn-send{background:linear-gradient(160deg,#ffe2dc,#f2a496);box-shadow:0 6px 20px rgba(242,164,150,.3)}
 .dn-send svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .dn-send:hover{transform:translateY(-1px)}
 .dn-send:active{transform:scale(.94)}
@@ -153,9 +153,9 @@
 .dn-down svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
 /* ---------- painéis (login, planos, conta…) ---------- */
-#rkOverlay{position:fixed;inset:0;z-index:1400;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(3,3,6,.7);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);color:rgb(var(--t))}
+#rkOverlay{position:fixed;inset:0;z-index:1400;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(7,2,2,.7);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);color:rgb(var(--t))}
 #rkOverlay.open{display:flex;animation:dnIn .3s ease both}
-#rkPanel{position:relative;width:min(500px,100%);max-height:88dvh;overflow:auto;border:1px solid rgba(var(--s),.12);border-radius:28px;background:linear-gradient(160deg,rgba(26,26,32,.97),rgba(10,10,14,.98));box-shadow:0 40px 120px rgba(0,0,0,.6),inset 0 1px 0 rgba(var(--s),.06);padding:26px 24px 24px;animation:dnSheet .45s var(--dn-ease) both}
+#rkPanel{position:relative;width:min(500px,100%);max-height:88dvh;overflow:auto;border:1px solid rgba(var(--s),.12);border-radius:28px;background:linear-gradient(160deg,rgba(46,16,12,.97),rgba(19,7,5,.98));box-shadow:0 40px 120px rgba(0,0,0,.6),inset 0 1px 0 rgba(var(--s),.06);padding:26px 24px 24px;animation:dnSheet .45s var(--dn-ease) both}
 @keyframes dnSheet{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:none}}
 #rkPanel h3{font:500 28px/1.1 var(--sans,system-ui);letter-spacing:-.035em;margin:0 44px 8px 0}
 #rkPanel p{color:rgba(var(--t),.62);margin:0 0 20px;line-height:1.55;font-size:15px}
@@ -173,7 +173,7 @@
 .rkBtn{display:inline-flex;align-items:center;justify-content:center;height:46px;padding:0 20px;border-radius:23px;border:1px solid rgba(var(--t),.18);background:rgba(var(--t),.05);color:inherit;font:500 11.5px var(--mono,monospace);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s,transform .2s}
 .rkBtn:hover{background:rgba(var(--t),.12)}
 .rkBtn:active{transform:scale(.97)}
-.rkBtn.primary{background:linear-gradient(160deg,#ffffff,#cdd5df);color:#0b0b10;border:0;font-weight:600}
+.rkBtn.primary{background:linear-gradient(160deg,#ffffff,#dfcdcd);color:#150706;border:0;font-weight:600}
 .rkBtn.primary:hover{background:linear-gradient(160deg,#fff,#f1e6cd)}
 .rkMuted{font:400 12px/1.5 var(--mono,monospace);color:rgba(var(--t),.5)}
 #rkAuthMsg{margin-top:10px;min-height:18px}
@@ -202,10 +202,10 @@ button.rkCard:hover{border-color:rgba(var(--s),.4);background:rgba(var(--s),.06)
 .rkStack{display:grid;gap:10px;margin-top:4px}
 
 /* ---------- menu lateral ---------- */
-#rkMenu{position:fixed;inset:0;z-index:1300;display:none;background:rgba(3,3,6,.62);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:rgb(var(--t))}
+#rkMenu{position:fixed;inset:0;z-index:1300;display:none;background:rgba(7,2,2,.62);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:rgb(var(--t))}
 #rkMenu.open{display:block;animation:dnIn .25s ease both}
 #rkMenuPanel{position:absolute;right:0;top:0;bottom:0;width:min(360px,88vw);overflow:auto;padding:calc(18px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px));
-  background:linear-gradient(170deg,rgba(24,24,30,.98),rgba(9,9,13,.99));border-left:1px solid rgba(var(--s),.1);box-shadow:-30px 0 80px rgba(0,0,0,.5);animation:dnDrawer .4s var(--dn-ease) both}
+  background:linear-gradient(170deg,rgba(43,15,11,.98),rgba(17,6,5,.99));border-left:1px solid rgba(var(--s),.1);box-shadow:-30px 0 80px rgba(0,0,0,.5);animation:dnDrawer .4s var(--dn-ease) both}
 @keyframes dnDrawer{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
 #rkMenuTop{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;min-height:40px}
 #rkMenuTop .dnaMark{height:22px}
@@ -218,7 +218,7 @@ button.rkCard:hover{border-color:rgba(var(--s),.4);background:rgba(var(--s),.06)
 #rkMenuPanel .rkMenuFoot{margin:26px 4px 0;font:400 11px var(--mono,monospace);color:rgba(var(--t),.32)}
 
 /* ---------- aviso rápido ---------- */
-.dn-toast{position:fixed;z-index:1600;left:50%;bottom:calc(30px + env(safe-area-inset-bottom,0px));translate:-50% 0;padding:12px 18px;border-radius:999px;background:rgba(243,239,231,.96);color:#0b0b10;font:500 12px var(--mono,monospace);letter-spacing:.02em;box-shadow:0 14px 40px rgba(0,0,0,.4);animation:dnUp .35s var(--dn-ease) both}
+.dn-toast{position:fixed;z-index:1600;left:50%;bottom:calc(30px + env(safe-area-inset-bottom,0px));translate:-50% 0;padding:12px 18px;border-radius:999px;background:rgba(243,239,231,.96);color:#150706;font:500 12px var(--mono,monospace);letter-spacing:.02em;box-shadow:0 14px 40px rgba(0,0,0,.4);animation:dnUp .35s var(--dn-ease) both}
 
 @media (max-width:600px){
   .rkGrid{grid-template-columns:1fr}
@@ -233,13 +233,13 @@ button.rkCard:hover{border-color:rgba(var(--s),.4);background:rgba(var(--s),.06)
 @media (max-height:700px){.dn-hero .refl{display:none}}
 
 /* ---------- agentes: cada um com cor, forma e ritmo próprios ---------- */
-#rkChat[data-agent=research]{--t:230,244,250;--a:34,211,238;--s:165,243,252;--bg:4,11,16;--rad:16px}
-#rkChat[data-agent=code]{--t:226,247,234;--a:74,222,128;--s:150,240,184;--bg:3,12,8;--rad:4px}
+#rkChat[data-agent=research]{--t:250,230,231;--a:243,29,55;--s:254,163,175;--bg:16,4,4;--rad:16px}
+#rkChat[data-agent=code]{--t:248,225,233;--a:226,70,121;--s:242,148,178;--bg:12,3,5;--rad:4px}
 #rkChat[data-agent=writer]{--t:250,244,226;--a:250,204,21;--s:253,230,138;--bg:13,10,3;--rad:22px}
-#rkChat[data-agent=designer]{--t:250,235,252;--a:217,70,239;--s:244,172,252;--bg:13,4,16;--rad:26px 6px 26px 6px}
-#rkChat[data-agent=analyst]{--t:232,236,254;--a:99,102,241;--s:165,180,252;--bg:5,6,18;--rad:10px}
+#rkChat[data-agent=designer]{--t:252,241,235;--a:243,125,66;--s:254,199,170;--bg:16,7,4;--rad:26px 6px 26px 6px}
+#rkChat[data-agent=analyst]{--t:255,233,231;--a:245,110,95;--s:254,168,163;--bg:18,6,5;--rad:10px}
 #rkChat[data-agent=marketing]{--t:254,236,238;--a:244,63,94;--s:253,164,175;--bg:15,4,7;--rad:999px}
-#rkChat[data-agent=ritty]{--t:236,246,255;--a:186,230,253;--s:255,255,255;--bg:5,10,16;--rad:14px}
+#rkChat[data-agent=ritty]{--t:255,236,237;--a:255,184,189;--s:255,255,255;--bg:17,4,5;--rad:14px}
 #rkChat[data-agent] .dn-sug{border-radius:var(--rad,16px)}
 #rkChat[data-agent=marketing] .dn-sug{border-radius:30px}
 #rkChat[data-agent] .dn-m.user .dn-bubble{border-radius:var(--rad,20px) var(--rad,20px) 4px var(--rad,20px)}
@@ -252,7 +252,7 @@ button.rkCard:hover{border-color:rgba(var(--s),.4);background:rgba(var(--s),.06)
   repeating-linear-gradient(0deg,rgba(var(--a),.05) 0 1px,transparent 1px 44px),repeating-linear-gradient(90deg,rgba(var(--a),.05) 0 1px,transparent 1px 44px),rgb(var(--bg))}
 #rkChat[data-agent=code] .dn-bg{background:radial-gradient(900px 520px at 50% -12%,rgba(var(--a),.12),transparent 62%),
   repeating-linear-gradient(0deg,rgba(var(--a),.045) 0 1px,transparent 1px 4px),rgb(var(--bg))}
-#rkChat[data-agent=ritty] .dn-bg{background:radial-gradient(900px 560px at 50% -10%,rgba(186,230,253,.16),transparent 62%),radial-gradient(600px 400px at 0% 100%,rgba(255,255,255,.05),transparent 60%),rgb(var(--bg))}
+#rkChat[data-agent=ritty] .dn-bg{background:radial-gradient(900px 560px at 50% -10%,rgba(255,184,189,.16),transparent 62%),radial-gradient(600px 400px at 0% 100%,rgba(255,255,255,.05),transparent 60%),rgb(var(--bg))}
 #rkChat[data-agent] .dn-send{background:rgb(var(--a));color:rgb(var(--bg))}
 
 .am{display:block;width:100%;height:auto;overflow:visible;--sp:1;filter:drop-shadow(0 0 14px rgba(var(--a),.35))}
@@ -347,7 +347,7 @@ button.rkCard:hover{border-color:rgba(var(--s),.4);background:rgba(var(--s),.06)
 .dn-hero.pulse .dn-halo{animation:dnPulse 6s ease-in-out infinite alternate,thFlash .8s ease-out}
 
 /* ---------- painéis e menu no estilo DNA ---------- */
-#rkPanel{background:radial-gradient(120% 60% at 50% -10%,rgba(var(--a),.09),transparent 60%),linear-gradient(160deg,rgba(24,24,30,.98),rgba(8,8,12,.99))}
+#rkPanel{background:radial-gradient(120% 60% at 50% -10%,rgba(var(--a),.09),transparent 60%),linear-gradient(160deg,rgba(43,15,11,.98),rgba(16,5,4,.99))}
 .pnHead{display:flex;align-items:center;gap:12px;margin:0 44px 16px 0}
 .pnHead .dnaMark{height:16px}
 .pnKick{font:500 10.5px var(--mono,monospace);letter-spacing:.2em;text-transform:uppercase;color:rgba(var(--t),.5);padding-left:12px;border-left:1px solid rgba(var(--t),.18)}
@@ -355,7 +355,7 @@ button.rkCard:hover{border-color:rgba(var(--s),.4);background:rgba(var(--s),.06)
 #rkPanel h3{font-size:clamp(24px,6.4vw,30px)}
 .rkBtn{height:46px;padding:0 22px;border-radius:23px;border:1px solid rgba(var(--t),.2);background:rgba(var(--t),.05);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:border-color .25s,background .25s,transform .25s var(--dn-ease),box-shadow .25s}
 .rkBtn:hover{border-color:rgba(var(--t),.5);background:rgba(var(--t),.1);box-shadow:0 0 0 4px rgba(var(--a),.07)}
-.rkBtn.primary{background:linear-gradient(160deg,#ffffff,#cdd5df);box-shadow:0 10px 30px rgba(205,213,223,.12)}
+.rkBtn.primary{background:linear-gradient(160deg,#ffffff,#dfcdcd);box-shadow:0 10px 30px rgba(223,205,205,.12)}
 .rkBtn.danger{border-color:rgba(255,120,120,.35);color:#ffb4b4}
 .rkBtn.danger:hover{background:rgba(255,90,90,.12);border-color:rgba(255,120,120,.65)}
 .rkBtn.danger.armed{background:#ff6b6b;color:#1a0707;border-color:#ff6b6b}
@@ -367,7 +367,7 @@ button.rkCard:hover{border-color:rgba(var(--s),.4);background:rgba(var(--s),.06)
 .seg button span{display:none}
 .seg.lg button{height:58px}.seg.lg button span{display:block;font:400 11.5px var(--sans,system-ui)}
 .seg button:hover{background:rgba(var(--t),.07);color:rgb(var(--t))}
-.seg button[aria-pressed=true]{background:linear-gradient(160deg,rgba(var(--s),.95),rgba(var(--s),.78));color:#0b0b10;box-shadow:0 6px 20px rgba(var(--s),.18)}
+.seg button[aria-pressed=true]{background:linear-gradient(160deg,rgba(var(--s),.95),rgba(var(--s),.78));color:#150706;box-shadow:0 6px 20px rgba(var(--s),.18)}
 .seg button:focus-visible{outline:2px solid rgb(var(--a));outline-offset:2px}
 /* seções de configurações */
 .stSec{margin-top:20px}
@@ -384,7 +384,7 @@ label.stRow{cursor:pointer}
 .stTx small{font:400 12px/1.4 var(--sans,system-ui);color:rgba(var(--t),.5);overflow-wrap:anywhere}
 .stVal{font:500 22px/1 var(--sans,system-ui);letter-spacing:-.03em}
 .stDot{width:10px;height:10px;border-radius:50%;background:rgba(var(--t),.3);flex:0 0 auto;box-shadow:0 0 0 0 transparent}
-.stDot[data-ok="1"]{background:#4ade80;box-shadow:0 0 12px rgba(74,222,128,.7)}.stDot[data-ok="0"]{background:#fb7185}
+.stDot[data-ok="1"]{background:#e24679;box-shadow:0 0 12px rgba(226,70,121,.7)}.stDot[data-ok="0"]{background:#fb7185}
 .tgl{appearance:none;-webkit-appearance:none;width:50px;height:30px;border-radius:15px;background:rgba(var(--t),.16);position:relative;cursor:pointer;transition:background .3s;flex:0 0 auto;margin:0;border:1px solid rgba(var(--t),.12)}
 .tgl::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .3s var(--dn-ease);box-shadow:0 2px 8px rgba(0,0,0,.4)}
 .tgl:checked{background:linear-gradient(160deg,rgb(var(--s)),rgb(var(--a)));border-color:transparent}
@@ -393,7 +393,7 @@ label.stRow{cursor:pointer}
 /* menu */
 #rkMenuAccount{padding:14px;border-radius:20px;background:linear-gradient(160deg,rgba(var(--a),.09),rgba(var(--t),.03));border:1px solid rgba(var(--t),.1);overflow-wrap:anywhere;word-break:normal;display:grid;gap:12px;margin:8px 0 2px}
 .acRow{display:flex;align-items:center;gap:12px;min-width:0}
-.av{flex:0 0 auto;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(150deg,rgba(var(--s),.95),rgba(var(--a),.7));color:#0b0b10}
+.av{flex:0 0 auto;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(150deg,rgba(var(--s),.95),rgba(var(--a),.7));color:#150706}
 .av b{font:600 17px var(--sans,system-ui)}.av i{width:20px;height:20px;display:block}.av svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
 .acT{display:flex;flex-direction:column;gap:2px;min-width:0}.acT b{font:600 15px/1.2 var(--sans,system-ui)}
 .acT small{font:400 12px/1.4 var(--sans,system-ui);color:rgba(var(--t),.55)}
@@ -417,13 +417,13 @@ label.stRow{cursor:pointer}
 .am-ritty .m-flake{animation-direction:reverse}
 
 /* tokens dos agentes também nos cartões do painel */
-.rkCard[data-agent=research],.ag-chip[data-agent=research]{--t:230,244,250;--a:34,211,238;--s:165,243,252;--bg:4,11,16;--rad:16px}
-.rkCard[data-agent=code],.ag-chip[data-agent=code]{--t:226,247,234;--a:74,222,128;--s:150,240,184;--bg:3,12,8;--rad:4px}
+.rkCard[data-agent=research],.ag-chip[data-agent=research]{--t:250,230,231;--a:243,29,55;--s:254,163,175;--bg:16,4,4;--rad:16px}
+.rkCard[data-agent=code],.ag-chip[data-agent=code]{--t:248,225,233;--a:226,70,121;--s:242,148,178;--bg:12,3,5;--rad:4px}
 .rkCard[data-agent=writer],.ag-chip[data-agent=writer]{--t:250,244,226;--a:250,204,21;--s:253,230,138;--bg:13,10,3;--rad:22px}
-.rkCard[data-agent=designer],.ag-chip[data-agent=designer]{--t:250,235,252;--a:217,70,239;--s:244,172,252;--bg:13,4,16;--rad:26px 6px 26px 6px}
-.rkCard[data-agent=analyst],.ag-chip[data-agent=analyst]{--t:232,236,254;--a:99,102,241;--s:165,180,252;--bg:5,6,18;--rad:10px}
+.rkCard[data-agent=designer],.ag-chip[data-agent=designer]{--t:252,241,235;--a:243,125,66;--s:254,199,170;--bg:16,7,4;--rad:26px 6px 26px 6px}
+.rkCard[data-agent=analyst],.ag-chip[data-agent=analyst]{--t:255,233,231;--a:245,110,95;--s:254,168,163;--bg:18,6,5;--rad:10px}
 .rkCard[data-agent=marketing],.ag-chip[data-agent=marketing]{--t:254,236,238;--a:244,63,94;--s:253,164,175;--bg:15,4,7;--rad:999px}
-.rkCard[data-agent=ritty],.ag-chip[data-agent=ritty]{--t:236,246,255;--a:186,230,253;--s:255,255,255;--bg:5,10,16;--rad:14px}
+.rkCard[data-agent=ritty],.ag-chip[data-agent=ritty]{--t:255,236,237;--a:255,184,189;--s:255,255,255;--bg:17,4,5;--rad:14px}
 
 /* ===== ambiente exclusivo de cada agente ===== */
 .dn-hero.ag{position:relative;width:min(188px,48vw,25vh);isolation:isolate}
@@ -459,7 +459,7 @@ label.stRow{cursor:pointer}
   -webkit-mask-image:radial-gradient(closest-side,transparent 34%,#000 52%,transparent);mask-image:radial-gradient(closest-side,transparent 34%,#000 52%,transparent);animation:agTurn 40s linear infinite}
 @keyframes agTurn{to{transform:rotate(360deg)}}
 /* ritty: neve caindo e malha hexagonal */
-#rkChat[data-agent=ritty] .dn-hero.ag::before{inset:-30% -60%;background:radial-gradient(circle,rgba(255,255,255,.75) 1px,transparent 1.6px) 0 0/34px 34px,radial-gradient(circle,rgba(186,230,253,.55) 1.4px,transparent 2px) 17px 17px/52px 52px;
+#rkChat[data-agent=ritty] .dn-hero.ag::before{inset:-30% -60%;background:radial-gradient(circle,rgba(255,255,255,.75) 1px,transparent 1.6px) 0 0/34px 34px,radial-gradient(circle,rgba(255,184,189,.55) 1.4px,transparent 2px) 17px 17px/52px 52px;
   -webkit-mask-image:radial-gradient(closest-side,#000 35%,transparent);mask-image:radial-gradient(closest-side,#000 35%,transparent);animation:agSnow 9s linear infinite}
 @keyframes agSnow{to{background-position:-8px 34px,9px 69px}}
 
@@ -473,7 +473,7 @@ label.stRow{cursor:pointer}
 #rkChat[data-agent=writer] .dn-sug{border-style:solid;border-width:1px 1px 1px 1px;background:linear-gradient(rgba(var(--a),.045),rgba(var(--a),.015))}
 #rkChat[data-agent=writer] .dn-welcome h2 span{font-style:italic}
 #rkChat[data-agent=designer] .dn-sug{position:relative;overflow:hidden}
-#rkChat[data-agent=designer] .dn-sug::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(rgb(var(--a)),rgb(139,92,246))}
+#rkChat[data-agent=designer] .dn-sug::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(rgb(var(--a)),rgb(250,118,88))}
 #rkChat[data-agent=designer] .dn-sug i{margin-left:6px}
 #rkChat[data-agent=analyst] .dn-sug i{font-size:0;display:inline-flex;align-items:flex-end;gap:2px;height:16px}
 #rkChat[data-agent=analyst] .dn-sug i::before{content:"";width:3px;height:6px;background:rgb(var(--a));box-shadow:5px -4px 0 rgb(var(--a)),10px -8px 0 rgb(var(--s));border-radius:1px;margin-right:10px}

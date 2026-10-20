@@ -24,7 +24,7 @@
   }
 
   // Paleta (azul-acinzentado com um toque de violeta, como a marca)
-  var HI = [190, 201, 230], MID = [108, 117, 158], LO = [50, 56, 88], DEEP = [20, 23, 40], FLASH = [208, 222, 255];
+  var HI = [231,190,189], MID = [159,110,107], LO = [89,52,49], DEEP = [47,15,13], FLASH = [255,209,208];
 
   // Silhueta de cumulonimbus: base larga e achatada, corpo irregular e torres que sobem.
   // x, y, raio (em unidades da largura do canvas)
@@ -214,7 +214,7 @@
         ctx.globalCompositeOperation = "lighter";
         var R = (big ? .42 : .5) * S;
         g = ctx.createRadialGradient(fl.x * S, fl.y * S, 0, fl.x * S, fl.y * S, R);
-        g.addColorStop(0, rgba(FLASH, .5 * fl.i)); g.addColorStop(.5, rgba([150, 165, 255], .16 * fl.i)); g.addColorStop(1, rgba(FLASH, 0));
+        g.addColorStop(0, rgba(FLASH, .5 * fl.i)); g.addColorStop(.5, rgba([255,157,150], .16 * fl.i)); g.addColorStop(1, rgba(FLASH, 0));
         ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
         ctx.globalCompositeOperation = "source-over";
       }
@@ -232,11 +232,11 @@
       var core = max(S * .0042, 1 * dpr);
       function one(pts, k) {
         // brilho suave (shadowBlur) + núcleo fino e quente
-        ctx.shadowColor = "rgba(140,165,255," + (.95 * I) + ")";
+        ctx.shadowColor = "rgba(255,145,140," + (.95 * I) + ")";
         ctx.shadowBlur = core * 11 * k;
-        strokePath(pts, core * 2.2 * k, "rgba(170,190,255," + (.55 * I) + ")");
+        strokePath(pts, core * 2.2 * k, "rgba(255,174,170," + (.55 * I) + ")");
         ctx.shadowBlur = core * 4 * k;
-        strokePath(pts, core * 1.2 * k, "rgba(235,241,255," + (.9 * I) + ")");
+        strokePath(pts, core * 1.2 * k, "rgba(255,236,235," + (.9 * I) + ")");
         ctx.shadowBlur = 0;
         strokePath(pts, core * .6 * k, "rgba(255,255,255," + I + ")");
       }

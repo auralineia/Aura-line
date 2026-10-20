@@ -13,7 +13,7 @@ function init() {
 #matterCanvas{display:block!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
 #sticky .rk{display:block!important;visibility:visible!important;z-index:100!important;color:#8b8e94!important;opacity:1!important;text-shadow:0 1px 8px rgba(255,255,255,.8)}
 #sticky .rk.off{opacity:0!important}
-#sticky .copy .kicker{color:rgba(17,18,20,.5)!important}#sticky .copy p{color:rgba(17,18,20,.55)!important}#sticky .copy em{color:#7d2948!important}
+#sticky .copy .kicker{color:rgba(29,8,8,.5)!important}#sticky .copy p{color:rgba(29,8,8,.55)!important}#sticky .copy em{color:#7d2948!important}
 .rk{position:absolute;z-index:9;font:600 11px/1.3 ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.14em;color:#8b8e94;background:none;border:0;padding:6px;cursor:pointer;transition:opacity .2s cubic-bezier(.23,1,.32,1),color .2s}
 .rk:active{transform:scale(.96)}.rk.off{opacity:0;pointer-events:none}.rk.soft{cursor:default;pointer-events:none;color:#b9bcc2}
 @media(hover:hover){button.rk:hover{color:#111}}
@@ -87,16 +87,16 @@ vec3 objectTangent=vec3(tangent.xyz);
 
   // estúdio claro: reflexo prateado/azulado com brilhos nítidos
   const pm = new THREE.PMREMGenerator(renderer), env = new THREE.Scene();
-  env.add(new THREE.Mesh(new THREE.SphereGeometry(10, 32, 16), new THREE.MeshBasicMaterial({ color: new THREE.Color(.42, .48, .62), side: THREE.BackSide })));
-  [[0xffffff, 7, [-5, 4, 4], [5, 2]], [0xdff1ff, 4, [6, 1, 3], [2, 7]], [0x50607f, 1, [-6, -3, 2], [3, 6]], [0xffffff, 4, [0, 6, -4], [8, 2]]].forEach(([c, i, p, s]) => {
+  env.add(new THREE.Mesh(new THREE.SphereGeometry(10, 32, 16), new THREE.MeshBasicMaterial({ color: new THREE.Color(.62, .34, .38), side: THREE.BackSide })));
+  [[0xffffff, 7, [-5, 4, 4], [5, 2]], [0xffe3e6, 4, [6, 1, 3], [2, 7]], [0x7f2f3f, 1, [-6, -3, 2], [3, 6]], [0xffffff, 4, [0, 6, -4], [8, 2]]].forEach(([c, i, p, s]) => {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(s[0], s[1]), new THREE.MeshBasicMaterial({ color: new THREE.Color(c).multiplyScalar(i), side: THREE.DoubleSide, toneMapped: false }));
     m.position.set(p[0], p[1], p[2]); m.lookAt(0, 0, 0); env.add(m);
   });
   scene.environment = pm.fromScene(env, .02).texture;
 
-  const solidMat = new THREE.MeshPhysicalMaterial({ color: "#a8b6d2", metalness: 1, roughness: .3, clearcoat: .7, clearcoatRoughness: .18, envMapIntensity: 1.05, transparent: true });
-  const wireMat = new THREE.MeshBasicMaterial({ color: "#14161a", wireframe: true, transparent: true, opacity: 0 });
-  const ptsMat = new THREE.PointsMaterial({ color: "#14161a", size: 1.8, sizeAttenuation: false, transparent: true, opacity: 0 });
+  const solidMat = new THREE.MeshPhysicalMaterial({ color: "#d3a8a7", metalness: 1, roughness: .3, clearcoat: .7, clearcoatRoughness: .18, envMapIntensity: 1.05, transparent: true });
+  const wireMat = new THREE.MeshBasicMaterial({ color: "#240a0a", wireframe: true, transparent: true, opacity: 0 });
+  const ptsMat = new THREE.PointsMaterial({ color: "#240a0a", size: 1.8, sizeAttenuation: false, transparent: true, opacity: 0 });
   inject(solidMat, true); inject(wireMat, false); inject(ptsMat, false);
   const solid = new THREE.Mesh(new THREE.IcosahedronGeometry(1, 36), solidMat);
   const wire = new THREE.Mesh(new THREE.IcosahedronGeometry(1, 12), wireMat);
@@ -106,9 +106,9 @@ vec3 objectTangent=vec3(tangent.xyz);
 
   // fases: [relevo, escala, wire, pontos, cor, metal, rugosidade, faixas, freq. faixas]
   const K = [
-    [.26, 1, 0, 0, "#a8b6d2", 1, .3, 1, 3.4], [.3, 1.04, 0, 0, "#a8b6d2", 1, .3, 1, 3], [.27, 1.04, 0, 0, "#a8b6d2", 1, .3, 1, 4.2],
-    [.25, 1.04, 1, 1, "#a8b6d2", 1, .3, 0, 3.4], [.16, 1, 0, 0, "#b4bccc", 1, .3, .7, 2.6], [.29, 1.06, 0, 0, "#a8b6d2", 1, .3, 1, 3.8],
-    [.05, .5, 0, 0, "#c9d2e4", 1, .12, 0, 3], [.26, 1, 0, 0, "#a8b6d2", 1, .3, 1, 3.4]
+    [.26, 1, 0, 0, "#d3a8a7", 1, .3, 1, 3.4], [.3, 1.04, 0, 0, "#d3a8a7", 1, .3, 1, 3], [.27, 1.04, 0, 0, "#d3a8a7", 1, .3, 1, 4.2],
+    [.25, 1.04, 1, 1, "#d3a8a7", 1, .3, 0, 3.4], [.16, 1, 0, 0, "#cdb4b3", 1, .3, .7, 2.6], [.29, 1.06, 0, 0, "#d3a8a7", 1, .3, 1, 3.8],
+    [.05, .5, 0, 0, "#e5c9c8", 1, .12, 0, 3], [.26, 1, 0, 0, "#d3a8a7", 1, .3, 1, 3.4]
   ];
   const c1 = new THREE.Color(), c2 = new THREE.Color(); let camZ = 10;
   function apply(q) {

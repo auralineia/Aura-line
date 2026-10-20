@@ -49,7 +49,7 @@
 /* aurora viva nas seções de baixo */
 .after{position:relative;overflow:hidden}
 .after::before,.after::after{content:"";position:absolute;width:70vmax;height:70vmax;border-radius:50%;filter:blur(90px);opacity:.22;pointer-events:none;z-index:0}
-.after::before{left:-25vmax;top:8%;background:radial-gradient(circle,rgba(110,150,255,.55),transparent 62%);animation:orbA 26s ease-in-out infinite}
+.after::before{left:-25vmax;top:8%;background:radial-gradient(circle,rgba(255,115,110,.55),transparent 62%);animation:orbA 26s ease-in-out infinite}
 .after::after{right:-28vmax;top:48%;background:radial-gradient(circle,rgba(170,90,150,.5),transparent 62%);animation:orbB 32s ease-in-out infinite}
 @keyframes orbA{50%{transform:translate(28vmax,34vmax) scale(1.2)}}@keyframes orbB{50%{transform:translate(-30vmax,-26vmax) scale(1.15)}}
 /* título final com entrada viva */
