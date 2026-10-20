@@ -5,15 +5,15 @@
 #rkChat .rk-fx{position:absolute;inset:0;pointer-events:none}
 #rkChat[data-skin] .dn-grain{opacity:.5}
 /* paletas */
-#rkChat[data-skin=rimak]{--t:246,232,232;--a:255,143,146;--s:196,150,172;--bg:15,4,4}
-#rkChat[data-skin=research]{--t:241,217,222;--a:227,87,113;--s:255,150,172;--bg:15,3,4}
-#rkChat[data-skin=code]{--t:255,226,230;--a:255,70,110;--s:255,206,92;--bg:9,2,4}
+#rkChat[data-skin=rimak]{--t:246,232,232;--a:255,143,146;--s:196,150,172;--bg:15,5,4}
+#rkChat[data-skin=research]{--t:218,240,238;--a:90,224,208;--s:150,255,236;--bg:3,13,15}
+#rkChat[data-skin=code]{--t:196,255,214;--a:96,255,150;--s:255,206,92;--bg:2,9,6}
 #rkChat[data-skin=writer]{--t:36,29,23;--a:160,92,44;--s:120,80,52;--bg:245,240,230}
-#rkChat[data-skin=designer]{--t:250,238,246;--a:255,106,176;--s:255,139,120;--bg:21,9,6}
-#rkChat[data-skin=analyst]{--t:251,226,225;--a:255,104,105;--s:255,186,78;--bg:21,5,5}
+#rkChat[data-skin=designer]{--t:250,238,246;--a:255,106,176;--s:140,120,255;--bg:12,7,20}
+#rkChat[data-skin=analyst]{--t:250,244,226;--a:255,213,104;--s:255,186,78;--bg:21,17,5}
 #rkChat[data-skin=marketing]{--t:255,240,232;--a:255,84,52;--s:255,196,60;--bg:19,5,4}
-#rkChat[data-skin=ritty]{--t:240,234,226;--a:255,150,40;--s:230,210,180;--bg:20,5,5}
-#rkChat[data-skin=tempesta]{--t:248,232,230;--a:255,166,150;--s:255,120,121;--bg:19,6,5}
+#rkChat[data-skin=ritty]{--t:240,234,226;--a:255,150,40;--s:230,210,180;--bg:20,10,5}
+#rkChat[data-skin=tempesta]{--t:230,230,248;--a:170,150,255;--s:255,214,96;--bg:9,6,20}
 /* tipografia e forma por chat */
 #rkChat[data-skin=code] *{font-family:var(--mono)!important}
 #rkChat[data-skin=code] .dn-bubble,#rkChat[data-skin=code] .dn-box{border-radius:4px!important}
@@ -26,11 +26,11 @@
 #rkChat[data-skin=writer] textarea{color:#241d17}
 #rkChat[data-skin=writer] .dn-send{background:#241d17!important;color:#f5f0e6!important;border-radius:3px}
 #rkChat[data-skin=writer] .dn-grain{opacity:.25;mix-blend-mode:multiply}
-#rkChat[data-skin=designer] .dn-bubble{border-radius:28px 6px 28px 6px!important;background:linear-gradient(135deg,rgba(255,106,176,.22),rgba(255,139,120,.2))!important;border:0!important}
+#rkChat[data-skin=designer] .dn-bubble{border-radius:28px 6px 28px 6px!important;background:linear-gradient(135deg,rgba(255,106,176,.22),rgba(140,120,255,.2))!important;border:0!important}
 #rkChat[data-skin=designer] .dn-box{border-radius:30px 8px 30px 8px;border:1.5px solid rgba(255,106,176,.5);background:rgba(255,255,255,.05)}
-#rkChat[data-skin=designer] .dn-send{background:linear-gradient(135deg,#ff6ab0,#ff8b78)!important;color:#fff!important;border-radius:14px 4px 14px 4px}
-#rkChat[data-skin=analyst] .dn-bubble{border-radius:6px!important;background:rgba(255,104,105,.08)!important;border:1px solid rgba(255,104,105,.3)!important;font-variant-numeric:tabular-nums}
-#rkChat[data-skin=analyst] .dn-box{border-radius:8px;border-color:rgba(255,104,105,.35);background:rgba(255,104,105,.05)}
+#rkChat[data-skin=designer] .dn-send{background:linear-gradient(135deg,#ff6ab0,#8c78ff)!important;color:#fff!important;border-radius:14px 4px 14px 4px}
+#rkChat[data-skin=analyst] .dn-bubble{border-radius:6px!important;background:rgba(255,213,104,.08)!important;border:1px solid rgba(255,213,104,.3)!important;font-variant-numeric:tabular-nums}
+#rkChat[data-skin=analyst] .dn-box{border-radius:8px;border-color:rgba(255,213,104,.35);background:rgba(255,213,104,.05)}
 #rkChat[data-skin=analyst] .dn-send{border-radius:6px!important;background:rgb(var(--s))!important;color:#1a1204!important}
 #rkChat[data-skin=marketing] .dn-head strong,#rkChat[data-skin=marketing] h2{text-transform:uppercase;letter-spacing:-.01em;font-weight:800}
 #rkChat[data-skin=marketing] .dn-bubble{border-radius:0 22px 22px 22px!important;background:rgb(var(--a))!important;color:#1a0503!important;border:0!important;font-weight:600;transform:rotate(-.4deg)}
@@ -39,9 +39,9 @@
 #rkChat[data-skin=ritty] .dn-bubble{border-radius:0!important;border:0!important;border-left:3px solid rgb(var(--a))!important;background:rgba(255,150,40,.07)!important}
 #rkChat[data-skin=ritty] .dn-box{border-radius:0;border:1px solid rgba(255,150,40,.4);clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))}
 #rkChat[data-skin=ritty] .dn-send{border-radius:0!important;clip-path:polygon(0 0,70% 0,100% 30%,100% 100%,0 100%)}
-#rkChat[data-skin=research] .dn-bubble{border-radius:18px!important;background:rgba(227,87,113,.08)!important;border:1px solid rgba(227,87,113,.3)!important}
-#rkChat[data-skin=research] .dn-box{border-radius:999px;border-color:rgba(227,87,113,.4)}
-#rkChat[data-skin=tempesta] .dn-bubble{border-radius:26px!important;background:rgba(255,166,150,.1)!important;border:1px solid rgba(255,166,150,.2)!important}
+#rkChat[data-skin=research] .dn-bubble{border-radius:18px!important;background:rgba(90,224,208,.08)!important;border:1px solid rgba(90,224,208,.3)!important}
+#rkChat[data-skin=research] .dn-box{border-radius:999px;border-color:rgba(90,224,208,.4)}
+#rkChat[data-skin=tempesta] .dn-bubble{border-radius:26px!important;background:rgba(170,150,255,.1)!important;border:1px solid rgba(170,150,255,.2)!important}
 #rkChat[data-skin=rimak] .dn-bubble{border-radius:20px 20px 4px 20px!important}
 
 /* emblema animado */
@@ -54,7 +54,7 @@
 .rkE-code .l{animation:rkNudgeL 2.4s ease-in-out infinite}.rkE-code .r{animation:rkNudgeR 2.4s ease-in-out infinite}.rkE-code .sl{stroke:rgb(var(--s))}.rkE-code .cu{fill:rgb(var(--a));stroke:none;animation:rkBlink 1s steps(1) infinite}
 .rkE-writer .ink{stroke-dasharray:140;animation:rkInk 4s ease-in-out infinite}.rkE-writer .nib{fill:rgba(var(--a),.2);animation:rkWrite 4s ease-in-out infinite;transform-origin:30px 40px}
 .rkE-designer circle{mix-blend-mode:screen;stroke-width:2.2;transform-box:fill-box;transform-origin:center}
-.rkE-designer .c1{stroke:#ff6ab0;animation:rkOrb1 5s ease-in-out infinite}.rkE-designer .c2{stroke:#ff8b78;animation:rkOrb2 5s ease-in-out infinite}.rkE-designer .c3{stroke:#ff5f70;animation:rkOrb3 5s ease-in-out infinite}
+.rkE-designer .c1{stroke:#ff6ab0;animation:rkOrb1 5s ease-in-out infinite}.rkE-designer .c2{stroke:#8c78ff;animation:rkOrb2 5s ease-in-out infinite}.rkE-designer .c3{stroke:#5fe0ff;animation:rkOrb3 5s ease-in-out infinite}
 .rkE-analyst rect{fill:rgba(var(--a),.25);transform-box:fill-box;transform-origin:bottom;animation:rkBar 2.8s ease-in-out infinite}.rkE-analyst .b2{animation-delay:.4s}.rkE-analyst .b3{animation-delay:.8s}.rkE-analyst .tr{stroke:rgb(var(--s));stroke-dasharray:90;animation:rkInk 3.5s ease-in-out infinite}
 .rkE-marketing .mg{fill:rgba(var(--a),.25);transform-origin:20px 32px;animation:rkPunch 2.2s ease-in-out infinite}.rkE-marketing .w1,.rkE-marketing .w2{stroke:rgb(var(--s));animation:rkWave 2.2s ease-out infinite}.rkE-marketing .w2{animation-delay:.3s}
 .rkE-tempesta circle{transform-origin:32px 32px;animation:rkBreath 4s ease-in-out infinite}.rkE-tempesta .o2{animation-delay:.5s}.rkE-tempesta .o3{animation-delay:1s;fill:rgba(var(--a),.4)}
@@ -127,15 +127,15 @@
 .rk-w-writer .dn-note{color:#241d17}
 
 /* DESIGNER — moodboard orgânico */
-.rk-w-designer h2{font-weight:800;letter-spacing:-.04em;font-size:clamp(32px,8vw,48px);background:linear-gradient(90deg,#ff6ab0,#ff8b78,#ff5f70,#ff6ab0);background-size:250%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rkGrad 6s linear infinite}
+.rk-w-designer h2{font-weight:800;letter-spacing:-.04em;font-size:clamp(32px,8vw,48px);background:linear-gradient(90deg,#ff6ab0,#8c78ff,#5fe0ff,#ff6ab0);background-size:250%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rkGrad 6s linear infinite}
 @keyframes rkGrad{to{background-position:250% 0}}
 .rk-swatch{display:flex;gap:0;margin-bottom:16px;height:10px;width:100%;border-radius:99px;overflow:hidden}.rk-swatch i{flex:1;transition:flex .5s}.rk-swatch:hover i{flex:.6}.rk-swatch i:hover{flex:3}
-.rk-swatch i:nth-child(1){background:#ff6ab0}.rk-swatch i:nth-child(2){background:#ff9a4a}.rk-swatch i:nth-child(3){background:#ff8b78}.rk-swatch i:nth-child(4){background:#ff5f70}.rk-swatch i:nth-child(5){background:#ff7da2}
+.rk-swatch i:nth-child(1){background:#ff6ab0}.rk-swatch i:nth-child(2){background:#ff9a4a}.rk-swatch i:nth-child(3){background:#8c78ff}.rk-swatch i:nth-child(4){background:#5fe0ff}.rk-swatch i:nth-child(5){background:#7dffc0}
 .rk-board{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
 .rk-mb{position:relative;padding:18px 16px 16px;min-height:130px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);overflow:hidden;transition:transform .5s cubic-bezier(.2,1.4,.3,1),background .3s}
 .rk-mb.m0{border-radius:70px 14px 14px 14px}.rk-mb.m1{border-radius:14px 70px 14px 14px;margin-top:22px}.rk-mb.m2{border-radius:14px 14px 14px 70px}.rk-mb.m3{border-radius:14px 14px 70px 14px;margin-top:22px}
 .rk-mb .sh{position:absolute;right:-14px;top:-14px;width:78px;height:78px;opacity:.9;animation:rkFloat 6s ease-in-out infinite}.rk-mb .sh svg{width:100%;height:100%;fill:none;stroke-width:2}
-.rk-mb.m0 .sh svg{stroke:#ff6ab0}.rk-mb.m1 .sh svg{stroke:#ff8b78}.rk-mb.m2 .sh svg{stroke:#ff5f70}.rk-mb.m3 .sh svg{stroke:#ff9a4a}
+.rk-mb.m0 .sh svg{stroke:#ff6ab0}.rk-mb.m1 .sh svg{stroke:#8c78ff}.rk-mb.m2 .sh svg{stroke:#5fe0ff}.rk-mb.m3 .sh svg{stroke:#ff9a4a}
 .rk-mb b{display:block;margin-top:44px}.rk-mb:hover{transform:rotate(-2deg) scale(1.04);background:rgba(255,106,176,.1)}.rk-mb:hover .sh{animation-duration:1.6s}
 @keyframes rkFloat{50%{transform:translateY(8px) rotate(14deg)}}
 
@@ -185,6 +185,6 @@
 
 /* rastro do logo */
 .dnaMark.rkTrail{animation:rkTrail 1.1s cubic-bezier(.2,.7,.2,1)!important}
-@keyframes rkTrail{0%{transform:none;filter:drop-shadow(0 0 10px rgba(255,143,146,.22))}18%{transform:skewX(-14deg) scaleX(1.06);filter:drop-shadow(-14px 0 0 rgba(255,120,124,.55)) drop-shadow(-30px 0 8px rgba(255,120,124,.25)) drop-shadow(10px 0 0 rgba(200,80,110,.4))}55%{transform:skewX(4deg);filter:drop-shadow(5px 0 0 rgba(255,120,124,.3)) drop-shadow(-4px 0 0 rgba(200,80,110,.25))}100%{transform:none;filter:drop-shadow(0 0 10px rgba(255,143,146,.22))}}
+@keyframes rkTrail{0%{transform:none;filter:drop-shadow(0 0 10px rgba(143,200,255,.22))}18%{transform:skewX(-14deg) scaleX(1.06);filter:drop-shadow(-14px 0 0 rgba(120,190,255,.55)) drop-shadow(-30px 0 8px rgba(120,190,255,.25)) drop-shadow(10px 0 0 rgba(200,80,110,.4))}55%{transform:skewX(4deg);filter:drop-shadow(5px 0 0 rgba(120,190,255,.3)) drop-shadow(-4px 0 0 rgba(200,80,110,.25))}100%{transform:none;filter:drop-shadow(0 0 10px rgba(143,200,255,.22))}}
 
 .rkE-ritty .g1{transform-origin:32px 32px;animation:rkSpin 6s linear infinite}.rkE-ritty .g2{transform-origin:32px 32px;animation:rkSpin 6s linear infinite}.rkE-ritty .nd{fill:rgb(var(--a));stroke:none;transform-origin:32px 32px;animation:rkBreath 2.4s ease-in-out infinite}
