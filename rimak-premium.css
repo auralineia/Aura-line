@@ -16,9 +16,6 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9989;
 .tag{letter-spacing:.32em!important;font-size:10px!important;display:inline-flex;align-items:center;gap:14px}
 .tag::before{content:"";width:34px;height:1px;background:linear-gradient(90deg,transparent,currentColor);opacity:.7}
 /* botões champanhe */
-.b:not(.sm),.hero .b{background:linear-gradient(135deg,#f4e2bd,#d4ad74 55%,#a97a45)!important;color:#220a10!important;border:0!important;box-shadow:0 10px 40px rgba(var(--wine),.55),inset 0 1px 0 rgba(255,255,255,.7)!important;letter-spacing:.04em}
-.b.sm{border:1px solid rgba(var(--ch),.45)!important}
-.b.sm:hover{background:linear-gradient(135deg,#f4e2bd,#c79b62)!important;color:#220a10!important}
 /* planos */
 .plan{border:1px solid rgba(var(--ch),.22)!important;border-radius:26px}
 .plan header{font-family:var(--ser)!important;font-weight:400!important;font-size:34px!important;letter-spacing:.06em!important;background:linear-gradient(100deg,#f7e6c4,#c99a62);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -61,9 +58,6 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9989;
 .cmp thead th{color:rgb(var(--ch))!important}
 .plan .mdl,.plan .mdl b{color:#f8ece6!important}
 .plan li::before,.plan li i{background:rgb(var(--ch))!important}
-.plan .b{color:#f8ece6!important;border-color:rgba(var(--ch),.55)!important;background:rgba(255,255,255,.08)!important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
-.plan .b .ar{background:linear-gradient(135deg,#f4e2bd,#c79b62)!important}
-.plan .b .ar,.plan .b .ar svg,.plan .b .ar path{color:#220a10!important;stroke:#220a10!important}
 .cmp tbody th{color:rgba(248,236,230,.72)!important}
 /* ASSINATURA: selo giratório + algarismos romanos */
 .rkSeal{position:absolute;right:clamp(18px,6vw,90px);bottom:clamp(90px,16vh,170px);width:clamp(96px,11vw,150px);aspect-ratio:1;z-index:3;pointer-events:none;opacity:.9}
@@ -95,3 +89,25 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9989;
 #rkMenuPanel .seg{background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.16)!important;border-radius:16px!important}
 #rkMenuPanel .rkMenuFoot{text-align:center;color:rgba(255,226,230,.4)!important;margin-top:22px!important}
 #rkMenuPanel button.rkMenuItem .lb,#rkMenuPanel button.rkMenuItem span.lb{color:#fff3f4!important;opacity:1!important}
+
+/* BOTÕES: vidro líquido (sem dourado) */
+.b,.b.sm,.hero .b{background-color:rgba(255,200,205,.12)!important;color:#fff4f4!important;border:1px solid rgba(255,255,255,.38)!important;letter-spacing:.02em}
+.b:not(.sm){background-image:radial-gradient(120% 160% at var(--mx,25%) var(--my,0%),rgba(255,255,255,.4),transparent 50%),linear-gradient(160deg,rgba(255,120,150,.35),rgba(120,16,44,.35))!important;box-shadow:inset 0 2px 0 rgba(255,255,255,.7),inset 0 -2px 6px rgba(0,0,0,.25),0 14px 40px rgba(var(--wine),.55)!important}
+.b:hover{background-color:rgba(255,200,205,.2)!important;border-color:rgba(255,255,255,.6)!important;transform:translateY(-2px)}
+.plan .b{color:#fff4f4!important}
+.b .ar,.plan .b .ar{background:radial-gradient(circle at 35% 25%,#fff,rgba(255,225,230,.75) 70%)!important;box-shadow:inset 0 1px 0 #fff,0 4px 12px rgba(0,0,0,.3)}
+.b .ar,.b .ar svg,.b .ar path,.plan .b .ar svg,.plan .b .ar path{color:#3a0716!important;stroke:#3a0716!important}
+/* VIDRO LÍQUIDO EM TUDO */
+.step,.k,.dq,.mdl,.seg3 button,.rkBtn,.seg,.stList,.stHero,.rkTag,.dn-sug,.dn-bubble,.rkMenuItem .ic,.stIn{
+ -webkit-backdrop-filter:blur(18px) saturate(1.8) brightness(1.05);backdrop-filter:blur(18px) saturate(1.8) brightness(1.05)}
+.step,.k,.dq,.seg3 button,.rkBtn,.seg,.stList,.stHero,.dn-sug,.dn-bubble,.stIn{
+ background-image:radial-gradient(120% 140% at var(--mx,20%) var(--my,0%),rgba(255,255,255,.2),rgba(255,255,255,0) 46%),linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.02) 55%,rgba(255,255,255,.07))!important;
+ background-color:rgba(255,190,200,.06)!important;border:1px solid rgba(255,255,255,.2)!important;
+ box-shadow:inset 0 1.5px 0 rgba(255,255,255,.45),inset 0 -1.5px 0 rgba(255,255,255,.08),inset 0 0 24px rgba(255,255,255,.04),0 10px 30px rgba(0,0,0,.28)!important}
+.rkBtn:hover,.seg3 button:hover,.dn-sug:hover{background-color:rgba(255,190,200,.14)!important;border-color:rgba(255,255,255,.4)!important}
+.seg button[aria-pressed=true],.seg3 button[aria-pressed=true]{background:radial-gradient(120% 160% at 30% 0%,rgba(255,255,255,.75),rgba(255,210,220,.45))!important;color:#2a0510!important;box-shadow:inset 0 2px 0 #fff,0 6px 18px rgba(var(--wine),.5)!important}
+.tgl{box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+.tgl:checked{background:linear-gradient(160deg,rgba(255,200,215,.9),rgba(230,60,100,.9))!important}
+.tgl::after{background:radial-gradient(circle at 35% 25%,#fff,#ffe6ea 70%)!important;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+
+.step,.k,.dq{border-radius:20px}
