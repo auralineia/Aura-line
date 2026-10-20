@@ -1,0 +1,4 @@
+(function(){var d=document;function go(){
+var s0=d.getElementById("s0");if(s0&&!d.querySelector(".rkSeal")){var t="RIMAK · MAESTRA DO ECOSSISTEMA · EST. 2026 · ";var e=d.createElement("div");e.className="rkSeal";e.setAttribute("aria-hidden","true");e.innerHTML='<svg viewBox="0 0 120 120"><defs><path id="rkSealP" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/></defs><text><textPath href="#rkSealP" textLength="283" lengthAdjust="spacing">'+t+'</textPath></text></svg>';s0.appendChild(e)}
+var R=["I","II","III","IV","V","VI"];R.forEach(function(r,i){var s=d.getElementById("s"+(i+1));if(s&&!s.querySelector(".rkWm")){var b=d.createElement("b");b.className="rkWm";b.setAttribute("aria-hidden","true");b.textContent=r;s.insertBefore(b,s.firstChild)}})}
+if(d.readyState==="loading")d.addEventListener("DOMContentLoaded",go);else go()})();
