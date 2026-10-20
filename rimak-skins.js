@@ -96,7 +96,7 @@
     };
   };
   FX.code = function (cv, x, o) {
-    var A = css(o.chat, "--a", [255,90,144]), ch = "01{}[]<>/=+*;#$%&?:", cols = [], i; for (i = 0; i < 90; i++) cols.push({ y: R() * 100, v: .3 + R() * .9, o: R() });
+    var A = css(o.chat, "--a", [90, 255, 150]), ch = "01{}[]<>/=+*;#$%&?:", cols = [], i; for (i = 0; i < 90; i++) cols.push({ y: R() * 100, v: .3 + R() * .9, o: R() });
     return function (t, w, h) {
       x.clearRect(0, 0, w, h); var fs = 15, n = Math.ceil(w / fs); x.font = fs + "px ui-monospace,Menlo,monospace";
       for (i = 0; i < n; i++) { var c = cols[i % cols.length]; c.y += c.v * .22; if (c.y * fs > h + 200) c.y = -R() * 20; for (var k = 0; k < 12; k++) { var yy = (c.y - k) * fs; if (yy < 0 || yy > h) continue; x.fillStyle = col(A, (1 - k / 12) * (.05 + c.o * .22)); x.fillText(ch[(i * 7 + k * 3 + Math.floor(t / 160 + i)) % ch.length], i * fs, yy); } }
@@ -111,7 +111,7 @@
     };
   };
   FX.designer = function (cv, x, o) {
-    var C = [[255, 80, 170], [255, 150, 60], [255,127,100], [255,60,76], [255,120,158]], B = C.map(function (c, i) { return { c: c, x: R(), y: R(), r: .22 + R() * .2, p: R() * 9 }; }), S2 = []; for (var i = 0; i < 12; i++) S2.push({ x: R(), y: R(), k: i % 3, s: 14 + R() * 26, r: R() * 6, c: C[i % 5] });
+    var C = [[255, 80, 170], [255, 150, 60], [140, 100, 255], [60, 200, 255], [120, 255, 190]], B = C.map(function (c, i) { return { c: c, x: R(), y: R(), r: .22 + R() * .2, p: R() * 9 }; }), S2 = []; for (var i = 0; i < 12; i++) S2.push({ x: R(), y: R(), k: i % 3, s: 14 + R() * 26, r: R() * 6, c: C[i % 5] });
     return function (t, w, h, px, py) {
       x.clearRect(0, 0, w, h); x.globalCompositeOperation = "lighter";
       B.forEach(function (b, i) { var X = (b.x + Math.sin(t * .00021 + b.p) * .22 + px * .03 * (i + 1)) * w, Y = (b.y + Math.cos(t * .00017 + b.p) * .2 + py * .03 * (i + 1)) * h, rr = b.r * Math.max(w, h); var g = x.createRadialGradient(X, Y, 0, X, Y, rr); g.addColorStop(0, col(b.c, .2)); g.addColorStop(1, col(b.c, 0)); x.fillStyle = g; x.beginPath(); x.arc(X, Y, rr, 0, TAU); x.fill(); });
@@ -120,7 +120,7 @@
     };
   };
   FX.analyst = function (cv, x, o) {
-    var A = css(o.chat, "--a", [255,90,94]), S2 = css(o.chat, "--s", [255, 190, 80]), series = [2,0,0].map(function (k) { var a = [], v = .5; for (var i = 0; i < 120; i++) { v += (R() - .5) * .08; v = Math.max(.15, Math.min(.85, v)); a.push(v); } return a; }), bars = []; for (var i = 0; i < 28; i++) bars.push(R());
+    var A = css(o.chat, "--a", [90, 170, 255]), S2 = css(o.chat, "--s", [255, 190, 80]), series = [0, 1, 2].map(function (k) { var a = [], v = .5; for (var i = 0; i < 120; i++) { v += (R() - .5) * .08; v = Math.max(.15, Math.min(.85, v)); a.push(v); } return a; }), bars = []; for (var i = 0; i < 28; i++) bars.push(R());
     return function (t, w, h) {
       x.clearRect(0, 0, w, h); x.strokeStyle = col(A, .06); for (var gx = 0; gx < w; gx += 48) { x.beginPath(); x.moveTo(gx, 0); x.lineTo(gx, h); x.stroke(); } for (var gy = 0; gy < h; gy += 48) { x.beginPath(); x.moveTo(0, gy); x.lineTo(w, gy); x.stroke(); }
       var bw = w / bars.length; bars.forEach(function (b, i) { var hh = (.1 + .16 * (.5 + .5 * Math.sin(t * .0007 + i * .6 + b * 6))) * h; x.fillStyle = col(A, .07); x.fillRect(i * bw + 3, h - hh, bw - 6, hh); });
@@ -141,12 +141,12 @@
     var bw = 0, bh = 0;
     return function (t, w, h) {
       if (w !== bw || h !== bh) { bw = w; bh = h; build(w, h); }
-      x.clearRect(0, 0, w, h); x.lineWidth = 1; paths.forEach(function (p) { x.strokeStyle = col(A, .1); x.beginPath(); p.forEach(function (q, i) { i ? x.lineTo(q[0], q[1]) : x.moveTo(q[0], q[1]); }); x.stroke(); p.forEach(function (q, i) { x.fillStyle = col(A, .22); x.fillRect(q[0] - 2, q[1] - 5,1,2); }); });
+      x.clearRect(0, 0, w, h); x.lineWidth = 1; paths.forEach(function (p) { x.strokeStyle = col(A, .1); x.beginPath(); p.forEach(function (q, i) { i ? x.lineTo(q[0], q[1]) : x.moveTo(q[0], q[1]); }); x.stroke(); p.forEach(function (q, i) { x.fillStyle = col(A, .22); x.fillRect(q[0] - 2, q[1] - 2, 4, 4); }); });
       pulses.forEach(function (u) { var p = paths[u.p]; u.s += u.v * 16 / 4; if (u.s >= p.length - 1) u.s = 0; var i = Math.floor(u.s), f = u.s - i, a = p[i], b = p[i + 1], X = a[0] + (b[0] - a[0]) * f, Y = a[1] + (b[1] - a[1]) * f; var g = x.createRadialGradient(X, Y, 0, X, Y, 14); g.addColorStop(0, col(A, .9)); g.addColorStop(1, col(A, 0)); x.fillStyle = g; x.beginPath(); x.arc(X, Y, 14, 0, TAU); x.fill(); });
     };
   };
   FX.tempesta = function (cv, x, o) {
-    var A = css(o.chat, "--a", [255,157,140]), S2 = css(o.chat, "--s", [255,120,122]);
+    var A = css(o.chat, "--a", [160, 140, 255]), S2 = css(o.chat, "--s", [120, 180, 255]);
     return function (t, w, h, px, py) {
       x.clearRect(0, 0, w, h);
       for (var k = 0; k < 4; k++) { x.beginPath(); for (var i = 0; i <= 40; i++) { var u = i / 40, X = u * w, Y = h * (.25 + k * .17) + Math.sin(u * 4 + t * .00035 * (1 + k * .3) + k) * 40 + Math.sin(u * 9 - t * .0004) * 14 + py * 20; i ? x.lineTo(X, Y) : x.moveTo(X, Y); } x.lineTo(w, h); x.lineTo(0, h); x.closePath(); x.fillStyle = col(k % 2 ? S2 : A, .035 + k * .005); x.fill(); }

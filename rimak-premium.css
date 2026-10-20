@@ -1,0 +1,56 @@
+/* RIMAK premium — serifa editorial, champanhe, hairlines, black card */
+:root{--ch:232,205,160;--ch2:190,150,92;--wine:120,16,38;--ser:"Instrument Serif","Cormorant Garamond",Georgia,serif}
+::selection{background:rgba(var(--wine),.7);color:#fff}
+html{scrollbar-width:thin;scrollbar-color:rgba(var(--ch2),.5) transparent}
+/* granulado de filme + vinheta */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9989;background:radial-gradient(ellipse at 50% 40%,transparent 55%,rgba(0,0,0,.45))}
+/* navegação */
+.nv a,.nv nav a{letter-spacing:.2em!important;text-transform:uppercase;font-size:10.5px!important;font-weight:400!important}
+.nv{border-bottom:1px solid transparent!important;border-image:linear-gradient(90deg,transparent,rgba(var(--ch),.35),transparent) 1!important}
+/* títulos editoriais */
+.hero-h{font-weight:300!important}
+.hero-h span{font-family:var(--ser)!important;font-style:italic;font-weight:400;letter-spacing:-.01em;font-size:1.12em;line-height:.95;background:linear-gradient(100deg,#f7e6c4,#d9b377 45%,#f2d9ae 70%,#b98a55);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+.sc h2,.sec h2{font-family:var(--ser)!important;font-weight:400!important;letter-spacing:-.012em!important;font-size:1.14em}
+.sc h2.big{font-size:clamp(44px,6vw,86px)}
+.tag{letter-spacing:.32em!important;font-size:10px!important;color:rgba(var(--ch),.85)!important;display:inline-flex;align-items:center;gap:14px}
+.tag::before{content:"";width:34px;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--ch),.9))}
+/* botões champanhe */
+.b:not(.sm),.hero .b{background:linear-gradient(135deg,#f4e2bd,#d4ad74 55%,#a97a45)!important;color:#220a10!important;border:0!important;box-shadow:0 10px 40px rgba(var(--wine),.55),inset 0 1px 0 rgba(255,255,255,.7)!important;letter-spacing:.04em}
+.b.sm{border:1px solid rgba(var(--ch),.45)!important}
+.b.sm:hover{background:linear-gradient(135deg,#f4e2bd,#c79b62)!important;color:#220a10!important}
+/* planos */
+.plan{border:1px solid rgba(var(--ch),.22)!important;border-radius:26px}
+.plan header{font-family:var(--ser)!important;font-weight:400!important;font-size:34px!important;letter-spacing:.06em!important;background:linear-gradient(100deg,#f7e6c4,#c99a62);-webkit-background-clip:text;background-clip:text;color:transparent}
+.plan header em{font-family:var(--sans,Inter,sans-serif);-webkit-text-fill-color:rgba(var(--ch),.8);letter-spacing:.18em;text-transform:uppercase;font-size:9px;font-style:normal}
+.plan .pr{font-family:var(--ser)!important;font-size:46px!important;font-weight:400!important}
+.plan .pr small{font-family:var(--sans,Inter,sans-serif);font-size:12px}
+.plan.hot,.plan.rec{--rkb:rgba(var(--ch),.9)}
+.plan[data-plan=high]{background:linear-gradient(160deg,#0a0305,#220811 60%,#12040a)!important;border:1px solid transparent!important;background-clip:padding-box;position:relative;box-shadow:0 30px 100px rgba(var(--wine),.55),inset 0 0 0 1px rgba(var(--ch),.45)}
+.plan[data-plan=high]::after{content:"BLACK";position:absolute;right:22px;top:18px;font:600 9px/1 Inter,sans-serif;letter-spacing:.4em;color:rgba(var(--ch),.8)}
+.cmp,.plan.fx{background-color:rgba(18,4,8,.6)!important}
+.cmp thead th{font-family:var(--ser);font-weight:400;letter-spacing:.08em;color:rgb(var(--ch))}
+.cmp tr.hl td,.cmp tr.hl th{color:rgb(var(--ch))}
+/* faixas */
+.mqB span,.mqB b,.mqB i{font-family:var(--ser)!important;font-style:italic;font-weight:400!important;letter-spacing:.01em}
+/* detalhes dourados */
+.rkCur{border-color:rgba(var(--ch),.7)!important}
+.hud u{background:rgba(var(--ch),.55)!important}
+.sec{border-top:1px solid rgba(var(--ch),.08)}
+.fq{border:1px solid rgba(var(--ch),.16)!important}
+.dn-welcome h2{font-family:var(--ser)!important;font-weight:400!important;letter-spacing:-.01em!important}
+/* cartões sempre escuros (mesmo sobre fundo claro) */
+.plan,.cmp{--fg:246,234,228;color:#f6eae4!important}
+.plan,.cmp,.plan.fx{background:linear-gradient(160deg,rgba(46,10,20,.94),rgba(24,5,11,.96))!important;backdrop-filter:blur(18px) saturate(1.2)}
+.plan[data-plan=high]{background:linear-gradient(160deg,#050102,#1a0610 60%,#0c0206)!important}
+.plan *,.cmp th,.cmp td{color:inherit}
+.plan .who,.plan li,.plan small,.cmp .fn{color:rgba(246,234,228,.78)!important}
+.plan .cr span,.plan .pr{color:#fff3e4!important}
+.plan header,.cmp thead th{color:transparent}
+.cmp thead th{color:rgb(var(--ch))!important}
+.plan .mdl,.plan .mdl b{color:#f6eae4!important}
+.plan li::before,.plan li i{background:rgb(var(--ch))!important;color:rgb(var(--ch))}
+.plan .b{color:#f6eae4!important;border-color:rgba(var(--ch),.5)!important}
+.cmp tbody th{color:rgba(246,234,228,.7)!important}
+.plan .b .ar{background:linear-gradient(135deg,#f4e2bd,#c79b62)!important}
+.plan .b .ar,.plan .b .ar svg,.plan .b .ar path{color:#220a10!important;stroke:#220a10!important}
