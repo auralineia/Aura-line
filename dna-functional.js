@@ -33,6 +33,7 @@
   try { COARSE = matchMedia("(pointer:coarse)").matches; } catch (e) {}
 
   if (lsGet("rimak.motion", "on") === "off") d.documentElement.setAttribute("data-motion", "off");
+  ["glass", "cursor", "lite"].forEach(function (k) { var v = lsGet("rimak." + k, ""); if (v) d.documentElement.setAttribute("data-" + k, v); });
 
   /* ---------- ícones ---------- */
   var ICON = {
@@ -236,6 +237,7 @@
   }
   function nameOf(u) {
     if (!u) return "";
+    var nk = lsGet("rimak.nick", ""); if (nk) return nk;
     var md_ = u.user_metadata || {}, n = md_.full_name || md_.name || md_.display_name || "";
     if (!n && u.email) n = String(u.email).split("@")[0].split(/[._\-+0-9]/)[0];
     n = String(n).trim().split(/\s+/)[0];
@@ -418,30 +420,64 @@
     return n;
   }
   function settings() {
-    var logged = !!state.user, plan = planLabel();
+    var logged = !!state.user, plan = planLabel(), nm = state.name || (logged ? (state.user.email || "").split("@")[0] : "");
+    var ini = esc((nm || "R").charAt(0).toUpperCase());
+    var cr = state.credits == null ? null : state.credits;
+    function tg(id, t, sm, k) { return '<label class="stRow"><span class="stTx"><b>' + t + '</b><small>' + sm + '</small></span><input class="tgl" type="checkbox" id="' + id + '"></label>'; }
+    function seg(id, arr, cur) { return '<div class="seg lg" id="' + id + '" role="group">' + arr.map(function (a) { return '<button type="button" data-v="' + a[0] + '" aria-pressed="' + (cur === a[0]) + '"><b>' + a[1] + '</b><span>' + a[2] + '</span></button>'; }).join("") + '</div>'; }
     panel('<div class="pnHead">' + MARK + '<span class="pnKick">Configurações</span></div>' +
-      '<h3>Ajuste a RIMAK do seu jeito.</h3><p>Idioma, movimento e dados deste dispositivo.</p>' +
+      '<div class="stHero"><div class="stAv" data-notr>' + ini + '</div><div class="stWho"><b data-notr>' + (logged ? esc(nm) : T("Visitante")) + '</b><small data-notr>' + (logged ? esc(state.user.email || "") : T("Você não está conectado")) + '</small></div>' +
+      (logged ? '<span class="rkTag" data-notr>' + esc(plan) + '</span>' : '<button class="rkBtn" type="button" id="rkStLogin">Entrar</button>') +
+      (logged ? '<div class="stMeter"><span>Créditos de hoje</span><strong data-notr>' + (cr == null ? "—" : cr) + '</strong><i><u style="width:' + Math.max(4, Math.min(100, cr == null ? 0 : cr / (({ pro: 60, ultra: 180, high: 450 })[planKey()] || 10) * 100)) + '%"></u></i></div>' : '') + '</div>' +
+      '<div class="stSec"><div class="stLabel"><i>' + ICON.user + '</i>Perfil</div><div class="stList"><div class="stRow"><span class="stTx"><b>Como a RIMAK te chama</b><small>Apelido usado nas respostas e nas boas-vindas.</small></span></div>' +
+      '<div class="stRow"><input class="stIn" id="rkNick" maxlength="30" placeholder="Seu apelido" autocomplete="off"><button class="rkBtn" type="button" id="rkNickSave">Salvar</button></div></div></div>' +
+      '<div class="stSec"><div class="stLabel"><i>' + ICON.chat + '</i>Respostas</div>' + seg("rkTone", [["direct", "DIRETO", "Curto e objetivo"], ["balanced", "EQUILIBRADO", "O padrão"], ["detailed", "DETALHADO", "Passo a passo"]], lsGet("rimak.tone", "balanced")) +
+      '<p class="stHint">O tom vale para todos os chats. O esforço você escolhe dentro de cada conversa.</p></div>' +
       '<div class="stSec"><div class="stLabel"><i>' + ICON.globe + '</i>Idioma</div><div class="seg lg" id="rkLangSeg" role="group" aria-label="Idioma"></div>' +
       '<p class="stHint">Muda o site, os chats e o idioma das respostas.</p></div>' +
-      '<div class="stSec"><div class="stLabel"><i>' + ICON.pulse + '</i>Experiência</div><div class="stList">' +
-      '<label class="stRow"><span class="stTx"><b>Animações</b><small>Desliga movimentos e efeitos. Poupa bateria.</small></span><input class="tgl" type="checkbox" id="rkMotion"></label></div></div>' +
-      '<div class="stSec"><div class="stLabel"><i>' + ICON.user + '</i>Conta</div><div class="stList">' +
-      (logged ? '<div class="stRow"><span class="stTx"><b>Plano</b><small data-notr>' + esc(state.user.email || "") + '</small></span><span class="rkTag" data-notr>' + esc(plan) + '</span></div>' +
-        '<div class="stRow"><span class="stTx"><b>Créditos</b><small>Saldo atual do dia</small></span><strong class="stVal" data-notr>' + (state.credits == null ? "—" : state.credits) + '</strong></div>' +
-        '<div class="stRow"><span class="stTx"><b>Conexão</b><small id="rkOmniStatus" data-notr>' + esc(T("Verificando…")) + '</small></span><span class="stDot" id="rkDot"></span></div>'
-        : '<div class="stRow"><span class="stTx"><b>Você não está conectado</b><small>Entre para usar créditos e salvar seu plano.</small></span><button class="rkBtn" type="button" id="rkStLogin">Entrar</button></div>') +
-      '</div></div>' +
+      '<div class="stSec"><div class="stLabel"><i>' + ICON.pulse + '</i>Aparência e movimento</div><div class="stList">' +
+      tg("rkMotion", "Animações", "Desliga movimentos e efeitos. Poupa bateria.") +
+      tg("rkGlass", "Vidro líquido", "Reflexos e desfoque nos cartões. Desligue se o aparelho engasgar.") +
+      tg("rkCursor", "Cursor luminoso", "O brilho que acompanha o mouse (computador).") +
+      tg("rkLite", "Modo leve", "Menos partículas e efeitos. Ideal para celulares simples.") + '</div></div>' +
+      (logged ? '<div class="stSec"><div class="stLabel"><i>' + ICON.spark + '</i>Plano e conexão</div><div class="stList">' +
+        '<div class="stRow"><span class="stTx"><b>Plano</b><small>Troque quando precisar de mais créditos.</small></span><button class="rkBtn" type="button" id="rkStPlans">Ver planos</button></div>' +
+        '<div class="stRow"><span class="stTx"><b>Conexão</b><small id="rkOmniStatus" data-notr>' + esc(T("Verificando…")) + '</small></span><span class="stDot" id="rkDot"></span></div></div></div>' : '') +
       '<div class="stSec"><div class="stLabel"><i>' + ICON.trash + '</i>Dados</div><div class="stList">' +
-      '<div class="stRow"><span class="stTx"><b>Conversas neste dispositivo</b><small>Apaga o histórico de todos os modos. Não afeta sua conta.</small></span><button class="rkBtn danger" type="button" id="rkWipe">Apagar</button></div></div></div>' +
+      '<div class="stRow"><span class="stTx"><b>Exportar conversas</b><small>Baixa um arquivo com o histórico deste dispositivo.</small></span><button class="rkBtn" type="button" id="rkExport">Baixar</button></div>' +
+      '<div class="stRow"><span class="stTx"><b>Apagar conversas</b><small>Limpa o histórico de todos os modos. Não afeta sua conta.</small></span><button class="rkBtn danger" type="button" id="rkWipe">Apagar</button></div></div></div>' +
+      '<div class="stAbout"><span>RIMAK</span><small>Versão 2026 · Feita no Brasil</small></div>' +
       '<div class="rkRow"><button class="rkBtn" id="rkSettingsBack" type="button">' + (logged ? "Voltar à conta" : "Fechar") + '</button></div>' +
       '<div class="pnFoot">RIMAK · Mais que uma IA. Um ecossistema.</div>');
     langSeg("#rkLangSeg", function () { toast(T("Idioma salvo.")); });
-    $("#rkMotion").checked = lsGet("rimak.motion", "on") !== "off";
-    $("#rkMotion").onchange = function (e) {
-      lsSet("rimak.motion", e.target.checked ? "on" : "off");
-      if (e.target.checked) d.documentElement.removeAttribute("data-motion"); else d.documentElement.setAttribute("data-motion", "off");
+    $("#rkNick").value = lsGet("rimak.nick", "");
+    $("#rkNickSave").onclick = function () {
+      var v = $("#rkNick").value.replace(/[<>]/g, "").trim().slice(0, 30); lsSet("rimak.nick", v);
+      if (v) state.name = v; else state.name = nameOf(state.user || {});
+      toast(T("Apelido salvo."));
     };
+    $$("#rkTone [data-v]").forEach(function (b) { b.onclick = function () { lsSet("rimak.tone", b.dataset.v); $$("#rkTone [data-v]").forEach(function (x) { x.setAttribute("aria-pressed", x === b); }); toast(T("Tom salvo.")); }; });
+    function bind(id, key, attr, onVal) {
+      var el = $(id), v = lsGet("rimak." + key, "");
+      el.checked = onVal ? v !== "off" : v !== "on";
+      el.onchange = function () {
+        var on = el.checked; lsSet("rimak." + key, on ? (onVal ? "on" : "") : (onVal ? "off" : "on"));
+        var off = onVal ? !on : on; if (off) d.documentElement.setAttribute("data-" + attr, onVal ? "off" : "on"); else d.documentElement.removeAttribute("data-" + attr);
+      };
+    }
+    bind("#rkMotion", "motion", "motion", true);
+    bind("#rkGlass", "glass", "glass", true);
+    bind("#rkCursor", "cursor", "cursor", true);
+    bind("#rkLite", "lite", "lite", false);
     var li = $("#rkStLogin"); if (li) li.onclick = login;
+    var sp = $("#rkStPlans"); if (sp) sp.onclick = plans;
+    $("#rkExport").onclick = function () {
+      var out = {};
+      try { Object.keys(localStorage).forEach(function (k) { if (k.indexOf("rimak.chat.") === 0) { try { out[k.replace("rimak.chat.", "")] = JSON.parse(localStorage.getItem(k)); } catch (e) {} } }); } catch (e) {}
+      var bl = new Blob([JSON.stringify({ app: "RIMAK", exportado: new Date().toISOString(), conversas: out }, null, 2)], { type: "application/json" });
+      var a = d.createElement("a"); a.href = URL.createObjectURL(bl); a.download = "rimak-conversas.json"; d.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+      toast(T("Arquivo gerado."));
+    };
     var w = $("#rkWipe"), armed = 0;
     w.onclick = function () {
       if (!armed) { armed = 1; w.textContent = T("Confirmar"); w.classList.add("armed"); setTimeout(function () { armed = 0; w.textContent = T("Apagar"); w.classList.remove("armed"); }, 3500); return; }
@@ -1099,7 +1135,7 @@
     var t = thinkEl();
     col().appendChild(t); scrollEnd();
     try {
-      var r = await api({ message: text, history: state.history.slice(-9, -1).map(function (x) { return x.kind === "image" ? { role: "assistant", content: "[imagem gerada a partir de: " + x.content + "]" } : { role: x.role, content: x.content }; }), language: lang(), mode: mode, stream: true, effort: curEffort().id });
+      var r = await api({ message: text, history: state.history.slice(-9, -1).map(function (x) { return x.kind === "image" ? { role: "assistant", content: "[imagem gerada a partir de: " + x.content + "]" } : { role: x.role, content: x.content }; }), language: lang(), mode: mode, stream: true, effort: curEffort().id, tone: lsGet("rimak.tone", "balanced"), nick: lsGet("rimak.nick", "") });
       if (r.ok && (r.headers.get("content-type") || "").indexOf("text/event-stream") >= 0 && r.body && r.body.getReader) {
         t = await readStream(r, mode, t);
         return;

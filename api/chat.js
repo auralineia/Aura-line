@@ -1389,6 +1389,17 @@ async function handleImageRequest(req, res, user) {
 }
 
 // Geração em tempo real: chama onDelta(texto) a cada pedaço recebido do modelo.
+function toneHint(tone, nick) {
+  const T = {
+    direct: "TOM PREFERIDO: direto e enxuto. Vá ao ponto, frases curtas, sem rodeios nem introduções.",
+    detailed: "TOM PREFERIDO: detalhado e didático. Explique o raciocínio, dê exemplos e organize em etapas quando ajudar."
+  };
+  let out = T[String(tone || "")] ? "\n\n" + T[String(tone)] : "";
+  const n = String(nick || "").replace(/[^\p{L}\p{N} .'-]/gu, "").trim().slice(0, 30);
+  if (n) out += `\n\nO usuário prefere ser chamado de "${n}".`;
+  return out;
+}
+
 async function streamWithProvider(messages, plan, onDelta, effort = EFFORTS.low) {
   const providers = textProviders();
   if (!providers.length) {
@@ -2105,7 +2116,7 @@ export default async function handler(req, res) {
           researchText,
           language: body.language || "pt-BR",
           mode
-        })
+        }) + toneHint(body.tone, body.nick)
       },
       ...history,
       ...(contextText
