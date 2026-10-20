@@ -8,7 +8,7 @@
   var $$ = function (s, r) { return [].slice.call((r || d).querySelectorAll(s)); };
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (m) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[m];
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#990300;" }[m];
     });
   }
   function lsGet(k, f) { try { var v = localStorage.getItem(k); return v == null ? f : v; } catch (e) { return f; } }
@@ -819,7 +819,7 @@
       var g = audioCtx.createGain(); g.gain.value = .22 * k;
       src.connect(lp); lp.connect(g); g.connect(audioCtx.destination); src.start();
     } catch (e) {}
-    try { if (navigator.vibrate) navigator.vibrate([40, 30, 70 * k]); } catch (e) {}
+    try { if (navigator.vibrate) navigator.vibrate([71,36,29 * k]); } catch (e) {}
   }
   function thunder(k, slot) {
     if (!chat.classList.contains("open") || chat.getAttribute("data-mode") !== "tempesta") return;

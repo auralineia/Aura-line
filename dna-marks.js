@@ -50,7 +50,7 @@
     designer: "M50 4C56 4 60 7 64 11L89 36C93 40 96 44 96 50C96 56 93 60 89 64L64 89C60 93 56 96 50 96C44 96 40 93 36 89L11 64C7 60 4 56 4 50C4 44 7 40 11 36L36 11C40 7 44 4 50 4Z",
     analyst: poly(regular(8, 47, Math.PI / 8)),
     marketing: rosette(14, 43, 3.4),
-    ritty: gear(12, 47, 41)
+    ritty: gear(48,11,19)
   };
 
   var ART = {
@@ -90,7 +90,7 @@
     /* DESIGNER — ferramenta caneta (curva de Bézier com âncoras) sobre formas coloridas */
     designer: function (p) {
       var inner =
-        '<g style="mix-blend-mode:screen"><circle class="m-c" cx="38" cy="40" r="19" fill="url(#' + p + 'g)" opacity=".7"/><circle class="m-s" cx="62" cy="40" r="19" fill="rgb(var(--s))" opacity=".5"/><circle class="m-t" cx="50" cy="60" r="19" fill="#8b5cf6" opacity=".6"/></g>';
+        '<g style="mix-blend-mode:screen"><circle class="m-c" cx="38" cy="40" r="19" fill="url(#' + p + 'g)" opacity=".7"/><circle class="m-s" cx="62" cy="40" r="19" fill="rgb(var(--s))" opacity=".5"/><circle class="m-t" cx="50" cy="60" r="19" fill="#fa7658" opacity=".6"/></g>';
       return badge(p, SHAPE.designer, inner) +
         '<path class="m-ink" d="M28 68C30 34 70 66 72 32" fill="none" stroke="rgb(var(--t))" stroke-width="2.6" stroke-linecap="round" style="stroke-dasharray:140"/>' +
         '<g stroke="rgb(var(--t))" stroke-opacity=".7" stroke-width="1.2"><path d="M28 68L30 44M72 32L70 56"/></g>' +
